@@ -9,7 +9,7 @@ import java.util.Optional;
 @Mapper
 public interface PostMapper {
 
-    List<Post> getPostList();
+    List<Post> getPosts();
 
     Optional<Post> getPostById(Long postId);
 

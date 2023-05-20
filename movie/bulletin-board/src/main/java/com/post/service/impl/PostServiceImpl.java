@@ -24,7 +24,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     @Override
     public List<PostResponseDto> getPosts() {
-        return mapper.getPostList().stream()
+        return mapper.getPosts().stream()
                 .filter(Objects::nonNull)
                 .map(post -> new PostResponseDto(post))
                 .collect(Collectors.toList());

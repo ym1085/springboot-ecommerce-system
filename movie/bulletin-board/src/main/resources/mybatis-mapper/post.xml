@@ -5,7 +5,7 @@
 <mapper namespace="com.post.repository.post.PostMapper">
 
     <!-- 전체 게시글 조회 -->
-    <select id="getPostList" resultType="com.post.domain.posts.Post">
+    <select id="getPosts" resultType="com.post.domain.posts.Post">
         SELECT
             p.post_id,
             p.title,
