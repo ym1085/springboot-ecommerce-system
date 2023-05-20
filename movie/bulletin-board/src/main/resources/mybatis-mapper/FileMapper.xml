@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.post.repository.post.FileMapper">
+
+    <!-- 파일 정보 저장 -->
+    <insert id="saveFiles" parameterType="list">
+        INSERT INTO file (
+            file_id
+            , post_id
+            , original_name
+            , save_name
+            , file_path
+            , file_size
+            , file_type
+            , download_cnt
+            , create_date
+            , delete_date
+        ) VALUES
+        <foreach item="file" collection="list" separator=",">
+            (
+                #{file.fileId}
+                , #{file.postId}
+                , #{file.originalName}
+                , #{file.saveName}
+                , #{file.filePath}
+                , #{file.fileSize}
+                , #{file.fileType}
+                , 0
+                , NOW()
+                , NULL
+            )
+        </foreach>
+    </insert>
+</mapper>
