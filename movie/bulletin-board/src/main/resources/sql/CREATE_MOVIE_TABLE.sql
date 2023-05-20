@@ -2,13 +2,21 @@ USE movie;
 -- 1정규화 : 하나의 행에 하나의 데이터만 삽입
 -- 2정규화 : 현재 테이블의 주제와 관련없는 컬럼을 다른 테이블로 뺴는 작업
 
--- ROLE
+-- TABLE : ROLE
 CREATE TABLE ROLE (
     role_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     role_name VARCHAR(5) NOT NULL DEFAULT 'ROLE_USER' COMMENT '역할 이름' -- 역할 이름에 대한 주석
 );
 
--- SOCIAL_MEMBER
+-- INSERT INTO ROLE
+select * from role;
+INSERT INTO ROLE (role_name)
+VALUES
+    ('ROLE_USER'),
+    ('ROLE_GUEST'),
+    ('ROLE_ADMIN');
+
+-- TABLE : SOCIAL_MEMBER
 CREATE TABLE SOCIAL_MEMBER (
     social_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     member_id BIGINT COMMENT '회원 ID',
@@ -17,7 +25,9 @@ CREATE TABLE SOCIAL_MEMBER (
     FOREIGN KEY (member_id) REFERENCES MEMBER(member_id)
 );
 
--- MEMBER
+-- TABLE : MEMBER
+select * from member;
+
 CREATE TABLE MEMBER (
     member_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(20) NOT NULL COMMENT '회원명',
@@ -35,7 +45,26 @@ CREATE TABLE MEMBER (
     FOREIGN KEY (role_id) REFERENCES ROLE(role_id)
 );
 
--- POST
+-- INSERT INTO MEMBER
+INSERT INTO MEMBER (name, account, password, email, phone_number, image_url, birth_date, use_yn, cert_yn, role_id)
+VALUES
+    ('회원1', 'user1', 'password1', 'user1@example.com', '010-1111-1111', NULL, '1993-09-23', 'Y', 'Y', 1),
+    ('회원2', 'user2', 'password2', 'user2@example.com', '010-2222-2222', NULL, '1994-05-15', 'Y', 'N', 2),
+    ('회원3', 'user3', 'password3', 'user3@example.com', '010-3333-3333', NULL, '1995-12-07', 'Y', 'Y', 1),
+    ('회원4', 'user4', 'password4', 'user4@example.com', '010-4444-4444', NULL, '1996-03-29', 'Y', 'N', 3),
+    ('회원5', 'user5', 'password5', 'user5@example.com', '010-5555-5555', NULL, '1997-08-11', 'Y', 'Y', 1),
+    ('회원6', 'user6', 'password6', 'user6@example.com', '010-6666-6666', NULL, '1998-01-03', 'Y', 'N', 2),
+    ('회원7', 'user7', 'password7', 'user7@example.com', '010-7777-7777', NULL, '1999-11-21', 'Y', 'Y', 3),
+    ('회원8', 'user8', 'password8', 'user8@example.com', '010-8888-8888', NULL, '2000-06-14', 'Y', 'N', 1),
+    ('회원9', 'user9', 'password9', 'user9@example.com', '010-9999-9999', NULL, '2001-09-05', 'Y', 'Y', 2),
+    ('회원10', 'user10', 'password10', 'user10@example.com', '010-1010-1010', NULL, '2002-02-27', 'Y', 'N', 3);
+
+-- TABLE : POST
+-- AUTO_INCREMENT Start with 1
+-- DELETE FROM post where create_date = '2023-05-20 17:11:53';
+ALTER TABLE POST AUTO_INCREMENT = 1;
+SELECT * FROM post;
+
 CREATE TABLE POST (
     post_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(40) NOT NULL COMMENT '제목',
@@ -49,6 +78,40 @@ CREATE TABLE POST (
     delete_date TIMESTAMP COMMENT '삭제일',
     FOREIGN KEY (member_id) REFERENCES MEMBER(member_id)
 );
+
+-- INSERT INTO POST
+INSERT INTO POST (title, content, member_id, read_cnt, fixed_yn, del_yn)
+VALUES
+    ('제목1', '내용1', 1, 0, 'N', 'N'),
+    ('제목2', '내용2', 2, 0, 'N', 'N'),
+    ('제목3', '내용3', 3, 0, 'N', 'N'),
+    ('제목4', '내용4', 4, 0, 'N', 'N'),
+    ('제목5', '내용5', 5, 0, 'N', 'N'),
+    ('제목6', '내용6', 6, 0, 'N', 'N'),
+    ('제목7', '내용7', 7, 0, 'N', 'N'),
+    ('제목8', '내용8', 8, 0, 'N', 'N'),
+    ('제목9', '내용9', 9, 0, 'N', 'N'),
+    ('제목10', '내용10', 10, 0, 'N', 'N'),
+    ('제목11', '내용11', 1, 0, 'N', 'N'),
+    ('제목12', '내용12', 2, 0, 'N', 'N'),
+    ('제목13', '내용13', 3, 0, 'N', 'N'),
+    ('제목14', '내용14', 4, 0, 'N', 'N'),
+    ('제목15', '내용15', 5, 0, 'N', 'N'),
+    ('제목16', '내용16', 6, 0, 'N', 'N'),
+    ('제목17', '내용17', 7, 0, 'N', 'N'),
+    ('제목18', '내용18', 8, 0, 'N', 'N'),
+    ('제목19', '내용19', 9, 0, 'N', 'N'),
+    ('제목20', '내용20', 10, 0, 'N', 'N'),
+    ('제목21', '내용10', 1, 0, 'N', 'N'),
+    ('제목22', '내용11', 1, 0, 'N', 'N'),
+    ('제목23', '내용12', 2, 0, 'N', 'N'),
+    ('제목24', '내용13', 2, 0, 'N', 'N'),
+    ('제목25', '내용14', 4, 0, 'N', 'N'),
+    ('제목26', '내용15', 4, 0, 'N', 'N'),
+    ('제목27', '내용16', 4, 0, 'N', 'N'),
+    ('제목28', '내용17', 4, 0, 'N', 'N'),
+    ('제목29', '내용18', 8, 0, 'N', 'N'),
+    ('제목30', '내용19', 9, 0, 'N', 'N');
 
 -- COMMENT
 CREATE TABLE COMMENT (
