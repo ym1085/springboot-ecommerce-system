@@ -133,13 +133,14 @@ CREATE TABLE COMMENT (
 CREATE TABLE FILE (
     file_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     post_id BIGINT NOT NULL COMMENT '게시글 ID',
-    file_name VARCHAR(255) NOT NULL COMMENT '파일 이름',
+    original_name VARCHAR(255) NOT NULL COMMENT '업로드 하는 원본 파일 이름',
+    save_name VARCHAR(255) NOT NULL COMMENT '파일 이름',
     file_path VARCHAR(255) NOT NULL COMMENT '파일 경로',
-    ori_file_name VARCHAR(255) NOT NULL COMMENT '원본 파일 이름',
     file_size INT NOT NULL COMMENT '파일 크기',
     file_type VARCHAR(50) NOT NULL COMMENT '파일 타입',
     download_cnt INT DEFAULT 0 COMMENT '다운로드 횟수',
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
-    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일',
+    -- update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일',
+    delete_date TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES POST(post_id)
 );

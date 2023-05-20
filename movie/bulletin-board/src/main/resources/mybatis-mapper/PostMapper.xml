@@ -36,4 +36,10 @@
         FROM post p
         WHERE p.post_id = #{postId}
     </select>
+
+    <!-- 게시글 등록 -->
+    <insert id="savePost" parameterType="com.post.domain.posts.Post" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO post (member_id, title, content, fixed_yn)
+        VALUE  (#{memberId}, #{title}, #{content}, #{fixedYn})
+    </insert>
 </mapper>

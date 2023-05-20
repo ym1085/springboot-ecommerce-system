@@ -13,4 +13,6 @@ public interface PostMapper {
 
     Optional<Post> getPostById(Long postId);
 
+    int savePost(Post post);
+
 }

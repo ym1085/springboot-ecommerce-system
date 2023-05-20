@@ -2,6 +2,7 @@ package com.post.web.dto.resposne;
 
 import com.post.domain.posts.Post;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
  * @since       :   2023. 05. 20
  * @description :   게시글 조회 후 게시글 반환 시 사용
  */
+@NoArgsConstructor
 @Getter
 public class PostResponseDto {
     private Long postId;
@@ -21,8 +23,6 @@ public class PostResponseDto {
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
     private LocalDateTime deleteDate;
-
-    public PostResponseDto() { }
 
     public PostResponseDto(Post post) {
         this.postId = post.getPostId();
