@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.post.repository.post.PostMapper">
+
+    <!-- 전체 게시글 조회 -->
+    <select id="getPostList" resultType="com.post.domain.posts.Post">
+        SELECT
+            p.post_id,
+            p.title,
+            p.content,
+            p.member_id,
+            p.read_cnt,
+            p.fixed_yn,
+            p.del_yn,
+            p.create_date,
+            p.update_date,
+            p.delete_date
+        FROM post p;
+    </select>
+
+    <!-- 단일 게시글 조회 -->
+    <select id="getPostById" resultType="com.post.domain.posts.Post">
+        SELECT
+            p.post_id,
+            p.title,
+            p.content,
+            p.member_id,
+            p.read_cnt,
+            p.fixed_yn,
+            p.del_yn,
+            p.create_date,
+            p.update_date,
+            p.delete_date
+        FROM post p
+        WHERE p.post_id = #{postId}
+    </select>
+</mapper>
