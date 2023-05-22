@@ -15,4 +15,6 @@ public interface PostMapper {
 
     int savePost(Post post);
 
+    Long updatePostById(Post post);
+
 }

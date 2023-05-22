@@ -42,4 +42,16 @@
         INSERT INTO post (member_id, title, content, fixed_yn)
         VALUE  (#{memberId}, #{title}, #{content}, #{fixedYn})
     </insert>
+
+    <update id="updatePostById" parameterType="com.post.domain.posts.Post">
+        UPDATE post
+        SET
+            title = #{title},
+            content = #{content},
+            fixed_yn = #{fixedYn} /* FIXME: Admin인 경우에만 처리 하도록 수정 */
+        WHERE
+            post_id = #{postId}
+        AND
+            member_id = #{memberId}
+    </update>
 </mapper>

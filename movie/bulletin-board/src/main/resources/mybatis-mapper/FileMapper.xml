@@ -33,4 +33,9 @@
             )
         </foreach>
     </insert>
+
+    <!-- 파일 삭제 -->
+    <update id="deleteFilesById" parameterType="long">
+        DELETE FROM file f WHERE f.post_id = #{postId}
+    </update>
 </mapper>

@@ -1,6 +1,6 @@
 package com.post.repository.post;
 
-import com.post.web.dto.request.FileSaveRequestDto;
+import com.post.web.dto.request.FileRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -8,6 +8,8 @@ import java.util.List;
 @Mapper
 public interface FileMapper {
 
-    void saveFiles(List<FileSaveRequestDto> files);
+    int saveFiles(List<FileRequestDto> files);
+
+    int deleteFilesById(Long postId);
 
 }

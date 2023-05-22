@@ -1,7 +1,7 @@
 package com.post.utils;
 
 import com.post.constant.FileExtension;
-import com.post.web.dto.request.FileSaveRequestDto;
+import com.post.web.dto.request.FileRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -38,8 +38,8 @@ public class FileUtils {
      * 다중 파일 업로드
      * @return DB에 저장할 파일 정보 List 반환
      */
-    public List<FileSaveRequestDto> uploadFiles(List<MultipartFile> multipartFiles) {
-        List<FileSaveRequestDto> files = new ArrayList<>();
+    public List<FileRequestDto> uploadFiles(List<MultipartFile> multipartFiles) {
+        List<FileRequestDto> files = new ArrayList<>();
         for (MultipartFile file : multipartFiles) {
             if (file.isEmpty()) {
                 continue;
@@ -52,7 +52,7 @@ public class FileUtils {
     /**
      * 단일 파일 업로드
      */
-    private FileSaveRequestDto uploadFile(MultipartFile multipartFile) {
+    private FileRequestDto uploadFile(MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -77,7 +77,7 @@ public class FileUtils {
             throw new RuntimeException(e);
         }
 
-        return FileSaveRequestDto.builder()
+        return FileRequestDto.builder()
                 .originalName(multipartFile.getOriginalFilename())
                 .saveName(saveFileName)
                 .filePath(uploadPath)

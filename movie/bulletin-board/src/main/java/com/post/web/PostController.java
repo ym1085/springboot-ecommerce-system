@@ -1,13 +1,16 @@
 package com.post.web;
 
 import com.post.constant.ErrorMessage;
+import com.post.constant.ResponseCode;
 import com.post.service.FileService;
 import com.post.service.PostService;
+import com.post.utils.CommonUtils;
 import com.post.utils.FileUtils;
-import com.post.web.dto.request.FileSaveRequestDto;
-import com.post.web.dto.request.PostRequestSaveDto;
+import com.post.web.dto.request.FileRequestDto;
+import com.post.web.dto.request.PostRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -36,17 +39,37 @@ public class PostController {
     }
 
     @PostMapping(value = "/post")
-    public ResponseEntity savePost(@Valid @ModelAttribute PostRequestSaveDto postRequestSaveDto,
+    public ResponseEntity savePost(@Valid @ModelAttribute PostRequestDto postRequestDto,
                                    BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(ErrorMessage.INVALID_ARGUMENTS_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorMessage.INVALID_REQUEST_PARAMETER.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        postRequestDto.setMemberId(1L); // Todo: Test용 member_id security 되면 지워주세요
+        Long postId = postService.savePost(postRequestDto);
+
+        List<FileRequestDto> fileRequestDtos = fileUtils.uploadFiles(postRequestDto.getFiles());
+        int i = fileService.saveFiles(postId, fileRequestDtos);
+
+        return new ResponseEntity<>(ResponseCode.SUCCESS.getResponseCode(), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/post/{id}")
+    public ResponseEntity uploadPost(@PathVariable("id") Long id,
+                                     @Valid @ModelAttribute PostRequestDto postRequestDto,
+                                     BindingResult bindingResult) {
+        if (StringUtils.isBlank(String.valueOf(id)) || !CommonUtils.isNumericPattern(id)) {
+            return new ResponseEntity<>(ErrorMessage.NONE_EXIST_ID.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(ErrorMessage.INVALID_REQUEST_PARAMETER.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        Long postId = postService.savePost(postRequestSaveDto);
+        // Todo: 현재 로그인 한 Principal 유저 정보와 질의를 통해 얻은 User 정보를 비교 후 수정 여부 판단,
+        // 회원 쪽 기능이 구현이 되지 않아 일단 보류
 
-        List<FileSaveRequestDto> fileSaveRequestDto = fileUtils.uploadFiles(postRequestSaveDto.getFiles());
-        fileService.saveFiles(postId, fileSaveRequestDto);
+        postRequestDto.setMemberId(1L); // Todo: Test용 member_id security 되면 지워주세요
+        postRequestDto.setPostId(id);
 
-        return new ResponseEntity<>("success", HttpStatus.OK);
+        return new ResponseEntity(postService.updatePostById(postRequestDto), HttpStatus.OK);
     }
 }

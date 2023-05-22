@@ -1,6 +1,6 @@
 package com.post.service.impl;
 
-import com.post.web.dto.request.PostRequestSaveDto;
+import com.post.web.dto.request.PostRequestDto;
 import com.post.web.dto.resposne.PostResponseDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -59,7 +59,7 @@ class PostServiceImplTest {
     @Order(3)
     void savePost() {
         //given
-        PostRequestSaveDto postRequestSaveDto = PostRequestSaveDto.builder()
+        PostRequestDto postRequestDto = PostRequestDto.builder()
                 .postId(1L)
                 .memberId(1L)
                 .title("제목1")
@@ -68,7 +68,7 @@ class PostServiceImplTest {
                 .build();
 
         //when
-        Long postId = postService.savePost(postRequestSaveDto);
+        Long postId = postService.savePost(postRequestDto);
         PostResponseDto result = postService.getPostById(postId);
 
         //then
