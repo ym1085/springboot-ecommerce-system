@@ -6,10 +6,10 @@ import lombok.Getter;
 /**
  * @author      :   ymkim
  * @since       :   2023. 05. 20
- * @description :   게시글 등록 후 파일 저장 시 사용하는 Dto
+ * @description :   게시글 등록 후 파일 저장 시 사용하는 DTO
  */
 @Getter
-public class FileSaveRequestDto {
+public class FileRequestDto {
     private Long fileId;
     private Long postId;
     private String originalName;
@@ -19,7 +19,7 @@ public class FileSaveRequestDto {
     private String fileType;
 
     @Builder
-    public FileSaveRequestDto(String originalName, String saveName, String filePath, long fileSize, String fileType) {
+    public FileRequestDto(String originalName, String saveName, String filePath, long fileSize, String fileType) {
         this.originalName = originalName;
         this.saveName = saveName;
         this.filePath = filePath;

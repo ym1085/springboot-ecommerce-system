@@ -1,6 +1,6 @@
 package com.post.service.impl;
 
-import com.post.web.dto.request.FileSaveRequestDto;
+import com.post.web.dto.request.FileRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -19,23 +19,23 @@ class FileServiceImplTest {
     @Autowired
     private FileServiceImpl fileService;
 
-    private static List<FileSaveRequestDto> getFileSaveRequestDtoBuilder() {
+    private static List<FileRequestDto> getFileRequestDtoBuilder() {
         return Arrays.asList(
-                FileSaveRequestDto.builder()
+                FileRequestDto.builder()
                         .originalName("file1.jpg")
                         .saveName(UUID.randomUUID().toString() + ".jpg")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpg")
                         .fileSize(1024L)
                         .fileType("jpg")
                         .build(),
-                FileSaveRequestDto.builder()
+                FileRequestDto.builder()
                         .originalName("file2.jpg")
                         .saveName(UUID.randomUUID().toString() + ".png")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".png")
                         .fileSize(1024L)
                         .fileType("png")
                         .build(),
-                FileSaveRequestDto.builder()
+                FileRequestDto.builder()
                         .originalName("file2.jpg")
                         .saveName(UUID.randomUUID().toString() + ".jpeg")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpeg")
@@ -51,10 +51,10 @@ class FileServiceImplTest {
     void testSaveFilesSuccess() {
         //given
         Long postId = 1L;
-        List<FileSaveRequestDto> fileSaveRequestDto = getFileSaveRequestDtoBuilder();
+        List<FileRequestDto> fileRequestDtos = getFileRequestDtoBuilder();
 
         //when
-        fileService.saveFiles(postId, fileSaveRequestDto);
+        fileService.saveFiles(postId, fileRequestDtos);
 
         //then
     }

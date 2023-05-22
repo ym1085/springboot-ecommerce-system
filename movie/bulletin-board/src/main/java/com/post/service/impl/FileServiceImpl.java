@@ -1,8 +1,9 @@
 package com.post.service.impl;
 
+import com.post.constant.ResponseCode;
 import com.post.repository.post.FileMapper;
 import com.post.service.FileService;
-import com.post.web.dto.request.FileSaveRequestDto;
+import com.post.web.dto.request.FileRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +16,16 @@ import java.util.List;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private final FileMapper mapper;
+    private final FileMapper fileMapper;
 
     @Override
-    public void saveFiles(Long postId, List<FileSaveRequestDto> files) {
+    public int saveFiles(Long postId, List<FileRequestDto> files) {
         if (CollectionUtils.isEmpty(files) || postId == null) {
-            return;
+            return ResponseCode.FAIL.getResponseCode();
         }
-        for (FileSaveRequestDto file : files) {
+        for (FileRequestDto file : files) {
             file.setPostId(postId);
         }
-        mapper.saveFiles(files);
+        return fileMapper.saveFiles(files);
     }
 }

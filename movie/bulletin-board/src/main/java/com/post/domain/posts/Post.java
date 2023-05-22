@@ -1,6 +1,6 @@
 package com.post.domain.posts;
 
-import com.post.web.dto.request.PostRequestSaveDto;
+import com.post.web.dto.request.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,11 +24,11 @@ public class Post {
     private LocalDateTime updateDate;
     private LocalDateTime deleteDate;
 
-    /* 글 등록 시 Dto -> VO */
-    public Post(PostRequestSaveDto postRequestSaveDto) {
-        this.memberId = postRequestSaveDto.getMemberId(); // FIXME 나중에는 진짜 회원 번호 가져와서 셋팅
-        this.title = postRequestSaveDto.getTitle();
-        this.content = postRequestSaveDto.getContent();
-        this.fixedYn = postRequestSaveDto.getFixedYn();
+    public Post(PostRequestDto postRequestDto) {
+        this.postId = postRequestDto.getPostId();
+        this.memberId = postRequestDto.getMemberId();
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
+        this.fixedYn = postRequestDto.getFixedYn();
     }
 }

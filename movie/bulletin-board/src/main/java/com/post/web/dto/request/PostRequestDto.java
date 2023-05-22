@@ -2,6 +2,7 @@ package com.post.web.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
@@ -12,12 +13,13 @@ import java.util.List;
 /**
  * @author      :   ymkim
  * @since       :   2023. 05. 20
- * @description :   게시글 조회시 사용되는 Dto
+ * @description :   게시글 조회, 수정, 삭제에 사용되는 DTO
  */
 @Getter
-public class PostRequestSaveDto {
+@Setter // setter 지우자..
+public class PostRequestDto {
     private Long postId;
-    private Long memberId = 1L; //FIXME TEST용으로 1L 회원 번호 넣어놨음, 나중에 지워주세요
+    private Long memberId;
 
     @NotEmpty
     @Size(max = 20)
@@ -33,7 +35,7 @@ public class PostRequestSaveDto {
     private List<MultipartFile> files = new ArrayList<>();
 
     @Builder
-    public PostRequestSaveDto(Long postId, Long memberId, String title, String content, String fixedYn) {
+    public PostRequestDto(Long postId, Long memberId, String title, String content, String fixedYn) {
         this.postId = postId;
         this.memberId = memberId;
         this.title = title;
