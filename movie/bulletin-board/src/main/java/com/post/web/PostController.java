@@ -41,7 +41,6 @@ public class PostController {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(ErrorMessage.INVALID_ARGUMENTS_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        postRequestSaveDto.setMemberId(1L); // FIXME: spring security 구현 후 지워야함
 
         Long postId = postService.savePost(postRequestSaveDto);
 
