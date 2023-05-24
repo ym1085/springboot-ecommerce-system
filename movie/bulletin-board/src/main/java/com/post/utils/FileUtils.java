@@ -2,18 +2,20 @@ package com.post.utils;
 
 import com.post.constant.FileExtension;
 import com.post.web.dto.request.FileRequestDto;
+import com.post.web.dto.resposne.FileResponseDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,13 +28,15 @@ import java.util.UUID;
 @Component // -> Bean Scan
 public class FileUtils {
 
-    private static final List<String> fileExtensions = Arrays.asList(
-            FileExtension.JPG.getExtension(),
-            FileExtension.JPEG.getExtension(),
-            FileExtension.PNG.getExtension()
-    );
+    @Value("${upload.directory}")
+    private String uploadPath;
 
-    private static final String uploadPath = Paths.get("C:", "movie", "upload-files").toString();
+    // -> Initialize IOC Container -> Create Beans -> Relationships beans -> Call initialized call back method
+    @PostConstruct
+    public void init() {
+        uploadPath = Paths.get(uploadPath).toString();
+        log.trace("FileUtils init, file upload path -> {}", this.uploadPath);
+    }
 
     /**
      * 다중 파일 업로드
@@ -135,9 +139,42 @@ public class FileUtils {
     }
 
     /**
-     * 파일 확장자 체크
+     * 파일 확장자 체크 - enum 순회하면서 체크
      */
     private boolean validateFileExtension(String ext) {
-        return fileExtensions.contains(ext);
+        return FileExtension.isAcceptFileExtension(ext);
+    }
+
+    /**
+     * 파일 삭제 (게시글 수정, 삭제에서 사용)
+     * @param fileResponseDtos
+     */
+    public void deleteFiles(List<FileResponseDto> fileResponseDtos) {
+        for (int i = 0; i < fileResponseDtos.size(); i++) {
+            File deletedFile = new File(fileResponseDtos.get(i).getFilePath());
+            if (isExistsFile(deletedFile) && isDeletedFile(deletedFile)) { // 파일 존재하고 파일 삭제된 경우
+                log.info("success to delete file[{}] = {}", i, deletedFile.getPath());
+            } else {
+                log.info("fail to delete file = {}", deletedFile.getPath());
+            }
+        }
+    }
+
+    /**
+     * 특정 경로에 파일이 존재하는지 확인
+     * @param file
+     * @return
+     */
+    private boolean isExistsFile(File file) {
+        return file.exists();
+    }
+
+    /**
+     * 특정 경로에 존재하는 파일 삭제
+     * @param file
+     * @return
+     */
+    private boolean isDeletedFile(File file) {
+        return file.delete();
     }
 }

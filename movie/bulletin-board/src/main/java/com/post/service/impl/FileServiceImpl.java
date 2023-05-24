@@ -12,13 +12,13 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
-@Transactional
 @RequiredArgsConstructor
 @Service
 public class FileServiceImpl implements FileService {
 
     private final FileMapper fileMapper;
 
+    @Transactional
     @Override
     public int saveFiles(Long postId, List<FileRequestDto> files) {
         if (CollectionUtils.isEmpty(files) || postId == null) {
@@ -30,6 +30,7 @@ public class FileServiceImpl implements FileService {
         return fileMapper.saveFiles(files);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<File> getFiles(Long postId) {
         return fileMapper.getFiles(postId);

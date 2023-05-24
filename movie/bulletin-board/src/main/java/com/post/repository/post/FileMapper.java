@@ -15,4 +15,6 @@ public interface FileMapper {
 
     List<File> getFiles(Long postId);
 
+    int deleteUpdateFilesById(Long postId);
+
 }

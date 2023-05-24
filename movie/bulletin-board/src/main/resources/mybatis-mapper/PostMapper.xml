@@ -17,7 +17,8 @@
             p.create_date,
             p.update_date,
             p.delete_date
-        FROM post p;
+        FROM post p
+        WHERE p.del_yn != 'Y'
     </select>
 
     <!-- 단일 게시글 조회 -->
@@ -35,6 +36,7 @@
             p.delete_date
         FROM post p
         WHERE p.post_id = #{postId}
+        AND p.del_yn != 'Y'
     </select>
 
     <!-- 게시글 등록 -->
@@ -54,5 +56,14 @@
             post_id = #{postId}
         AND
             member_id = #{memberId}
+    </update>
+
+    <!-- 게시글 삭제 -->
+    <update id="deletePostById" parameterType="com.post.domain.posts.Post" useGeneratedKeys="true" keyProperty="postId">
+        UPDATE post
+        SET
+            del_yn = 'Y',
+            delete_date = NOW()
+        WHERE post_id = #{postId}
     </update>
 </mapper>

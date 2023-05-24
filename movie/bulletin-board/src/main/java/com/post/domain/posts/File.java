@@ -20,6 +20,7 @@ public class File {
     private String fileSize;
     private String fileType;
     private int downloadCnt;
+    private String delYn;
     private LocalDateTime createDate;
     private LocalDateTime deleteDate;
 }

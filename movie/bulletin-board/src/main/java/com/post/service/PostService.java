@@ -14,4 +14,6 @@ public interface PostService {
     Long savePost(PostRequestDto postRequestDto);
 
     int uploadPost(PostRequestDto postRequestDto);
+
+    int deletePost(long postId);
 }
