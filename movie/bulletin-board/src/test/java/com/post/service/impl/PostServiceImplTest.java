@@ -23,6 +23,9 @@ class PostServiceImplTest {
     @Autowired
     PostServiceImpl postService;
 
+    @Autowired
+    private FileServiceImpl fileService;
+
     @Test
     @DisplayName("전체 게시글 조회 테스트")
     @Order(1)

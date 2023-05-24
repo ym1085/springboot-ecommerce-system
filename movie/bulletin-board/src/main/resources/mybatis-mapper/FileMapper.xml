@@ -38,4 +38,21 @@
     <update id="deleteFilesById" parameterType="long">
         DELETE FROM file f WHERE f.post_id = #{postId}
     </update>
+
+    <!-- 파일 조회 -->
+    <select id="getFiles" parameterType="long" resultType="com.post.domain.posts.File">
+        SELECT
+            file_id
+             , post_id
+             , original_name
+             , save_name
+             , file_path
+             , file_size
+             , file_type
+             , download_cnt
+             , create_date
+             , delete_date
+        FROM file f
+        WHERE f.post_id = #{postId}
+    </select>
 </mapper>

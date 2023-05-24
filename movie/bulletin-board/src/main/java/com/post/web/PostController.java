@@ -4,13 +4,11 @@ import com.post.constant.ErrorMessage;
 import com.post.constant.ResponseCode;
 import com.post.service.FileService;
 import com.post.service.PostService;
-import com.post.utils.CommonUtils;
 import com.post.utils.FileUtils;
 import com.post.web.dto.request.FileRequestDto;
 import com.post.web.dto.request.PostRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -57,11 +56,9 @@ public class PostController {
     public ResponseEntity uploadPost(@PathVariable("id") Long id,
                                      @Valid @ModelAttribute PostRequestDto postRequestDto,
                                      BindingResult bindingResult) {
-        if (StringUtils.isBlank(String.valueOf(id)) || !CommonUtils.isNumericPattern(id)) {
-            return new ResponseEntity<>(ErrorMessage.NONE_EXIST_ID.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(ErrorMessage.INVALID_REQUEST_PARAMETER.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage(), HttpStatus.BAD_REQUEST);
         }
 
         // Todo: 현재 로그인 한 Principal 유저 정보와 질의를 통해 얻은 User 정보를 비교 후 수정 여부 판단,
@@ -70,6 +67,6 @@ public class PostController {
         postRequestDto.setMemberId(1L); // Todo: Test용 member_id security 되면 지워주세요
         postRequestDto.setPostId(id);
 
-        return new ResponseEntity(postService.updatePostById(postRequestDto), HttpStatus.OK);
+        return new ResponseEntity(postService.uploadPost(postRequestDto), HttpStatus.OK);
     }
 }
