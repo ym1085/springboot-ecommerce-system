@@ -27,3 +27,7 @@ spring:
 logging:
   level:
     com.post: DEBUG
+
+# upload path - dev
+upload:
+  directory: C:/movie/upload-files

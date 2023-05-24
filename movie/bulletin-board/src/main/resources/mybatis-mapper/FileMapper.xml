@@ -15,6 +15,7 @@
             , file_size
             , file_type
             , download_cnt
+            , del_yn
             , create_date
             , delete_date
         ) VALUES
@@ -28,13 +29,17 @@
                 , #{file.fileSize}
                 , #{file.fileType}
                 , 0
+                , 'N'
                 , NOW()
                 , NULL
             )
         </foreach>
     </insert>
 
-    <!-- 파일 삭제 -->
+    <!--
+        파일 삭제 > 게시글 수정 시 클라이언트가 올린 파일이 있으면 기존 파일은 전부 삭제 후 다시 저장
+        트랜잭션 단위에서 수행을 하기에 괜찮을 것 같음
+    -->
     <update id="deleteFilesById" parameterType="long">
         DELETE FROM file f WHERE f.post_id = #{postId}
     </update>
@@ -50,9 +55,20 @@
              , file_size
              , file_type
              , download_cnt
+             , del_yn
              , create_date
              , delete_date
         FROM file f
         WHERE f.post_id = #{postId}
+        AND f.del_yn = 'N'
     </select>
+
+    <!-- 게시글 삭제 시 연관되어 있는 파일 삭제('Y') -->
+    <update id="deleteUpdateFilesById" parameterType="long">
+        UPDATE file f
+        SET
+            f.del_yn = 'Y',
+            f.delete_date = NOW()
+        WHERE f.post_id = #{postId}
+    </update>
 </mapper>

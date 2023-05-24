@@ -25,3 +25,7 @@ spring:
 logging:
   level:
     com.post: DEBUG
+
+# upload path - prod Linux
+upload:
+  directory: /var/www/upload-files

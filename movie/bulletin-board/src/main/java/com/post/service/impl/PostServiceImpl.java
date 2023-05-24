@@ -8,11 +8,13 @@ import com.post.service.PostService;
 import com.post.utils.FileUtils;
 import com.post.web.dto.request.FileRequestDto;
 import com.post.web.dto.request.PostRequestDto;
+import com.post.web.dto.resposne.FileResponseDto;
 import com.post.web.dto.resposne.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -20,7 +22,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 @Service
 public class PostServiceImpl implements PostService {
@@ -47,6 +48,7 @@ public class PostServiceImpl implements PostService {
                 .orElse(new PostResponseDto());
     }
 
+    @Transactional
     @Override
     public Long savePost(PostRequestDto postRequestDto) {
         Post post = new Post(postRequestDto);
@@ -54,6 +56,12 @@ public class PostServiceImpl implements PostService {
         return post.getPostId();
     }
 
+    /**
+     * Todo: 파일 수정 부분은 기존 파일 지우고, 사용자가 올린 파일 다시 올리는데 변경 필요할 것 같음
+     * @param postRequestDto
+     * @return
+     */
+    @Transactional
     @Override
     public int uploadPost(PostRequestDto postRequestDto) {
         Long successId = postMapper.updatePostById(new Post(postRequestDto));
@@ -69,6 +77,9 @@ public class PostServiceImpl implements PostService {
         if (!isFileSizeOverThanZero(files)) {
             return ResponseCode.FAIL.getResponseCode();
         }
+
+        List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
+        fileUtils.deleteFiles(fileResponseDtos);
 
         int successId = fileMapper.deleteFilesById(postId);
         if (successId == 0) {
@@ -89,5 +100,33 @@ public class PostServiceImpl implements PostService {
         fileRequestDtos.stream()
                 .filter(Objects::nonNull)
                 .forEach(fileRequestDto -> fileRequestDto.setPostId(postId));
+    }
+
+    @Transactional
+    @Override
+    public int deletePost(long postId) {
+        Long deletedPostId = postMapper.deletePostById(postId);
+        log.debug("deletedPostId = {}", deletedPostId);
+        if (deletedPostId == 0) {
+            return ResponseCode.FAIL.getResponseCode();
+        }
+
+        List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
+
+        // empty라는 것은 해당 게시글에 매핑된 파일이 없다는 의미
+        // 게시글 삭제 성공으로 판단 후 성공 코드 반환
+        if (CollectionUtils.isEmpty(fileResponseDtos)) {
+            return ResponseCode.SUCCESS.getResponseCode();
+        }
+
+        fileUtils.deleteFiles(fileResponseDtos);
+        return fileMapper.deleteUpdateFilesById(postId);
+    }
+
+    private List<FileResponseDto> getFileResponseDtos(long postId) {
+        return fileMapper.getFiles(postId).stream()
+                .filter(Objects::nonNull)
+                .map(file -> new FileResponseDto(file))
+                .collect(Collectors.toList());
     }
 }

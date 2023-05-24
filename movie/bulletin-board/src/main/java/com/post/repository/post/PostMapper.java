@@ -17,4 +17,6 @@ public interface PostMapper {
 
     Long updatePostById(Post post);
 
+    Long deletePostById(long postId);
+
 }

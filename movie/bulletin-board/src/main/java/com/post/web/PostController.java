@@ -67,6 +67,11 @@ public class PostController {
         postRequestDto.setMemberId(1L); // Todo: Test용 member_id security 되면 지워주세요
         postRequestDto.setPostId(id);
 
-        return new ResponseEntity(postService.uploadPost(postRequestDto), HttpStatus.OK);
+        return new ResponseEntity<>(postService.uploadPost(postRequestDto), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/post/{id}")
+    public ResponseEntity deletePost(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(postService.deletePost(id), HttpStatus.OK);
     }
 }
