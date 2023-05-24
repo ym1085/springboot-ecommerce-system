@@ -21,17 +21,15 @@ public class PostRequestDto {
     private Long postId;
     private Long memberId;
 
-    @NotEmpty
-    @Size(max = 20)
+    @NotEmpty(message = "제목은 반드시 입력되어야 합니다. 다시 한번 시도해주세요.")
+    @Size(max = 20, message = "제목은 20자를 초과할 수 없습니다. 다시 한번 시도해주세요.")
     private String title;
 
-    @NotEmpty
-    @Size(max = 250)
+    @NotEmpty(message = "내용은 반드시 입력되어야 합니다. 다시 한번 시도해주세요.")
+    @Size(max = 250, message = "내용은 250자를 초과할 수 없습니다. 다시 한번 시도해주세요.")
     private String content;
 
-    @NotEmpty
     private String fixedYn;
-
     private List<MultipartFile> files = new ArrayList<>();
 
     @Builder

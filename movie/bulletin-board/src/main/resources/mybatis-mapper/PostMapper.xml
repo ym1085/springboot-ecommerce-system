@@ -43,6 +43,7 @@
         VALUE  (#{memberId}, #{title}, #{content}, #{fixedYn})
     </insert>
 
+    <!-- 게시글 수정 -->
     <update id="updatePostById" parameterType="com.post.domain.posts.Post">
         UPDATE post
         SET

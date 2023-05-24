@@ -1,6 +1,7 @@
 package com.post.service.impl;
 
 import com.post.constant.ResponseCode;
+import com.post.domain.posts.File;
 import com.post.repository.post.FileMapper;
 import com.post.service.FileService;
 import com.post.web.dto.request.FileRequestDto;
@@ -27,5 +28,10 @@ public class FileServiceImpl implements FileService {
             file.setPostId(postId);
         }
         return fileMapper.saveFiles(files);
+    }
+
+    @Override
+    public List<File> getFiles(Long postId) {
+        return fileMapper.getFiles(postId);
     }
 }

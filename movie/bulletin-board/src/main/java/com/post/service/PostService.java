@@ -13,5 +13,5 @@ public interface PostService {
 
     Long savePost(PostRequestDto postRequestDto);
 
-    int updatePostById(PostRequestDto postRequestDto);
+    int uploadPost(PostRequestDto postRequestDto);
 }

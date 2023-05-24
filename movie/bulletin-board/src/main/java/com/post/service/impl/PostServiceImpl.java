@@ -55,7 +55,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public int updatePostById(PostRequestDto postRequestDto) {
+    public int uploadPost(PostRequestDto postRequestDto) {
         Long successId = postMapper.updatePostById(new Post(postRequestDto));
         if (successId == null || successId == 0) {
             return ResponseCode.FAIL.getResponseCode();
