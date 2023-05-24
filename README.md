@@ -1,4 +1,4 @@
-# Search Movie System with Bulletin Board
+# Search System with Bulletin Board
 
 ---
 
