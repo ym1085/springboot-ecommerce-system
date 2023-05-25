@@ -1,6 +1,8 @@
 package com.post.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.post.repository.post.FileMapper;
+import com.post.repository.post.PostMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -29,6 +32,12 @@ class PostControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private PostMapper postMapper;
+
+    @Autowired
+    private FileMapper fileMapper;
 
     @Test
     @DisplayName("전체 게시글 조회 API")
@@ -184,5 +193,24 @@ class PostControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(content().string(containsString("내용은 250자를 초과할 수 없습니다.")));
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 API 테스트")
+    void deletePost() throws Exception {
+        //given
+
+        //when
+        ResultActions result = mockMvc.perform(
+                delete("/post/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        result.andExpect(status().isOk())
+                .andDo(print());
+
+        assertThat(postMapper.getPostById(1L)).isEmpty();
+        assertThat(fileMapper.getFiles(1L)).isEmpty();
     }
 }
