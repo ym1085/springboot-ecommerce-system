@@ -1,10 +1,11 @@
 package com.post.service.impl;
 
 import com.post.constant.ResponseCode;
-import com.post.domain.posts.File;
+import com.post.domain.posts.Files;
 import com.post.repository.post.FileMapper;
 import com.post.service.FileService;
 import com.post.web.dto.request.FileRequestDto;
+import com.post.web.dto.resposne.FileResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,14 @@ public class FileServiceImpl implements FileService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<File> getFiles(Long postId) {
-        return fileMapper.getFiles(postId);
+    public FileResponseDto getFileById(Long fileId) {
+        Files files = fileMapper.getFileById(fileId).orElseGet(() -> new Files());
+        FileResponseDto fileResponseDto = new FileResponseDto(files);
+        return fileResponseDto;
+    }
+
+    @Override
+    public void increaseDownloadCnt(Long fileId) {
+        fileMapper.increaseDownloadCnt(fileId);
     }
 }

@@ -177,4 +177,12 @@ public class FileUtils {
     private boolean isDeletedFile(File file) {
         return file.delete();
     }
+
+    /**
+     * 파일 서브 디렉토리 경로 반환 -> 230502 -> yyMMdd
+     * @return
+     */
+    public String getFileDirPathByDateTime() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
+    }
 }

@@ -1,8 +1,10 @@
 package com.post.web.dto.resposne;
 
-import com.post.domain.posts.File;
+import com.post.domain.posts.Files;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -16,8 +18,10 @@ public class FileResponseDto {
     private String fileType;
     private int downloadCnt;
     private String delYn;
+    private LocalDateTime createDate;
+    private LocalDateTime deleteDate;
 
-    public FileResponseDto(File file) {
+    public FileResponseDto(Files file) {
         this.fileId = file.getFileId();
         this.postId = file.getPostId();
         this.originalName = file.getOriginalName();
@@ -27,5 +31,7 @@ public class FileResponseDto {
         this.fileType = file.getFileType();
         this.downloadCnt = file.getDownloadCnt();
         this.delYn = file.getDelYn();
+        this.createDate = file.getCreateDate();
+        this.deleteDate = file.getDeleteDate();
     }
 }

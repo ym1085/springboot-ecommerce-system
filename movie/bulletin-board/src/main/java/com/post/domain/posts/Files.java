@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class File {
+public class Files {
     private Long fileId;
     private Long postId;
     private String originalName;
