@@ -9,6 +9,8 @@ public interface FileService {
 
     int saveFiles(Long postId, List<FileRequestDto> fileRequestDtos);
 
+    List<FileResponseDto> getFiles(Long postId);
+
     FileResponseDto getFileById(Long fileId);
 
     void increaseDownloadCnt(Long fileId);

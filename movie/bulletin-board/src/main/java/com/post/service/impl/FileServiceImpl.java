@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -29,6 +31,14 @@ public class FileServiceImpl implements FileService {
             file.setPostId(postId);
         }
         return fileMapper.saveFiles(files);
+    }
+
+    @Override
+    public List<FileResponseDto> getFiles(Long postId) {
+        return fileMapper.getFiles(postId).stream()
+                .filter(Objects::nonNull)
+                .map(file -> new FileResponseDto(file))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

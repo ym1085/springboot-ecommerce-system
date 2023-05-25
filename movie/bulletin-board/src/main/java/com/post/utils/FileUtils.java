@@ -6,18 +6,23 @@ import com.post.web.dto.resposne.FileResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * @author      :   ymkim
@@ -184,5 +189,28 @@ public class FileUtils {
      */
     public String getFileDirPathByDateTime() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
+    }
+
+    /**
+     * 파일 압축 다운로드
+     * @param os
+     * @param files
+     */
+    public void convertFileToZipFile(OutputStream os, List<File> files) {
+        try (ZipOutputStream zos = new ZipOutputStream(os)) {
+            for (File file : files) {
+                if (file.exists() && file.isFile()) {
+                    ZipEntry zipEntry = new ZipEntry(file.getName());
+                    zos.putNextEntry(zipEntry);
+                    try (FileInputStream fis = new FileInputStream(file)) {
+                        StreamUtils.copy(fis, zos);
+                    }
+                    zos.closeEntry();
+                }
+            }
+        } catch (IOException e) {
+            // Fixme: 기능 동작은 되나 현재 연결은 호스트의... IOException이 나는데 확인이 필요함 -> 기능 동작이 문제가 아님 -> 잠재적 오류 잡아야함
+            log.warn("cannot download file, e = {}", e.getMessage());
+        }
     }
 }
