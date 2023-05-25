@@ -45,7 +45,7 @@
     </update>
 
     <!-- 파일 조회 -->
-    <select id="getFiles" parameterType="long" resultType="com.post.domain.posts.File">
+    <select id="getFiles" parameterType="long" resultType="com.post.domain.posts.Files">
         SELECT
             file_id
              , post_id
@@ -70,5 +70,31 @@
             f.del_yn = 'Y',
             f.delete_date = NOW()
         WHERE f.post_id = #{postId}
+    </update>
+
+    <!-- 단건 파일 조회 -->
+    <select id="getFileById" parameterType="long" resultType="com.post.domain.posts.Files">
+        SELECT
+            file_id
+             , post_id
+             , original_name
+             , save_name
+             , file_path
+             , file_size
+             , file_type
+             , download_cnt
+             , del_yn
+             , create_date
+             , delete_date
+        FROM file f
+        WHERE f.file_id = #{fileId}
+        AND f.del_yn = 'N'
+    </select>
+
+    <!-- 파일 다운로드 수 업데이트 -->
+    <update id="increaseDownloadCnt" parameterType="long">
+        UPDATE file
+        SET download_cnt = download_cnt + 1
+        WHERE file_id = #{fileId}
     </update>
 </mapper>
