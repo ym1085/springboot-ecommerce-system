@@ -2,6 +2,7 @@ package com.post.web.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +16,8 @@ import java.util.List;
  * @since       :   2023. 05. 20
  * @description :   게시글 조회, 수정, 삭제에 사용되는 DTO
  */
+
+@NoArgsConstructor
 @Getter
 @Setter // setter 지우자..
 public class PostRequestDto {
@@ -30,14 +33,18 @@ public class PostRequestDto {
     private String content;
 
     private String fixedYn;
+
     private List<MultipartFile> files = new ArrayList<>();
 
+    private int categoryId;
+
     @Builder
-    public PostRequestDto(Long postId, Long memberId, String title, String content, String fixedYn) {
+    public PostRequestDto(Long postId, Long memberId, String title, String content, String fixedYn, int categoryId) {
         this.postId = postId;
         this.memberId = memberId;
         this.title = title;
         this.content = content;
         this.fixedYn = fixedYn;
+        this.categoryId = categoryId;
     }
 }

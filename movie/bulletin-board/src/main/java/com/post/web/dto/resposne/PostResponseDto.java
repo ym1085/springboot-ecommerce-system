@@ -17,6 +17,9 @@ public class PostResponseDto {
     private Long postId;
     private String title;
     private String content;
+    private int categoryId;
+    private String categoryName;
+    private String writer;
     private int readCnt;
     private String fixedYn;
     private String delYn;
@@ -28,6 +31,9 @@ public class PostResponseDto {
         this.postId = post.getPostId();
         this.title = post.getTitle();
         this.content = post.getContent();
+        this.categoryId = post.getCategoryId();
+        this.categoryName = post.getCategoryName();
+        this.writer = post.getWriter();
         this.readCnt = post.getReadCnt();
         this.fixedYn = post.getFixedYn();
         this.delYn = post.getDelYn();

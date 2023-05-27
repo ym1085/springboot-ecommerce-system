@@ -14,6 +14,8 @@ public class SearchRequestDto {
     private String searchType;          // 검색 유형
     private Pagination pagination;      // 페이지네이션 정보
 
+    private int categoryId;
+
     public SearchRequestDto() {
         this.pageNo = 1;
         this.recordSizePerPage = 10;

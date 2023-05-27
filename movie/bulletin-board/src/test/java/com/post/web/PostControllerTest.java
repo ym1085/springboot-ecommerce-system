@@ -3,6 +3,7 @@ package com.post.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.post.repository.post.FileMapper;
 import com.post.repository.post.PostMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -54,11 +55,11 @@ class PostControllerTest {
         //then
         result.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.[0].postId").isNotEmpty())
-                .andExpect(jsonPath("$.[0].postId", equalTo(1)))
-                .andExpect(jsonPath("$.[0].title", equalTo("제목1")))
-                .andExpect(jsonPath("$.[0].content", equalTo("내용1")))
-                .andExpect(jsonPath("$.[0].fixedYn", equalTo("N")));
+                .andExpect(jsonPath("$.data.result[0].postId").isNotEmpty())
+                .andExpect(jsonPath("$.data.result[0].postId", equalTo(1003)))
+                .andExpect(jsonPath("$.data.result[0].title", equalTo("제목1003")))
+                .andExpect(jsonPath("$.data.result[0].content", equalTo("내용1003")))
+                .andExpect(jsonPath("$.data.result[0].fixedYn", equalTo("N")));
     }
 
     @Test
@@ -76,17 +77,17 @@ class PostControllerTest {
         //then
         result.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.postId").isNotEmpty())
-                .andExpect(jsonPath("$.postId", is(1)))
-                .andExpect(jsonPath("$.title", is("제목1")))
-                .andExpect(jsonPath("$.content", is("내용1")))
-                .andExpect(jsonPath("$.fixedYn", is("N")));
+                .andExpect(jsonPath("$.data.postId").isNotEmpty())
+                .andExpect(jsonPath("$.data.postId", is(1)))
+                .andExpect(jsonPath("$.data.title", is("제목1")))
+                .andExpect(jsonPath("$.data.content", is("내용1")))
+                .andExpect(jsonPath("$.data.fixedYn", is("N")));
     }
 
     @Test
     @DisplayName("게시글 등록 API")
     @Order(3)
-    void savePost() throws Exception {
+    void  Post() throws Exception {
         //given
         MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
         paramMap.add("postId", "1");
@@ -125,7 +126,7 @@ class PostControllerTest {
         //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(content().string(containsString("제목은 반드시 입력되어야 합니다")));
+                .andExpect(jsonPath("$.message", Matchers.containsString("제목은 반드시 입력되어야 합니다")));
     }
 
     @Test
@@ -146,7 +147,7 @@ class PostControllerTest {
         //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(content().string(containsString("내용은 반드시 입력되어야 합니다.")));
+                .andExpect(jsonPath("$.message", Matchers.containsString("내용은 반드시 입력되어야 합니다.")));
     }
 
     @Test
@@ -167,7 +168,7 @@ class PostControllerTest {
         //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(content().string(containsString("제목은 20자를 초과할 수 없습니다.")));
+                .andExpect(jsonPath("$.message", Matchers.containsString("제목은 20자를 초과할 수 없습니다.")));
     }
 
     @Test
@@ -192,14 +193,13 @@ class PostControllerTest {
         //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(content().string(containsString("내용은 250자를 초과할 수 없습니다.")));
+                .andExpect(jsonPath("$.message", Matchers.containsString("내용은 250자를 초과할 수 없습니다.")));
     }
 
     @Test
     @DisplayName("게시글 삭제 API 테스트")
     void deletePost() throws Exception {
         //given
-
         //when
         ResultActions result = mockMvc.perform(
                 delete("/post/{id}", 1L)
