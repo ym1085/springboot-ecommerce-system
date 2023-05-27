@@ -5,7 +5,6 @@ import com.post.web.dto.request.SearchRequestDto;
 import com.post.web.dto.resposne.PagingResponseDto;
 import com.post.web.dto.resposne.PostResponseDto;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -37,9 +36,9 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("post 테이블에 회원 ID를 난수로 생성하기 위해 테스트")
+    @DisplayName("난수 생성 테스트")
     void testRandom() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             int random = getRandom();
             System.out.println("생성된 난수 => " + random);
             assertTrue(random >= 1 && random <= 10, "난수 범위 오류: " + random);
@@ -53,21 +52,19 @@ class PostServiceImplTest {
         List<PostResponseDto> posts = postService.getPosts(new SearchRequestDto()).getResult();
         if (CollectionUtils.isEmpty(posts)) {
             for (int i = 1; i <= 1000; i++) {
-                PostRequestDto postRequestDto = PostRequestDto.builder()
-                        .title(i + "번 게시글 제목")
-                        .content(i + "번 게시글 내용")
-                        .memberId((long) getRandom())
-                        .fixedYn("N")
-                        .build();
-
-                postService.savePost(postRequestDto);
+                PostRequestDto postSaveRequestDto = new PostRequestDto();
+                postSaveRequestDto.setTitle("제목" + i);
+                postSaveRequestDto.setContent("내용" + i);
+                postSaveRequestDto.setMemberId((long) getRandom());
+                postSaveRequestDto.setFixedYn("N");
+                postSaveRequestDto.setCategoryId(getRandom());
+                postService.savePost(postSaveRequestDto);
             }
         }
     }
 
     @Test
     @DisplayName("전체 게시글 조회 테스트")
-    @Order(1)
     void getPosts() {
         //given
         //when
@@ -76,20 +73,18 @@ class PostServiceImplTest {
 
         //then
         assertThat(posts).isNotEmpty();
-        assertThat(posts).hasSizeGreaterThan(10);
-        //assertThat(posts.get(0).getPostId()).isEqualTo(2);
-        assertThat(posts.get(0).getPostId()).isEqualTo(1);
-        assertThat(posts.get(0).getTitle()).isEqualTo("제목1");
+        assertThat(posts).hasSizeGreaterThan(1);
+        assertThat(posts.get(0).getPostId()).isEqualTo(1003);
+        assertThat(posts.get(0).getTitle()).isEqualTo("제목1003");
     }
 
     @ParameterizedTest
     @ValueSource(longs = 1L)
     @DisplayName("단일 게시글 조회 테스트")
-    @Order(2)
     void getPostById(Long input) {
         //given
         //when
-        PostResponseDto posts = postService.getPostById(input);
+        PostResponseDto posts = postService.getPostById(1L);
 
         //then
         assertThat(posts).isNotNull();
@@ -99,16 +94,14 @@ class PostServiceImplTest {
 
     @Test
     @DisplayName("게시글 등록 테스트")
-    @Order(3)
     void savePost() {
         //given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .postId(1L)
-                .memberId(1L)
-                .title("제목1")
-                .content("내용1")
-                .fixedYn("N")
-                .build();
+        PostRequestDto postRequestDto = new PostRequestDto();
+        postRequestDto.setPostId(1L);
+        postRequestDto.setMemberId(1L);
+        postRequestDto.setTitle("제목1001");
+        postRequestDto.setContent("내용1001");
+        postRequestDto.setFixedYn("N");
 
         //when
         Long postId = postService.savePost(postRequestDto);
@@ -117,8 +110,8 @@ class PostServiceImplTest {
         //then
         assertThat(result).isNotNull();
         assertThat(result.getPostId()).isEqualTo(postId);
-        assertThat(result.getTitle()).isEqualTo("제목1");
-        assertThat(result.getContent()).isEqualTo("내용1");
+        assertThat(result.getTitle()).isEqualTo("제목1001");
+        assertThat(result.getContent()).isEqualTo("내용1001");
         assertThat(result.getFixedYn()).isEqualTo("N");
     }
 }

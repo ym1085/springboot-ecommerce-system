@@ -17,6 +17,9 @@ public class Post {
     private Long memberId;
     private String title;
     private String content;
+    private int categoryId;
+    private String categoryName;
+    private String writer;
     private int readCnt;
     private String fixedYn;
     private String delYn;
@@ -29,6 +32,7 @@ public class Post {
         this.memberId = postRequestDto.getMemberId();
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+        this.categoryId = postRequestDto.getCategoryId();
         this.fixedYn = postRequestDto.getFixedYn();
     }
 }

@@ -69,7 +69,7 @@ public class FileUtils {
         String originalFilename = multipartFile.getOriginalFilename();
         String ext = getFileExtensionByOriginalFileName(originalFilename);
         if (!validateFileExtension(ext)) {
-             return null; // 앞 단에서 검증 했다는 가정하에, 다른 확장자가 들어온다는 것은 유저가 악의적으로 뚫었다고 가정
+            return null; // 앞 단에서 검증 했다는 가정하에, 다른 확장자가 들어온다는 것은 유저가 악의적으로 뚫었다고 가정
         }
 
         String saveFileName = createSaveFileName(originalFilename);

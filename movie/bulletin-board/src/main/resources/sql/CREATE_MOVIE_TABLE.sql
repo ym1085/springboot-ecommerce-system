@@ -28,6 +28,7 @@ CREATE TABLE SOCIAL_MEMBER (
 -- TABLE : MEMBER
 select * from member;
 
+TRUNCATE  MEMBER;
 CREATE TABLE MEMBER (
     member_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(20) NOT NULL COMMENT '회원명',
@@ -46,37 +47,71 @@ CREATE TABLE MEMBER (
 );
 
 -- INSERT INTO MEMBER
+UPDATE MEMBER
+SET name = CASE
+       WHEN account = 'user1' THEN '아이유'
+       WHEN account = 'user2' THEN '장동건'
+       WHEN account = 'user3' THEN '원빈'
+       WHEN account = 'user4' THEN '현빈'
+       WHEN account = 'user5' THEN '김주혁'
+       WHEN account = 'user6' THEN '김종국'
+       WHEN account = 'user7' THEN '아이린'
+       WHEN account = 'user8' THEN '김태희'
+       WHEN account = 'user9' THEN '송혜교'
+       WHEN account = 'user10' THEN '한가인'
+       ELSE name
+END;
+
 INSERT INTO MEMBER (name, account, password, email, phone_number, image_url, birth_date, use_yn, cert_yn, role_id)
 VALUES
-    ('회원1', 'user1', 'password1', 'user1@example.com', '010-1111-1111', NULL, '1993-09-23', 'Y', 'Y', 1),
-    ('회원2', 'user2', 'password2', 'user2@example.com', '010-2222-2222', NULL, '1994-05-15', 'Y', 'N', 2),
-    ('회원3', 'user3', 'password3', 'user3@example.com', '010-3333-3333', NULL, '1995-12-07', 'Y', 'Y', 1),
-    ('회원4', 'user4', 'password4', 'user4@example.com', '010-4444-4444', NULL, '1996-03-29', 'Y', 'N', 3),
-    ('회원5', 'user5', 'password5', 'user5@example.com', '010-5555-5555', NULL, '1997-08-11', 'Y', 'Y', 1),
-    ('회원6', 'user6', 'password6', 'user6@example.com', '010-6666-6666', NULL, '1998-01-03', 'Y', 'N', 2),
-    ('회원7', 'user7', 'password7', 'user7@example.com', '010-7777-7777', NULL, '1999-11-21', 'Y', 'Y', 3),
-    ('회원8', 'user8', 'password8', 'user8@example.com', '010-8888-8888', NULL, '2000-06-14', 'Y', 'N', 1),
-    ('회원9', 'user9', 'password9', 'user9@example.com', '010-9999-9999', NULL, '2001-09-05', 'Y', 'Y', 2),
-    ('회원10', 'user10', 'password10', 'user10@example.com', '010-1010-1010', NULL, '2002-02-27', 'Y', 'N', 3);
+    ('아이유', 'user1', 'password1', 'user1@example.com', '010-1111-1111', NULL, '1993-09-23', 'Y', 'Y', 1),
+    ('장동건', 'user2', 'password2', 'user2@example.com', '010-2222-2222', NULL, '1994-05-15', 'Y', 'N', 2),
+    ('원빈', 'user3', 'password3', 'user3@example.com', '010-3333-3333', NULL, '1995-12-07', 'Y', 'Y', 1),
+    ('현빈', 'user4', 'password4', 'user4@example.com', '010-4444-4444', NULL, '1996-03-29', 'Y', 'N', 3),
+    ('김주혁', 'user5', 'password5', 'user5@example.com', '010-5555-5555', NULL, '1997-08-11', 'Y', 'Y', 1),
+    ('김종국', 'user6', 'password6', 'user6@example.com', '010-6666-6666', NULL, '1998-01-03', 'Y', 'N', 2),
+    ('아이린', 'user7', 'password7', 'user7@example.com', '010-7777-7777', NULL, '1999-11-21', 'Y', 'Y', 3),
+    ('김태희', 'user8', 'password8', 'user8@example.com', '010-8888-8888', NULL, '2000-06-14', 'Y', 'N', 1),
+    ('송혜교', 'user9', 'password9', 'user9@example.com', '010-9999-9999', NULL, '2001-09-05', 'Y', 'Y', 2),
+    ('한가인', 'user10', 'password10', 'user10@example.com', '010-1010-1010', NULL, '2002-02-27', 'Y', 'N', 3);
 
--- TABLE : POST
--- AUTO_INCREMENT Start with 1
--- DELETE FROM post where create_date = '2023-05-20 17:11:53';
+-- TALBE : POST_CATEGORY
+CREATE TABLE CATEGORY (
+    category_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    category_name VARCHAR(100) NOT NULL
+);
+
+INSERT INTO CATEGORY (category_id, category_name)
+VALUES
+    (1, '일상/소통'),
+    (2, '반려/생활'),
+    (3, '운동/헬스'),
+    (4, '연애/사랑'),
+    (5, '상담/문의'),
+    (6, '사주/운세'),
+    (7, '기술/토론'),
+    (8, '여행/만남'),
+    (9, '직장/회사'),
+    (10, '외국인/만남'),
+    (999, '기타');
+
+delete from post where del_yn = 'N';
 ALTER TABLE POST AUTO_INCREMENT = 1;
-SELECT * FROM post;
 
 CREATE TABLE POST (
     post_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(40) NOT NULL COMMENT '제목',
     content NVARCHAR(500) NOT NULL COMMENT '내용',
-    member_id BIGINT(1) NOT NULL COMMENT '작성자 번호',
+    member_id BIGINT NOT NULL COMMENT '작성자 번호',
+    category_id BIGINT NOT NULL COMMENT '서브 카테고리 번호',
     read_cnt INT NOT NULL DEFAULT 0 COMMENT '조회수',
     fixed_yn CHAR(1) DEFAULT 'N' COMMENT '고정글 여부',
     del_yn CHAR(1) DEFAULT 'N' COMMENT '게시글 삭제 여부',
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일',
     delete_date TIMESTAMP COMMENT '삭제일',
-    FOREIGN KEY (member_id) REFERENCES MEMBER(member_id)
+    FOREIGN KEY (member_id) REFERENCES MEMBER(member_id),
+    FOREIGN KEY (category_id) REFERENCES CATEGORY(category_id)
 );
 
 -- INSERT INTO POST

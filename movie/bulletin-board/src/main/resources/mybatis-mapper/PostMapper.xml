@@ -4,6 +4,49 @@
 
 <mapper namespace="com.post.repository.post.PostMapper">
 
+    <sql id="subCategoryId">
+        <if test="subCategoryId != null and subCategoryId != ''">
+        </if>
+    </sql>
+
+    <sql id="search">
+        /* 검색 키워드가 존재하는 경우 */
+        <if test="searchKeyword != null and searchKeyword != ''">
+            <choose>
+                <when test="searchType != null and searchType != '' and 'title'.equals(searchType)">
+                    AND title LIKE CONCAT('%', #{searchKeyword}, '%')
+                </when>
+                <when test="searchType != null and searchType != '' and 'content'.equals(searchType)">
+                    AND content LIKE CONCAT('%', #{searchKeyword}, '%')
+                </when>
+                <when test="searchType != null and searchType != '' and 'writer'.equals(searchType)">
+                    AND EXISTS (
+                        SELECT 1
+                        FROM member m
+                        WHERE m.member_id = p.member_id
+                        AND m.use_yn = 'Y'
+                        AND m.cert_yn = 'Y'
+                        AND m.name LIKE CONCAT('%', #{searchKeyword}, '%')
+                    )
+                </when>
+                <otherwise>
+                    AND (
+                        title LIKE CONCAT('%', #{searchKeyword}, '%')
+                        OR content LIKE CONCAT('%', #{searchKeyword}, '%')
+                        OR EXISTS (
+                            SELECT 1
+                            FROM member m
+                            WHERE m.member_id = p.member_id
+                            AND m.use_yn = 'Y'
+                            AND m.cert_yn = 'Y'
+                            AND m.name LIKE CONCAT('%', #{searchKeyword}, '%')
+                        )
+                    )
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
+
     <!-- 전체 게시글 조회 -->
     <!--
         Mybatis에서 쿼리의 parameterType이 클래스의 객체인 경우, XML Mapper의 #{parameter}
@@ -14,31 +57,49 @@
             p.post_id,
             p.title,
             p.content,
-            p.member_id,
+            (SELECT m.name
+                FROM member m
+                WHERE m.member_id = p.member_id
+                AND m.use_yn = 'Y'
+                AND m.cert_yn = 'Y') AS writer,
+            p.category_id,
+            (SELECT c.category_name FROM category c where c.category_id = p.category_id) AS categoryName,
             p.read_cnt,
-            p.fixed_yn,
+            p.fixed_yn, /* Y, N */
             p.del_yn,
             p.create_date,
             p.update_date,
             p.delete_date
         FROM post p
         WHERE p.del_yn != 'Y'
+            <include refid="search" />
         ORDER BY p.post_id desc
         LIMIT #{pagination.limitStart}, #{recordSizePerPage} /* 조회 데이터 시작 위치(0부터 시작), 페이지 당 가져올 데이터 갯수 */
     </select>
 
     <!-- 게시글 수 카운팅 -->
     <select id="count" parameterType="com.post.web.dto.request.SearchRequestDto" resultType="int">
-        SELECT COUNT(*) FROM post p WHERE p.del_yn = 'N'
+        SELECT COUNT(*)
+        FROM post p
+        WHERE
+            p.del_yn = 'N'
+            <include refid="search" />
     </select>
 
     <!-- 단일 게시글 조회 -->
-    <select id="getPostById" resultType="com.post.domain.posts.Post">
+    <select id="getPostById" parameterType="long" resultType="com.post.domain.posts.Post">
         SELECT
             p.post_id,
             p.title,
             p.content,
             p.member_id,
+            (SELECT m.name
+                FROM member m
+                WHERE m.member_id = p.member_id
+                AND m.use_yn = 'Y'
+                AND m.cert_yn = 'Y') AS writer,
+            p.category_id,
+            (SELECT c.category_name FROM category c where c.category_id = p.category_id) AS categoryName,
             p.read_cnt,
             p.fixed_yn,
             p.del_yn,
@@ -52,8 +113,22 @@
 
     <!-- 게시글 등록 -->
     <insert id="savePost" parameterType="com.post.domain.posts.Post" useGeneratedKeys="true" keyProperty="postId">
-        INSERT INTO post (member_id, title, content, fixed_yn)
-        VALUE  (#{memberId}, #{title}, #{content}, #{fixedYn})
+        INSERT INTO post (member_id, title, content, fixed_yn, category_id)
+        VALUE
+            (
+                #{memberId},
+                #{title},
+                #{content},
+                #{fixedYn},
+                <choose>
+                    <when test="categoryId != null and categoryId != ''">
+                        #{categoryId}
+                    </when>
+                    <otherwise>
+                        '999'
+                    </otherwise>
+                </choose>
+            )
     </insert>
 
     <!-- 게시글 수정 -->
