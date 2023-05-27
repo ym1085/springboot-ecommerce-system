@@ -1,13 +1,13 @@
 package com.post.service;
 
 import com.post.web.dto.request.PostRequestDto;
+import com.post.web.dto.request.SearchRequestDto;
+import com.post.web.dto.resposne.PagingResponseDto;
 import com.post.web.dto.resposne.PostResponseDto;
-
-import java.util.List;
 
 public interface PostService {
 
-    List<PostResponseDto> getPosts();
+    PagingResponseDto<PostResponseDto> getPosts(SearchRequestDto searchRequestDto);
 
     PostResponseDto getPostById(Long postId);
 

@@ -5,7 +5,11 @@
 <mapper namespace="com.post.repository.post.PostMapper">
 
     <!-- 전체 게시글 조회 -->
-    <select id="getPosts" resultType="com.post.domain.posts.Post">
+    <!--
+        Mybatis에서 쿼리의 parameterType이 클래스의 객체인 경우, XML Mapper의 #{parameter}
+        는 맴버 변수의 getter에 해당. 쉽게 말해 getter를 통해 파라미터 바인딩 수행.
+    -->
+    <select id="getPosts" parameterType="com.post.web.dto.request.SearchRequestDto" resultType="com.post.domain.posts.Post">
         SELECT
             p.post_id,
             p.title,
@@ -19,6 +23,13 @@
             p.delete_date
         FROM post p
         WHERE p.del_yn != 'Y'
+        ORDER BY p.post_id desc
+        LIMIT #{pagination.limitStart}, #{recordSizePerPage} /* 조회 데이터 시작 위치(0부터 시작), 페이지 당 가져올 데이터 갯수 */
+    </select>
+
+    <!-- 게시글 수 카운팅 -->
+    <select id="count" parameterType="com.post.web.dto.request.SearchRequestDto" resultType="int">
+        SELECT COUNT(*) FROM post p WHERE p.del_yn = 'N'
     </select>
 
     <!-- 단일 게시글 조회 -->
