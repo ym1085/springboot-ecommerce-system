@@ -7,6 +7,7 @@ import com.post.service.PostService;
 import com.post.utils.FileUtils;
 import com.post.web.dto.request.FileRequestDto;
 import com.post.web.dto.request.PostRequestDto;
+import com.post.web.dto.request.SearchRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,8 +29,8 @@ public class PostController {
     private final FileService fileService;
 
     @GetMapping(value = "/post")
-    public ResponseEntity getPosts() {
-        return new ResponseEntity<>(postService.getPosts(), HttpStatus.OK);
+    public ResponseEntity getPosts(@ModelAttribute SearchRequestDto searchRequestDto) {
+        return new ResponseEntity<>(postService.getPosts(searchRequestDto), HttpStatus.OK);
     }
 
     @GetMapping(value = "/post/{id}")

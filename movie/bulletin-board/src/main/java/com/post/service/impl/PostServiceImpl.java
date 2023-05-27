@@ -6,9 +6,12 @@ import com.post.repository.post.FileMapper;
 import com.post.repository.post.PostMapper;
 import com.post.service.PostService;
 import com.post.utils.FileUtils;
+import com.post.utils.Pagination;
 import com.post.web.dto.request.FileRequestDto;
 import com.post.web.dto.request.PostRequestDto;
+import com.post.web.dto.request.SearchRequestDto;
 import com.post.web.dto.resposne.FileResponseDto;
+import com.post.web.dto.resposne.PagingResponseDto;
 import com.post.web.dto.resposne.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -32,12 +36,22 @@ public class PostServiceImpl implements PostService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<PostResponseDto> getPosts() {
-        return postMapper.getPosts()
+    public PagingResponseDto<PostResponseDto> getPosts(SearchRequestDto searchRequestDto) {
+        int totalRecordCount = postMapper.count(searchRequestDto);
+        if (totalRecordCount < 1) {
+            return new PagingResponseDto<>(Collections.emptyList(), null);
+        }
+
+        Pagination pagination = new Pagination(totalRecordCount, searchRequestDto);
+        searchRequestDto.setPagination(pagination);
+
+        List<PostResponseDto> posts = postMapper.getPosts(searchRequestDto)
                 .stream()
                 .filter(Objects::nonNull)
                 .map(post -> new PostResponseDto(post))
                 .collect(Collectors.toList());
+
+        return new PagingResponseDto<>(posts, pagination);
     }
 
     @Transactional(readOnly = true)
