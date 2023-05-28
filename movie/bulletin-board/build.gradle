@@ -1,11 +1,57 @@
-//jar {
-//    enabled = true
-//}
-//
-//bootJar {
-//    enabled = false
-//}
+// gradle version 7.6.1
+// https://asciidoctor.org/
+// https://gaemi606.tistory.com/entry/Spring-Boot-REST-Docs-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0
+plugins {
+    // asciidoc파일을 변환해주고, Build폴더에 복사해주는 플러그인
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
+}
+
+configurations {
+    asciidoctorExtensions // dependencies 에서 적용한 것 추가
+    /*compileOnly {
+        extendsFrom annotationProcessor
+    }*/
+}
+
+ext {
+    asciidocVersion = "2.0.6.RELEASE"
+
+    // API에 대한 내용을 만들고 이를 rest docs에 적용하기 위해서는 adoc을 만들어야 함
+    // adoc은 adciidoc의 확장자로 restdocs는 adoc을 테스트 케이스의 req, res 마다 만든다
+    // 그런 adoc 파일 설정에 있어 root 경로가 snippetsDir 경로다
+    snippetsDir = file('build/generated-snippets')
+}
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor:${asciidocVersion}'
+    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${asciidocVersion}"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    // 위에서 작성한 snippetsDir 디렉토리를 test의 output으로 구성하는 설정 -> 스니펫 조각들이 build/generated-snippets로 출력
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+asciidoctor {
+    dependsOn test // gradle build 시 test -> asciidoctor 순으로 수행
+    configurations 'asciidoctorExtensions'
+    inputs.dir snippetsDir // asciidoctor(html 파일 파싱 역할)가 사용할 input 파일 위치 지정
+}
+
+bootJar {
+    // 프로젝트를 jar로 만들 때 restdocs가 해당 jar 파일 안에 들어가게끔 하기 위한 부분이다
+    // boot 실행 시 adciidoctor.outputDir에 있는 html 파일을 BOOT-INF/classes/static/docs의 경로 아래로 복사하는 역할 수행
+    dependsOn asciidoctor
+    copy {
+        from "${asciidoctor.outputDir}"
+        into 'src/main/resources/static/docs'    // /static/docs로 복사!
+    }
 }
