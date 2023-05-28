@@ -30,6 +30,7 @@ import java.util.Objects;
  */
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping(value = "/api/v1")
 @RestController
 public class PostApiController {
 

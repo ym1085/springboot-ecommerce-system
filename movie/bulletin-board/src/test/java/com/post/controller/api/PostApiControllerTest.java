@@ -1,4 +1,4 @@
-package com.post.web;
+package com.post.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.post.repository.post.FileMapper;
@@ -18,15 +18,17 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest
-class PostControllerTest {
+class PostApiControllerTest {
 
     @Autowired
     private ObjectMapper mapper;
@@ -47,7 +49,7 @@ class PostControllerTest {
         //given
         //when
         ResultActions result = mockMvc.perform(
-                get("/post")
+                get("/api/v1/post")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -69,7 +71,7 @@ class PostControllerTest {
         //given
         //when
         ResultActions result = mockMvc.perform(
-                get("/post/1")
+                get("/api/v1/post/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -98,7 +100,7 @@ class PostControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                post("/post")
+                post("/api/v1/post")
                         .contentType(MediaType.APPLICATION_JSON)
                         .params(paramMap)
         );
@@ -115,7 +117,7 @@ class PostControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                put("/post/{id}", 1L)
+                put("/api/v1/post/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("title", "")
                         .param("content", "내용1")
@@ -136,7 +138,7 @@ class PostControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                put("/post/{id}", 1L)
+                put("/api/v1/post/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("title", "제목1")
                         .param("content", "")
@@ -157,7 +159,7 @@ class PostControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                put("/post/{id}", 1L)
+                put("/api/v1/post/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("title", "제목1제목1제목1제목1제목1제목1제목1")
                         .param("content", "내용1")
@@ -182,7 +184,7 @@ class PostControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                put("/post/{id}", 1L)
+                put("/api/v1/post/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("title", "제목1")
                         .param("content", sb.toString())
@@ -202,7 +204,7 @@ class PostControllerTest {
         //given
         //when
         ResultActions result = mockMvc.perform(
-                delete("/post/{id}", 1L)
+                delete("/api/v1/post/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
