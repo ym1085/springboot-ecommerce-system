@@ -56,4 +56,30 @@
             comment_id ASC; -- 자식 기준 오름차순 정렬
     </select>
 
+    <!-- 댓글 정보 존재 여부 반환 -->
+    <select id="getCommentCountById" parameterType="long" resultType="int">
+        SELECT COUNT(1) FROM comment WHERE comment_id = #{commentId}
+    </select>
+
+    <!-- 댓글 정보 저장 -->
+    <insert id="saveComment" parameterType="com.post.domain.posts.Comment">
+        INSERT INTO comment(
+            parent_id
+            , post_id
+            , content
+            , member_id
+            , del_yn
+            , create_date
+            , update_date
+        ) VALUES
+        (
+            #{parentId}
+            , #{postId}
+            , #{content}
+            , #{memberId}
+            , 'N'
+            , NOW()
+            , NOW()
+        )
+    </insert>
 </mapper>
