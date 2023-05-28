@@ -299,6 +299,8 @@ INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date
 VALUES (1, 20, '첫 번째 댓글의 첫 번째 대댓글', 2, 'N', NOW(), NOW());
 INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
 VALUES (1, 20, '첫 번째 댓글의 두 번째 대댓글', 3, 'N', NOW(), NOW());
+INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
+VALUES (2, 20, '첫 번째 댓글의 첫 번째 댓글의 대댓글', 3, 'N', NOW(), NOW());
 
 INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
 VALUES (NULL, 20, '두 번째 댓글', 4, 'N', NOW(), NOW());
