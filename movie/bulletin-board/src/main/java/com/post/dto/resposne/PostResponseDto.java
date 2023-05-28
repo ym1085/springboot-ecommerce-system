@@ -1,10 +1,11 @@
-package com.post.web.dto.resposne;
+package com.post.dto.resposne;
 
 import com.post.domain.posts.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author      :   ymkim
@@ -26,6 +27,7 @@ public class PostResponseDto {
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
     private LocalDateTime deleteDate;
+    private List<CommentResponseDto> comments;
 
     public PostResponseDto(Post post) {
         this.postId = post.getPostId();
@@ -40,5 +42,9 @@ public class PostResponseDto {
         this.createDate = post.getCreateDate();
         this.updateDate = post.getUpdateDate();
         this.deleteDate = post.getDeleteDate();
+    }
+
+    public void addComments(List<CommentResponseDto> commentResponseDto) {
+        this.comments = commentResponseDto;
     }
 }

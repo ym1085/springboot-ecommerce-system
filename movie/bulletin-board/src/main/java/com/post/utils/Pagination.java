@@ -1,6 +1,6 @@
 package com.post.utils;
 
-import com.post.web.dto.request.SearchRequestDto;
+import com.post.dto.request.SearchRequestDto;
 import lombok.Getter;
 
 @Getter

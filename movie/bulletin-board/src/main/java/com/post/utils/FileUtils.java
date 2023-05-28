@@ -1,8 +1,8 @@
 package com.post.utils;
 
 import com.post.constant.FileExtension;
-import com.post.web.dto.request.FileRequestDto;
-import com.post.web.dto.resposne.FileResponseDto;
+import com.post.dto.request.FileRequestDto;
+import com.post.dto.resposne.FileResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

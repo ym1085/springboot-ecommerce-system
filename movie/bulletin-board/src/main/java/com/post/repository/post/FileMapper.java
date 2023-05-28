@@ -1,7 +1,7 @@
 package com.post.repository.post;
 
 import com.post.domain.posts.Files;
-import com.post.web.dto.request.FileRequestDto;
+import com.post.dto.request.FileRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

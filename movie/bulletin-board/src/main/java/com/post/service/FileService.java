@@ -1,7 +1,7 @@
 package com.post.service;
 
-import com.post.web.dto.request.FileRequestDto;
-import com.post.web.dto.resposne.FileResponseDto;
+import com.post.dto.request.FileRequestDto;
+import com.post.dto.resposne.FileResponseDto;
 
 import java.util.List;
 

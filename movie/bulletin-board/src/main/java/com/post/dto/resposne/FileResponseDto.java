@@ -1,4 +1,4 @@
-package com.post.web.dto.resposne;
+package com.post.dto.resposne;
 
 import com.post.domain.posts.Files;
 import lombok.Getter;

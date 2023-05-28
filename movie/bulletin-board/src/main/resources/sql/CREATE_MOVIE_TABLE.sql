@@ -220,17 +220,109 @@ CREATE TABLE POST (
 #     ('제목100', '내용100', 10, 0, 'N', 'N');
 
 -- COMMENT
-CREATE TABLE COMMENT (
-    comment_id INT PRIMARY KEY AUTO_INCREMENT,
+-- Todo: 댓글은 전부 async로 처리한다
+/*CREATE TABLE COMMENT (
+    comment_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '댓글 ID',
     post_id BIGINT COMMENT '게시글 번호',
-    parent_id INT COMMENT '댓글 부모 번호',
+    -- parent_id INT COMMENT '댓글 부모 번호',
     content TEXT COMMENT '댓글 내용',
-    member_id BIGINT NOT NULL COMMENT '회원 번호',
+    member_id BIGINT NOT NULL COMMENT '회원 번호', -- security 에서 정보 받아와서 넣어주는 방향으로 생각중
     del_yn CHAR(1) DEFAULT 'N' COMMENT '댓글 삭제 여부',
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일',
     comment_depth INT DEFAULT 0 COMMENT '댓글의 깊이 (일반 댓글: 0, 대댓글: 1)',
     comment_group INT COMMENT '대댓글인 경우 comment_id값을 저장하여 누구의 대댓글인지 확인',
+    FOREIGN KEY (post_id) REFERENCES POST(post_id),
+    FOREIGN KEY (member_id) REFERENCES MEMBER(member_id)
+);*/
+
+SELECT
+    comment_id,
+    parent_id,
+    post_id,
+    content,
+    member_id,
+    del_yn,
+    create_date,
+    update_date,
+    convert(comment_id, char) as path -- 댓글의 계층 구조를 추적하기 위함 ( path : 1-2-3 || 2-3-4 )
+FROM comment
+WHERE parent_id IS NULL -- 최상위 부모 댓글 의미
+  AND post_id = 20;
+
+WITH recursive parent_comment AS (
+    SELECT
+        comment_id,
+        parent_id,
+        post_id,
+        content,
+        member_id,
+        del_yn,
+        create_date,
+        update_date,
+        convert(comment_id, char) as path -- 댓글의 계층 구조를 추적하기 위함 ( path : 1-2-3 || 2-3-4 )
+    FROM comment
+    WHERE parent_id IS NULL -- 최상위 부모 댓글 의미
+    AND post_id = 20
+    UNION ALL
+    SELECT
+        child_comment.post_id,
+        child_comment.parent_id,
+        child_comment.post_id,
+        child_comment.content,
+        child_comment.member_id,
+        child_comment.del_yn,
+        child_comment.create_date,
+        child_comment.update_date,
+        concat(parent_comment.comment_id, '-', child_comment.comment_id) AS path
+    FROM comment child_comment
+        join parent_comment
+            on child_comment.parent_id = parent_comment.comment_id
+    where child_comment.post_id = 20
+)
+
+SELECT rc.comment_id, rc.parent_id, rc.post_id, rc.content, rc.member_id, rc.del_yn, rc.create_date, rc.update_date, rc.path
+FROM parent_comment rc
+ORDER BY convert(SUBSTRING_INDEX(path, '-', 1), UNSIGNED) ASC,
+         comment_id ASC,
+         convert(SUBSTRING_INDEX(path, '-', 2), UNSIGNED) ASC,
+         comment_id ASC;
+
+select * from comment;
+delete from comment where del_yn = 'N';
+ALTER TABLE comment AUTO_INCREMENT = 1;
+
+# 계층형 대댓글 데이터 생성
+INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
+VALUES (NULL, 20, '첫 번째 댓글', 1, 'N', NOW(), NOW());
+INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
+VALUES (1, 20, '첫 번째 댓글의 첫 번째 대댓글', 2, 'N', NOW(), NOW());
+INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
+VALUES (1, 20, '첫 번째 댓글의 두 번째 대댓글', 3, 'N', NOW(), NOW());
+
+INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
+VALUES (NULL, 20, '두 번째 댓글', 4, 'N', NOW(), NOW());
+INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
+VALUES (4, 20, '두 번째 댓글의 첫 번째 대댓글', 6, 'N', NOW(), NOW());
+INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
+VALUES (4, 20, '두 번째 댓글의 두 번째 대댓글', 7, 'N', NOW(), NOW());
+
+INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
+VALUES (NULL, 20, '세 번째 댓글', 5, 'N', NOW(), NOW());
+INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
+VALUES (7, 20, '세 번째 댓글의 첫 번째 대댓글', 8, 'N', NOW(), NOW());
+INSERT INTO COMMENT (parent_id, post_id, content, member_id, del_yn, create_date, update_date)
+VALUES (7, 20, '세 번째 댓글의 두 번째 대댓글', 9, 'N', NOW(), NOW());
+
+CREATE TABLE COMMENT (
+    comment_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '댓글 ID',
+    parent_id INT UNSIGNED NULL COMMENT '부모 댓글 번호',
+    post_id BIGINT COMMENT '게시글 번호',
+    content TEXT COMMENT '댓글 내용',
+    member_id BIGINT NOT NULL COMMENT '회원 번호', -- security 에서 정보 받아와서 넣어주는 방향으로 생각중
+    del_yn CHAR(1) DEFAULT 'N' COMMENT '댓글 삭제 여부',
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
+    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일',
     FOREIGN KEY (post_id) REFERENCES POST(post_id),
     FOREIGN KEY (member_id) REFERENCES MEMBER(member_id)
 );

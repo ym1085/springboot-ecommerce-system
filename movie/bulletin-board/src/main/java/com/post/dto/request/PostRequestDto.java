@@ -1,4 +1,4 @@
-package com.post.web.dto.request;
+package com.post.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
