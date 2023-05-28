@@ -1,9 +1,9 @@
 package com.post.service;
 
-import com.post.web.dto.request.PostRequestDto;
-import com.post.web.dto.request.SearchRequestDto;
-import com.post.web.dto.resposne.PagingResponseDto;
-import com.post.web.dto.resposne.PostResponseDto;
+import com.post.dto.request.PostRequestDto;
+import com.post.dto.request.SearchRequestDto;
+import com.post.dto.resposne.PagingResponseDto;
+import com.post.dto.resposne.PostResponseDto;
 
 public interface PostService {
 
@@ -13,7 +13,7 @@ public interface PostService {
 
     Long savePost(PostRequestDto postRequestDto);
 
-    int uploadPost(PostRequestDto postRequestDto);
+    int updatePost(PostRequestDto postRequestDto);
 
     int deletePost(long postId);
 }

@@ -1,9 +1,9 @@
 package com.post.service.impl;
 
-import com.post.web.dto.request.PostRequestDto;
-import com.post.web.dto.request.SearchRequestDto;
-import com.post.web.dto.resposne.PagingResponseDto;
-import com.post.web.dto.resposne.PostResponseDto;
+import com.post.dto.request.PostRequestDto;
+import com.post.dto.request.SearchRequestDto;
+import com.post.dto.resposne.PagingResponseDto;
+import com.post.dto.resposne.PostResponseDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

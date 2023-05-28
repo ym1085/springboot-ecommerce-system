@@ -1,6 +1,6 @@
 package com.post.domain.posts;
 
-import com.post.web.dto.request.PostRequestDto;
+import com.post.dto.request.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

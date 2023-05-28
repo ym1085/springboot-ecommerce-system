@@ -1,8 +1,8 @@
-package com.post.web;
+package com.post.controller.web;
 
+import com.post.dto.resposne.FileResponseDto;
 import com.post.service.FileService;
 import com.post.utils.FileUtils;
-import com.post.web.dto.resposne.FileResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -14,9 +14,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestController
+@Controller
 public class FileController {
 
     @Value("${upload.directory}")

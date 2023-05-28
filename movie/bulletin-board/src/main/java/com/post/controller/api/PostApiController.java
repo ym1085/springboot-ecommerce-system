@@ -1,16 +1,18 @@
-package com.post.web;
+package com.post.controller.api;
 
 import com.post.constant.ResponseCode;
 import com.post.constant.StatusEnum;
+import com.post.dto.request.FileRequestDto;
+import com.post.dto.request.PostRequestDto;
+import com.post.dto.request.SearchRequestDto;
+import com.post.dto.resposne.CommentResponseDto;
+import com.post.dto.resposne.Message;
+import com.post.dto.resposne.PagingResponseDto;
+import com.post.dto.resposne.PostResponseDto;
+import com.post.service.CommentService;
 import com.post.service.FileService;
 import com.post.service.PostService;
 import com.post.utils.FileUtils;
-import com.post.web.dto.request.FileRequestDto;
-import com.post.web.dto.request.PostRequestDto;
-import com.post.web.dto.request.SearchRequestDto;
-import com.post.web.dto.resposne.Message;
-import com.post.web.dto.resposne.PagingResponseDto;
-import com.post.web.dto.resposne.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -29,11 +31,12 @@ import java.util.Objects;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class PostController {
+public class PostApiController {
 
     private final PostService postService;
     private final FileUtils fileUtils;
     private final FileService fileService;
+    private final CommentService commentService;
 
     @GetMapping(value = "/post")
     public ResponseEntity getPosts(SearchRequestDto searchRequestDto) {
@@ -45,6 +48,9 @@ public class PostController {
     @GetMapping(value = "/post/{id}")
     public ResponseEntity getPostById(@PathVariable("id") Long id) {
         PostResponseDto post = postService.getPostById(id);
+        List<CommentResponseDto> comments = commentService.getComments(id);
+        post.addComments(comments); // 게시글 번호에 해당하는 대댓글 셋팅 후 같이 내려준다
+
         Message message = new Message<>(StringUtils.isNotBlank(post.getTitle())
                 ? StatusEnum.OK : StatusEnum.INTERNAL_SERVER_ERROR, ResponseCode.SUCCESS.getResponseCode(), post);
         return new ResponseEntity<>(message, HttpStatus.OK);
@@ -67,7 +73,7 @@ public class PostController {
     }
 
     @PutMapping(value = "/post/{id}")
-    public ResponseEntity uploadPost(@PathVariable("id") Long id,
+    public ResponseEntity updatePost(@PathVariable("id") Long id,
                                      @Valid PostRequestDto postRequestDto,
                                      BindingResult bindingResult) {
 
@@ -82,7 +88,7 @@ public class PostController {
         postRequestDto.setMemberId(1L); // Todo: Test용 member_id security 되면 지워주세요
         postRequestDto.setPostId(id);
 
-        return new ResponseEntity<>(new Message<>(StatusEnum.OK, ResponseCode.SUCCESS.getResponseCode(), postService.uploadPost(postRequestDto)), HttpStatus.OK);
+        return new ResponseEntity<>(new Message<>(StatusEnum.OK, ResponseCode.SUCCESS.getResponseCode(), postService.updatePost(postRequestDto)), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/post/{id}")

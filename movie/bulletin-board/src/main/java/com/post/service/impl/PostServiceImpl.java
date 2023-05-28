@@ -2,17 +2,17 @@ package com.post.service.impl;
 
 import com.post.constant.ResponseCode;
 import com.post.domain.posts.Post;
+import com.post.dto.request.FileRequestDto;
+import com.post.dto.request.PostRequestDto;
+import com.post.dto.request.SearchRequestDto;
+import com.post.dto.resposne.FileResponseDto;
+import com.post.dto.resposne.PagingResponseDto;
+import com.post.dto.resposne.PostResponseDto;
 import com.post.repository.post.FileMapper;
 import com.post.repository.post.PostMapper;
 import com.post.service.PostService;
 import com.post.utils.FileUtils;
 import com.post.utils.Pagination;
-import com.post.web.dto.request.FileRequestDto;
-import com.post.web.dto.request.PostRequestDto;
-import com.post.web.dto.request.SearchRequestDto;
-import com.post.web.dto.resposne.FileResponseDto;
-import com.post.web.dto.resposne.PagingResponseDto;
-import com.post.web.dto.resposne.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -77,7 +77,7 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public int uploadPost(PostRequestDto postRequestDto) {
+    public int updatePost(PostRequestDto postRequestDto) {
         Long successId = postMapper.updatePostById(new Post(postRequestDto));
         if (successId == null || successId == 0) {
             return ResponseCode.FAIL.getResponseCode();

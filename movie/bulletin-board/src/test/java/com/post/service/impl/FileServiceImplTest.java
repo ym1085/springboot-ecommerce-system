@@ -1,6 +1,6 @@
 package com.post.service.impl;
 
-import com.post.web.dto.request.FileRequestDto;
+import com.post.dto.request.FileRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
