@@ -61,7 +61,13 @@
         SELECT COUNT(1) FROM comment WHERE comment_id = #{commentId}
     </select>
 
-    <!-- 댓글 정보 저장 -->
+    <!--
+        댓글 정보 저장
+        - parentId가 null이 아닌 경우 : 대댓글 등록
+        - null인 경우 : 일반 댓글 등록
+
+        (*) null을 넣는 이유는 재귀 쿼리 참고하시면 될 것 같습니다.
+    -->
     <insert id="saveComment" parameterType="com.post.domain.posts.Comment">
         INSERT INTO comment(
             parent_id
@@ -73,7 +79,14 @@
             , update_date
         ) VALUES
         (
-            #{parentId}
+            <choose>
+                <when test="parentId != null and parentId != ''">
+                    #{parentId}
+              </when>
+              <otherwise>
+                  NULL
+                </otherwise>
+            </choose>
             , #{postId}
             , #{content}
             , #{memberId}

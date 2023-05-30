@@ -2,9 +2,9 @@ package com.post.service.impl;
 
 import com.post.constant.ResponseCode;
 import com.post.dto.request.CommentRequestDto;
+import com.post.dto.resposne.CommentResponseDto;
 import com.post.repository.post.CommentMapper;
 import com.post.service.CommentService;
-import com.post.dto.resposne.CommentResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,16 +31,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public int saveComment(CommentRequestDto commentRequestDto) {
-        // commentId가 존재하는지 한번 확인?
-        if (!isExistsCommentId(commentRequestDto.getParentId())) {
+        // 대댓글을 등록하는 경우 부모 댓글(commentId)가 존재하는지 먼저 확인 후 대댓글 등록을 진행 한다
+        if (commentRequestDto.getParentId() != null && !isExistsCommentId(commentRequestDto.getParentId())) {
             return ResponseCode.FAIL.getResponseCode();
         }
-        return commentMapper.saveComment(commentRequestDto);
+
+        return commentMapper.saveComment(commentRequestDto); // 일반 댓글 등록
     }
 
     private boolean isExistsCommentId(Long parentId) {
-        // commentId가 없을 경우는 절대 없겠지만, 혹시 없는 경우 INSERT가 되어버리면 기존 DB 데이터가
-        // 꼬일 수 있기 때문에 한번 검증 차원에서 확인 후 넣는 걸로 진행
         return commentMapper.getCommentCountById(parentId) > 0;
     }
 }

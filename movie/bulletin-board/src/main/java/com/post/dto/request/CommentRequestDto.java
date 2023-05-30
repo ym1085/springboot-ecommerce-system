@@ -5,16 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
 @Setter
 public class CommentRequestDto {
     private Long postId;
-    private Long memberId; // security에서 값 받아서 셋팅 할거임
-
-    @NotNull(message = "댓글 번호는 필수 입력 값입니다. 다시 한번 시도해주세요.")
+    private Long memberId;
     private Long parentId;
 
     @NotEmpty(message = "댓글 내용은 반드시 입력되어야 합니다. 다시 한번 시도해주세요.")
