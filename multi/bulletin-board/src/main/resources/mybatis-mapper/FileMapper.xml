@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.multi.posts.repository.post.FileMapper">
+
+    <!-- 파일 정보 저장 -->
+    <insert id="saveFiles" parameterType="list">
+        INSERT INTO file (
+            file_id
+            , post_id
+            , original_name
+            , save_name
+            , file_path
+            , file_size
+            , file_type
+            , download_cnt
+            , del_yn
+            , create_date
+            , delete_date
+        ) VALUES
+        <foreach item="file" collection="list" separator=",">
+            (
+                #{file.fileId}
+                , #{file.postId}
+                , #{file.originalName}
+                , #{file.saveName}
+                , #{file.filePath}
+                , #{file.fileSize}
+                , #{file.fileType}
+                , 0
+                , 'N'
+                , NOW()
+                , NULL
+            )
+        </foreach>
+    </insert>
+
+    <!--
+        파일 삭제 > 게시글 수정 시 클라이언트가 올린 파일이 있으면 기존 파일은 전부 삭제 후 다시 저장
+        트랜잭션 단위에서 수행을 하기에 괜찮을 것 같음
+    -->
+    <update id="deleteFilesById" parameterType="long">
+        DELETE FROM file f WHERE f.post_id = #{postId}
+    </update>
+
+    <!-- 파일 조회 -->
+    <select id="getFiles" parameterType="long" resultType="com.multi.posts.domain.Files">
+        SELECT
+            file_id
+             , post_id
+             , original_name
+             , save_name
+             , file_path
+             , file_size
+             , file_type
+             , download_cnt
+             , del_yn
+             , create_date
+             , delete_date
+        FROM file f
+        WHERE f.post_id = #{postId}
+        AND f.del_yn = 'N'
+    </select>
+
+    <!-- 게시글 삭제 시 연관되어 있는 파일 삭제('Y') -->
+    <update id="deleteUpdateFilesById" parameterType="long">
+        UPDATE file f
+        SET
+            f.del_yn = 'Y',
+            f.delete_date = NOW()
+        WHERE f.post_id = #{postId}
+    </update>
+
+    <!-- 단건 파일 조회 -->
+    <select id="getFileById" parameterType="long" resultType="com.multi.posts.domain.Files">
+        SELECT
+            file_id
+             , post_id
+             , original_name
+             , save_name
+             , file_path
+             , file_size
+             , file_type
+             , download_cnt
+             , del_yn
+             , create_date
+             , delete_date
+        FROM file f
+        WHERE f.file_id = #{fileId}
+        AND f.del_yn = 'N'
+    </select>
+
+    <!-- 파일 다운로드 수 업데이트 -->
+    <update id="increaseDownloadCnt" parameterType="long">
+        UPDATE file
+        SET download_cnt = download_cnt + 1
+        WHERE file_id = #{fileId}
+    </update>
+</mapper>
