@@ -12,4 +12,6 @@ public interface CommentService {
     int saveComment(CommentRequestDto commentRequestDto);
 
     int deleteCommentById(CommentRequestDto commentRequestDto);
+
+    int updateCommentById(CommentRequestDto commentRequestDto);
 }

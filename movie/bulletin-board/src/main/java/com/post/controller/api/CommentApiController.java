@@ -82,4 +82,38 @@ public class CommentApiController {
 
         return ResponseEntity.status(status).body(message);
     }
+
+    /**
+     * 댓글 수정
+     * @param commentRequestDto
+     * @return
+     */
+    @PutMapping("/post/comments")
+    public ResponseEntity<ApiResponseDto<Integer>> updateCommentById(@Valid CommentRequestDto commentRequestDto,
+                                                                     BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors()
+                    .stream()
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+
+            return ResponseEntity.badRequest().body(new ApiResponseDto<>(StatusEnum.BAD_REQUEST, errorMessage));
+        }
+
+        // Todo: 해당 게시글 권한이 있는지 확인 필요 -> 추후.. security
+
+        int successId = commentService.updateCommentById(commentRequestDto);
+        ApiResponseDto<Integer> message;
+        HttpStatus status;
+        if (successId > 0) {
+            message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_UPDATE_COMMENT.getMessage(), successId);
+            status = HttpStatus.OK;
+        } else {
+            message = new ApiResponseDto<>(StatusEnum.INTERNAL_SERVER_ERROR, StatusEnum.COULD_NOT_UPDATE_COMMENT.getMessage(), successId);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return ResponseEntity.status(status).body(message);
+    }
 }

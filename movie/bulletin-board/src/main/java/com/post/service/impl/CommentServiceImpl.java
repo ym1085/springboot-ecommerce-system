@@ -75,4 +75,11 @@ public class CommentServiceImpl implements CommentService {
     private boolean getChildCommentCount(Long commentId) {
         return commentMapper.getChildCommentCountById(commentId) > 0;
     }
+
+    @Transactional
+    @Override
+    public int updateCommentById(CommentRequestDto commentRequestDto) {
+        Comment comment = new Comment(commentRequestDto);
+        return commentMapper.updateCommentById(comment);
+    }
 }

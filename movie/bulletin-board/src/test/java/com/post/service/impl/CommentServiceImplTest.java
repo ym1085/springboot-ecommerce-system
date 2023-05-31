@@ -129,4 +129,19 @@ class CommentServiceImplTest {
         //then
         assertThat(result).isEqualTo(0);
     }
+
+    @Test
+    @DisplayName("댓글 수정")
+    void testUpdateCommentById() {
+        Comment comment = new Comment(CommentRequestDto.builder()
+                .commentId(14L) // 대댓글 삭제하는 경우 parentId -> commentId에 셋팅 후 서버에 넘겨서 삭제할 예정
+                .content("댓글 수정을 해보이겠소")
+                .build());
+
+        //when
+        int result = commentMapper.updateCommentById(comment);
+
+        //then
+        assertThat(result).isGreaterThan(0);
+    }
 }
