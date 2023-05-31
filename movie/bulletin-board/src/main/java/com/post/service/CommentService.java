@@ -10,4 +10,6 @@ public interface CommentService {
     List<CommentResponseDto> getComments(Long postId);
 
     int saveComment(CommentRequestDto commentRequestDto);
+
+    int deleteCommentById(CommentRequestDto commentRequestDto);
 }

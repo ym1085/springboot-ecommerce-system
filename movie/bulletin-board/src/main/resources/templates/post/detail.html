@@ -42,7 +42,7 @@
                         <p th:if="${!comment.path.contains('-')}" th:text="${comment.content}" th:attr="data-comment-id=${comment.commentId}"></p>
 
                         <!-- 대댓글 표시 -->
-                        <div th:if="${comment.path != null and comment.path.contains('-')}">
+                        <div th:if="${comment.path != null and comment.path.contains('-')}" th:attr="data-parent-id=${comment.parentId}">
                             <ul>
                                 <li th:text="${comment.content}"></li>
                             </ul>

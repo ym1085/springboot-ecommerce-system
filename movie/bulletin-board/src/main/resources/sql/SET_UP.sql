@@ -345,3 +345,36 @@ CREATE TABLE FILE (
     delete_date TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES POST(post_id)
 );
+
+WITH RECURSIVE parent_comment AS (
+    SELECT
+        p.comment_id,
+        p.parent_id
+    FROM
+        comment p
+    WHERE
+        comment_id = 14
+    UNION ALL
+    SELECT
+        c.comment_id,
+        c.parent_id
+    FROM
+        comment c
+            JOIN parent_comment
+                 ON c.parent_id = parent_comment.comment_id
+)
+
+select * from parent_comment
+WHERE comment_id IN (
+    SELECT comment_id FROM parent_comment
+)
+
+select COUNT(1) AS cnt
+from comment a
+WHERE comment_id IN (
+    SELECT comment_id
+    FROM comment
+    WHERE parent_id = 14
+)
+
+SELECT COUNT(1) FROM comment WHERE comment_id = 9099999

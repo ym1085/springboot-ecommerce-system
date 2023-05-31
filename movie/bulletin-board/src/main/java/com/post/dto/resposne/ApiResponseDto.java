@@ -6,18 +6,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Message<T> {
+public class ApiResponseDto<T> {
     private StatusEnum status;
-    private T message;
-    private Object data;
+    private String message;
+    private T data;
 
-    public Message(StatusEnum status, T message, Object data) {
+    public ApiResponseDto(StatusEnum status, String message, T data) {
         this.status = status;
         this.message = message;
         this.data = data;
     }
 
-    public Message(StatusEnum status, T message) {
+    public ApiResponseDto(StatusEnum status, String message) {
         this.status = status;
         this.message = message;
     }
