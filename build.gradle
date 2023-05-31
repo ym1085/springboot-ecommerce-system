@@ -16,7 +16,7 @@ buildscript {
 
 // 하위 모든 프로젝트 공통 세팅
 subprojects {
-	group = 'com.movie'
+	group = 'com.multi'
 	version = '0.0.1-SNAPSHOT'
 
 	apply plugin: 'java'
@@ -72,7 +72,7 @@ project(':core:elastic-client') {
 	}
 }
 
-project(':movie:search-api') {
+project(':multi:search-api') {
 
 	dependencies {
 		compileOnly project(':core:elastic-client')
