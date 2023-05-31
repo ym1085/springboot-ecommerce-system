@@ -132,4 +132,11 @@
              ) A
         )
     </select>
+
+    <!-- 댓글 수정, 댓글은 1:1 로만 수정이 가능 -->
+    <update id="updateCommentById" parameterType="com.post.domain.posts.Comment">
+        UPDATE comment
+        SET content = #{content}
+        WHERE comment_id = #{commentId}
+    </update>
 </mapper>
