@@ -1,7 +1,7 @@
 package com.post.service.impl;
 
 import com.post.constant.ResponseCode;
-import com.post.domain.posts.Post;
+import com.post.domain.Post;
 import com.post.dto.request.FileRequestDto;
 import com.post.dto.request.PostRequestDto;
 import com.post.dto.request.SearchRequestDto;

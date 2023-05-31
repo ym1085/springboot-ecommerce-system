@@ -1,6 +1,6 @@
 package com.post.repository.post;
 
-import com.post.domain.posts.Comment;
+import com.post.domain.Comment;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
