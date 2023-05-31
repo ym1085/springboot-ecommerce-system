@@ -52,7 +52,7 @@
         Mybatis에서 쿼리의 parameterType이 클래스의 객체인 경우, XML Mapper의 #{parameter}
         는 맴버 변수의 getter에 해당. 쉽게 말해 getter를 통해 파라미터 바인딩 수행.
     -->
-    <select id="getPosts" parameterType="com.post.dto.request.SearchRequestDto" resultType="com.post.domain.posts.Post">
+    <select id="getPosts" parameterType="com.post.dto.request.SearchRequestDto" resultType="com.post.domain.Post">
         SELECT
             p.post_id,
             p.title,
@@ -87,7 +87,7 @@
     </select>
 
     <!-- 단일 게시글 조회 -->
-    <select id="getPostById" parameterType="long" resultType="com.post.domain.posts.Post">
+    <select id="getPostById" parameterType="long" resultType="com.post.domain.Post">
         SELECT
             p.post_id,
             p.title,
@@ -112,7 +112,7 @@
     </select>
 
     <!-- 게시글 등록 -->
-    <insert id="savePost" parameterType="com.post.domain.posts.Post" useGeneratedKeys="true" keyProperty="postId">
+    <insert id="savePost" parameterType="com.post.domain.Post" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO post (member_id, title, content, fixed_yn, category_id)
         VALUE
             (
@@ -132,7 +132,7 @@
     </insert>
 
     <!-- 게시글 수정 -->
-    <update id="updatePostById" parameterType="com.post.domain.posts.Post">
+    <update id="updatePostById" parameterType="com.post.domain.Post">
         UPDATE post
         SET
             title = #{title},
@@ -145,7 +145,7 @@
     </update>
 
     <!-- 게시글 삭제 -->
-    <update id="deletePostById" parameterType="com.post.domain.posts.Post" useGeneratedKeys="true" keyProperty="postId">
+    <update id="deletePostById" parameterType="com.post.domain.Post" useGeneratedKeys="true" keyProperty="postId">
         UPDATE post
         SET
             del_yn = 'Y',

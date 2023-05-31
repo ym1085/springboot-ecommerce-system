@@ -45,7 +45,7 @@
     </update>
 
     <!-- 파일 조회 -->
-    <select id="getFiles" parameterType="long" resultType="com.post.domain.posts.Files">
+    <select id="getFiles" parameterType="long" resultType="com.post.domain.Files">
         SELECT
             file_id
              , post_id
@@ -73,7 +73,7 @@
     </update>
 
     <!-- 단건 파일 조회 -->
-    <select id="getFileById" parameterType="long" resultType="com.post.domain.posts.Files">
+    <select id="getFileById" parameterType="long" resultType="com.post.domain.Files">
         SELECT
             file_id
              , post_id

@@ -1,6 +1,6 @@
 package com.post.repository.post;
 
-import com.post.domain.posts.Files;
+import com.post.domain.Files;
 import com.post.dto.request.FileRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 

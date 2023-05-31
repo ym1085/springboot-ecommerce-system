@@ -1,6 +1,6 @@
 package com.post.dto.resposne;
 
-import com.post.domain.posts.Comment;
+import com.post.domain.Comment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

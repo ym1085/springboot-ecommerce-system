@@ -1,6 +1,6 @@
 package com.post.dto.resposne;
 
-import com.post.domain.posts.Files;
+import com.post.domain.Files;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

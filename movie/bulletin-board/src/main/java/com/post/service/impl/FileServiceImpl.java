@@ -1,7 +1,7 @@
 package com.post.service.impl;
 
 import com.post.constant.ResponseCode;
-import com.post.domain.posts.Files;
+import com.post.domain.Files;
 import com.post.repository.post.FileMapper;
 import com.post.service.FileService;
 import com.post.dto.request.FileRequestDto;

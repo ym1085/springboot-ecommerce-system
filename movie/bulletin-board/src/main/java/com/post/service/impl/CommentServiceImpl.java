@@ -1,7 +1,7 @@
 package com.post.service.impl;
 
 import com.post.constant.ResponseCode;
-import com.post.domain.posts.Comment;
+import com.post.domain.Comment;
 import com.post.dto.request.CommentRequestDto;
 import com.post.dto.resposne.CommentResponseDto;
 import com.post.repository.post.CommentMapper;

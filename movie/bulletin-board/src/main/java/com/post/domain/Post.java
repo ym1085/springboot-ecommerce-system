@@ -1,4 +1,4 @@
-package com.post.domain.posts;
+package com.post.domain;
 
 import com.post.dto.request.PostRequestDto;
 import lombok.Getter;

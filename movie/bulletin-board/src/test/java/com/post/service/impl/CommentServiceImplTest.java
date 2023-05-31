@@ -1,6 +1,6 @@
 package com.post.service.impl;
 
-import com.post.domain.posts.Comment;
+import com.post.domain.Comment;
 import com.post.dto.request.CommentRequestDto;
 import com.post.repository.post.CommentMapper;
 import com.post.service.CommentService;
