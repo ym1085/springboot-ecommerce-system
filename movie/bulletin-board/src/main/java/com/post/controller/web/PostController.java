@@ -5,8 +5,8 @@ import com.post.constant.StatusEnum;
 import com.post.dto.request.FileRequestDto;
 import com.post.dto.request.PostRequestDto;
 import com.post.dto.request.SearchRequestDto;
+import com.post.dto.resposne.ApiResponseDto;
 import com.post.dto.resposne.CommentResponseDto;
-import com.post.dto.resposne.Message;
 import com.post.dto.resposne.PagingResponseDto;
 import com.post.dto.resposne.PostResponseDto;
 import com.post.service.CommentService;
@@ -15,7 +15,6 @@ import com.post.service.PostService;
 import com.post.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author      :   ymkim
@@ -60,49 +58,53 @@ public class PostController {
     }
 
     @PostMapping(value = "/post")
-    public @ResponseBody ResponseEntity savePost(@Valid PostRequestDto postRequestDto,
+    public @ResponseBody ResponseEntity<?> savePost(@Valid PostRequestDto postRequestDto,
                                    BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            StringBuilder sb = new StringBuilder();
-            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-            for (FieldError error : fieldErrors) {
-                sb.append(error.getDefaultMessage());
-            }
-            Message message = new Message(StatusEnum.BAD_REQUEST, sb.toString());
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+            String errorMessage = bindingResult.getFieldErrors()
+                    .stream()
+                    .map(FieldError::getDefaultMessage)
+                    .reduce("", (acc, message) -> acc + message);
+
+            // Fixme: 아직 화면이 없어서 일단은... 추후 수정 하자
+            ApiResponseDto<String> message = new ApiResponseDto<>(StatusEnum.BAD_REQUEST, errorMessage);
+            return ResponseEntity.badRequest().body(message);
         }
 
-        postRequestDto.setMemberId(1L); // Todo: Test용 member_id security 되면 지워주세요
+        postRequestDto.setMemberId(1L);
         Long postId = postService.savePost(postRequestDto);
 
         List<FileRequestDto> fileRequestDtos = fileUtils.uploadFiles(postRequestDto.getFiles());
         fileService.saveFiles(postId, fileRequestDtos);
 
-        return new ResponseEntity<>(ResponseCode.SUCCESS.getResponseCode(), HttpStatus.OK);
+        ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_SAVE_POST.getMessage(), ResponseCode.SUCCESS.getResponseCode());
+        return ResponseEntity.ok().body(message);
     }
 
     @PutMapping(value = "/post/{id}")
-    public @ResponseBody ResponseEntity updatePost(@PathVariable("id") Long id,
+    public @ResponseBody ResponseEntity<?> updatePost(@PathVariable("id") Long id,
                                      @Valid PostRequestDto postRequestDto,
                                      BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            Message message = new Message(StatusEnum.BAD_REQUEST, Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+            String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+            ApiResponseDto<String> message = new ApiResponseDto<>(StatusEnum.BAD_REQUEST, errorMessage);
+            return ResponseEntity.badRequest().body(message);
         }
 
-        // Todo: 현재 로그인 한 Principal 유저 정보와 질의를 통해 얻은 User 정보를 비교 후 수정 여부 판단,
-        // 회원 쪽 기능이 구현이 되지 않아 일단 보류
-
-        postRequestDto.setMemberId(1L); // Todo: Test용 member_id security 되면 지워주세요
+        postRequestDto.setMemberId(1L);
         postRequestDto.setPostId(id);
 
-        return new ResponseEntity<>(new Message<>(StatusEnum.OK, ResponseCode.SUCCESS.getResponseCode(), postService.updatePost(postRequestDto)), HttpStatus.OK);
+        int updatedCount = postService.updatePost(postRequestDto);
+        ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_UPDATE_POST.getMessage(), updatedCount);
+        return ResponseEntity.ok().body(message);
     }
 
     @DeleteMapping(value = "/post/{id}")
-    public @ResponseBody ResponseEntity deletePost(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(new Message<>(StatusEnum.OK, ResponseCode.SUCCESS.getResponseCode(), postService.deletePost(id)), HttpStatus.OK);
+    public @ResponseBody ResponseEntity<ApiResponseDto<Integer>> deletePost(@PathVariable("id") Long id) {
+        int deletedCount = postService.deletePost(id);
+        ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_DELETE_POST.getMessage(), deletedCount);
+        return ResponseEntity.ok().body(message);
     }
 }

@@ -1,5 +1,6 @@
 package com.post.domain.posts;
 
+import com.post.dto.request.CommentRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +23,11 @@ public class Comment {
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
 
-    /*public Comment(CommentRequestDto commentRequestDto) {
-
-    }*/
+    public Comment(CommentRequestDto commentRequestDto) {
+        this.commentId = commentRequestDto.getCommentId();
+        this.parentId = commentRequestDto.getParentId();
+        this.postId = commentRequestDto.getPostId();
+        this.content = commentRequestDto.getContent();
+        this.memberId = commentRequestDto.getMemberId();
+    }
 }
