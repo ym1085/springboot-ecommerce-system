@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,10 +35,10 @@ public class CommentApiController {
                                                             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors()
+            List<String> errorMessage = bindingResult.getFieldErrors()
                     .stream()
                     .map(fieldError -> fieldError.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
+                    .collect(Collectors.toList());
 
             return ResponseEntity.badRequest().body(new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage));
         }
@@ -93,10 +94,10 @@ public class CommentApiController {
                                                                      BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors()
+            List<String> errorMessage = bindingResult.getFieldErrors()
                     .stream()
                     .map(fieldError -> fieldError.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
+                    .collect(Collectors.toList());
 
             return ResponseEntity.badRequest().body(new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage));
         }

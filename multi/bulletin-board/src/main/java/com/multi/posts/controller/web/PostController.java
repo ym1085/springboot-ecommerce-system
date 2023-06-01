@@ -19,11 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author      :   ymkim
@@ -62,10 +62,10 @@ public class PostController {
                                    BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors()
+            List<String> errorMessage = bindingResult.getFieldErrors()
                     .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .reduce("", (acc, message) -> acc + message);
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .collect(Collectors.toList());
 
             // Fixme: 아직 화면이 없어서 일단은... 추후 수정 하자
             ApiResponse<String> message = new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage);
@@ -88,7 +88,11 @@ public class PostController {
                                      BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+            List<String> errorMessage = bindingResult.getFieldErrors()
+                    .stream()
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .collect(Collectors.toList());
+
             ApiResponse<String> message = new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage);
             return ResponseEntity.badRequest().body(message);
         }

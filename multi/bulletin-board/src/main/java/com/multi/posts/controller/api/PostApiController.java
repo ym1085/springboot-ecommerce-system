@@ -19,11 +19,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Fixme: ResponseEntity 목적에 맞게 반환 하도록 수정 필요
@@ -62,10 +62,10 @@ public class PostApiController {
                                       BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors()
+            List<String> errorMessage = bindingResult.getFieldErrors()
                     .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .reduce("", (acc, message) -> acc + message);
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .collect(Collectors.toList());
 
             ApiResponse<String> message = new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage);
             return ResponseEntity.badRequest().body(message);
@@ -87,7 +87,12 @@ public class PostApiController {
                                      BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            ApiResponse<String> message = new ApiResponse<>(StatusEnum.BAD_REQUEST, bindingResult.getFieldError().getDefaultMessage());
+            List<String> errorMessage = bindingResult.getFieldErrors()
+                    .stream()
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .collect(Collectors.toList());
+
+            ApiResponse<String> message = new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage);
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
 
