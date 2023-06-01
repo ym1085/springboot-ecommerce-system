@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +32,7 @@ public class MemberApiController {
      * @description 회원가입의 경우 SNS 연동을 통한 로그인이 아닌 일반 로그인을 원하는 유저가 있다 가정하고 구현
      */
     @PostMapping(value = "/member")
-    public ResponseEntity signUp(@Valid MemberRequestDto memberRequestDto,
+    public ResponseEntity signUp(@RequestBody @Valid MemberRequestDto memberRequestDto,
                                               BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
