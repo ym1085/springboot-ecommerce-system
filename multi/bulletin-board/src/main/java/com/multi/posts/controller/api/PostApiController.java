@@ -5,14 +5,14 @@ import com.multi.posts.constant.StatusEnum;
 import com.multi.posts.dto.request.FileRequestDto;
 import com.multi.posts.dto.request.PostRequestDto;
 import com.multi.posts.dto.request.SearchRequestDto;
-import com.multi.posts.dto.resposne.ApiResponseDto;
 import com.multi.posts.dto.resposne.CommentResponseDto;
 import com.multi.posts.dto.resposne.PagingResponseDto;
 import com.multi.posts.dto.resposne.PostResponseDto;
 import com.multi.posts.service.CommentService;
 import com.multi.posts.service.FileService;
 import com.multi.posts.service.PostService;
-import com.multi.posts.utils.FileUtils;
+import com.multi.utils.ApiResponse;
+import com.multi.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -40,20 +40,20 @@ public class PostApiController {
     private final CommentService commentService;
 
     @GetMapping(value = "/post")
-    public ResponseEntity<ApiResponseDto<PagingResponseDto<PostResponseDto>>> getPosts(SearchRequestDto searchRequestDto) {
+    public ResponseEntity<ApiResponse<PagingResponseDto<PostResponseDto>>> getPosts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
-        ApiResponseDto<PagingResponseDto<PostResponseDto>> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_GET_POSTS.getMessage(), posts);
+        ApiResponse<PagingResponseDto<PostResponseDto>> message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_GET_POSTS.getMessage(), posts);
         return ResponseEntity.ok(message);
     }
 
     @GetMapping(value = "/post/{id}")
-    public ResponseEntity<ApiResponseDto<PostResponseDto>> getPostById(@PathVariable("id") Long id) {
+    public ResponseEntity<ApiResponse<PostResponseDto>> getPostById(@PathVariable("id") Long id) {
         PostResponseDto post = postService.getPostById(id);
         List<CommentResponseDto> comments = commentService.getComments(id);
         post.addComments(comments);
 
         StatusEnum status = StringUtils.isNotBlank(post.getTitle()) ? StatusEnum.OK : StatusEnum.INTERNAL_SERVER_ERROR;
-        ApiResponseDto<PostResponseDto> message = new ApiResponseDto<>(status, StatusEnum.SUCCESS_GET_POST.getMessage(), post);
+        ApiResponse<PostResponseDto> message = new ApiResponse<>(status, StatusEnum.SUCCESS_GET_POST.getMessage(), post);
         return ResponseEntity.ok(message);
     }
 
@@ -67,7 +67,7 @@ public class PostApiController {
                     .map(FieldError::getDefaultMessage)
                     .reduce("", (acc, message) -> acc + message);
 
-            ApiResponseDto<String> message = new ApiResponseDto<>(StatusEnum.BAD_REQUEST, errorMessage);
+            ApiResponse<String> message = new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage);
             return ResponseEntity.badRequest().body(message);
         }
 
@@ -77,7 +77,7 @@ public class PostApiController {
         List<FileRequestDto> fileRequestDtos = fileUtils.uploadFiles(postRequestDto.getFiles());
         fileService.saveFiles(postId, fileRequestDtos);
 
-        ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_SAVE_COMMENT.getMessage(), ResponseCode.SUCCESS.getResponseCode());
+        ApiResponse<Integer> message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_SAVE_COMMENT.getMessage(), ResponseCode.SUCCESS.getResponseCode());
         return ResponseEntity.ok(message);
     }
 
@@ -87,7 +87,7 @@ public class PostApiController {
                                      BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            ApiResponseDto<String> message = new ApiResponseDto<>(StatusEnum.BAD_REQUEST, bindingResult.getFieldError().getDefaultMessage());
+            ApiResponse<String> message = new ApiResponse<>(StatusEnum.BAD_REQUEST, bindingResult.getFieldError().getDefaultMessage());
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
 
@@ -95,14 +95,14 @@ public class PostApiController {
         postRequestDto.setPostId(id);
 
         int updatedCount = postService.updatePost(postRequestDto);
-        ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_UPDATE_POST.getMessage(), updatedCount);
+        ApiResponse<Integer> message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_UPDATE_POST.getMessage(), updatedCount);
         return ResponseEntity.ok(message);
     }
 
     @DeleteMapping(value = "/post/{id}")
-    public ResponseEntity<ApiResponseDto<Integer>> deletePost(@PathVariable("id") Long id) {
+    public ResponseEntity<ApiResponse<Integer>> deletePost(@PathVariable("id") Long id) {
         int deletedCount = postService.deletePost(id);
-        ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_DELETE_POST.getMessage(), deletedCount);
+        ApiResponse<Integer> message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_DELETE_POST.getMessage(), deletedCount);
         return ResponseEntity.ok(message);
     }
 }

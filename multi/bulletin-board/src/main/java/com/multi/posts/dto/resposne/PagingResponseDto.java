@@ -1,6 +1,6 @@
 package com.multi.posts.dto.resposne;
 
-import com.multi.posts.utils.Pagination;
+import com.multi.utils.Pagination;
 import lombok.Getter;
 
 import java.util.ArrayList;

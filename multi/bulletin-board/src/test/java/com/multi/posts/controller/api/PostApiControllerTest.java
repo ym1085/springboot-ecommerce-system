@@ -1,4 +1,4 @@
-package com.multi.controller.api;
+package com.multi.posts.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.multi.posts.repository.post.FileMapper;

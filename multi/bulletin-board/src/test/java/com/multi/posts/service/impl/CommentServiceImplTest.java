@@ -1,4 +1,4 @@
-package com.multi.service.impl;
+package com.multi.posts.service.impl;
 
 import com.multi.posts.domain.Comment;
 import com.multi.posts.dto.request.CommentRequestDto;

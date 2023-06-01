@@ -2,8 +2,8 @@ package com.multi.posts.controller.api;
 
 import com.multi.posts.constant.StatusEnum;
 import com.multi.posts.dto.request.CommentRequestDto;
-import com.multi.posts.dto.resposne.ApiResponseDto;
 import com.multi.posts.service.CommentService;
+import com.multi.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,9 +29,9 @@ public class CommentApiController {
      * 만약 parentId가 없다면 일반 댓글 등록, 그렇지 않다면 대댓글 등록으로 간주 하였습니다.
      */
     @PostMapping("/post/{postId}/comments")
-    public ResponseEntity<ApiResponseDto<Integer>> saveComment(@Valid CommentRequestDto commentRequestDto,
-                                      @PathVariable("postId") Long postId,
-                                      BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse<Integer>> saveComment(@Valid CommentRequestDto commentRequestDto,
+                                                            @PathVariable("postId") Long postId,
+                                                            BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors()
@@ -39,23 +39,23 @@ public class CommentApiController {
                     .map(fieldError -> fieldError.getDefaultMessage())
                     .collect(Collectors.joining(", "));
 
-            return ResponseEntity.badRequest().body(new ApiResponseDto<>(StatusEnum.BAD_REQUEST, errorMessage));
+            return ResponseEntity.badRequest().body(new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage));
         }
 
         if (postId == null) {
-            return ResponseEntity.badRequest().body(new ApiResponseDto<>(StatusEnum.BAD_REQUEST, StatusEnum.COULD_NOT_FOUND_POST_ID.getMessage()));
+            return ResponseEntity.badRequest().body(new ApiResponse<>(StatusEnum.BAD_REQUEST, StatusEnum.COULD_NOT_FOUND_POST_ID.getMessage()));
         }
         commentRequestDto.setMemberId(1L);
         commentRequestDto.setPostId(20L);
 
         int successId = commentService.saveComment(commentRequestDto);
 
-        ResponseEntity<ApiResponseDto<Integer>> responseEntity;
+        ResponseEntity<ApiResponse<Integer>> responseEntity;
         if (successId > 0) {
-            ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_SAVE_COMMENT.getMessage(), successId);
+            ApiResponse<Integer> message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_SAVE_COMMENT.getMessage(), successId);
             responseEntity = ResponseEntity.ok(message);
         } else {
-            ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.INTERNAL_SERVER_ERROR, StatusEnum.COULD_NOT_SAVE_COMMENT.getMessage(), successId);
+            ApiResponse<Integer> message = new ApiResponse<>(StatusEnum.INTERNAL_SERVER_ERROR, StatusEnum.COULD_NOT_SAVE_COMMENT.getMessage(), successId);
             responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
         }
         return responseEntity;
@@ -67,16 +67,16 @@ public class CommentApiController {
      * @return
      */
     @DeleteMapping("/post/comments")
-    public ResponseEntity<ApiResponseDto<Integer>> deleteCommentById(CommentRequestDto commentRequestDto) {
+    public ResponseEntity<ApiResponse<Integer>> deleteCommentById(CommentRequestDto commentRequestDto) {
         int successId = commentService.deleteCommentById(commentRequestDto);
 
-        ApiResponseDto<Integer> message;
+        ApiResponse<Integer> message;
         HttpStatus status;
         if (successId > 0) {
-            message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_DELETE_COMMENT.getMessage(), successId);
+            message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_DELETE_COMMENT.getMessage(), successId);
             status = HttpStatus.OK;
         } else {
-            message = new ApiResponseDto<>(StatusEnum.INTERNAL_SERVER_ERROR, StatusEnum.COULD_NOT_DELETE_COMMENT.getMessage(), successId);
+            message = new ApiResponse<>(StatusEnum.INTERNAL_SERVER_ERROR, StatusEnum.COULD_NOT_DELETE_COMMENT.getMessage(), successId);
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
@@ -89,7 +89,7 @@ public class CommentApiController {
      * @return
      */
     @PutMapping("/post/comments")
-    public ResponseEntity<ApiResponseDto<Integer>> updateCommentById(@Valid CommentRequestDto commentRequestDto,
+    public ResponseEntity<ApiResponse<Integer>> updateCommentById(@Valid CommentRequestDto commentRequestDto,
                                                                      BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -98,19 +98,19 @@ public class CommentApiController {
                     .map(fieldError -> fieldError.getDefaultMessage())
                     .collect(Collectors.joining(", "));
 
-            return ResponseEntity.badRequest().body(new ApiResponseDto<>(StatusEnum.BAD_REQUEST, errorMessage));
+            return ResponseEntity.badRequest().body(new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage));
         }
 
         // Todo: 해당 게시글 권한이 있는지 확인 필요 -> 추후.. security
 
         int successId = commentService.updateCommentById(commentRequestDto);
-        ApiResponseDto<Integer> message;
+        ApiResponse<Integer> message;
         HttpStatus status;
         if (successId > 0) {
-            message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_UPDATE_COMMENT.getMessage(), successId);
+            message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_UPDATE_COMMENT.getMessage(), successId);
             status = HttpStatus.OK;
         } else {
-            message = new ApiResponseDto<>(StatusEnum.INTERNAL_SERVER_ERROR, StatusEnum.COULD_NOT_UPDATE_COMMENT.getMessage(), successId);
+            message = new ApiResponse<>(StatusEnum.INTERNAL_SERVER_ERROR, StatusEnum.COULD_NOT_UPDATE_COMMENT.getMessage(), successId);
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
