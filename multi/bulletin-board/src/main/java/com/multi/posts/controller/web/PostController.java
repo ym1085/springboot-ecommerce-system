@@ -5,14 +5,14 @@ import com.multi.posts.constant.StatusEnum;
 import com.multi.posts.dto.request.FileRequestDto;
 import com.multi.posts.dto.request.PostRequestDto;
 import com.multi.posts.dto.request.SearchRequestDto;
-import com.multi.posts.dto.resposne.ApiResponseDto;
 import com.multi.posts.dto.resposne.CommentResponseDto;
 import com.multi.posts.dto.resposne.PagingResponseDto;
 import com.multi.posts.dto.resposne.PostResponseDto;
 import com.multi.posts.service.CommentService;
 import com.multi.posts.service.FileService;
 import com.multi.posts.service.PostService;
-import com.multi.posts.utils.FileUtils;
+import com.multi.utils.ApiResponse;
+import com.multi.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -68,7 +68,7 @@ public class PostController {
                     .reduce("", (acc, message) -> acc + message);
 
             // Fixme: 아직 화면이 없어서 일단은... 추후 수정 하자
-            ApiResponseDto<String> message = new ApiResponseDto<>(StatusEnum.BAD_REQUEST, errorMessage);
+            ApiResponse<String> message = new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage);
             return ResponseEntity.badRequest().body(message);
         }
 
@@ -78,7 +78,7 @@ public class PostController {
         List<FileRequestDto> fileRequestDtos = fileUtils.uploadFiles(postRequestDto.getFiles());
         fileService.saveFiles(postId, fileRequestDtos);
 
-        ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_SAVE_POST.getMessage(), ResponseCode.SUCCESS.getResponseCode());
+        ApiResponse<Integer> message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_SAVE_POST.getMessage(), ResponseCode.SUCCESS.getResponseCode());
         return ResponseEntity.ok().body(message);
     }
 
@@ -89,7 +89,7 @@ public class PostController {
 
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldError().getDefaultMessage();
-            ApiResponseDto<String> message = new ApiResponseDto<>(StatusEnum.BAD_REQUEST, errorMessage);
+            ApiResponse<String> message = new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage);
             return ResponseEntity.badRequest().body(message);
         }
 
@@ -97,14 +97,14 @@ public class PostController {
         postRequestDto.setPostId(id);
 
         int updatedCount = postService.updatePost(postRequestDto);
-        ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_UPDATE_POST.getMessage(), updatedCount);
+        ApiResponse<Integer> message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_UPDATE_POST.getMessage(), updatedCount);
         return ResponseEntity.ok().body(message);
     }
 
     @DeleteMapping(value = "/post/{id}")
-    public @ResponseBody ResponseEntity<ApiResponseDto<Integer>> deletePost(@PathVariable("id") Long id) {
+    public @ResponseBody ResponseEntity<ApiResponse<Integer>> deletePost(@PathVariable("id") Long id) {
         int deletedCount = postService.deletePost(id);
-        ApiResponseDto<Integer> message = new ApiResponseDto<>(StatusEnum.OK, StatusEnum.SUCCESS_DELETE_POST.getMessage(), deletedCount);
+        ApiResponse<Integer> message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_DELETE_POST.getMessage(), deletedCount);
         return ResponseEntity.ok().body(message);
     }
 }

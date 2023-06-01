@@ -1,7 +1,7 @@
 package com.multi.utils;
 
 import com.multi.posts.dto.request.SearchRequestDto;
-import com.multi.posts.utils.Pagination;
+import com.multi.utils.Pagination;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

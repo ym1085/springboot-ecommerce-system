@@ -1,4 +1,4 @@
-package com.multi.service.impl;
+package com.multi.posts.service.impl;
 
 import com.multi.posts.dto.request.PostRequestDto;
 import com.multi.posts.dto.request.SearchRequestDto;

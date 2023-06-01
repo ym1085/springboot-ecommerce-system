@@ -1,4 +1,4 @@
-package com.multi.posts.utils;
+package com.multi.utils;
 
 import com.multi.posts.constant.FileExtension;
 import com.multi.posts.dto.request.FileRequestDto;

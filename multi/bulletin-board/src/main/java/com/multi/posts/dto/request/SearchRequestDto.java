@@ -1,6 +1,6 @@
 package com.multi.posts.dto.request;
 
-import com.multi.posts.utils.Pagination;
+import com.multi.utils.Pagination;
 import lombok.Getter;
 import lombok.Setter;
 
