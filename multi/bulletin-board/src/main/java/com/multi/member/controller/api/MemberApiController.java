@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,10 +35,10 @@ public class MemberApiController {
                                               BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors()
+            List<String> errorMessage = bindingResult.getFieldErrors()
                     .stream()
                     .map(fieldError -> fieldError.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
+                    .collect(Collectors.toList());
 
             ApiResponse<String> message = new ApiResponse<>(StatusEnum.BAD_REQUEST, errorMessage);
             return ResponseEntity.badRequest().body(message);
