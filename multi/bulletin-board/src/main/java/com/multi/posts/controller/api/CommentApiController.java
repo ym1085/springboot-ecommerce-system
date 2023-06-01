@@ -30,7 +30,7 @@ public class CommentApiController {
      * 만약 parentId가 없다면 일반 댓글 등록, 그렇지 않다면 대댓글 등록으로 간주 하였습니다.
      */
     @PostMapping("/post/{postId}/comments")
-    public ResponseEntity<ApiResponse<Integer>> saveComment(@Valid CommentRequestDto commentRequestDto,
+    public ResponseEntity<ApiResponse<Integer>> saveComment(@RequestBody @Valid CommentRequestDto commentRequestDto,
                                                             @PathVariable("postId") Long postId,
                                                             BindingResult bindingResult) {
 

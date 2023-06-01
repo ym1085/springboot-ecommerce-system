@@ -2,7 +2,7 @@ package com.multi.posts.service.impl;
 
 import com.multi.posts.constant.ResponseCode;
 import com.multi.posts.domain.Files;
-import com.multi.posts.repository.post.FileMapper;
+import com.multi.posts.repository.FileMapper;
 import com.multi.posts.service.FileService;
 import com.multi.posts.dto.request.FileRequestDto;
 import com.multi.posts.dto.resposne.FileResponseDto;

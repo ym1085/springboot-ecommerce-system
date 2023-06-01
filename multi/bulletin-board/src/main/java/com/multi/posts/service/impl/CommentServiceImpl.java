@@ -4,7 +4,7 @@ import com.multi.posts.constant.ResponseCode;
 import com.multi.posts.domain.Comment;
 import com.multi.posts.dto.request.CommentRequestDto;
 import com.multi.posts.dto.resposne.CommentResponseDto;
-import com.multi.posts.repository.post.CommentMapper;
+import com.multi.posts.repository.CommentMapper;
 import com.multi.posts.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
