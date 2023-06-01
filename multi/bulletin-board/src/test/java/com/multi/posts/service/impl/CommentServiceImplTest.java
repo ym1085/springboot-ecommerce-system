@@ -2,7 +2,7 @@ package com.multi.posts.service.impl;
 
 import com.multi.posts.domain.Comment;
 import com.multi.posts.dto.request.CommentRequestDto;
-import com.multi.posts.repository.post.CommentMapper;
+import com.multi.posts.repository.CommentMapper;
 import com.multi.posts.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

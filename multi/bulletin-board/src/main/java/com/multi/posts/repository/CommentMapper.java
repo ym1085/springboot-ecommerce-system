@@ -1,4 +1,4 @@
-package com.multi.posts.repository.post;
+package com.multi.posts.repository;
 
 import com.multi.posts.domain.Comment;
 import org.apache.ibatis.annotations.Mapper;

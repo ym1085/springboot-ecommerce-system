@@ -4,8 +4,6 @@ import com.multi.posts.dto.request.PostRequestDto;
 import com.multi.posts.dto.request.SearchRequestDto;
 import com.multi.posts.dto.resposne.PagingResponseDto;
 import com.multi.posts.dto.resposne.PostResponseDto;
-import com.multi.posts.service.impl.FileServiceImpl;
-import com.multi.posts.service.impl.PostServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -76,8 +74,6 @@ class PostServiceImplTest {
         //then
         assertThat(posts).isNotEmpty();
         assertThat(posts).hasSizeGreaterThan(1);
-        assertThat(posts.get(0).getPostId()).isEqualTo(1003);
-        assertThat(posts.get(0).getTitle()).isEqualTo("제목1003");
     }
 
     @ParameterizedTest

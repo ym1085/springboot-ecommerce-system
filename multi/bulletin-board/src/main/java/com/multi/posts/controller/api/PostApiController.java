@@ -58,7 +58,7 @@ public class PostApiController {
     }
 
     @PostMapping(value = "/post")
-    public ResponseEntity<?> savePost(@Valid PostRequestDto postRequestDto,
+    public ResponseEntity<?> savePost(@RequestBody @Valid PostRequestDto postRequestDto,
                                       BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -77,7 +77,7 @@ public class PostApiController {
         List<FileRequestDto> fileRequestDtos = fileUtils.uploadFiles(postRequestDto.getFiles());
         fileService.saveFiles(postId, fileRequestDtos);
 
-        ApiResponse<Integer> message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_SAVE_COMMENT.getMessage(), ResponseCode.SUCCESS.getResponseCode());
+        ApiResponse<Integer> message = new ApiResponse<>(StatusEnum.OK, StatusEnum.SUCCESS_SAVE_POST.getMessage(), ResponseCode.SUCCESS.getResponseCode());
         return ResponseEntity.ok(message);
     }
 

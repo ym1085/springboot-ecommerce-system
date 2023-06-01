@@ -1,4 +1,4 @@
-package com.multi.posts.repository.post;
+package com.multi.posts.repository;
 
 import com.multi.posts.domain.Files;
 import com.multi.posts.dto.request.FileRequestDto;

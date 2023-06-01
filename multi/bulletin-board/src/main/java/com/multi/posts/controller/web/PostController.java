@@ -58,7 +58,7 @@ public class PostController {
     }
 
     @PostMapping(value = "/post")
-    public @ResponseBody ResponseEntity<?> savePost(@Valid PostRequestDto postRequestDto,
+    public @ResponseBody ResponseEntity<?> savePost(@RequestBody @Valid PostRequestDto postRequestDto,
                                    BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
