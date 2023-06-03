@@ -1,5 +1,6 @@
 package com.multi.config.auth;
 
+import com.multi.member.constant.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * @EnableWebSecurity
@@ -16,21 +18,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Configuration // Spring에서 설정 파일 등록 시 사용 -> @Bean 어노테이션이랑 같이 엮어서 사용 -> Component scan target
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**"); // /static 하위 디렉토리는 인증 무시
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors().disable() // Todo: Security 상세 내용 수정
+    @Bean
+    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+        http
                 .csrf().disable()
-                .formLogin().disable()
-                .headers().frameOptions().disable();
-//                .authorizeRequests()
-//                .antMatchers("/", "/member");
+                .headers().frameOptions().disable()
+                .and()
+                    .authorizeRequests()
+                        .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-consonle/**", "/profile").permitAll()
+                        .antMatchers("/api/v1/**").hasRole(Role.ROLE_USER.name())
+                    .anyRequest().authenticated()
+                .and()
+                    .logout()
+                    .logoutSuccessUrl("/")
+                .and()
+                    .oauth2Login().userInfoEndpoint()
+                    .userService(null)
     }
 
     /**
