@@ -39,4 +39,4 @@ out/
 TODO.md
 
 # spring boot 2.x oauth2 client opt
-application-oauth.properties
+application-oauth.yaml
