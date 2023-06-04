@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>메인 화면 테스트</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>메인 화면</h1>
+<div class="row">
+    <div class="col-md-6">
+        <!-- userName이 존재한다면 아래 로직 수행 -->
+        <div th:if="${memberName}">
+            Logged in as: <span id="user" th:text="${memberName}"></span>
+            <a href="/logout">Logout</a>
+        </div>
+        <div th:unless="${memberName}">
+            <a href="/oauth2/authorization/google" class="btn btn-success active" role="button">Google Login</a>
+            <a href="/oauth2/authorization/naver" class="btn btn-secondary active" role="button">Naver Login</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

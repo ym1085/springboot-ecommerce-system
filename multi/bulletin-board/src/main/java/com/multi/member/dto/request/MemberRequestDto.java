@@ -1,6 +1,7 @@
 package com.multi.member.dto.request;
 
 import com.multi.member.constant.Gender;
+import com.multi.member.constant.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,8 +42,9 @@ public class MemberRequestDto {
     @Pattern(regexp = "^Y$", message = "사용자 인증에 실패하였습니다. 다시 시도해주세요.")
     private String certYn;
 
-    private String imageUrl; // Todo: 사용자 프로필 이미지는 파일로 받아야 할 듯?
+    private String picture; // Todo: 사용자 프로필 이미지는 파일로 받아야 할 듯?
     private Gender gender;
+    private Role role;
 
     @NotBlank(message = "생년월일은 필수 입력 항목입니다. 다시 시도해주세요.")
     private String birthDate;
@@ -63,16 +65,17 @@ public class MemberRequestDto {
 
     @Builder
     public MemberRequestDto(String name, String account, String password, String email,
-                            String phoneNumber, String certYn, String imageUrl, Gender gender,
-                            String birthDate) {
+                            String phoneNumber, String certYn, String picture, Gender gender,
+                            String birthDate, Role role) {
         this.name = name;
         this.account = account;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.certYn = certYn;
-        this.imageUrl = imageUrl;
+        this.picture = picture;
         this.gender = gender;
         this.birthDate = birthDate;
+        this.role = role;
     }
 }

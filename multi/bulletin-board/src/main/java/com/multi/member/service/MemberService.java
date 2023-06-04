@@ -1,9 +1,10 @@
 package com.multi.member.service;
 
 import com.multi.member.dto.request.MemberRequestDto;
+import com.multi.member.dto.response.MemberResponseDto;
 
 public interface MemberService {
 
-    Long signUp(MemberRequestDto memberRequestDto);
+    MemberResponseDto signUp(MemberRequestDto memberRequestDto);
 
 }

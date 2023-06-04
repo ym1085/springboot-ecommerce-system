@@ -12,11 +12,11 @@
                , password
                , email
                , phone_number
-               , image_url
+               , picture
                , birth_date
                , use_yn
                , cert_yn
-               , role_id
+               , role
                , create_date
                , update_date
                , gender
@@ -29,8 +29,8 @@
                 #{email},
                 #{phoneNumber},
                 <choose>
-                    <when test="imageUrl != null and imageUrl != ''">
-                        #{imageUrl}
+                    <when test="picture != null and picture != ''">
+                        #{picture}
                   </when>
                   <otherwise>
                      NULL
@@ -39,11 +39,95 @@
                 #{birthDate},
                 'Y',
                 #{certYn},
-                1,
+                #{role},
                 now(),
                 now(),
                 #{gender}
             )
     </insert>
+
+    <!-- 소셜 로그인 : Google, Naver, Kakao.. -->
+    <insert id="signUpWithSocialLogin" parameterType="com.multi.member.domain.Member" statementType="CALLABLE">
+        <![CDATA[
+        {
+            CALL sp_insert_member
+                (
+                    #{name},
+                    #{email},
+                    #{picture},
+                    #{role},
+                    #{registrationId},
+                    #{providerToken}
+                )
+        }
+        ]]>
+    </insert>
+
+    <select id="getMemberByEmail" parameterType="string" resultType="com.multi.member.domain.Member">
+        SELECT
+            member_id,
+            name,
+            account,
+            password,
+            email,
+            phone_number,
+            picture,
+            birth_date,
+            use_yn,
+            cert_yn,
+            role,
+            create_date,
+            update_date,
+            gender
+        FROM member
+        WHERE email = #{email}
+          AND use_yn = 'Y'
+          AND cert_yn = 'Y'
+    </select>
+
+    <select id="getMemberById" parameterType="long" resultType="com.multi.member.domain.Member">
+        SELECT
+            member_id,
+            name,
+            account,
+            password,
+            email,
+            phone_number,
+            picture,
+            birth_date,
+            use_yn,
+            cert_yn,
+            role,
+            create_date,
+            update_date,
+            gender
+        FROM member
+        WHERE member_id = #{memberId}
+        AND use_yn = 'Y'
+        AND cert_yn = 'Y'
+    </select>
+
+    <!-- 소셜 로그인 후 session에 저장 할 회원 조회 -->
+    <select id="getMemberByEmailWithSocialLogin" parameterType="string" resultType="com.multi.member.domain.Member">
+        SELECT
+            m.name,
+            m.email,
+            m.picture,
+            m.role
+        FROM member m
+        WHERE m.email = #{email}
+        AND m.use_yn = 'Y'
+        AND m.cert_yn = 'Y'
+    </select>
+
+    <!-- 소셜 로그인 사용자의 이메일, 대표 이미지 변경 -->
+    <update id="updateMemberByEmailAndPicture" parameterType="com.multi.member.domain.Member">
+        UPDATE member
+        SET email = #{email},
+            picture = #{picture}
+        WHERE email = #{email}
+        AND use_yn = 'Y'
+        AND cert_yn = 'Y'
+    </update>
 
 </mapper>

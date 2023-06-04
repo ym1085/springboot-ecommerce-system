@@ -1,11 +1,9 @@
 package com.multi.member.domain;
 
 import com.multi.member.constant.Gender;
+import com.multi.member.constant.Role;
 import com.multi.member.dto.request.MemberRequestDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -20,13 +18,15 @@ public class Member {
     private String password;
     private String email;
     private String phoneNumber;
-    private String imageUrl;
+    private String picture;
     private String birthDate;
     private String certYn;
-    private String roleName;
+    private Role role;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
     private Gender gender;
+    private String registrationId;
+    private String providerToken;
 
     // Dto -> Entity(vo)
     public Member(MemberRequestDto memberRequestDto) {
@@ -35,9 +35,31 @@ public class Member {
         this.password = memberRequestDto.getPassword();
         this.email = memberRequestDto.getEmail();
         this.phoneNumber = memberRequestDto.getPhoneNumber();
-        this.imageUrl = memberRequestDto.getImageUrl();
+        this.picture = memberRequestDto.getPicture();
         this.birthDate = memberRequestDto.getBirthDate();
         this.certYn = memberRequestDto.getCertYn();
         this.gender = memberRequestDto.getGender();
+    }
+
+    @Builder
+    public Member(String name, String email, String picture, Role role, String registrationId, String providerToken) {
+        this.name = name;
+        this.email = email;
+        this.picture = picture;
+        this.role = role;
+        this.registrationId = registrationId;
+        this.providerToken = providerToken;
+    }
+
+    // 클라이언트가 소셜 로그인를 시도하는 사용자가 제공되는 정보(data)에 변경이 있으면
+    // 해당 데이터를 받아서 DB에 실제 업데이트 하기 전 값 셋팅을 위해 사용
+    public Member updateRenewalMember(String name, String picture) {
+        this.name = name;
+        this.picture = picture;
+        return this;
+    }
+
+    public String getRoleKey() {
+        return this.role.getKey();
     }
 }
