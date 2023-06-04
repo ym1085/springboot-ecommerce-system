@@ -1,12 +1,11 @@
 package com.multi.posts.service.impl;
 
 import com.multi.posts.dto.request.FileRequestDto;
-import com.multi.posts.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -47,8 +46,8 @@ class FileServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("게시글 파일 저장 - 성공")
-    @Order(1)
     void testSaveFilesSuccess() {
         //given
         Long postId = 1L;

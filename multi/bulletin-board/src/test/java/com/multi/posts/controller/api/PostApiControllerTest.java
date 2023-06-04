@@ -6,12 +6,12 @@ import com.multi.posts.repository.FileMapper;
 import com.multi.posts.repository.PostMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,8 +42,8 @@ class PostApiControllerTest {
     private FileMapper fileMapper;
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("전체 게시글 조회 API")
-    @Order(1)
     void getPosts() throws Exception {
         //given
         //when
@@ -64,8 +64,8 @@ class PostApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("단일 게시글 조회 API")
-    @Order(2)
     void getPostById() throws Exception {
         //given
         //when
@@ -86,8 +86,8 @@ class PostApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("게시글 등록 API")
-    @Order(3)
     void savePost() throws Exception {
         //given
         PostRequestDto postRequestDto = PostRequestDto.builder()
@@ -111,6 +111,7 @@ class PostApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("게시글 수정 API - 제목 공백인 경우 예외 발생")
     void uploadPostTitleNull() throws Exception {
         //given
@@ -132,6 +133,7 @@ class PostApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("게시글 수정 API - 내용 공백인 경우 예외 발생")
     void uploadPostContentNull() throws Exception {
         //given
@@ -153,6 +155,7 @@ class PostApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("게시글 수정 API - 제목이 20을 초과하는 경우 예외 발생")
     void uploadPostTitleOverThan20() throws Exception {
         //given
@@ -174,6 +177,7 @@ class PostApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("게시글 수정 API - 내용이 250자를 넘는 경우 경우 예외 발생")
     void uploadPostContentOverThan250() throws Exception {
         //given
@@ -199,6 +203,7 @@ class PostApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("게시글 삭제 API 테스트")
     void deletePost() throws Exception {
         //given
