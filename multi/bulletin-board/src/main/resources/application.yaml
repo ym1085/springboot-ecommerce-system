@@ -1,7 +1,7 @@
 spring:
   profiles:
-    default: dev
-    active: dev, oauth
+    include: dev, oauth
+  #    active: dev, oauth
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
