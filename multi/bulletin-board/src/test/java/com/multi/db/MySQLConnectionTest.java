@@ -4,13 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 //@TestPropertySource("classpath:application-${spring.profiles.active}.yaml")
-@ActiveProfiles("dev")
+//@ActiveProfiles("dev")
 @SpringBootTest
 public class MySQLConnectionTest {
 

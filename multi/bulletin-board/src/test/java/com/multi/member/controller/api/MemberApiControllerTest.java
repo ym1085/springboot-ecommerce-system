@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ class MemberApiControllerTest {
     private MockMvc mockMvc;
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("회원 가입 성공")
     void testSignUp() throws Exception {
         //given
@@ -64,6 +66,7 @@ class MemberApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("이름이 null인 경우 테스트")
     void testMemberNameNull() throws Exception {
         //given
@@ -92,6 +95,7 @@ class MemberApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("이름이 한글자 미만인 경우 테스트")
     void testMemberNameLessThan1() throws Exception {
         //given
@@ -120,6 +124,7 @@ class MemberApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("이름이 여섯글자 초과인 경우 테스트")
     void testMemberNameOverThan6() throws Exception {
         //given
@@ -148,6 +153,7 @@ class MemberApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("ID가 null인 경우 테스트")
     void testMemberIdNull() throws Exception {
         //given
@@ -176,6 +182,7 @@ class MemberApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("ID가 30자 이상인 경우 테스트 - 예외 발생")
     void testMemberIdOverThan30() throws Exception {
         //given
@@ -204,6 +211,7 @@ class MemberApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("비밀번호가 null인 경우")
     void testMemberPasswordNull() throws Exception{
         //given
@@ -286,6 +294,7 @@ class MemberApiControllerTest {
 
     @ParameterizedTest
     @MethodSource("validationMemberPasswordGroup")
+    @WithMockUser(roles = "USER")
     @DisplayName("비밀번호 형식에 맞지 않는 경우")
     void testMemberPasswordNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
         //when
@@ -302,6 +311,7 @@ class MemberApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("이메일이 null인 경우 테스트")
     void testMemberEmailNull() throws Exception {
         //given
@@ -372,6 +382,7 @@ class MemberApiControllerTest {
 
     @ParameterizedTest
     @MethodSource("validationMemberEmailGroup")
+    @WithMockUser(roles = "USER")
     @DisplayName("이메일 형식에 맞지 않는 경우")
     void testMemberEmailNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
         //when
@@ -388,6 +399,7 @@ class MemberApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("휴대폰 번호가 null인 경우")
     void testMemberPhoneNumberNull() throws Exception {
         //given
@@ -458,6 +470,7 @@ class MemberApiControllerTest {
 
     @ParameterizedTest
     @MethodSource("validationMemberPhoneNumberGroup")
+    @WithMockUser(roles = "USER")
     @DisplayName("휴대폰 형식에 맞지 않는 경우")
     void testMemberPhoneNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
         //when
@@ -474,6 +487,7 @@ class MemberApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("생년월일이 null인 경우")
     void testMemberBirthDate() throws Exception {
         //given

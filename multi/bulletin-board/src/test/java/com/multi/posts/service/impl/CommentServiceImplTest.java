@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +24,7 @@ class CommentServiceImplTest {
     private CommentMapper commentMapper;
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("댓글 + 대댓글 저장 테스트")
     void testSaveComment() {
         Comment comment = new Comment(CommentRequestDto.builder()
@@ -40,6 +42,7 @@ class CommentServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("댓글 + 대댓글 저장 테스트 - 최상위 부모 댓글이 없는 경우")
     void testSaveCommentNoneParentCommentId() {
         //given
@@ -60,6 +63,7 @@ class CommentServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("댓글 + 대댓글 삭제 테스트 -> 부모, 자식 댓글들이 전부 삭제 되어야 함")
     void testDeleteParentAndChildComments() {
         // 재귀 사용해서 지우고 있음
@@ -79,6 +83,7 @@ class CommentServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("대댓글 삭제 테스트 - 특정 대댓글 1개만 삭제 되어야함")
     void testDeleteChildComments() {
         //given
@@ -96,6 +101,7 @@ class CommentServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("댓글 + 대댓글 삭제 테스트 - 댓글 ID가 전부 공백인 경우 -> 예외 상황")
     void testDeleteParentAndChildCommentsAllIdNull() {
         //given
@@ -114,6 +120,7 @@ class CommentServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("자식 댓글이 있는 상위 댓글을 삭제 하는 경우 -> 예외 상황")
     void testDeleteCommentNoneChildCommentId() {
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
@@ -131,6 +138,7 @@ class CommentServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("댓글 수정")
     void testUpdateCommentById() {
         Comment comment = new Comment(CommentRequestDto.builder()

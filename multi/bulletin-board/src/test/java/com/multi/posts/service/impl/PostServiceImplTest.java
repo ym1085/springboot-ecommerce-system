@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -36,6 +37,7 @@ class PostServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("난수 생성 테스트")
     void testRandom() {
         for (int i = 0; i < 50; i++) {
@@ -46,6 +48,7 @@ class PostServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("테스트 데이터 생성")
     @Rollback(false)
     void insertPostData() {
@@ -64,6 +67,7 @@ class PostServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("전체 게시글 조회 테스트")
     void getPosts() {
         //given
@@ -78,6 +82,7 @@ class PostServiceImplTest {
 
     @ParameterizedTest
     @ValueSource(longs = 1L)
+    @WithMockUser(roles = "USER")
     @DisplayName("단일 게시글 조회 테스트")
     void getPostById(Long input) {
         //given
@@ -91,6 +96,7 @@ class PostServiceImplTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("게시글 등록 테스트")
     void savePost() {
         //given

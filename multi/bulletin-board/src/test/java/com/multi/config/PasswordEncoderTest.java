@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,6 +20,7 @@ public class PasswordEncoderTest {
     private PasswordEncoder passwordEncoder;
 
     @Test
+    @WithMockUser(roles = "USER")
     @DisplayName("패스워드 암호화 가능 여부 테스트")
     void testPasswordEncoding() {
         //given
