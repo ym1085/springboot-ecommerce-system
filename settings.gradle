@@ -1,5 +1,5 @@
 rootProject.name = 'multi-module-project'
 include 'multi:search-api'
-include 'multi:bulletin-board'
+include 'multi:shop'
 include 'core:elastic-client'
 
