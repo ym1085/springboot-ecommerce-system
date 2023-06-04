@@ -1,41 +1,41 @@
 package com.multi.config.auth;
 
 import com.multi.member.constant.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 
-/**
- * @EnableWebSecurity
- * WebSecurityConfigurerAdapter를 상속받는 클래스에 @EnableWebSecurity 선언 시 SpringSecurityFilterChain이 자동으로 포함됨
- * WebSecurityConfigurerAdapter를 상속 후 메서드 오버라이딩을 통해 보안 설정 커스텀 가능
- */
-@Configuration // Spring에서 설정 파일 등록 시 사용 -> @Bean 어노테이션이랑 같이 엮어서 사용 -> Component scan target
+// https://samori.tistory.com/64
+// https://lealea.tistory.com/211
+@RequiredArgsConstructor
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    private final CustomOAuth2UserService customOAuth2UserService;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
                         .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-consonle/**", "/profile").permitAll()
-                        .antMatchers("/api/v1/**").hasRole(Role.ROLE_USER.name())
+//                        .antMatchers("/api/v1/**").permitAll()
+                        .antMatchers("/api/v1/**").hasRole(Role.USER.name())
+//                        .antMatchers("/member/**", "/post/**", "/download/**").permitAll() // tmp
                     .anyRequest().authenticated()
                 .and()
                     .logout()
                     .logoutSuccessUrl("/")
                 .and()
-                    .oauth2Login().userInfoEndpoint()
-                    .userService(null)
+                    .oauth2Login()
+                    .userInfoEndpoint()
+                    .userService(customOAuth2UserService);
     }
 
     /**

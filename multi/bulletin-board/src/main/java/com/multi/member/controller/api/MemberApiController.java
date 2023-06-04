@@ -1,6 +1,7 @@
 package com.multi.member.controller.api;
 
 import com.multi.member.dto.request.MemberRequestDto;
+import com.multi.member.dto.response.MemberResponseDto;
 import com.multi.member.service.MemberService;
 import com.multi.posts.constant.StatusEnum;
 import com.multi.utils.ApiResponse;
@@ -45,7 +46,8 @@ public class MemberApiController {
             return ResponseEntity.badRequest().body(message);
         }
 
-        Long successId = memberService.signUp(memberRequestDto);
+        MemberResponseDto memberResponseDto = memberService.signUp(memberRequestDto);
+        Long successId = (memberResponseDto.getMemberId() != null) ? 1L : 0L;
         ApiResponse<Long> message;
         HttpStatus status;
         if (successId > 0) {
