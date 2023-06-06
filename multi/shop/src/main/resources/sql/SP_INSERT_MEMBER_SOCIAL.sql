@@ -1,4 +1,3 @@
-DELIMITER //
 CREATE PROCEDURE sp_insert_member(
     IN p_name VARCHAR(20),
     IN p_email VARCHAR(50),
@@ -65,5 +64,4 @@ BEGIN
         );
 
     COMMIT;
-END //
-DELIMITER ;
+END;

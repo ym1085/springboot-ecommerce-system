@@ -35,7 +35,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      * - 현재는 구글 로그인이지만 추후 카카오, 네이버 로그인 연동 시 구분 하기 위해 사용
      *
      * 'userNameAttribute'
-     * - OAuth2 로그인 진행 시 키가 되는 피드값 -> PK와 같은 의미
+     * - OAuth2 로그인 진행 시 키가 되는 피드값 -> PK와 같은 의미\
      * - Google의 경우 기본적으로 코드 지원('sub'), 네이버 + 카카오 코드 지원 안함
      */
     @Override
