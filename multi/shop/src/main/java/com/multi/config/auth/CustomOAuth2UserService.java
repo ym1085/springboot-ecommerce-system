@@ -5,7 +5,7 @@ import com.multi.config.auth.dto.SessionMember;
 import com.multi.member.domain.Member;
 import com.multi.member.repository.MemberMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -35,7 +36,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      * - 현재는 구글 로그인이지만 추후 카카오, 네이버 로그인 연동 시 구분 하기 위해 사용
      *
      * 'userNameAttribute'
-     * - OAuth2 로그인 진행 시 키가 되는 피드값 -> PK와 같은 의미\
+     * - OAuth2 로그인 진행 시 키가 되는 피드값 -> PK와 같은 의미
      * - Google의 경우 기본적으로 코드 지원('sub'), 네이버 + 카카오 코드 지원 안함
      */
     @Override
@@ -57,6 +58,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         SessionMember sessionMember = new SessionMember(member);
         session.setAttribute("LOGIN_SESSION_USER", sessionMember);
 
+        log.debug("member.getRoleKey() = {}", member.getRoleKey()); // ROLE_GUEST
+        log.debug("attributes.getAttributes = {}", attributes.getAttributes()); //
+        log.debug("attributes.getNameAttributeKey() = {}", attributes.getNameAttributeKey()); // response
+
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(member.getRoleKey())),
                 attributes.getAttributes(),
@@ -64,29 +69,27 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
     }
 
+    /**
+     * 소셜 로그인시에 회원 정보를 저장
+     *
+     * @param attributes 소셜 로그인을 수행하는 회원 정보
+     * @return 소셜 로그인을 수행한 유저의 정보 반환
+     */
     private Member saveOrUpdate(OAuthAttributes attributes) {
-        Member member = memberMapper.getMemberByEmail(attributes.getEmail())
-                .map(entity -> entity.updateRenewalMember(attributes.getName(), attributes.getPicture()))
-                .orElse(attributes.toEntity());
-
-        // 기존 회원
-        if (StringUtils.isNotBlank(member.getEmail())) {
-            if (!attributes.getEmail().equalsIgnoreCase(member.getEmail()) || !attributes.getPicture().equalsIgnoreCase(member.getPicture())) { // 정보 변경이 있을 경우만 UPDATE
-                Long successId = memberMapper.updateMemberByEmailAndPicture(member);
-                if (successId > 0) {
-                    member = memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail()).orElse(new Member());
-                }
-            }
-        }
-
-        // 신규 회원
-        if (StringUtils.isBlank(member.getEmail())){
-            Long successId = memberMapper.signUpWithSocialLogin(member);
-            if (successId > 0) {
-                member = memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail()).orElse(new Member());
-            }
-        }
-
-        return member;
+        return memberMapper.getMemberByEmail(attributes.getEmail())
+                .map(entity -> {
+                    // 기존 회원 가입 정보가 있는 유저인 경우 정보 갱신
+                    if (entity.getEmail() != null && attributes.getEmail().equalsIgnoreCase(entity.getEmail())) {
+                        memberMapper.updateMemberByEmailAndPicture(entity);
+                        return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail()).orElse(new Member());
+                    }
+                    return entity;
+                })
+                .orElseGet(() -> {
+                    // 기존 회원 가입 정보가 없는 유저인 경우 저장
+                    Member savedMember = attributes.toEntity();
+                    memberMapper.signUpWithSocialLogin(savedMember);
+                    return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail()).orElse(new Member());
+                });
     }
 }

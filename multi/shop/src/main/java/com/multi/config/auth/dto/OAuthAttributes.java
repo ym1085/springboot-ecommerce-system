@@ -32,6 +32,9 @@ public class OAuthAttributes {
     }
 
     public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes, String providerToken) {
+        log.debug("registrationId = {}, userNameAttributeName = {}, attribute = {}, providerToken = {}"
+                , registrationId, userNameAttributeName, attributes, providerToken);
+
         OAuthAttributes oAuthAttributes = null;
         SocialType socialType = SocialType.getSocialType(registrationId);
         switch (socialType) {
@@ -48,7 +51,6 @@ public class OAuthAttributes {
 //                oAuthAttributes = ofTwitter(registrationId, userNameAttributeName, attributes, providerToken);
                 break;
             default:
-                // Todo: 해당하는 타입이 없음
                 log.warn("No matching type exists for social login");
         }
         return oAuthAttributes;
@@ -56,9 +58,9 @@ public class OAuthAttributes {
 
     private static OAuthAttributes ofGoogle(String registrationId, String userNameAttributeName, Map<String, Object> attributes, String providerToken) {
         return OAuthAttributes.builder()
-                .name((String) attributes.get("name"))
-                .email((String) attributes.get("email"))
-                .picture((String) attributes.get("picture"))
+                .name((String) attributes.getOrDefault("name", ""))
+                .email((String) attributes.getOrDefault("email", ""))
+                .picture((String) attributes.getOrDefault("picture", ""))
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .registrationId(registrationId)
@@ -68,6 +70,7 @@ public class OAuthAttributes {
 
     private static OAuthAttributes ofNaver(String registrationId, String userNameAttributeName, Map<String, Object> attributes, String providerToken) {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
         return OAuthAttributes.builder()
                 .name((String) response.getOrDefault("name", ""))
                 .email((String) response.getOrDefault("email", ""))
