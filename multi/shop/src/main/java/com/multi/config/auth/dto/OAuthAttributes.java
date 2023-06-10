@@ -42,13 +42,10 @@ public class OAuthAttributes {
                 oAuthAttributes = ofGoogle(registrationId, userNameAttributeName, attributes, providerToken);
                 break;
             case NAVER:
-                oAuthAttributes = ofNaver(registrationId, userNameAttributeName, attributes, providerToken);
+                oAuthAttributes = ofNaver(registrationId, "id", attributes, providerToken);
                 break;
             case KAKAO:
-//                oAuthAttributes = ofKakao(registrationId, userNameAttributeName, attributes, providerToken);
-                break;
-            case TWITTER:
-//                oAuthAttributes = ofTwitter(registrationId, userNameAttributeName, attributes, providerToken);
+                oAuthAttributes = ofKakao(registrationId, userNameAttributeName, attributes, providerToken);
                 break;
             default:
                 log.warn("No matching type exists for social login");
@@ -76,6 +73,27 @@ public class OAuthAttributes {
                 .email((String) response.getOrDefault("email", ""))
                 .picture((String) response.getOrDefault("profile_image", ""))
                 .attributes(response)
+                .nameAttributeKey(userNameAttributeName)
+                .registrationId(registrationId)
+                .providerToken(providerToken)
+                .build();
+    }
+
+    private static OAuthAttributes ofKakao(String registrationId, String userNameAttributeName, Map<String, Object> attributes, String providerToken) {
+        log.debug("properties = {}", attributes.get("properties"));
+        log.debug("kakao_account = {}", attributes.get("kakao_account"));
+
+        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+        String name = (String) properties.get("nickname");
+        String email = (String) kakaoAccount.get("email");
+        String picture = (String) properties.get("profile_image");
+
+        return OAuthAttributes.builder()
+                .name(name)
+                .email(email)
+                .picture(picture)
+                .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .registrationId(registrationId)
                 .providerToken(providerToken)

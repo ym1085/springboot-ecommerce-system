@@ -80,6 +80,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .map(entity -> {
                     // 기존 회원 가입 정보가 있는 유저인 경우 정보 갱신
                     if (entity.getEmail() != null && attributes.getEmail().equalsIgnoreCase(entity.getEmail())) {
+                        entity.updateRenewalMember(attributes.getName(), attributes.getPicture());
                         memberMapper.updateMemberByEmailAndPicture(entity);
                         return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail()).orElse(new Member());
                     }

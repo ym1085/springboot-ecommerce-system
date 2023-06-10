@@ -16,7 +16,10 @@
         <!-- userName이 존재한다면 아래 로직 수행 -->
         <div sec:authorize="isAuthenticated()">
             Logged in as: <span id="user" sec:authentication="name"></span>
-            <a href="/logout" class="btn btn-primary">Logout</a>
+            <div th:if="${name != null}" th:inline="text">
+                [[${userName}]] 님, 안녕하세요.
+            </div>
+            <a href="/logout" class="btn btn-primary" role="button">Logout</a>
         </div>
         <div sec:authorize="!isAuthenticated()">
             <!-- javascript에서 검증 후 서버로 넘긴다 -->
@@ -42,9 +45,9 @@
                 <a href="/oauth2/authorization/kakao" class="btn btn-secondary login-button kakao-login">
                     <!--<img src="kakao_logo.png" alt="Kakao Logo" />-->카카오로 로그인
                 </a>
-                <a href="/oauth2/authorization/twitter" class="btn btn-secondary login-button twitter-login">
-                    <!--<img src="twitter_logo.png" alt="Twitter Logo" />-->트위터로 로그인
-                </a>
+                <!--<a href="/oauth2/authorization/twitter" class="btn btn-secondary login-button twitter-login">
+                    &lt;!&ndash;<img src="twitter_logo.png" alt="Twitter Logo" />&ndash;&gt;트위터로 로그인
+                </a>-->
             </div>
         </div>
     </div>
