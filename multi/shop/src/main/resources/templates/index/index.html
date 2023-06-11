@@ -17,7 +17,7 @@
         <div sec:authorize="isAuthenticated()">
             Logged in as: <span id="user" sec:authentication="name"></span>
             <div th:if="${name != null}" th:inline="text">
-                [[${userName}]] 님, 안녕하세요.
+                [[${name}]] 님, 안녕하세요. email : [[${email}]]
             </div>
             <a href="/logout" class="btn btn-primary" role="button">Logout</a>
         </div>

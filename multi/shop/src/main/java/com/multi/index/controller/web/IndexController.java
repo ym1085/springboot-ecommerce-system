@@ -18,9 +18,10 @@ public class IndexController {
 
     @GetMapping(value = "/")
     public String index(Model model) {
-        SessionMember member = (SessionMember) session.getAttribute("LOGIN_SESSION_USER");
-        if (member != null) {
-            model.addAttribute("memberName", member.getName());
+        SessionMember sessionMember = (SessionMember) session.getAttribute("LOGIN_SESSION_USER");
+        if (sessionMember != null) {
+            model.addAttribute("name", sessionMember.getName());
+            model.addAttribute("email", sessionMember.getEmail());
         }
         return "index/index";
     }

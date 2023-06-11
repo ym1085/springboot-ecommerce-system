@@ -12,11 +12,11 @@ public interface MemberMapper {
 
     Long signUpWithSocialLogin(Member member);
 
-    Optional<Member> getMemberByEmail(String email);
+    Optional<Member> getMemberByEmail(String email, String registrationId);
 
     Optional<Member> getMemberById(Long memberId);
 
-    Optional<Member> getMemberByEmailWithSocialLogin(String email);
+    Optional<Member> getMemberByEmailWithSocialLogin(String email, String registrationId);
 
     Long updateMemberByEmailAndPicture(Member member);
 

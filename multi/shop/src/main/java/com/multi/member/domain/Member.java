@@ -42,8 +42,9 @@ public class Member {
     }
 
     @Builder
-    public Member(String name, String email, String picture, Role role, String registrationId, String providerToken) {
+    public Member(String name, String account, String email, String picture, Role role, String registrationId, String providerToken) {
         this.name = name;
+        this.account = account;
         this.email = email;
         this.picture = picture;
         this.role = role;
