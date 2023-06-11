@@ -32,6 +32,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      * @description 아래 함수에서 사용되는 중요 변수 해설
      *
      * 'registrationId'
+     * - ex) [ 'google', 'naver', 'kakao', 'facebook' ]
      * - 서비스 구분 코드, 현재 로그인 진행 중인 서비스를 구분하는 코드 저장
      * - 현재는 구글 로그인이지만 추후 카카오, 네이버 로그인 연동 시 구분 하기 위해 사용
      *
@@ -44,23 +45,19 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        String registrationId = userRequest.getClientRegistration().getRegistrationId(); // [ google, '', '' ]
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
         String userNameAttribute = userRequest.getClientRegistration()
                 .getProviderDetails()
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName();
 
-        String providerToken = userRequest.getAccessToken().getTokenValue(); // token
+        String providerToken = userRequest.getAccessToken().getTokenValue();
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttribute, oAuth2User.getAttributes(), providerToken);
 
         Member member = saveOrUpdate(attributes);
         SessionMember sessionMember = new SessionMember(member);
         session.setAttribute("LOGIN_SESSION_USER", sessionMember);
-
-        log.debug("member.getRoleKey() = {}", member.getRoleKey()); // ROLE_GUEST
-        log.debug("attributes.getAttributes = {}", attributes.getAttributes()); //
-        log.debug("attributes.getNameAttributeKey() = {}", attributes.getNameAttributeKey()); // response
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(member.getRoleKey())),
@@ -76,21 +73,29 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      * @return 소셜 로그인을 수행한 유저의 정보 반환
      */
     private Member saveOrUpdate(OAuthAttributes attributes) {
-        return memberMapper.getMemberByEmail(attributes.getEmail())
-                .map(entity -> {
-                    // 기존 회원 가입 정보가 있는 유저인 경우 정보 갱신
-                    if (entity.getEmail() != null && attributes.getEmail().equalsIgnoreCase(entity.getEmail())) {
-                        entity.updateRenewalMember(attributes.getName(), attributes.getPicture());
-                        memberMapper.updateMemberByEmailAndPicture(entity);
-                        return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail()).orElse(new Member());
-                    }
-                    return entity;
-                })
-                .orElseGet(() -> {
-                    // 기존 회원 가입 정보가 없는 유저인 경우 저장
-                    Member savedMember = attributes.toEntity();
-                    memberMapper.signUpWithSocialLogin(savedMember);
-                    return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail()).orElse(new Member());
-                });
+        Member findMember = memberMapper.getMemberByEmail(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
+        if (findMember.getEmail() != null
+                && attributes.getEmail().equalsIgnoreCase(findMember.getEmail())
+                && attributes.getRegistrationId().equalsIgnoreCase(findMember.getRegistrationId())) {
+
+            if(isUpdateNameAndPictureCondition(findMember, attributes)) {
+                findMember.updateRenewalMember(attributes.getName(), attributes.getPicture());
+                memberMapper.updateMemberByEmailAndPicture(findMember);
+            }
+            return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
+        } else {
+            Member savedMember = attributes.toEntity();
+            memberMapper.signUpWithSocialLogin(savedMember);
+            return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
+        }
+    }
+
+    private boolean isUpdateNameAndPictureCondition(Member findMember, OAuthAttributes attributes) {
+        boolean flag = true;
+        if (findMember.getPicture().equalsIgnoreCase(attributes.getPicture())
+                && findMember.getName().equalsIgnoreCase(attributes.getName())) {
+            flag = false;
+        }
+        return flag;
     }
 }

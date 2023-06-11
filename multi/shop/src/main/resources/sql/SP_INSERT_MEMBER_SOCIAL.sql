@@ -1,5 +1,6 @@
 CREATE PROCEDURE sp_insert_member(
     IN p_name VARCHAR(20),
+    IN p_account VARCHAR(300),
     IN p_email VARCHAR(50),
     IN p_picture VARCHAR(200),
     IN p_role VARCHAR(20),
@@ -27,7 +28,7 @@ BEGIN
     VALUES
         (
             p_name,
-            NULL,
+            p_account,
             NULL,
             p_email,
             NULL,
