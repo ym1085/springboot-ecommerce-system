@@ -19,16 +19,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
+        http.csrf().disable() // detect csrf attack
                 .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-consonle/**", "/profile").permitAll()
-//                        .antMatchers("/api/v1/**").permitAll()
+                        .antMatchers("/css/**", "/images/**", "/js/**", "/h2-console/**", "/profile").permitAll()
+                        //.antMatchers("/", "/member/login", "/member/loginForm", "/member/joinForm").permitAll() // Todo: main 페이지 만들고 변경
+                        .antMatchers("/member/login", "/member/loginForm", "/member/joinForm").permitAll()
                         .antMatchers("/api/v1/**").hasRole(Role.USER.name())
-//                        .antMatchers("/member/**", "/post/**", "/download/**").permitAll() // tmp
-                    .anyRequest().authenticated()
+                        .anyRequest().authenticated()
+                .and()
+                    .formLogin()
+                    .loginPage("/member/loginForm") // 사용자 정의 로그인 페이지
+                    .loginProcessingUrl("/member/login/success") // 로그인 성공 후 이동 페이지
+                    .usernameParameter("account") // 아이디 파라미터명
+                    .passwordParameter("password") // 패스워드 파라미터명
+                    .loginProcessingUrl("/member/login") // 로그인 for action url
+                    .defaultSuccessUrl("/")
                 .and()
                     .logout()
                     .logoutSuccessUrl("/")
