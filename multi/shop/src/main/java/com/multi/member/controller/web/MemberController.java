@@ -1,4 +1,4 @@
-package com.multi.index.controller.web;
+package com.multi.member.controller.web;
 
 import com.multi.config.auth.dto.SessionMember;
 import lombok.RequiredArgsConstructor;
@@ -12,17 +12,17 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-public class IndexController {
+public class MemberController {
 
     private final HttpSession session;
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "/member/loginForm")
     public String index(Model model) {
         SessionMember sessionMember = (SessionMember) session.getAttribute("LOGIN_SESSION_USER");
         if (sessionMember != null) {
             model.addAttribute("name", sessionMember.getName());
             model.addAttribute("email", sessionMember.getEmail());
         }
-        return "index/index";
+        return "member/loginForm";
     }
 }

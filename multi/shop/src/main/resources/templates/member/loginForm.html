@@ -23,7 +23,7 @@
         </div>
         <div sec:authorize="!isAuthenticated()">
             <!-- javascript에서 검증 후 서버로 넘긴다 -->
-            <form action="/member" method="post" onsubmit="login(event)">
+            <form action="/member/login" method="post">
                 <div class="form-group">
                     <label for="account">계정</label>
                     <input type="text" class="form-control" id="account" name="account" required placeholder="아이디를 입력해주세요."/>
