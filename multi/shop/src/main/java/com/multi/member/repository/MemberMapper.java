@@ -20,4 +20,6 @@ public interface MemberMapper {
 
     Long updateMemberByEmailAndPicture(Member member);
 
+    Optional<Member> getMemberByAccount(String username);
+
 }

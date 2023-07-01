@@ -4,14 +4,19 @@ import com.multi.member.constant.Gender;
 import com.multi.member.constant.Role;
 import com.multi.member.dto.request.MemberRequestDto;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 
 @ToString
 @Getter
 @Setter
 @NoArgsConstructor
-public class Member {
+public class Member implements UserDetails {
     private Long memberId;
     private String name;
     private String account;
@@ -62,5 +67,36 @@ public class Member {
 
     public String getRoleKey() {
         return this.role.getKey();
+    }
+
+    // spring security 인증 처리를 위해 UserDetails의 메서드 오버라이딩
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority(this.role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.account;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
