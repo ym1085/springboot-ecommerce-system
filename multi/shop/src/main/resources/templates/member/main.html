@@ -5,19 +5,23 @@
       layout:decorate="~{layouts/default}">
 
 <div layout:fragment="content">
-  <div id="carouselControls" class="carousel slide margin" data-ride="carousel">
+  <!-- 20230705 data-interval 3초로 변경 -->
+  <div id="carouselControls" class="carousel slide margin" data-ride="carousel" data-interval="3000">
     <div class="carousel-inner">
       <!-- 1번 행사 이미지 -->
       <div class="carousel-item active item">
-        <img class="d-block w-100 banner" src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png" alt="First slide">
+        <!--<img class="d-block w-100 banner" src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png" alt="First slide">-->
+        <img class="d-block w-100 banner" th:src="@{/images/20230705/event/blackfri_02.jpg}" alt="First slide">
       </div>
       <!-- 2번 행사 이미지 -->
       <div class="carousel-item item">
-        <img class="d-block w-100 banner" src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png" alt="Second slide">
+        <!--<img class="d-block w-100 banner" src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png" alt="Second slide">-->
+        <img class="d-block w-100 banner" th:src="@{/images/20230705/event/blackfri_02.jpg}" alt="Second slide">
       </div>
       <!-- 3번 행사 이미지 -->
       <div class="carousel-item item">
-        <img class="d-block w-100 banner" src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png" alt="Third slide">
+        <!--<img class="d-block w-100 banner" src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png" alt="Third slide">-->
+        <img class="d-block w-100 banner" th:src="@{/images/20230705/event/blackfri_02.jpg}" alt="Third slide">
       </div>
     </div>
   </div>
@@ -27,7 +31,7 @@
     <div class="col-md-4 margin">
       <div class="card">
         <a href="#" class="text-dark">
-          <img th:src="@{/images/jean.png}" class="card-img-top" height="400">
+          <img th:src="@{/images/20230705/items/jean.png}" class="card-img-top" height="400">
           <div class="card-body">
             <h4 class="card-title">상품명</h4>
             <p class="card-text">상품 상세 설명</p>
@@ -39,7 +43,7 @@
     <div class="col-md-4 margin">
       <div class="card">
         <a href="#" class="text-dark">
-          <img th:src="@{/images/jean.png}" class="card-img-top" height="400">
+          <img th:src="@{/images/20230705/items/jean.png}" class="card-img-top" height="400">
           <div class="card-body">
             <h4 class="card-title">상품명2</h4>
             <p class="card-text">상품 상세 설명2</p>
@@ -51,7 +55,7 @@
     <div class="col-md-4 margin">
       <div class="card">
         <a href="#" class="text-dark">
-          <img th:src="@{/images/jean.png}" class="card-img-top" height="400">
+          <img th:src="@{/images/20230705/items/jean.png}" class="card-img-top" height="400">
           <div class="card-body">
             <h4 class="card-title">상품명3</h4>
             <p class="card-text">상품 상세 설명3</p>

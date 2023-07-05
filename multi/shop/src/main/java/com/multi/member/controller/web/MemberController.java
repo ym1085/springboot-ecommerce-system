@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Slf4j
@@ -16,21 +18,9 @@ public class MemberController {
 
     private final HttpSession session;
 
-    /*@GetMapping(value = "/")
-    public String main(HttpServletRequest request, Model model) {
-        log.debug(">> request = {}", request.toString());
-
-        SessionMember sessionMember = (SessionMember) session.getAttribute("LOGIN_SESSION_USER");
-        if (sessionMember != null) {
-            model.addAttribute("name", sessionMember.getName());
-            model.addAttribute("email", sessionMember.getEmail());
-            return "member/loginForm";
-        }
-        return "redirect:/member/loginForm";
-    }*/
-
     @GetMapping(value = "/")
-    public String enter(Model model) {
+    public String enter(HttpServletRequest request, HttpServletResponse response, Model model) {
+        log.debug("enter main page, request = {}", request.toString());
         return "member/main";
     }
 
