@@ -137,4 +137,26 @@
         AND m.cert_yn = 'Y';
     </update>
 
+    <select id="getMemberByAccount" parameterType="string" resultType="com.multi.member.domain.Member">
+        SELECT
+            m.member_id,
+            m.name,
+            m.account,
+            m.password,
+            m.email,
+            m.phone_number,
+            m.picture,
+            m.birth_date,
+            m.use_yn,
+            m.cert_yn,
+            m.role,
+            m.create_date,
+            m.update_date,
+            m.gender
+        FROM member m
+        WHERE m.account = #{username}
+        AND m.use_yn = 'Y'
+        AND m.cert_yn = 'Y'
+    </select>
+
 </mapper>

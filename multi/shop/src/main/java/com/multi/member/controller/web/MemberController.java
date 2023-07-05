@@ -16,6 +16,24 @@ public class MemberController {
 
     private final HttpSession session;
 
+    /*@GetMapping(value = "/")
+    public String main(HttpServletRequest request, Model model) {
+        log.debug(">> request = {}", request.toString());
+
+        SessionMember sessionMember = (SessionMember) session.getAttribute("LOGIN_SESSION_USER");
+        if (sessionMember != null) {
+            model.addAttribute("name", sessionMember.getName());
+            model.addAttribute("email", sessionMember.getEmail());
+            return "member/loginForm";
+        }
+        return "redirect:/member/loginForm";
+    }*/
+
+    @GetMapping(value = "/")
+    public String enter(Model model) {
+        return "member/main";
+    }
+
     @GetMapping(value = "/member/loginForm")
     public String index(Model model) {
         SessionMember sessionMember = (SessionMember) session.getAttribute("LOGIN_SESSION_USER");
