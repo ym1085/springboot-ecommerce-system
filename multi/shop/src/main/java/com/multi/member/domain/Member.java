@@ -65,16 +65,18 @@ public class Member implements UserDetails {
         return this;
     }
 
-    public String getRoleKey() {
-        return this.role.getKey();
-    }
-
     // spring security 인증 처리를 위해 UserDetails의 메서드 오버라이딩
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(this.role.name()));
     }
 
+    public String getRoleKey() {
+        return this.role.getKey();
+    }
+
+    // spring security의 userName
+    // 인증 할 때 id를 target으로 한다
     @Override
     public String getUsername() {
         return this.account;

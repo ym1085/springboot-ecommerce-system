@@ -42,6 +42,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
                 .orElse(new MemberResponseDto());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Information about the user trying to sign in, username = {}", username);
