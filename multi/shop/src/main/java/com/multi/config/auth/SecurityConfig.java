@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests()
                         .antMatchers("/css/**", "/images/**", "/js/**", "/h2-console/**", "/profile").permitAll()
-                        .antMatchers("/", "/member/login", "/member/loginForm", "/member/joinForm").permitAll()
+                        .antMatchers("/", "/member/login", "/member/loginForm", "/member/joinForm", "/member/access-denied").permitAll()
                         .antMatchers("/api/v1/**").hasRole(Role.USER.name())
                         .anyRequest().authenticated()
                 .and()
@@ -38,8 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("username") // 아이디 파라미터명
                     .passwordParameter("password") // 패스워드 파라미터명
                     .loginProcessingUrl("/member/login") // 로그인 action url
+                    .failureUrl("/member/access-denied")
+                    .defaultSuccessUrl("/member/access-success") // 로그인 성공 후 이동 페이지
                     //.successHandler(customLogInSuccessHandler) // 로그인 성공 후 일반 로그인 Handling
-                    //.defaultSuccessUrl("/") // 로그인 성공 후 이동 페이지
                 .and()
                     .logout()
                     .logoutSuccessUrl("/")
@@ -59,5 +60,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
