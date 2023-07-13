@@ -17,5 +17,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("OAuth 2.0, 로그인에 성공했습니다. 토큰을 발급합니다.");
+
+        // Todo: JWT Token 발급
+
+        response.sendRedirect("/member/loginForm");
     }
 }
