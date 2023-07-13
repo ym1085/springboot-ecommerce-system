@@ -54,7 +54,7 @@ class MemberApiControllerTest {
 
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -83,7 +83,7 @@ class MemberApiControllerTest {
 
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -112,7 +112,7 @@ class MemberApiControllerTest {
 
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -141,7 +141,7 @@ class MemberApiControllerTest {
 
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -170,7 +170,7 @@ class MemberApiControllerTest {
 
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -199,7 +199,7 @@ class MemberApiControllerTest {
 
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -228,7 +228,7 @@ class MemberApiControllerTest {
 
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -299,7 +299,7 @@ class MemberApiControllerTest {
     void testMemberPasswordNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -328,7 +328,7 @@ class MemberApiControllerTest {
 
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -387,7 +387,7 @@ class MemberApiControllerTest {
     void testMemberEmailNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -416,7 +416,7 @@ class MemberApiControllerTest {
 
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -475,7 +475,7 @@ class MemberApiControllerTest {
     void testMemberPhoneNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
@@ -504,7 +504,7 @@ class MemberApiControllerTest {
 
         //when
         ResultActions result  = mockMvc.perform(
-                post("/api/v1/member")
+                post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );

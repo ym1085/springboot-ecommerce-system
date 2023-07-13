@@ -32,8 +32,8 @@ public class MemberApiController {
      * @param memberRequestDto 사용자 회원 가입 정보
      * @description 회원가입의 경우 SNS 연동을 통한 로그인이 아닌 일반 로그인을 원하는 유저가 있다 가정하고 구현
      */
-    @PostMapping(value = "/member")
-    public ResponseEntity signUp(@RequestBody @Valid MemberRequestDto memberRequestDto,
+    @PostMapping(value = "/member/join")
+    public ResponseEntity join(@RequestBody @Valid MemberRequestDto memberRequestDto,
                                               BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
