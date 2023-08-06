@@ -17,6 +17,7 @@ public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         log.info("OAuth 2.0 로그인에 실패하였습니다. 서버 측 검토가 필요합니다.");
+
         response.sendRedirect("/member/access-denied");
     }
 }

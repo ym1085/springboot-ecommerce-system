@@ -16,7 +16,7 @@ create table member
 (
     member_id    bigint auto_increment primary key,
     name         varchar(20)                         not null comment '회원명',
-    account      varchar(100)                         null,
+    account      varchar(300)                         null,
     password     varchar(60)                         null,
     email        varchar(50)                         not null comment '회원 이메일',
     phone_number varchar(15)                         null comment '회원 휴대폰번호',
@@ -186,24 +186,3 @@ CREATE TABLE FILE (
     delete_date TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES POST(post_id)
 );
-
-SELECT
-    m.name,
-    m.email,
-    m.picture,
-    m.role,
-    sm.provider_type AS registrationId
-FROM member m join SOCIAL_MEMBER sm on m.member_id = sm.member_id
-WHERE m.email = 'youngmin1085@gmail.com'
-AND sm.provider_type = 'google'
-AND m.use_yn = 'Y'
-AND m.cert_yn = 'Y'
-
-UPDATE member m
-    INNER JOIN social_member sm ON m.member_id = sm.member_id
-SET m.email = 'youngmin1085@gmail.com',
-            m.picture = 'aaa'
-WHERE m.email = 'youngmin1085@gmail.com'
-  AND sm.provider_type = 'google'
-  AND m.use_yn = 'Y'
-  AND m.cert_yn = 'Y';
