@@ -6,7 +6,7 @@ spring:
     activate:
       on-profile: test
   datasource:
-    url: jdbc:h2:mem:movie;MODE=MySQL
+    url: jdbc:h2:mem:shop;MODE=MySQL
     driver-class-name: org.h2.Driver
     username: sa
     password:
