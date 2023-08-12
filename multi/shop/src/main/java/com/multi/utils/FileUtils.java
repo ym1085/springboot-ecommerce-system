@@ -117,17 +117,17 @@ public class FileUtils {
     }
 
     /**
-     * 업로드 경로 반환 - 추가 경로 없음(C:movie/upload-files/)
+     * 업로드 경로 반환 - 추가 경로 없음(C:shop/upload-files/)
      */
     private String getUploadPath() {
         return createDirectory(uploadPath);
     }
 
     /**
-     * 업로드 경로 반환 - 추가 경로 없음(C:movie/upload-files/20230520)
+     * 업로드 경로 반환 - 추가 경로 없음(C:shop/upload-files/20230520)
      */
     private String getUploadPath(String addPath) {
-        return createDirectory(uploadPath + File.separator + addPath); // C:movie/upload-files/20230520/
+        return createDirectory(uploadPath + File.separator + addPath); // C:shop/upload-files/20230520/
     }
 
     /**

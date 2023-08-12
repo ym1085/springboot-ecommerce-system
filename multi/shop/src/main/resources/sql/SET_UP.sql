@@ -1,15 +1,6 @@
 -- 1정규화 : 하나의 행에 하나의 데이터만 삽입
 -- 2정규화 : 현재 테이블의 주제와 관련없는 컬럼을 다른 테이블로 뺴는 작업
-USE movie;
-
--- TABLE : SOCIAL_MEMBER
-CREATE TABLE SOCIAL_MEMBER (
-    social_id BIGINT PRIMARY KEY AUTO_INCREMENT, -- auto increment
-    member_id BIGINT COMMENT '회원 ID', -- 현재 SNS 로그인한 member_id
-    provider_type VARCHAR(30) COMMENT '소셜 로그인 타입', -- google, kakao, naver, twitter
-    provider_token VARCHAR(255) COMMENT '소셜 로그인 토큰', -- 각 서비스에서 제공하는 unique token
-    FOREIGN KEY (member_id) REFERENCES MEMBER(member_id)
-);
+USE shop;
 
 -- TABLE : MEMBER
 create table member
@@ -28,6 +19,15 @@ create table member
     create_date  timestamp default CURRENT_TIMESTAMP null comment '가입일',
     update_date  timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '수정일',
     gender       varchar(10)                         null comment '성별'
+);
+
+-- TABLE : SOCIAL_MEMBER
+CREATE TABLE SOCIAL_MEMBER (
+   social_id BIGINT PRIMARY KEY AUTO_INCREMENT, -- auto increment
+   member_id BIGINT COMMENT '회원 ID', -- 현재 SNS 로그인한 member_id
+   provider_type VARCHAR(30) COMMENT '소셜 로그인 타입', -- google, kakao, naver, twitter
+   provider_token VARCHAR(255) COMMENT '소셜 로그인 토큰', -- 각 서비스에서 제공하는 unique token
+   FOREIGN KEY (member_id) REFERENCES MEMBER(member_id)
 );
 
 -- INSERT INTO MEMBER
@@ -185,4 +185,4 @@ CREATE TABLE FILE (
     -- update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일',
     delete_date TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES POST(post_id)
-);
+)
