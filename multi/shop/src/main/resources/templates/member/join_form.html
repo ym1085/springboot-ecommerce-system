@@ -10,15 +10,16 @@
 	      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	      crossorigin="anonymous"/>
 	<link rel="stylesheet" th:href="@{/css/index/index.css}" type="text/css"/>
+	<!--<script type="text/javascript" th:src="@{/js/member/join.js}"></script>-->
 </head>
-<body>
+
 <div layout:fragment="content" class="container center">
 	<div class="col-md-6">
 		<form name="memberJoinForm" id="memberJoinForm" method="post">
 			<input type="hidden" class="form-control" id="certYn" name="certYn" required placeholder="인증 여부를 입력해주세요." value="N"/>
 			<div class="form-group">
-				<label for="name">이름</label>
-				<input type="text" class="form-control" id="name" name="name" required placeholder="이름을 입력해주세요."/>
+				<label for="username">이름</label>
+				<input type="text" class="form-control" id="username" name="username" required placeholder="이름을 입력해주세요."/>
 			</div>
 			<div class="form-group">
 				<label for="account">계정</label>
@@ -78,13 +79,10 @@
 			<button type="button" class="btn btn-primary" id="btn-cancel" onclick="location.href='/member/loginForm'">취소</button>
 		</form>
 	</div>
+	<script src="/js/common/common.js"></script>
+	<script src="/js/member/join.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4mN2t3Ksk2/E1LR83tnD6" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqd9JT0pbrEr+rHIRsCf1105Ck5cg8+k5YRY2owMxUoA6KsmfD5IbbVJ" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </div>
-<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4mN2t3Ksk2/E1LR83tnD6" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqd9JT0pbrEr+rHIRsCf1105Ck5cg8+k5YRY2owMxUoA6KsmfD5IbbVJ" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>-->
-
-<!-- TODO: 20230801 인식 안되는 부분 잡을 것... -->
-<!--<script src="/js/member/join.js"></script>-->
-<script type="text/javascript" th:src="@{/js/member/join.js}"></script>
-</body>
 </html>

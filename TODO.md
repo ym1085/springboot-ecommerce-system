@@ -84,8 +84,8 @@
 
 `2023. 07. xx(토)`
 
-- [ ] OAuth 2.0 로그인 시에 Spring Security 전용 핸들러 생성(Success, Fail) 하여 로그인 창으로 반환
-- [ ] 로그인 화면에서 회원 가입 클릭 후 기본 input 양식 폼 만들어서 회원가입 되도록 기능 구현
+- [x] OAuth 2.0 로그인 시에 Spring Security 전용 핸들러 생성(Success, Fail) 하여 로그인 창으로 반환
+- [ ] 로그인 화면에서 회원 가입 클릭 후 기본 input 양식 폼 만들어서 회원 가입 되도록 기능 구현
 - [ ] 회원 가입 후 해당 id, pwd 기반으로 로그인 되는지 확인 진행
     - [ ] SecurityConfig 파일에 passwordEncode 관련 설정 추가해야하는지 확인 필요
 - [ ] Spring Security 로그인 구현
