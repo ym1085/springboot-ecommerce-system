@@ -25,3 +25,13 @@ function isEmpty(str) {
 function isNotEmpty(str) {
     return (isEmpty(str)) ? false : true;
 }
+
+/**
+ * 입력 문자가 숫자인지 검증
+ * @param value
+ * @returns {boolean}
+ */
+function isNotNumericRegExp(value) {
+    const regEx = /^\d+$/;
+    return !regEx.test(value);
+}

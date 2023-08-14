@@ -58,9 +58,9 @@
 							<option value="019">019</option>
 						</select>
 						<input type="text" class="form-control" id="phoneMiddle" name="phoneMiddle" required
-						       placeholder="중간 휴대폰 번호를 입력해주세요." style="width: 30%;"/>
+						       placeholder="2xxx" onKeyup="this.value=this.value.replace(/[^-0-9]/g,'');" style="width: 30%;"/>
 						<input type="text" class="form-control" id="phoneLast" name="phoneLast" required
-						       placeholder="마지막 휴대폰 번호를 입력해주세요." style="width: 30%;"/>
+						       placeholder="1xxx" onKeyup="this.value=this.value.replace(/[^-0-9]/g,'');" style="width: 30%;"/>
 					</div>
 				</div>
 			</div>
