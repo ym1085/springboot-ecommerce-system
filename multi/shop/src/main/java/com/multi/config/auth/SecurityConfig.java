@@ -1,6 +1,5 @@
 package com.multi.config.auth;
 
-import com.multi.member.constant.Role;
 import com.multi.member.security.CustomLogInSuccessHandler;
 import com.multi.member.security.OAuth2LoginFailureHandler;
 import com.multi.member.security.OAuth2LoginSuccessHandler;
@@ -31,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                         .antMatchers("/css/**", "/images/**", "/js/**", "/h2-console/**", "/profile").permitAll()
                         .antMatchers("/member/login", "/member/loginForm", "/member/joinForm", "/member/access-denied").permitAll()
-                        .antMatchers("/api/v1/**").hasRole(Role.USER.name())
+                        .antMatchers("/api/v1/**").permitAll() // 20230814 email 인증시 걸려서 일단 풀어주었음
+//                        .antMatchers("/api/v1/**").hasRole(Role.USER.name())
                         .anyRequest().authenticated()
                 .and()
                     .formLogin() // formLogin 인증 방식을 사용한다는 의미

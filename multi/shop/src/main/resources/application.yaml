@@ -28,6 +28,22 @@ spring:
       max-request-size: 100MB # 한 번에 최대 업로드 가능한 파일 용량(100MB)
       #enable: true # 파일 업로드 가능 여부 선택
       #location: /Users/YoungminKim # 업로드 된 파일의 임시 저장 경로(/Users/YoungminKim)
+  mail:
+    host: smtp.gmail.com # gmail SMTP Server HOST
+    port: 587 # SMPT Server PORT
+    username: youngmin1085@gmail.com # 이메일을 보내는 용으로 사용되는 계정
+    password: '비밀번호' # 앱 비밀번호
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000 # 연결이 불안정한 경우 대기 시간이 길어질 수 있기 때문에 너무 크게 설정하면 전송 속도가 느려질 수 있다.
+          timeout: 5000 # 서버에서 응답이 오지 않는 경우 대기 시간을 제한하기 위해 사용된다.
+          writetimeout: 5000 # 이메일을 SMTP 서버로 전송하는 데 걸리는 시간을 제한하는데 사용된다.
+    auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분, 이메일 인증 코드의 만료 시간
 
 # mybatis
 mybatis:
@@ -40,3 +56,6 @@ mybatis:
 logging:
   level:
     com.multi: DEBUG
+
+email:
+  title: "Shop with me 이메일 인증 번호"
