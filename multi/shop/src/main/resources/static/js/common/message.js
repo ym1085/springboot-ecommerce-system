@@ -15,6 +15,7 @@ const messages = {
     EMPTY_PASSWORD1: '1차 비밀번호를 입력해주세요.',
     EMPTY_PASSWORD2: '2차 비밀번호를 입력해주세요.',
     EMPTY_EMAIL: '이메일이 존재하지 않네요, 다시 시도해주세요.',
+    EMPTY_EMAIL_AUTH_CODE: '이메일 인증 번호는 반드시 입력 되어야 합니다.',
     EMPTY_PHONE_PREFIX: '전화번호 앞자리를 입력해주세요.',
     EMPTY_PHONE_MIDDLE: '전화번호 중간자리를 입력해주세요.',
     EMPTY_PHONE_LAST: '전화번호 끝자리를 입력해주세요.',
@@ -35,4 +36,14 @@ const messages = {
     NOT_VALID_GENDER: '유효하지 않은 성별 입니다. 다시 시도해주세요.',
     NOT_VALID_DATE: '유효하지 않은 생년월일 입니다. 다시 시도해주세요.',
     NOT_MATCH_PWD: '1차 비밀번호와 2차 비밀번호가 동일하지 않습니다. 다시 시도해주세요.',
+    // Request 용
+    SUCCESS_SEND_EMAIL: '메일 인증 번호가 발송되었습니다. 해당 이메일을 확인해주세요.',
+    SUCCESS_CERT_EMAIL: '메일 인증에 성공 하였습니다.',
+    // Response 용
+    FAIL_SEND_EMAIL: '메일 인증 번호 발송 중 오류가 발생하였습니다. 다시 시도해주세요.',
+    FAIL_CERT_EMAIL: '메일 인증에 실패 하였습니다.',
+    // 시간 관련
+    END_EMAIL_AUTH_TIME: '이메일 인증 시간이 모두 경과하였습니다. 다시 시도해주세요.',
+    // 진행 관련
+    PROCEED_MEMBER_JOIN: '회원 가입을 진행 하겠습니다.'
 };

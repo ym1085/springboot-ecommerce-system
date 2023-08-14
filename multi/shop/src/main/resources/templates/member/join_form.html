@@ -41,11 +41,28 @@
 					<input type="email" class="form-control" id="email" name="email" required
 					       placeholder="이메일을 입력해주세요."/>
 					<div class="input-group-append">
-						<button type="button" class="btn btn-outline-secondary" id="sendVerification" onclick="sendEmail();">인증 번호 발송
-						</button>
+						<button type="button" class="btn btn-outline-secondary" id="sendVerification" onclick="sendAuthEmail();">인증 번호 발송</button>
 					</div>
 				</div>
 			</div>
+			<!-- 인증번호 입력란 -->
+			<div class="form-group" id="verifySection" style="display: none;">
+				<label for="verificationCode">인증 번호</label>
+				<div class="input-group">
+					<input type="text" class="form-control" id="verificationCode" name="verificationCode" required
+						   placeholder="인증 번호를 입력해주세요."/>
+					<div class="input-group-append">
+						<button type="button" class="btn btn-outline-secondary" id="verifyCode" onclick="verifyEmailAuthCode();">인증 확인</button>
+					</div>
+				</div>
+			</div>
+			<div id="timeLimitArea" style="display: none;">
+				<!-- 스톱워치는 색깔 바꿀일이 없어서, 인라인으로 넣어 두었습니다 -->
+				<p>제한시간 <span style="font-weight: bold; color: red;" id="timeLeft">03:00</span> 분</p>
+			</div>
+			<!--<div id="timeLeftSection" style="display: none;">
+				<p>제한시간 <span id="timeLeft">03:00</span> 분</p>
+			</div>-->
 			<!-- 20230709 휴대폰 번호 인라인으로 일단 넣어둠 -->
 			<div class="form-row" style="width: 1600px;">
 				<div class="form-group col-md-4">
@@ -82,6 +99,7 @@
 	<!-- thymleaf 용으로 바꿔야 할 듯? -->
 	<script src="/js/common/common.js"></script>
 	<script src="/js/common/message.js"></script>
+	<script src="/js/common/sendFetch.js"></script>
 	<script src="/js/member/join.js"></script>
 	<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4mN2t3Ksk2/E1LR83tnD6" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqd9JT0pbrEr+rHIRsCf1105Ck5cg8+k5YRY2owMxUoA6KsmfD5IbbVJ" crossorigin="anonymous"></script>

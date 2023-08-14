@@ -225,6 +225,16 @@ function validateBirthDate(memberJoinInfo) {
     return true;
 }
 
+function validateCertYn(memberJoinInfo) {
+    if (memberJoinInfo.certYn.value === 'Y') {
+        return true;
+    } else if (memberJoinInfo.certYn.value === 'N') {
+        return false;
+    } else {
+        return false;
+    }
+}
+
 /**
  * 회원 가입 시 서버 전송 전에 앞에서 1차적으로 검증하는 로직
  * 서버 DTO 에서 어차피 검증이 되지만, 미리 검증
@@ -245,7 +255,164 @@ function validateMemberJoinInfo(memberJoinInfo) {
         && validatePhoneLast(memberJoinInfo)
         && validateGender(memberJoinInfo)
         && validateBirthDate(memberJoinInfo)
-        && validateNumericPhoneNumber(memberJoinInfo);
+        && validateNumericPhoneNumber(memberJoinInfo)
+        && validateCertYn(memberJoinInfo);
+}
+
+let timeLeft = 180;
+let timer;
+function startTimer() {
+    timer = setInterval(() => {
+        const min = Math.floor(timeLeft / 60);
+        const sec = timeLeft % 60;
+
+        document.getElementById("timeLeft").innerText = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+
+        timeLeft--;
+
+        if (timeLeft < 0) { // 제한 시간 모두 경과
+            showMessage(messages.END_EMAIL_AUTH_TIME);
+            doubleClickFlag = false;
+            stopInterval();
+            resetInterval();
+        }
+    }, 1000); // 1초마다 실행
+}
+
+function stopInterval() {
+    clearInterval(timer);
+}
+
+function resetInterval() {
+    timeLeft = 180;
+    document.getElementById("timeLeft").innerText = "03:00";
+}
+
+let doubleClickFlag = false; // Todo: 전역 변수 문제 될수도 있을듯... 확인 필요
+function checkDoubleClick() {
+    if (doubleClickFlag) {
+        return false;
+    } else {
+        doubleClickFlag = true;
+        return true;
+    }
+}
+
+// 인증 이메일 전송
+function sendAuthEmail(event) {
+    if (!checkDoubleClick()) {
+        alert('이미 작업이 진행 되었습니다. 새로고침 후 다시 시도해주세요.');
+        return;
+    }
+
+    let certEmail = document.getElementById("email");
+    if (isEmpty(certEmail.value)) {
+        showMessage(messages.EMPTY_EMAIL);
+        certEmail.focus();
+        return
+    }
+
+    let dataObj = {
+        url : "/api/v1/email/verify-request",
+        method : "POST",
+        data : { email : certEmail.value }
+    };
+    // console.log(`before send server, dataObj => ${dataObj}`)
+
+    // url, method, data
+    let responsePromiseByJson = sendFetchRequest(dataObj);
+    responsePromiseByJson.then((response) => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("Request failed, url => " + dataObj.url);
+        }
+    }).then((data) => {
+        if (data === null) {
+            throw new Error("Data is empty, url => " + dataObj.url);
+        }
+
+        // {'statusCode' : '200', 'message': '이메일 xxxx'}
+        if (data.statusCode === 200) {
+            showMessage(messages.SUCCESS_SEND_EMAIL);
+            // 인증번호 입력 영역
+            let verifySection = document.getElementById("verifySection");
+            if(verifySection.style.display === 'none') {
+                verifySection.style.display = 'block';
+            } else {
+                verifySection.style.display = 'none';
+            }
+
+            // 타이머 영역
+            let timeLimitArea = document.getElementById("timeLimitArea");
+            if (timeLimitArea.style.display === 'none') {
+                timeLimitArea.style.display = 'block'
+            } else {
+                timeLimitArea.style.display = 'none'
+            }
+            startTimer(); // 타이머 시작
+        } else {
+            showMessage(messages.FAIL_SEND_EMAIL);
+            document.getElementById("email").focus();
+            doubleClickFlag = false;
+            return;
+        }
+    })
+}
+
+function verifyEmailAuthCode() {
+    let certEmail = document.getElementById("email");
+    let verificationCode = document.getElementById("verificationCode");
+    if (isEmpty(verificationCode.value) || isNotNumericRegExp(verificationCode.value)) {
+        showMessage(messages.EMPTY_EMAIL_AUTH_CODE);
+        return;
+    }
+
+    if (isEmpty(certEmail.value) || certEmail.length === 0) {
+        showMessage(messages.EMPTY_EMAIL);
+        return;
+    }
+
+    let dataObj = {
+        url : "/api/v1/email/verify",
+        method : "GET",
+        data : {
+            email : certEmail.value,
+            code : verificationCode.value
+        }
+    };
+
+    let responsePromiseByJson = sendFetchRequest(dataObj);
+    responsePromiseByJson.then((response) => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("Request failed, url => " + dataObj.url);
+        }
+    }).then((data) => {
+        if (data === null) {
+            throw new Error("Data is empty, url => " + dataObj.url);
+        }
+
+        if (data === 1) { // 1: 성공
+            showMessage(messages.SUCCESS_CERT_EMAIL);
+            document.getElementById("certYn").value = 'Y';
+            document.getElementById("verificationCode").disabled = true;
+            stopInterval();
+            resetInterval();
+        } else {
+            showMessage(messages.FAIL_CERT_EMAIL);
+            document.getElementById("email").focus();
+            doubleClickFlag = false;
+            stopInterval();
+            resetInterval();
+            return;
+        }
+    }).catch((error) => {
+        console.error(`URL => ${dataObj.url}, 이메일 인증코드 인증 확인 시 오류 발생`);
+    }).finally(() => {
+        // ...
+    })
 }
 
 const main = {
@@ -253,7 +420,7 @@ const main = {
         let _this = this;
         $('#btn-join').on('click', function () {
             if (_this.validate()) {
-                alert('회원 가입을 진행 하겠습니다.');
+                showMessage(messages.PROCEED_MEMBER_JOIN);
                 _this.join(); // 회원 가입 진행
             }
         });
@@ -263,8 +430,7 @@ const main = {
         return validateMemberJoinInfo(memberJoinInfo);
     },
     join: function () {
-        console.log(`starting join func...`);
-
+        // Todo : 20230814 ~ 서버에 회원 가입 양식 내용 전송
     }
 };
 
