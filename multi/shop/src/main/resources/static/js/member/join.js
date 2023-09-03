@@ -10,22 +10,24 @@
  * 2023-08-14       youngmin           유효성 검증 시 하나의 함수가 너무 많은 역할을 가지고 있어 분리
  **/
 
+$(function () {});
+// location.reload(); // 브라우저 캐시 삭제를 위함
 /**
  * 회원 가입 버튼을 클릭 하는 순간에, 사용자의 모든 데이터를 객체에 저장 해둔다
  */
-function setMemberJoinInfo() {
+function initializedMemberInfo() {
     return {
-        username: document.getElementById("username"),
-        account: document.getElementById("account"),
-        password1: document.getElementById("password1"),
-        password2: document.getElementById("password2"),
-        email: document.getElementById("email"),
-        phonePrefix: document.getElementById("phonePrefix"),
-        phoneMiddle: document.getElementById("phoneMiddle"),
-        phoneLast: document.getElementById("phoneLast"),
-        gender: document.getElementById("gender"),
-        birthDate: document.getElementById("birthDate"),
-        certYn: document.getElementById("certYn")
+        username: document.getElementById('username'),
+        account: document.getElementById('account'),
+        password1: document.getElementById('password1'),
+        password2: document.getElementById('password2'),
+        email: document.getElementById('email'),
+        phonePrefix: document.getElementById('phonePrefix'),
+        phoneMiddle: document.getElementById('phoneMiddle'),
+        phoneLast: document.getElementById('phoneLast'),
+        gender: document.getElementById('gender'),
+        birthDate: document.getElementById('birthDate'),
+        certYn: document.getElementById('certYn'),
     };
 }
 
@@ -38,13 +40,24 @@ function showMessage(message) {
     이왕이면 SRP에 맞춰서 함수를 가장 작게 만들어서 사용 한다
 */
 
-function validateUsername(memberJoinInfo) {
+function validateUserName(memberJoinInfo) {
     if (isEmpty(memberJoinInfo.username.value)) {
         showMessage(messages.EMPTY_USER_NAME);
         memberJoinInfo.username.focus();
         return false;
     } else if (memberJoinInfo.username.length > 6) {
         showMessage(messages.OVER_LENGTH_USER_NAME);
+        memberJoinInfo.username.focus();
+        return false;
+    }
+    return true;
+}
+
+function validateUserNameRegExp(memberJoinInfo) {
+    // const regEx = /^[ㄱ-ㅎㅏ-ㅣ가-힣]*$/;
+    const regEx = /^[가-힣]{2,}$/;
+    if (!regEx.test(memberJoinInfo.username.value)) {
+        showMessage(messages.NOT_VALID_USER_NAME);
         memberJoinInfo.username.focus();
         return false;
     }
@@ -58,6 +71,16 @@ function validateAccount(memberJoinInfo) {
         return false;
     } else if (memberJoinInfo.account.length > 30) {
         showMessage(messages.OVER_LENGTH_ACCOUNT);
+        memberJoinInfo.account.focus();
+        return false;
+    }
+    return true;
+}
+
+function validateAccountRegExp(memberJoinInfo) {
+    const regEx = /^(?=.*\d)[a-zA-Z\d]+$/; // 숫자가 한 개 이상 포함, 영문자 또는 숫자로 구성
+    if (!regEx.test(memberJoinInfo.account.value)) {
+        showMessage(messages.NOT_VALID_ACCOUNT);
         memberJoinInfo.account.focus();
         return false;
     }
@@ -103,7 +126,7 @@ function validatePrefixPwd(memberJoinInfo) {
 
 function validateLastPwd(memberJoinInfo) {
     if (isEmpty(memberJoinInfo.password2.value)) {
-        showMessage(messages.EMPTY_PASSWORD2)
+        showMessage(messages.EMPTY_PASSWORD2);
         memberJoinInfo.password2.focus();
         return false;
     } else if (memberJoinInfo.password2.length < 8) {
@@ -138,10 +161,7 @@ function validateEmail(memberJoinInfo) {
 }
 
 function validateNumericPhoneNumber(memberJoinInfo) {
-    if (isNotNumericRegExp(memberJoinInfo.phonePrefix.value)
-        && isNotNumericRegExp(memberJoinInfo.phoneMiddle.value)
-        && isNotNumericRegExp(memberJoinInfo.phoneLast.value)) {
-
+    if (isNotNumericRegExp(memberJoinInfo.phonePrefix.value) && isNotNumericRegExp(memberJoinInfo.phoneMiddle.value) && isNotNumericRegExp(memberJoinInfo.phoneLast.value)) {
         showMessage(messages.NOT_VALID_PHONE);
         memberJoinInfo.phoneMiddle.focus();
         return false;
@@ -166,7 +186,7 @@ function validatePhonePrefix(memberJoinInfo) {
 
 function validatePhoneMiddle(memberJoinInfo) {
     if (isEmpty(memberJoinInfo.phoneMiddle.value)) {
-        showMessage(messages.EMPTY_PHONE_MIDDLE)
+        showMessage(messages.EMPTY_PHONE_MIDDLE);
         memberJoinInfo.phoneMiddle.focus();
         return false;
     } else if (memberJoinInfo.phoneMiddle.value.trim().length > 4) {
@@ -229,8 +249,10 @@ function validateCertYn(memberJoinInfo) {
     if (memberJoinInfo.certYn.value === 'Y') {
         return true;
     } else if (memberJoinInfo.certYn.value === 'N') {
+        showMessage(messages.NOT_CERT_EMAIL);
         return false;
     } else {
+        showMessage(messages.NOT_CERT_EMAIL);
         return false;
     }
 }
@@ -242,21 +264,25 @@ function validateCertYn(memberJoinInfo) {
  * @returns {boolean} true: 검증 성공, false: 검증 실패
  */
 function validateMemberJoinInfo(memberJoinInfo) {
-    return validateUsername(memberJoinInfo)
-        && validateAccount(memberJoinInfo)
-        && validatePrefixPwd(memberJoinInfo)
-        && validateLastPwd(memberJoinInfo)
-        && validateEqualsPasswords(memberJoinInfo)
-        && validatePasswordRegExp(memberJoinInfo)
-        && validateEmail(memberJoinInfo)
-        && validateEmailRegExp(memberJoinInfo)
-        && validatePhonePrefix(memberJoinInfo)
-        && validatePhoneMiddle(memberJoinInfo)
-        && validatePhoneLast(memberJoinInfo)
-        && validateGender(memberJoinInfo)
-        && validateBirthDate(memberJoinInfo)
-        && validateNumericPhoneNumber(memberJoinInfo)
-        && validateCertYn(memberJoinInfo);
+    return (
+        validateUserName(memberJoinInfo) &&
+        validateUserNameRegExp(memberJoinInfo) &&
+        validateAccount(memberJoinInfo) &&
+        validateAccountRegExp(memberJoinInfo) &&
+        validatePrefixPwd(memberJoinInfo) &&
+        validateLastPwd(memberJoinInfo) &&
+        validateEqualsPasswords(memberJoinInfo) &&
+        validatePasswordRegExp(memberJoinInfo) &&
+        validateEmail(memberJoinInfo) &&
+        validateEmailRegExp(memberJoinInfo) &&
+        validatePhonePrefix(memberJoinInfo) &&
+        validatePhoneMiddle(memberJoinInfo) &&
+        validatePhoneLast(memberJoinInfo) &&
+        validateGender(memberJoinInfo) &&
+        validateBirthDate(memberJoinInfo) &&
+        validateNumericPhoneNumber(memberJoinInfo) &&
+        validateCertYn(memberJoinInfo)
+    );
 }
 
 let timeLeft = 180;
@@ -266,13 +292,13 @@ function startTimer() {
         const min = Math.floor(timeLeft / 60);
         const sec = timeLeft % 60;
 
-        document.getElementById("timeLeft").innerText = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        document.getElementById('timeLeft').innerText = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
 
         timeLeft--;
 
-        if (timeLeft < 0) { // 제한 시간 모두 경과
+        if (timeLeft < 0) {
+            // 제한 시간 모두 경과
             showMessage(messages.END_EMAIL_AUTH_TIME);
-            doubleClickFlag = false;
             stopInterval();
             resetInterval();
         }
@@ -285,86 +311,104 @@ function stopInterval() {
 
 function resetInterval() {
     timeLeft = 180;
-    document.getElementById("timeLeft").innerText = "03:00";
+    document.getElementById('timeLeft').innerText = '03:00';
 }
 
-let doubleClickFlag = false; // Todo: 전역 변수 문제 될수도 있을듯... 확인 필요
+// let isClickEnabled = false; // Todo: 전역 변수 문제 될수도 있을듯... 확인 필요
 function checkDoubleClick() {
-    if (doubleClickFlag) {
-        return false;
-    } else {
-        doubleClickFlag = true;
+    let isClickEnabled = localStorage.getItem('isClickEnabled');
+    console.log(`isClickEnabled => ${isClickEnabled}`);
+    if (isClickEnabled) {
         return true;
+    } else {
+        localStorage.setItem('isClickEnabled', 'true');
+        return false;
     }
 }
+
+window.onload = function () {
+    localStorage.removeItem('isClickEnabled');
+};
+
+// 페이지를 새로 고침하거나 닫을 때 실행되는 코드
+window.addEventListener('beforeunload', function () {
+    localStorage.removeItem('isClickEnabled');
+});
 
 // 인증 이메일 전송
 function sendAuthEmail(event) {
-    if (!checkDoubleClick()) {
-        alert('이미 작업이 진행 되었습니다. 새로고침 후 다시 시도해주세요.');
+    if (checkDoubleClick()) {
+        showMessage(messages.CANNOT_SEND_EMAIL);
         return;
     }
 
-    let certEmail = document.getElementById("email");
+    let certEmail = document.getElementById('email');
     if (isEmpty(certEmail.value)) {
         showMessage(messages.EMPTY_EMAIL);
         certEmail.focus();
-        return
+        return;
     }
 
     let dataObj = {
-        url : "/api/v1/email/verify-request",
-        method : "POST",
-        data : { email : certEmail.value }
+        url: '/api/v1/email/verify-request',
+        method: 'POST',
+        data: { email: certEmail.value },
     };
+    loadingWithMask(); // 로딩 이미지 출력
     // console.log(`before send server, dataObj => ${dataObj}`)
 
     // url, method, data
     let responsePromiseByJson = sendFetchRequest(dataObj);
-    responsePromiseByJson.then((response) => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error("Request failed, url => " + dataObj.url);
-        }
-    }).then((data) => {
-        if (data === null) {
-            throw new Error("Data is empty, url => " + dataObj.url);
-        }
-
-        // {'statusCode' : '200', 'message': '이메일 xxxx'}
-        if (data.statusCode === 200) {
-            showMessage(messages.SUCCESS_SEND_EMAIL);
-            // 인증번호 입력 영역
-            let verifySection = document.getElementById("verifySection");
-            if(verifySection.style.display === 'none') {
-                verifySection.style.display = 'block';
+    responsePromiseByJson
+        .then(response => {
+            if (response.ok) {
+                return response.json();
             } else {
-                verifySection.style.display = 'none';
+                throw new Error('request failed, url => ' + dataObj.url);
+            }
+        })
+        .then(data => {
+            if (data === null) {
+                throw new Error('data is empty, url => ' + dataObj.url);
             }
 
-            // 타이머 영역
-            let timeLimitArea = document.getElementById("timeLimitArea");
-            if (timeLimitArea.style.display === 'none') {
-                timeLimitArea.style.display = 'block'
+            // {'statusCode' : '200', 'message': '이메일 xxxx'}
+            if (data.statusCode === 200) {
+                closeLoadingWithMask(); // 로딩 이미지 제거
+                showMessage(messages.SUCCESS_SEND_EMAIL);
+                // let sendVerificationCodeBtn =
+                //     document.getElementById('sendVerification');
+                // sendVerificationCodeBtn.style.display = 'none'; // 인증 번호 발송 되면 button 날려버림
+
+                // 인증번호 입력 영역
+                let verifySection = document.getElementById('verifySection');
+                if (verifySection.style.display === 'none') {
+                    verifySection.style.display = 'block';
+                } else {
+                    verifySection.style.display = 'none';
+                }
+
+                // 타이머 영역
+                let timeLimitArea = document.getElementById('timeLimitArea');
+                if (timeLimitArea.style.display === 'none') {
+                    timeLimitArea.style.display = 'block';
+                } else {
+                    timeLimitArea.style.display = 'none';
+                }
+                startTimer(); // 타이머 시작
             } else {
-                timeLimitArea.style.display = 'none'
+                showMessage(messages.FAIL_SEND_EMAIL);
+                document.getElementById('email').focus();
             }
-            startTimer(); // 타이머 시작
-        } else {
-            showMessage(messages.FAIL_SEND_EMAIL);
-            document.getElementById("email").focus();
-            doubleClickFlag = false;
-            return;
-        }
-    })
+        });
 }
 
 function verifyEmailAuthCode() {
-    let certEmail = document.getElementById("email");
-    let verificationCode = document.getElementById("verificationCode");
+    let certEmail = document.getElementById('email');
+    let verificationCode = document.getElementById('verificationCode');
     if (isEmpty(verificationCode.value) || isNotNumericRegExp(verificationCode.value)) {
         showMessage(messages.EMPTY_EMAIL_AUTH_CODE);
+        verificationCode.focus();
         return;
     }
 
@@ -374,47 +418,59 @@ function verifyEmailAuthCode() {
     }
 
     let dataObj = {
-        url : "/api/v1/email/verify",
-        method : "GET",
-        data : {
-            email : certEmail.value,
-            code : verificationCode.value
-        }
+        url: '/api/v1/email/verify',
+        method: 'GET',
+        data: {
+            email: certEmail.value,
+            code: verificationCode.value,
+        },
     };
 
     let responsePromiseByJson = sendFetchRequest(dataObj);
-    responsePromiseByJson.then((response) => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error("Request failed, url => " + dataObj.url);
-        }
-    }).then((data) => {
-        if (data === null) {
-            throw new Error("Data is empty, url => " + dataObj.url);
-        }
+    responsePromiseByJson
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('request failed, url => ' + dataObj.url);
+            }
+        })
+        .then(data => {
+            if (data === null) {
+                throw new Error('data is empty, url => ' + dataObj.url);
+            }
 
-        if (data === 1) { // 1: 성공
-            showMessage(messages.SUCCESS_CERT_EMAIL);
-            document.getElementById("certYn").value = 'Y';
-            document.getElementById("verificationCode").disabled = true;
-            stopInterval();
-            resetInterval();
-        } else {
-            showMessage(messages.FAIL_CERT_EMAIL);
-            document.getElementById("email").focus();
-            doubleClickFlag = false;
-            stopInterval();
-            resetInterval();
-            return;
-        }
-    }).catch((error) => {
-        console.error(`URL => ${dataObj.url}, 이메일 인증코드 인증 확인 시 오류 발생`);
-    }).finally(() => {
-        // ...
-    })
+            if (data === 1) {
+                // 1: 성공
+                showMessage(messages.SUCCESS_CERT_EMAIL);
+                // let sendVerificationCodeBtn =
+                //     document.getElementById('sendVerification');
+                // sendVerificationCodeBtn.style.display = 'block'; // 인증 번호 발송 되면 button 날려버림
+
+                document.getElementById('certYn').value = 'Y';
+                document.getElementById('verificationCode').disabled = true;
+                document.getElementById('sendVerification').disabled = true;
+                document.getElementById('verifyCode').disabled = true;
+                document.getElementById('sendVerification').removeEventListener('click', sendAuthEmail);
+                stopInterval();
+                resetInterval();
+            } else {
+                showMessage(messages.FAIL_CERT_EMAIL);
+                document.getElementById('email').focus();
+                stopInterval();
+                resetInterval();
+            }
+        })
+        .catch(error => {
+            ``;
+            console.error(`URL => ${dataObj.url}, 이메일 인증코드 인증 확인 시 오류 발생`);
+        })
+        .finally(() => {
+            // ...
+        });
 }
 
+let memberJoinInfo = {};
 const main = {
     init: function () {
         let _this = this;
@@ -425,13 +481,31 @@ const main = {
             }
         });
     },
-    validate: function() {
-        let memberJoinInfo = setMemberJoinInfo();
+    validate: function () {
+        memberJoinInfo = initializedMemberInfo(); // 유저 정보 초기화
         return validateMemberJoinInfo(memberJoinInfo);
     },
     join: function () {
-        // Todo : 20230814 ~ 서버에 회원 가입 양식 내용 전송
-    }
+        console.log(`start join for validated member..`);
+        let dataObj = {
+            url: '/api/v1/member/join',
+            method: 'POST',
+            data: {
+                name: memberJoinInfo.username.value, // Todo: username -> userName camel case
+                account: memberJoinInfo.account.value,
+                password: memberJoinInfo.password1.value,
+                email: memberJoinInfo.email.value,
+                phoneNumber: [memberJoinInfo.phonePrefix.value, memberJoinInfo.phoneMiddle.value, memberJoinInfo.phoneLast.value].join('-'),
+                certYn: memberJoinInfo.certYn.value,
+                gender: memberJoinInfo.gender.value,
+                birthDate: memberJoinInfo.birthDate.value,
+                // picture: memberJoinInfo.picture.value
+            },
+        };
+        console.log(`send join data to server => ${JSON.stringify(dataObj)}`);
+
+        // let responsePromiseByJson = sendFetchRequest(dataObj);
+    },
 };
 
 // initialized

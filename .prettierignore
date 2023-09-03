@@ -1,0 +1,5 @@
+node_modules/
+dist/
+build/
+*.log
+multi/shop/src/main/resources/static/js/common/message.js

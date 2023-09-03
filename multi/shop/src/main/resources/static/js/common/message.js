@@ -30,12 +30,15 @@ const messages = {
     OVER_LENGTH_PHONE_MIDDLE: '휴대폰 중간 자리는 4자리를 초과할 수 없습니다. 다시 시도해주세요.',
     OVER_LENGTH_PHONE_LAST: '휴대폰 마지막 자리는 4자리를 초과할 수 없습니다. 다시 시도해주세요.',
     // 필드 패턴 체크용
+    NOT_VALID_USER_NAME: '유효하지않은 이름입니다. 다시 시도해주세요.',
+    NOT_VALID_ACCOUNT: '계정은 숫자가 한 개 이상 포함되어야 하고 영문자 또는 숫자로 구성이 되어야 합니다. 다시 시도해주세요.',
     NOT_VALID_EMAIL: '올바른 메일 형식이 아닙니다. 다시 시도해주세요.',
     NOT_VALID_PWD: '영어와 특수문자를 포함한 최소 8자 이상의 비밀번호를 입력해주세요.',
     NOT_VALID_PHONE: '휴대폰 번호에 문자를 입력할 수 없습니다. 다시 시도해주세요.',
     NOT_VALID_GENDER: '유효하지 않은 성별 입니다. 다시 시도해주세요.',
     NOT_VALID_DATE: '유효하지 않은 생년월일 입니다. 다시 시도해주세요.',
     NOT_MATCH_PWD: '1차 비밀번호와 2차 비밀번호가 동일하지 않습니다. 다시 시도해주세요.',
+    NOT_CERT_EMAIL: '이메일 인증이 진행되지 않았습니다. 다시 시도해주세요.',
     // Request 용
     SUCCESS_SEND_EMAIL: '메일 인증 번호가 발송되었습니다. 해당 이메일을 확인해주세요.',
     SUCCESS_CERT_EMAIL: '메일 인증에 성공 하였습니다.',
@@ -45,5 +48,6 @@ const messages = {
     // 시간 관련
     END_EMAIL_AUTH_TIME: '이메일 인증 시간이 모두 경과하였습니다. 다시 시도해주세요.',
     // 진행 관련
-    PROCEED_MEMBER_JOIN: '회원 가입을 진행 하겠습니다.'
+    PROCEED_MEMBER_JOIN: '회원 가입을 진행 하겠습니다.',
+    CANNOT_SEND_EMAIL: '이메일 인증이 이미 진행중입니다. 다시 시도해주세요.'
 };
