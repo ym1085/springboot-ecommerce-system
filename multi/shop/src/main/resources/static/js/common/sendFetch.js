@@ -15,23 +15,23 @@ async function sendFetchRequest(dataObj) {
         let options = {
             method: dataObj.method,
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             },
         };
 
         let url = dataObj.url;
-        if (dataObj.method === "GET" || dataObj.method === "DELETE") {
+        if (dataObj.method === 'GET' || dataObj.method === 'DELETE') {
             const queryStr = Object.keys(dataObj.data)
                 .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(dataObj.data[key])}`)
                 .join('&');
             url += `?${queryStr}`;
-        } else if (dataObj.method === "POST" || dataObj.method === "PUT") {
+        } else if (dataObj.method === 'POST' || dataObj.method === 'PUT') {
             options.body = JSON.stringify(dataObj.data);
         }
         console.log(`before request fetch, url => ${url}, options => ${JSON.stringify(options)}`);
 
         return await fetch(url, options);
     } catch (error) {
-        console.error(`Error => ${error}, URL => ${dataObj.url}, METHOD => ${dataObj.method}`);
+        console.error(`error => ${error}, URL => ${dataObj.url}, METHOD => ${dataObj.method}`);
     }
 }

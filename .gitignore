@@ -41,3 +41,4 @@ TODO.md
 # spring boot 2.x oauth2 client opt
 application-oauth.yaml
 application.yaml
+/node_modules/
