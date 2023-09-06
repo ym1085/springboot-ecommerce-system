@@ -161,7 +161,11 @@ function validateEmail(memberJoinInfo) {
 }
 
 function validateNumericPhoneNumber(memberJoinInfo) {
-    if (isNotNumericRegExp(memberJoinInfo.phonePrefix.value) && isNotNumericRegExp(memberJoinInfo.phoneMiddle.value) && isNotNumericRegExp(memberJoinInfo.phoneLast.value)) {
+    if (
+        isNotNumericRegExp(memberJoinInfo.phonePrefix.value) &&
+        isNotNumericRegExp(memberJoinInfo.phoneMiddle.value) &&
+        isNotNumericRegExp(memberJoinInfo.phoneLast.value)
+    ) {
         showMessage(messages.NOT_VALID_PHONE);
         memberJoinInfo.phoneMiddle.focus();
         return false;
@@ -482,7 +486,7 @@ const main = {
         });
     },
     validate: function () {
-        memberJoinInfo = initializedMemberInfo(); // 유저 정보 초기화
+        memberJoinInfo = initializedMemberInfo();
         return validateMemberJoinInfo(memberJoinInfo);
     },
     join: function () {
