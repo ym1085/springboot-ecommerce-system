@@ -1,6 +1,8 @@
 package com.multi.posts.service.impl;
 
-import com.multi.posts.constant.ResponseCode;
+import com.multi.common.utils.FileUtils;
+import com.multi.common.utils.PaginationUtils;
+import com.multi.common.utils.message.MessageCode;
 import com.multi.posts.domain.Post;
 import com.multi.posts.dto.request.FileRequestDto;
 import com.multi.posts.dto.request.PostRequestDto;
@@ -8,11 +10,9 @@ import com.multi.posts.dto.request.SearchRequestDto;
 import com.multi.posts.dto.resposne.FileResponseDto;
 import com.multi.posts.dto.resposne.PagingResponseDto;
 import com.multi.posts.dto.resposne.PostResponseDto;
-import com.multi.utils.Pagination;
 import com.multi.posts.repository.FileMapper;
 import com.multi.posts.repository.PostMapper;
 import com.multi.posts.service.PostService;
-import com.multi.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,13 +42,13 @@ public class PostServiceImpl implements PostService {
             return new PagingResponseDto<>(Collections.emptyList(), null);
         }
 
-        Pagination pagination = new Pagination(totalRecordCount, searchRequestDto);
+        PaginationUtils pagination = new PaginationUtils(totalRecordCount, searchRequestDto);
         searchRequestDto.setPagination(pagination);
 
         List<PostResponseDto> posts = postMapper.getPosts(searchRequestDto)
                 .stream()
                 .filter(Objects::nonNull)
-                .map(post -> new PostResponseDto(post))
+                .map(PostResponseDto::new)
                 .collect(Collectors.toList());
 
         return new PagingResponseDto<>(posts, pagination);
@@ -78,9 +78,9 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public int updatePost(PostRequestDto postRequestDto) {
-        Long successId = postMapper.updatePostById(new Post(postRequestDto));
-        if (successId == null || successId == 0) {
-            return ResponseCode.FAIL.getResponseCode();
+        Long result = postMapper.updatePostById(new Post(postRequestDto));
+        if (result == null || result == 0) {
+            return MessageCode.FAIL.getCode();
         }
 
         List<MultipartFile> files = postRequestDto.getFiles();
@@ -89,21 +89,21 @@ public class PostServiceImpl implements PostService {
 
     private int updateFilesById(Long postId, List<MultipartFile> files) {
         if (!isFileSizeOverThanZero(files)) {
-            return ResponseCode.FAIL.getResponseCode();
+            return MessageCode.FAIL.getCode();
         }
 
         List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
         fileUtils.deleteFiles(fileResponseDtos);
 
-        int successId = fileMapper.deleteFilesById(postId);
-        if (successId == 0) {
-            return ResponseCode.FAIL.getResponseCode();
-        } else if (successId > 0) {
+        int result = fileMapper.deleteFilesById(postId);
+        if (result == 0) {
+            return MessageCode.FAIL.getCode();
+        } else if (result > 0) {
             List<FileRequestDto> fileRequestDtos = fileUtils.uploadFiles(files);
             setFileInfoPostId(postId, fileRequestDtos);
             fileMapper.saveFiles(fileRequestDtos); // 클라이언트가 요청 한 파일 신규 저장
         }
-        return ResponseCode.SUCCESS.getResponseCode();
+        return MessageCode.SUCCESS.getCode();
     }
 
     private boolean isFileSizeOverThanZero(List<MultipartFile> files) {
@@ -122,7 +122,7 @@ public class PostServiceImpl implements PostService {
         Long deletedPostId = postMapper.deletePostById(postId);
         log.debug("deletedPostId = {}", deletedPostId);
         if (deletedPostId == 0) {
-            return ResponseCode.FAIL.getResponseCode();
+            return MessageCode.FAIL.getCode();
         }
 
         List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
@@ -130,7 +130,7 @@ public class PostServiceImpl implements PostService {
         // empty라는 것은 해당 게시글에 매핑된 파일이 없다는 의미
         // 게시글 삭제 성공으로 판단 후 성공 코드 반환
         if (CollectionUtils.isEmpty(fileResponseDtos)) {
-            return ResponseCode.SUCCESS.getResponseCode();
+            return MessageCode.SUCCESS.getCode();
         }
 
         fileUtils.deleteFiles(fileResponseDtos);

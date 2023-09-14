@@ -1,4 +1,4 @@
-package com.multi.utils;
+package com.multi.common.utils;
 
 import com.multi.posts.constant.FileExtension;
 import com.multi.posts.dto.request.FileRequestDto;
@@ -30,7 +30,7 @@ import java.util.zip.ZipOutputStream;
  * @description :   파일 업로드 전 가공 후 반환 하는 클래스
  */
 @Slf4j
-@Component // -> Bean Scan
+@Component
 public class FileUtils {
 
     @Value("${upload.directory}")

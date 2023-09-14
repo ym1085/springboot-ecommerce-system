@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest
-class PostApiControllerTest {
+class PostRestControllerTest {
 
     @Autowired
     private ObjectMapper mapper;
