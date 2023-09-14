@@ -506,9 +506,32 @@ const main = {
                 // picture: memberJoinInfo.picture.value
             },
         };
-        console.log(`send join data to server => ${JSON.stringify(dataObj)}`);
+        // console.log(`send join data to server => ${JSON.stringify(dataObj)}`);
 
-        // let responsePromiseByJson = sendFetchRequest(dataObj);
+        let responsePromiseByJson = sendFetchRequest(dataObj);
+        responsePromiseByJson
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('request failed, url => ' + dataObj.url);
+                }
+            })
+            .then(data => {
+                if (data === null) {
+                    throw new Error('data is empty, url => ' + dataObj.url);
+                }
+
+                if (data === 1) {
+                    showMessage(messages.SUCCESS_CERT_EMAIL);
+                } else {
+                    showMessage(messages.FAIL_CERT_EMAIL);
+                }
+            })
+            .catch(error => {
+                ``;
+                console.error(`URL => ${dataObj.url}, 회원 가입 진행 중 오류가 발생하였습니다.`);
+            });
     },
 };
 

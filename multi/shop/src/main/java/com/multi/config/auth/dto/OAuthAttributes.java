@@ -107,7 +107,7 @@ public class OAuthAttributes {
                 .account(account)
                 .email(email)
                 .picture(picture)
-                .role(Role.GUEST)
+                .role(Role.ROLE_GUEST)
                 .registrationId(registrationId)
                 .providerToken(providerToken)
                 .build();

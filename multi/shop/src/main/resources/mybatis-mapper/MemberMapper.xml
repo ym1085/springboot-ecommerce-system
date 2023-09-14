@@ -4,7 +4,7 @@
 
 <mapper namespace="com.multi.member.repository.MemberMapper">
     
-    <insert id="signUp" parameterType="com.multi.member.domain.Member" useGeneratedKeys="true" keyProperty="memberId">
+    <insert id="signUp" parameterType="com.multi.member.domain.Member">
         INSERT INTO member
             (
                 name
@@ -157,6 +157,10 @@
         WHERE m.account = #{username}
         AND m.use_yn = 'Y'
         AND m.cert_yn = 'Y'
+    </select>
+    
+    <select id="checkDuplMemberAccount" parameterType="com.multi.member.domain.Member" resultType="int">
+        SELECT COUNT(1) AS CNT FROM member m where m.account = #{account}
     </select>
 
 </mapper>

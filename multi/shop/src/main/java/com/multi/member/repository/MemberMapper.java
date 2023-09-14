@@ -8,9 +8,9 @@ import java.util.Optional;
 @Mapper
 public interface MemberMapper {
 
-    Long signUp(Member member);
+    int signUp(Member member);
 
-    Long signUpWithSocialLogin(Member member);
+    void signUpWithSocialLogin(Member member);
 
     Optional<Member> getMemberByEmail(String email, String registrationId);
 
@@ -18,8 +18,9 @@ public interface MemberMapper {
 
     Optional<Member> getMemberByEmailWithSocialLogin(String email, String registrationId);
 
-    Long updateMemberByEmailAndPicture(Member member);
+    void updateMemberByEmailAndPicture(Member member);
 
     Optional<Member> getMemberByAccount(String username);
 
+    int checkDuplMemberAccount(Member member);
 }
