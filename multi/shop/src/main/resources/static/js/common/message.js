@@ -42,7 +42,7 @@ const messages = {
     // Request 용
     SUCCESS_SEND_EMAIL: '메일 인증 번호가 발송되었습니다. 해당 이메일을 확인해주세요.',
     SUCCESS_CERT_EMAIL: '메일 인증에 성공 하였습니다.',
-    // Response 용
+    // CommonResponse 용
     FAIL_SEND_EMAIL: '메일 인증 번호 발송 중 오류가 발생하였습니다. 다시 시도해주세요.',
     FAIL_CERT_EMAIL: '메일 인증에 실패 하였습니다.',
     // 시간 관련

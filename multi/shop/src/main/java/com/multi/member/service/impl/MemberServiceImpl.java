@@ -1,8 +1,9 @@
 package com.multi.member.service.impl;
 
+import com.multi.common.utils.message.MessageCode;
+import com.multi.member.constant.Role;
 import com.multi.member.domain.Member;
 import com.multi.member.dto.request.MemberRequestDto;
-import com.multi.member.dto.response.MemberResponseDto;
 import com.multi.member.repository.MemberMapper;
 import com.multi.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -27,19 +26,18 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     @Transactional
     @Override
-    public MemberResponseDto signUp(MemberRequestDto memberRequestDto) {
-        memberRequestDto.replaceHyphen(); // 휴대폰, 생년월일 '-' 제거
-        memberRequestDto.encodeMemberPassword(this.passwordEncoder); // encrypt member password
-
-        // Todo: dupl check 해야함
+    public int signUp(MemberRequestDto memberRequestDto) {
+        memberRequestDto.replaceHyphen();
+        memberRequestDto.encodeMemberPassword(this.passwordEncoder);
+        memberRequestDto.setMemberRole(Role.ROLE_USER);
 
         Member member = new Member(memberRequestDto);
-        Long memberId = memberMapper.signUp(member);
+        if (isExistsDupleMemberAccount(member) > 0) {
+            //TODO: 예외 던지지 말고, response code 던져주는걸로 수정
+            throw new IllegalArgumentException("중복된 회원입니다. 다시 시도해주세요.");
+        }
 
-        return memberMapper.getMemberById(memberId)
-                .filter(Objects::nonNull)
-                .map(entity -> new MemberResponseDto(entity))
-                .orElse(new MemberResponseDto());
+        return memberMapper.signUp(member);
     }
 
     @Transactional(readOnly = true)
@@ -51,5 +49,24 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         return member;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int checkDuplMemberAccount(MemberRequestDto memberRequestDto) {
+        if (StringUtils.isBlank(memberRequestDto.getAccount())) {
+            log.error("member account is not exists");
+            return MessageCode.FAIL.getCode();
+        }
+
+        Member member = new Member(memberRequestDto); // dto -> entity
+        return isExistsDupleMemberAccount(member);
+    }
+
+    /**
+     * 중복 회원 검증
+     */
+    private int isExistsDupleMemberAccount(Member member) {
+        return memberMapper.checkDuplMemberAccount(member);
     }
 }
