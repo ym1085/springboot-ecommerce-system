@@ -42,7 +42,7 @@ public class EmailService {
         return "";
     }
 
-    public void sendCodeToEmail(String email) {
+    public void sendAuthCodeToMemberEmail(String email) {
         sendEmail(email, title, emailAuthKey);
     }
 

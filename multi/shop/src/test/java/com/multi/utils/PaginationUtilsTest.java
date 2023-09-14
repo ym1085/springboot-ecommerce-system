@@ -1,5 +1,6 @@
 package com.multi.utils;
 
+import com.multi.common.utils.PaginationUtils;
 import com.multi.posts.dto.request.SearchRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
 @SpringBootTest
-class PaginationTest {
+class PaginationUtilsTest {
 
     @Test
     @WithMockUser(roles = "USER")
@@ -22,11 +23,11 @@ class PaginationTest {
         searchRequestDto.setRecordSizePerPage(10); // 페이지 당 출력할 게시글 개수
         searchRequestDto.setPageSize(10); // 화면 하단에 출력할 게시글 개수
 
-        Pagination pagination = new Pagination(1000, searchRequestDto);
+        PaginationUtils PaginationUtils = new PaginationUtils(1000, searchRequestDto);
 
         // ((전체 데이터 갯수 - 1) / 페이징 당 출력할 게시글 개수)) + 1
         // ((1000 - 1) / 10) + 1 => 100
-        assertEquals(100, pagination.getTotalPageCount());
+        assertEquals(100, PaginationUtils.getTotalPageCount());
     }
 
     @Test
@@ -38,11 +39,11 @@ class PaginationTest {
         searchRequestDto.setRecordSizePerPage(10); // 페이지 당 출력할 게시글 개수
         searchRequestDto.setPageSize(10); // 화면 하단에 출력할 게시글 개수
 
-        Pagination pagination = new Pagination(1242, searchRequestDto);
+        PaginationUtils PaginationUtils = new PaginationUtils(1242, searchRequestDto);
 
         // ((전체 데이터 갯수 - 1) / 페이징 당 출력할 게시글 개수)) + 1
         // ((1242 - 1) / 10) + 1 => 124
-        assertEquals(125, pagination.getTotalPageCount()); // 페이지 번호 갯수 1,2,3,4,5...
+        assertEquals(125, PaginationUtils.getTotalPageCount()); // 페이지 번호 갯수 1,2,3,4,5...
     }
 
     @Test
@@ -54,11 +55,11 @@ class PaginationTest {
         searchRequestDto.setRecordSizePerPage(10); // 페이지 당 출력할 게시글 개수
         searchRequestDto.setPageSize(10); // 화면 하단에 출력할 게시글 개수
 
-        Pagination pagination = new Pagination(1000, searchRequestDto);
+        PaginationUtils PaginationUtils = new PaginationUtils(1000, searchRequestDto);
 
         // ((시작 페이지 번호 - 1) / 화면 화단에 출력할 게시글 개수) * 화면 화단에 출력할 게시글 개수 + 1
         // ((1 - 1) / 10) * 10 + 1 => 1
-        assertEquals(1, pagination.getStartPage());
+        assertEquals(1, PaginationUtils.getStartPage());
     }
 
     @Test
@@ -70,11 +71,11 @@ class PaginationTest {
         searchRequestDto.setRecordSizePerPage(10); // 페이지 당 출력할 게시글 개수
         searchRequestDto.setPageSize(10); // 화면 하단에 출력할 게시글 개수
 
-        Pagination pagination = new Pagination(1000, searchRequestDto);
+        PaginationUtils PaginationUtils = new PaginationUtils(1000, searchRequestDto);
 
         // ((시작 페이지 번호 - 1) / 화면 화단에 출력할 게시글 개수) * 화면 화단에 출력할 게시글 개수 + 1
         // ((1 - 1) / 10) * 10 + 1 => 1
-        assertEquals(11, pagination.getStartPage());
+        assertEquals(11, PaginationUtils.getStartPage());
     }
 
     @Test
@@ -86,11 +87,11 @@ class PaginationTest {
         searchRequestDto.setRecordSizePerPage(10); // 페이지 당 출력할 게시글 개수
         searchRequestDto.setPageSize(10); // 화면 하단에 출력할 게시글 개수
 
-        Pagination pagination = new Pagination(1000, searchRequestDto);
+        PaginationUtils PaginationUtils = new PaginationUtils(1000, searchRequestDto);
 
         // (시작 페이지 + 화면 화단에 출력할 게시글 개수) - 1
         // (1 + 10) - 1 => 10
-        assertEquals(10, pagination.getEndPage());
+        assertEquals(10, PaginationUtils.getEndPage());
     }
 
     @Test
@@ -102,11 +103,11 @@ class PaginationTest {
         searchRequestDto.setRecordSizePerPage(10); // 페이지 당 출력할 게시글 개수
         searchRequestDto.setPageSize(10); // 화면 하단에 출력할 게시글 개수
 
-        Pagination pagination = new Pagination(1000, searchRequestDto);
+        PaginationUtils PaginationUtils = new PaginationUtils(1000, searchRequestDto);
 
         // (시작 페이지 + 화면 화단에 출력할 게시글 개수) - 1
         // (1 + 10) - 1 => 10
-        assertEquals(20, pagination.getEndPage()); // 11 ~ 20
+        assertEquals(20, PaginationUtils.getEndPage()); // 11 ~ 20
     }
 
     @Test
@@ -118,13 +119,13 @@ class PaginationTest {
         searchRequestDto.setRecordSizePerPage(10); // 페이지 당 출력할 게시글 개수
         searchRequestDto.setPageSize(10); // 화면 하단에 출력할 게시글 개수
 
-        Pagination pagination = new Pagination(1000, searchRequestDto);
+        PaginationUtils PaginationUtils = new PaginationUtils(1000, searchRequestDto);
 
         // (페이지번호 - 1) * 페이지 당 출력할 게시글 개수
         // (1 - 1) * 10 => 0(idx)
         // (2 - 1) * 10 => 10(idx)
         // (3 - 1) * 10 => 20(idx)
-        assertEquals(0, pagination.getLimitStart());
+        assertEquals(0, PaginationUtils.getLimitStart());
     }
 
     @Test
@@ -136,13 +137,13 @@ class PaginationTest {
         searchRequestDto.setRecordSizePerPage(10); // 페이지 당 출력할 게시글 개수
         searchRequestDto.setPageSize(10); // 화면 하단에 출력할 게시글 개수
 
-        Pagination pagination = new Pagination(1000, searchRequestDto);
+        PaginationUtils PaginationUtils = new PaginationUtils(1000, searchRequestDto);
 
         // (페이지번호 - 1) * 페이지 당 출력할 게시글 개수
         // (1 - 1) * 10 => 0(idx)
         // (2 - 1) * 10 => 10(idx)
         // (3 - 1) * 10 => 20(idx)
-        assertEquals(20, pagination.getLimitStart());
+        assertEquals(20, PaginationUtils.getLimitStart());
     }
 
     @Test
@@ -154,11 +155,11 @@ class PaginationTest {
         searchRequestDto.setRecordSizePerPage(10); // 페이지 당 출력할 게시글 개수
         searchRequestDto.setPageSize(15); // 화면 하단에 출력할 게시글 개수 ----> << < 1, 2, 3, 4, 5... > >>
 
-        Pagination pagination = new Pagination(1000, searchRequestDto);
+        PaginationUtils PaginationUtils = new PaginationUtils(1000, searchRequestDto);
 
         // ((시작 페이지 번호 - 1) / 화면 화단에 출력할 게시글 개수) * 화면 화단에 출력할 게시글 개수 + 1
         // ((16 - 1) / 15) * 15 + 1 => 16
-        assertEquals(16, pagination.getStartPage()); // 페이지 번호 16이 startPage 번호가 되야함
+        assertEquals(16, PaginationUtils.getStartPage()); // 페이지 번호 16이 startPage 번호가 되야함
     }
 
     @Test
@@ -170,10 +171,10 @@ class PaginationTest {
         searchRequestDto.setRecordSizePerPage(10); // 페이지 당 출력할 게시글 개수
         searchRequestDto.setPageSize(9); // 화면 하단에 출력할 게시글 개수 ----> UI 페이징 ---->   << < 1, 2, 3, 4, 5... > >>
 
-        Pagination pagination = new Pagination(1000, searchRequestDto);
+        PaginationUtils PaginationUtils = new PaginationUtils(1000, searchRequestDto);
 
         // ((시작 페이지 번호 - 1) / 화면 화단에 출력할 게시글 개수) * 화면 화단에 출력할 게시글 개수 + 1
         // ((16 - 1) / 9) * 9 + 1 => 16
-        assertEquals(10, pagination.getStartPage()); // 페이지 번호 10이 startPage 번호가 되야함
+        assertEquals(10, PaginationUtils.getStartPage()); // 페이지 번호 10이 startPage 번호가 되야함
     }
 }

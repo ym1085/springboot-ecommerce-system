@@ -57,16 +57,26 @@ public class MemberRequestDto {
         this.password = passwordEncoder.encode(this.password);
     }
 
-    // DB에 넣을때는 '-' 제거 후 넣는다
     public void replaceHyphen() {
         if (StringUtils.isNotBlank(this.phoneNumber)) this.phoneNumber = this.phoneNumber.replace("-", "");
         if (StringUtils.isNotBlank(this.birthDate)) this.birthDate = this.birthDate.replace("-", "");
     }
 
+    public void setMemberRole(Role role) {
+        this.role = role;
+    }
+
     @Builder
-    public MemberRequestDto(String name, String account, String password, String email,
-                            String phoneNumber, String certYn, String picture, Gender gender,
-                            String birthDate, Role role) {
+    public MemberRequestDto(String name,
+                            String account,
+                            String password,
+                            String email,
+                            String phoneNumber,
+                            String certYn,
+                            String picture,
+                            Gender gender,
+                            String birthDate,
+                            Role role) {
         this.name = name;
         this.account = account;
         this.password = password;

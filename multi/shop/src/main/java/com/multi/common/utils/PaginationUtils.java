@@ -1,10 +1,10 @@
-package com.multi.utils;
+package com.multi.common.utils;
 
 import com.multi.posts.dto.request.SearchRequestDto;
 import lombok.Getter;
 
 @Getter
-public class Pagination {
+public class PaginationUtils {
     private int totalRecordCount;       // 전체 데이터 갯수 -> COUNT(*) 쿼리의 결과
     private int totalPageCount;         // 페이지 하단에 출력할 전체 페이지 수 -> << < 1, 2, 3, 4, 5.. > >>
     private int startPage;              // 첫 페이지 번호
@@ -13,7 +13,7 @@ public class Pagination {
     private boolean existsPrevPage;     // 이전 페이지 존재 여부
     private boolean existsNextPage;     // 다음 페이지 존재 여부
 
-    public Pagination(int totalRecordCount, SearchRequestDto searchRequestDto) {
+    public PaginationUtils(int totalRecordCount, SearchRequestDto searchRequestDto) {
         if (totalRecordCount > 0) {
             this.totalRecordCount = totalRecordCount;
             calculation(searchRequestDto);

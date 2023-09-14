@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest // 통합 테스트를 뺴고, 더 가볍게 만들어야 할 것 같은데
-class MemberApiControllerTest {
+class MemberRestControllerTest {
 
     @Autowired
     private ObjectMapper mapper;

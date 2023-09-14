@@ -1,12 +1,7 @@
-package com.multi.utils;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+package com.multi.common.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Slf4j
-@Component
 public class CommonUtils {
 
     public static boolean isNumericPattern(Long id) {
