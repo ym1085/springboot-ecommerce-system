@@ -1,8 +1,8 @@
 package com.multi.posts.controller.web;
 
+import com.multi.common.utils.FileUtils;
 import com.multi.posts.dto.resposne.FileResponseDto;
 import com.multi.posts.service.FileService;
-import com.multi.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
