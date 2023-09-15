@@ -174,8 +174,8 @@ function validateNumericPhoneNumber(memberJoinInfo) {
 }
 
 function validatePhonePrefix(memberJoinInfo) {
-    // console.log(`memberJoinInfo.phonePrefix.value = > ${memberJoinInfo.phonePrefix.value}`);
-    // console.log(`isEMpty => ${isEmpty(memberJoinInfo.phonePrefix.value)}`);
+    // console.debug(`memberJoinInfo.phonePrefix.value = > ${memberJoinInfo.phonePrefix.value}`);
+    // console.debug(`isEMpty => ${isEmpty(memberJoinInfo.phonePrefix.value)}`);
     if (isEmpty(memberJoinInfo.phonePrefix.value)) {
         showMessage(messages.EMPTY_PHONE_PREFIX);
         memberJoinInfo.phonePrefix.focus();
@@ -321,7 +321,7 @@ function resetInterval() {
 // let isClickEnabled = false; // Todo: 전역 변수 문제 될수도 있을듯... 확인 필요
 function checkDoubleClick() {
     let isClickEnabled = localStorage.getItem('isClickEnabled');
-    console.log(`isClickEnabled => ${isClickEnabled}`);
+    console.debug(`isClickEnabled => ${isClickEnabled}`);
     if (isClickEnabled) {
         return true;
     } else {
@@ -359,7 +359,7 @@ function sendAuthEmail(event) {
         data: { email: certEmail.value },
     };
     loadingWithMask(); // 로딩 이미지 출력
-    // console.log(`before send server, dataObj => ${dataObj}`)
+    // console.debug(`before send server, dataObj => ${dataObj}`)
 
     // url, method, data
     let responsePromiseByJson = sendFetchRequest(dataObj);
@@ -375,14 +375,13 @@ function sendAuthEmail(event) {
             if (data === null) {
                 throw new Error('data is empty, url => ' + dataObj.url);
             }
+            alert(`data => ${JSON.stringify(data)}`);
 
             // {'statusCode' : '200', 'message': '이메일 xxxx'}
-            if (data.statusCode === 200) {
-                closeLoadingWithMask(); // 로딩 이미지 제거
+            // data => {"status":"SUCCESS_SEND_CODE","data":["이메일 인증코드 전송에 성공 하였습니다."]}
+            if (data.status === 200) {
+                closeLoadingWithMask();
                 showMessage(messages.SUCCESS_SEND_EMAIL);
-                // let sendVerificationCodeBtn =
-                //     document.getElementById('sendVerification');
-                // sendVerificationCodeBtn.style.display = 'none'; // 인증 번호 발송 되면 button 날려버림
 
                 // 인증번호 입력 영역
                 let verifySection = document.getElementById('verifySection');
@@ -444,12 +443,8 @@ function verifyEmailAuthCode() {
                 throw new Error('data is empty, url => ' + dataObj.url);
             }
 
-            if (data === 1) {
-                // 1: 성공
+            if (data === 200) {
                 showMessage(messages.SUCCESS_CERT_EMAIL);
-                // let sendVerificationCodeBtn =
-                //     document.getElementById('sendVerification');
-                // sendVerificationCodeBtn.style.display = 'block'; // 인증 번호 발송 되면 button 날려버림
 
                 document.getElementById('certYn').value = 'Y';
                 document.getElementById('verificationCode').disabled = true;
@@ -490,7 +485,7 @@ const main = {
         return validateMemberJoinInfo(memberJoinInfo);
     },
     join: function () {
-        console.log(`start join for validated member..`);
+        console.debug(`start join for validated member..`);
         let dataObj = {
             url: '/api/v1/member/join',
             method: 'POST',
@@ -506,7 +501,6 @@ const main = {
                 // picture: memberJoinInfo.picture.value
             },
         };
-        // console.log(`send join data to server => ${JSON.stringify(dataObj)}`);
 
         let responsePromiseByJson = sendFetchRequest(dataObj);
         responsePromiseByJson
@@ -522,7 +516,7 @@ const main = {
                     throw new Error('data is empty, url => ' + dataObj.url);
                 }
 
-                if (data === 1) {
+                if (data === 200) {
                     showMessage(messages.SUCCESS_CERT_EMAIL);
                 } else {
                     showMessage(messages.FAIL_CERT_EMAIL);

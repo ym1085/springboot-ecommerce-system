@@ -8,9 +8,9 @@ import java.util.List;
 
 public class ResponseFactory {
 
-    public static <T> ResponseEntity<CommonResponse> createResponseFactory(MessageCode messageCode, T data, HttpStatus status) {
+    public static <T> ResponseEntity<CommonResponse> createResponseFactory(int code, T data, HttpStatus status) {
         return new ResponseEntity<>(
-                new CommonResponse(messageCode, getSingletonList(data)), status
+                new CommonResponse(code, getSingletonList(data)), status
         );
     }
 
@@ -20,7 +20,7 @@ public class ResponseFactory {
 
     public static ResponseEntity<CommonResponse> handlerResponseFactory(int result, MessageCode successCode, MessageCode failCode) {
         return (result == 0)
-                ? createResponseFactory(failCode, failCode.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR)
-                : createResponseFactory(successCode, successCode.getMessage(), HttpStatus.OK);
+                ? createResponseFactory(failCode.getCode(), failCode.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR)
+                : createResponseFactory(successCode.getCode(), successCode.getMessage(), HttpStatus.OK);
     }
 }

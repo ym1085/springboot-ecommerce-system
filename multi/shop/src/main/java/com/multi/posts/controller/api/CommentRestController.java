@@ -38,11 +38,11 @@ public class CommentRestController {
 
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_COMMENT, errorMessage, HttpStatus.BAD_REQUEST);
+            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_COMMENT.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 
         if (postId == null || postId == 0L) {
-            return ResponseFactory.createResponseFactory(MessageCode.NOT_FOUND_POST_ID, MessageCode.NOT_FOUND_POST_ID.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseFactory.createResponseFactory(MessageCode.NOT_FOUND_POST_ID.getCode(), MessageCode.NOT_FOUND_POST_ID.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
         commentRequestDto.setMemberId(1L); // TODO: replace hard code
@@ -59,7 +59,7 @@ public class CommentRestController {
 
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_UPDATE_COMMENT, errorMessage, HttpStatus.BAD_REQUEST);
+            return ResponseFactory.createResponseFactory(MessageCode.FAIL_UPDATE_COMMENT.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 
         int result = commentService.updateCommentById(commentRequestDto);

@@ -38,7 +38,7 @@ public class PostRestController {
     @GetMapping(value = "/post")
     public ResponseEntity<CommonResponse> getPosts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
-        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POSTS, posts, HttpStatus.OK);
+        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POSTS.getCode(), posts, HttpStatus.OK);
     }
 
     @GetMapping(value = "/post/{id}")
@@ -48,7 +48,7 @@ public class PostRestController {
 
         post.addComments(comments);
 
-        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POST, post, HttpStatus.OK);
+        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POST.getCode(), post, HttpStatus.OK);
     }
 
     @PostMapping(value = "/post")
@@ -58,7 +58,7 @@ public class PostRestController {
 
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_POST, errorMessage, HttpStatus.BAD_REQUEST);
+            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_POST.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 
         postRequestDto.setMemberId(1L); // TODO: replace hard code
@@ -67,7 +67,7 @@ public class PostRestController {
         List<FileRequestDto> fileRequestDtos = fileUtils.uploadFiles(postRequestDto.getFiles());
         fileService.saveFiles(postId, fileRequestDtos);
 
-        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_SAVE_POST, MessageCode.SUCCESS_SAVE_POST.getMessage(), HttpStatus.OK);
+        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_SAVE_POST.getCode(), MessageCode.SUCCESS_SAVE_POST.getMessage(), HttpStatus.OK);
     }
 
     @PutMapping(value = "/post/{id}")
@@ -77,7 +77,7 @@ public class PostRestController {
 
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_UPDATE_POST, errorMessage, HttpStatus.BAD_REQUEST);
+            return ResponseFactory.createResponseFactory(MessageCode.FAIL_UPDATE_POST.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 
         postRequestDto.setMemberId(1L); // TODO: replace hard code

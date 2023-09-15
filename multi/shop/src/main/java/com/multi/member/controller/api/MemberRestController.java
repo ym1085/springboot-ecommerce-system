@@ -34,7 +34,7 @@ public class MemberRestController {
 
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_MEMBER, errorMessage, HttpStatus.BAD_REQUEST);
+            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_MEMBER.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 
         int result = memberService.signUp(memberRequestDto);
