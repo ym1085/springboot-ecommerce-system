@@ -40,11 +40,14 @@ const messages = {
     NOT_MATCH_PWD: '1차 비밀번호와 2차 비밀번호가 동일하지 않습니다. 다시 시도해주세요.',
     NOT_CERT_EMAIL: '이메일 인증이 진행되지 않았습니다. 다시 시도해주세요.',
     // Request 용
+    SUCCESS_SAVE_MEMBER: '회원 가입에 성공 하였습니다.',
     SUCCESS_SEND_EMAIL: '메일 인증 번호가 발송되었습니다. 해당 이메일을 확인해주세요.',
     SUCCESS_CERT_EMAIL: '메일 인증에 성공 하였습니다.',
     // CommonResponse 용
+    FAIL_SAVE_MEMBER: '회원 가입에 실패 하였습니다.',
     FAIL_SEND_EMAIL: '메일 인증 번호 발송 중 오류가 발생하였습니다. 다시 시도해주세요.',
     FAIL_CERT_EMAIL: '메일 인증에 실패 하였습니다.',
+    FAIL_DUPL_MEMBER: '중복된 아이디 입니다. 다시 시도해주세요',
     // 시간 관련
     END_EMAIL_AUTH_TIME: '이메일 인증 시간이 모두 경과하였습니다. 다시 시도해주세요.',
     // 진행 관련

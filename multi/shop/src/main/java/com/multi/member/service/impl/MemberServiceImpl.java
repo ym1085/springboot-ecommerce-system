@@ -33,8 +33,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
         Member member = new Member(memberRequestDto);
         if (isExistsDupleMemberAccount(member) > 0) {
-            //TODO: 예외 던지지 말고, response code 던져주는걸로 수정
-            throw new IllegalArgumentException("중복된 회원입니다. 다시 시도해주세요.");
+            return MessageCode.FAIL.getCode();
         }
 
         return memberMapper.signUp(member);

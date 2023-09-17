@@ -330,9 +330,9 @@ function checkDoubleClick() {
     }
 }
 
-window.onload = function () {
-    localStorage.removeItem('isClickEnabled');
-};
+// window.onload = function () {
+//     localStorage.removeItem('isClickEnabled');
+// };
 
 // 페이지를 새로 고침하거나 닫을 때 실행되는 코드
 window.addEventListener('beforeunload', function () {
@@ -341,15 +341,15 @@ window.addEventListener('beforeunload', function () {
 
 // 인증 이메일 전송
 function sendAuthEmail(event) {
-    if (checkDoubleClick()) {
-        showMessage(messages.CANNOT_SEND_EMAIL);
-        return;
-    }
-
     let certEmail = document.getElementById('email');
     if (isEmpty(certEmail.value)) {
         showMessage(messages.EMPTY_EMAIL);
         certEmail.focus();
+        return;
+    }
+
+    if (checkDoubleClick()) {
+        showMessage(messages.CANNOT_SEND_EMAIL);
         return;
     }
 
@@ -362,8 +362,7 @@ function sendAuthEmail(event) {
     // console.debug(`before send server, dataObj => ${dataObj}`)
 
     // url, method, data
-    let responsePromiseByJson = sendFetchRequest(dataObj);
-    responsePromiseByJson
+    let response = sendFetchRequest(dataObj)
         .then(response => {
             if (response.ok) {
                 return response.json();
@@ -377,9 +376,7 @@ function sendAuthEmail(event) {
             }
             alert(`data => ${JSON.stringify(data)}`);
 
-            // {'statusCode' : '200', 'message': '이메일 xxxx'}
-            // data => {"status":"SUCCESS_SEND_CODE","data":["이메일 인증코드 전송에 성공 하였습니다."]}
-            if (data.status === 200) {
+            if (data.code === 200) {
                 closeLoadingWithMask();
                 showMessage(messages.SUCCESS_SEND_EMAIL);
 
@@ -429,8 +426,7 @@ function verifyEmailAuthCode() {
         },
     };
 
-    let responsePromiseByJson = sendFetchRequest(dataObj);
-    responsePromiseByJson
+    let response = sendFetchRequest(dataObj)
         .then(response => {
             if (response.ok) {
                 return response.json();
@@ -442,8 +438,9 @@ function verifyEmailAuthCode() {
             if (data === null) {
                 throw new Error('data is empty, url => ' + dataObj.url);
             }
+            alert(JSON.stringify(data));
 
-            if (data === 200) {
+            if (data.code === 200) {
                 showMessage(messages.SUCCESS_CERT_EMAIL);
 
                 document.getElementById('certYn').value = 'Y';
@@ -502,8 +499,7 @@ const main = {
             },
         };
 
-        let responsePromiseByJson = sendFetchRequest(dataObj);
-        responsePromiseByJson
+        let response = sendFetchRequest(dataObj)
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -516,10 +512,12 @@ const main = {
                     throw new Error('data is empty, url => ' + dataObj.url);
                 }
 
-                if (data === 200) {
-                    showMessage(messages.SUCCESS_CERT_EMAIL);
+                if (data.code === 200) {
+                    showMessage(messages.SUCCESS_SAVE_MEMBER);
+                } else if (data.code === 0) {
+                    showMessage(messages.FAIL_DUPL_MEMBER);
                 } else {
-                    showMessage(messages.FAIL_CERT_EMAIL);
+                    showMessage(messages.FAIL_SAVE_MEMBER);
                 }
             })
             .catch(error => {

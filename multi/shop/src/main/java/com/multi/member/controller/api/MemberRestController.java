@@ -38,6 +38,10 @@ public class MemberRestController {
         }
 
         int result = memberService.signUp(memberRequestDto);
-        return ResponseFactory.handlerResponseFactory(result, MessageCode.SUCCESS_SAVE_MEMBER, MessageCode.FAIL_SAVE_MEMBER);
+        return ResponseFactory.handlerResponseFactory(
+                result,
+                MessageCode.SUCCESS_SAVE_MEMBER,
+                (result == 0) ? MessageCode.FAIL_DUPL_MEMBER : MessageCode.FAIL_SAVE_MEMBER
+        );
     }
 }

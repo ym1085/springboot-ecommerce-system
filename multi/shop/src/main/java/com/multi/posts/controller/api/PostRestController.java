@@ -71,9 +71,10 @@ public class PostRestController {
     }
 
     @PutMapping(value = "/post/{id}")
-    public ResponseEntity<CommonResponse> updatePost(@PathVariable("id") Long id,
-                                     @Valid PostRequestDto postRequestDto,
-                                     BindingResult bindingResult) {
+    public ResponseEntity<CommonResponse> updatePost(
+            @PathVariable("id") Long id,
+            @Valid PostRequestDto postRequestDto,
+            BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
