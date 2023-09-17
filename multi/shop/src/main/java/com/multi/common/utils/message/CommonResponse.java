@@ -8,11 +8,11 @@ import java.util.List;
 @Getter
 @Setter
 public class CommonResponse {
-    private MessageCode status;
+    private int code;
     private List<?> data;
 
-    public CommonResponse(MessageCode status, List<?> data) {
-        this.status = status;
+    public CommonResponse(int code, List<?> data) {
+        this.code = code;
         this.data = data;
     }
 }

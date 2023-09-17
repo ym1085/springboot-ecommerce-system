@@ -28,7 +28,7 @@ async function sendFetchRequest(dataObj) {
         } else if (dataObj.method === 'POST' || dataObj.method === 'PUT') {
             options.body = JSON.stringify(dataObj.data);
         }
-        console.log(`before request fetch, url => ${url}, options => ${JSON.stringify(options)}`);
+        console.debug(`before request fetch, url => ${url}, options => ${JSON.stringify(options)}`);
 
         return await fetch(url, options);
     } catch (error) {

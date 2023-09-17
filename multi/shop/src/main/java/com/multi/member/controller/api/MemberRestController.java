@@ -34,10 +34,14 @@ public class MemberRestController {
 
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_MEMBER, errorMessage, HttpStatus.BAD_REQUEST);
+            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_MEMBER.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 
         int result = memberService.signUp(memberRequestDto);
-        return ResponseFactory.handlerResponseFactory(result, MessageCode.SUCCESS_SAVE_MEMBER, MessageCode.FAIL_SAVE_MEMBER);
+        return ResponseFactory.handlerResponseFactory(
+                result,
+                MessageCode.SUCCESS_SAVE_MEMBER,
+                (result == 0) ? MessageCode.FAIL_DUPL_MEMBER : MessageCode.FAIL_SAVE_MEMBER
+        );
     }
 }

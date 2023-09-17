@@ -31,7 +31,8 @@ public enum MessageCode {
     FAIL_DELETE_COMMENT(500, "댓글 삭제에 실패하였습니다. 다시 시도해주세요."),
     FAIL_UPDATE_COMMENT(500, "댓글 수정에 실패하였습니다. 다시 시도해주세요."),
     FAIL_SAVE_MEMBER(500, "회원 가입에 실패하였습니다. 다시 시도해주세요."),
-    FAIL_CERT_EMAIL(500, "이메일 인증에 실패 하였습니다."),
+    FAIL_CERT_EMAIL(500, "이메일 인증에 실패 하였습니다. 다시 시도해주세요."),
+    FAIL_DUPL_MEMBER(500, "중복된 회원 입니다. 다시 시도해주세요."),
 
     //VALIDATION CODE
     NOT_FOUND_POST_ID(400, "게시글 번호가 존재하지 않습니다. 다시 시도해주세요."),
