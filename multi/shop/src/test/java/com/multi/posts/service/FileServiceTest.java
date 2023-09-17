@@ -1,4 +1,4 @@
-package com.multi.posts.service.impl;
+package com.multi.posts.service;
 
 import com.multi.posts.dto.request.FileRequestDto;
 import org.junit.jupiter.api.DisplayName;
@@ -14,10 +14,10 @@ import java.util.UUID;
 
 @Transactional
 @SpringBootTest
-class FileServiceImplTest {
+class FileServiceTest {
 
     @Autowired
-    private FileServiceImpl fileService;
+    private FileService fileService;
 
     private static List<FileRequestDto> getFileRequestDtoBuilder() {
         return Arrays.asList(

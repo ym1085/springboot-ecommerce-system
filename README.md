@@ -3,7 +3,6 @@
 ---
 
 간단한 쇼핑몰 제작을 위한 웹 애플리케이션 프로젝트 입니다.
-
 `Spring Boot`를 활용하여 시스템을 구축할 예정입니다.
 
 해당 프로젝트를 통해 이루고자 하는 목표는 회원 시스템을 구축하면서 인증, 인가에 대한 부분을  
@@ -19,16 +18,16 @@
 # ⛏ 사용 기술
 
 ## 📌 Backend
-| 기술               | 버전     |
-|------------------|--------|
-| Java             | 11     |
-| Spring Boot      | 2.7.1  |
-| Spring Security  | 2.7.2  |
-| MyBatis          | 3.0.1  |
-| MySQL Connector J | 8.0.28 |
-| Swagger          | 3.0.0  |
-| Elasticsearch    | 7.10.0 |
-| Docker           | 23.0.5 |
+| 기술               | 버전     | 사용 여부 |
+|------------------|--------|-------|
+| Java             | 11     | o     |
+| Spring Boot      | 2.7.1  | o     |
+| Spring Security  | 2.7.2  | o     |
+| MyBatis          | 3.0.1  | o     |
+| MySQL Connector J | 8.0.28 | o     |
+| Swagger          | 3.0.0  | x     |
+| Elasticsearch    | 7.10.0 | x     |
+| Docker           | 23.0.5 | x     | 
 
 # 🎢 구현 기능
 - 검색 기능

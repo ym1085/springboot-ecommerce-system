@@ -1,6 +1,6 @@
 package com.multi.member.controller.api;
 
-import com.multi.common.utils.ErrorUtils;
+import com.multi.common.utils.BindingResultErrorUtils;
 import com.multi.common.utils.message.CommonResponse;
 import com.multi.common.utils.message.MessageCode;
 import com.multi.common.utils.message.ResponseFactory;
@@ -33,7 +33,7 @@ public class MemberRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            List<String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
             return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_MEMBER.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 
