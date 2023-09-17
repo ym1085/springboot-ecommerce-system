@@ -1,6 +1,6 @@
 package com.multi.posts.controller.api;
 
-import com.multi.common.utils.ErrorUtils;
+import com.multi.common.utils.BindingResultErrorUtils;
 import com.multi.common.utils.message.CommonResponse;
 import com.multi.common.utils.message.MessageCode;
 import com.multi.common.utils.message.ResponseFactory;
@@ -37,7 +37,7 @@ public class CommentRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            List<String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
             return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_COMMENT.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 
@@ -58,7 +58,7 @@ public class CommentRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            List<String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
             return ResponseFactory.createResponseFactory(MessageCode.FAIL_UPDATE_COMMENT.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 

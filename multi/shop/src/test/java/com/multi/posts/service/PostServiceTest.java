@@ -1,4 +1,4 @@
-package com.multi.posts.service.impl;
+package com.multi.posts.service;
 
 import com.multi.posts.dto.request.PostRequestDto;
 import com.multi.posts.dto.request.SearchRequestDto;
@@ -24,13 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 //@TestPropertySource(locations = "classpath:application-test.yaml")
 @Transactional
 @SpringBootTest
-class PostServiceImplTest {
+class PostServiceTest {
 
     @Autowired
-    PostServiceImpl postService;
-
-    @Autowired
-    private FileServiceImpl fileService;
+    PostService postService;
 
     private static int getRandom() {
         return new Random().nextInt(10) + 1;

@@ -1,7 +1,7 @@
 package com.multi.posts.controller.api;
 
-import com.multi.common.utils.FileUtils;
 import com.multi.posts.dto.resposne.FileResponseDto;
+import com.multi.posts.service.FileHandlerHelper;
 import com.multi.posts.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,17 +38,13 @@ public class FileRestController {
 
     private final ResourceLoader resourceLoader;
     private final FileService fileService;
-    private final FileUtils fileUtils;
+    private final FileHandlerHelper fileHandlerHelper;
 
-    /**
-     * 게시글에 첨부되어 있는 '파일' <a href='http://host/download/{fileId}'> 클릭 시 해당 fileId(번호:PK)에 맞는 파일 다운로드
-     * @param id 파일 id 번호 (fileId), 나중에 {id} -> 바꾸기 -> fileId로
-     */
     @GetMapping("/download/{id}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("id") Long id) {
+    public ResponseEntity<Resource> downloadSingleFile(@PathVariable("id") Long id) {
         try {
             FileResponseDto files = fileService.getFileById(id);
-            String parentSubDir = fileUtils.getFileDirPathByDateTime(); // 230524
+            String parentSubDir = fileHandlerHelper.getSubFileDirPathByDate();
 
             if (StringUtils.isBlank(files.getFilePath()) || files.getSaveName().length() == 0) {
                 throw new IllegalArgumentException("file path or save name is blank");
@@ -79,18 +74,10 @@ public class FileRestController {
         }
     }
 
-    /**
-     * 게시글 번호 기반 다중 파일 압축 다운로드
-     * @param id
-     * @param response
-     * @return
-     * @throws IOException
-     */
-    @GetMapping("/download/{id}/compress")
-    public void getZipFile(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
+    @GetMapping("/download/compress/{id}")
+    public void downloadMultiZipFile(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
         List<File> files = fileService.getFiles(id)
                 .stream()
-                .filter(Objects::nonNull)
                 .map(fileResponseDto -> new File(fileResponseDto.getFilePath()))
                 .collect(Collectors.toList());
 
@@ -98,7 +85,7 @@ public class FileRestController {
             throw new FileNotFoundException("file not found");
         }
 
-        fileUtils.convertFileToZipFile(response.getOutputStream(), files);
+        fileHandlerHelper.transferToZipFile(response.getOutputStream(), files);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/zip");
         response.addHeader("Content-Disposition", "attachment; filename=\"" + "zipFile" + ".zip\"");

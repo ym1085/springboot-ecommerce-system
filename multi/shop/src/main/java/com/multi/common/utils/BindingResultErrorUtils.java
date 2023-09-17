@@ -6,7 +6,7 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ErrorUtils {
+public class BindingResultErrorUtils {
 
     public static List<String> extractBindingResultErrorMessages(BindingResult bindingResult) {
         return bindingResult.getFieldErrors()

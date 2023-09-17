@@ -1,9 +1,8 @@
-package com.multi.posts.service.impl;
+package com.multi.posts.service;
 
 import com.multi.posts.domain.Comment;
 import com.multi.posts.dto.request.CommentRequestDto;
 import com.multi.posts.repository.CommentMapper;
-import com.multi.posts.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-class CommentServiceImplTest {
+class CommentServiceTest {
 
     @Autowired
     private CommentService commentService;

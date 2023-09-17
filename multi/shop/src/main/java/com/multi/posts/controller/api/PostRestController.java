@@ -1,7 +1,6 @@
 package com.multi.posts.controller.api;
 
-import com.multi.common.utils.ErrorUtils;
-import com.multi.common.utils.FileUtils;
+import com.multi.common.utils.BindingResultErrorUtils;
 import com.multi.common.utils.message.CommonResponse;
 import com.multi.common.utils.message.MessageCode;
 import com.multi.common.utils.message.ResponseFactory;
@@ -12,6 +11,7 @@ import com.multi.posts.dto.resposne.CommentResponseDto;
 import com.multi.posts.dto.resposne.PagingResponseDto;
 import com.multi.posts.dto.resposne.PostResponseDto;
 import com.multi.posts.service.CommentService;
+import com.multi.posts.service.FileHandlerHelper;
 import com.multi.posts.service.FileService;
 import com.multi.posts.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ import java.util.List;
 public class PostRestController {
 
     private final PostService postService;
-    private final FileUtils fileUtils;
+    private final FileHandlerHelper fileHandlerHelper;
     private final FileService fileService;
     private final CommentService commentService;
 
@@ -57,14 +57,14 @@ public class PostRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            List<String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
             return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_POST.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 
         postRequestDto.setMemberId(1L); // TODO: replace hard code
         Long postId = postService.savePost(postRequestDto);
 
-        List<FileRequestDto> fileRequestDtos = fileUtils.uploadFiles(postRequestDto.getFiles());
+        List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(postRequestDto.getFiles());
         fileService.saveFiles(postId, fileRequestDtos);
 
         return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_SAVE_POST.getCode(), MessageCode.SUCCESS_SAVE_POST.getMessage(), HttpStatus.OK);
@@ -77,7 +77,7 @@ public class PostRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            List<String> errorMessage = ErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            List<String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
             return ResponseFactory.createResponseFactory(MessageCode.FAIL_UPDATE_POST.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
         }
 
