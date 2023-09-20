@@ -18,6 +18,13 @@ public class ResponseFactory {
         return Collections.singletonList(data);
     }
 
+    /**
+     *
+     * @param result 0: fail, 1: success
+     * @param successCode front에 반환 하는 success code, message
+     * @param failCode front에 반환 하는 fail code, message
+     * @return
+     */
     public static ResponseEntity<CommonResponse> handlerResponseFactory(int result, MessageCode successCode, MessageCode failCode) {
         return (result == 0)
                 ? createResponseFactory(failCode.getCode(), failCode.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR)

@@ -8,7 +8,7 @@
  * -----------------------------------------------------------
  * 2023-09-03       youngmin           최초 생성
  **/
-function loadingWithMask() {
+function printLoadingWithMask() {
     //화면의 높이와 너비를 구합니다.
     let maskHeight = $(document).height();
     let maskWidth = window.document.body.clientWidth;

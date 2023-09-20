@@ -38,11 +38,15 @@ public class MemberRequestDto {
     @Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$", message = "올바른 휴대폰번호 형식이 아닙니다. 다시 시도해주세요.")
     private String phoneNumber;
 
-    @NotBlank(message = "사용자 인증에 실패하였습니다. 다시 시도해주세요.")
+    @NotBlank(message = "이메일 인증이 진행되지 않았습니다. 다시 시도해주세요.")
     @Pattern(regexp = "^Y$", message = "사용자 인증에 실패하였습니다. 다시 시도해주세요.")
     private String certYn;
 
-    private String picture; // Todo: 사용자 프로필 이미지는 파일로 받아야 할 듯?
+    @NotBlank(message = "아이디 중복 인증이 진행되지 않았습니다. 다시 시도해주세요.")
+    @Pattern(regexp = "^Y$", message = "사용자 인증에 실패하였습니다. 다시 시도해주세요.")
+    private String accountCertYn;
+
+    private String picture;
     private Gender gender;
     private Role role;
 
