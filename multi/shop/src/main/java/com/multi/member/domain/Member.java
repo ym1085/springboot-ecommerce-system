@@ -33,7 +33,6 @@ public class Member implements UserDetails {
     private String registrationId;
     private String providerToken;
 
-    // Dto -> Entity(vo)
     public Member(MemberRequestDto memberRequestDto) {
         this.name = memberRequestDto.getName();
         this.account = memberRequestDto.getAccount();
@@ -43,6 +42,7 @@ public class Member implements UserDetails {
         this.picture = memberRequestDto.getPicture();
         this.birthDate = memberRequestDto.getBirthDate();
         this.certYn = memberRequestDto.getCertYn();
+        this.role = memberRequestDto.getRole();
         this.gender = memberRequestDto.getGender();
     }
 

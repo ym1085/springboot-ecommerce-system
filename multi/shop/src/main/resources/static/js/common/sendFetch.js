@@ -8,27 +8,30 @@
  * -----------------------------------------------------------
  * 2023-08-14       youngmin           최초 생성
  **/
-
 async function sendFetchRequest(dataObj) {
     try {
-        // common으로 만드려면 손 봐야할 것 같음
         let options = {
             method: dataObj.method,
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json', // Todo: header opt도 받아서 처리
             },
         };
 
         let url = dataObj.url;
         if (dataObj.method === 'GET' || dataObj.method === 'DELETE') {
-            const queryStr = Object.keys(dataObj.data)
-                .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(dataObj.data[key])}`)
-                .join('&');
-            url += `?${queryStr}`;
+            if (dataObj.pathVariable) {
+                for (let key in dataObj.pathVariable) {
+                    url = url.replace(`{${key}}`, encodeURIComponent(dataObj.pathVariable[key]));
+                }
+            } else {
+                let queryStr = Object.keys(dataObj.data)
+                    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(dataObj.data[key])}`)
+                    .join('&');
+                url += `?${queryStr}`;
+            }
         } else if (dataObj.method === 'POST' || dataObj.method === 'PUT') {
             options.body = JSON.stringify(dataObj.data);
         }
-        console.debug(`before request fetch, url => ${url}, options => ${JSON.stringify(options)}`);
 
         return await fetch(url, options);
     } catch (error) {

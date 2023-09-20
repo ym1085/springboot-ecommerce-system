@@ -16,14 +16,21 @@
 <div layout:fragment="content" class="container center">
 	<div class="col-md-6">
 		<form name="memberJoinForm" id="memberJoinForm" method="post">
-			<input type="hidden" class="form-control" id="certYn" name="certYn" required placeholder="인증 여부를 입력해주세요." value="N"/>
+			<!-- Fixme: replace certYn to emailCertYn -->
+			<input type="hidden" class="form-control" id="certYn" name="certYn" value="N"/>
+			<input type="hidden" class="form-control" id="accountCertYn" name="accountCertYn" value="N"/>
 			<div class="form-group">
 				<label for="username">이름</label>
 				<input type="text" class="form-control" id="username" name="username" required placeholder="이름을 입력해주세요."/>
 			</div>
 			<div class="form-group">
 				<label for="account">계정</label>
-				<input type="text" class="form-control" id="account" name="account" required placeholder="계정을 입력해주세요."/>
+				<div class="input-group">
+					<input type="text" class="form-control" id="account" name="account" required placeholder="계정을 입력해주세요."/>
+					<div class="input-group-append">
+						<button type="button" class="btn btn-outline-secondary" id="checkDuplicateId" onclick="checkDuplAccount();">아이디 중복 체크</button>
+					</div>
+				</div>
 			</div>
 			<div class="form-group">
 				<label for="password1">1차 비밀번호</label>

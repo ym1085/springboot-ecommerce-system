@@ -49,18 +49,10 @@ public class MemberService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public int checkDuplMemberAccount(MemberRequestDto memberRequestDto) {
-        if (StringUtils.isBlank(memberRequestDto.getAccount())) {
-            log.error("member account is not exists");
-            return MessageCode.FAIL.getCode();
-        }
-
-        Member member = new Member(memberRequestDto); // dto -> entity
+        Member member = new Member(memberRequestDto);
         return isExistsDupleMemberAccount(member);
     }
 
-    /**
-     * 중복 회원 검증
-     */
     private int isExistsDupleMemberAccount(Member member) {
         return memberMapper.checkDuplMemberAccount(member);
     }
