@@ -12,11 +12,11 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
+public class CustomLogInFailerHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.info("OAuth 2.0 sign-in failed. Server-side review is required.");
+        log.info("General members failed to sign in at login.");
 
         response.sendRedirect("/member/access-denied");
     }

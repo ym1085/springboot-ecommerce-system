@@ -16,6 +16,8 @@ public class CustomLogInSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        log.info("로그인에 성공했습니다. 토큰을 발급합니다.");
+        log.info("successful login. Issue a token.");
+
+        response.sendRedirect("/member/loginForm");
     }
 }
