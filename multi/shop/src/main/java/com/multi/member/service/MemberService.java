@@ -23,6 +23,15 @@ public class MemberService implements UserDetailsService {
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Member member = memberMapper.getMemberByAccount(username).orElse(new Member());
+        if (StringUtils.isBlank(member.getAccount())) {
+            throw new UsernameNotFoundException(username);
+        }
+        return member;
+    }
+
     @Transactional
     public int signUp(MemberRequestDto memberRequestDto) {
         memberRequestDto.replaceHyphen();
@@ -35,16 +44,6 @@ public class MemberService implements UserDetailsService {
         }
 
         return memberMapper.signUp(member);
-    }
-
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.debug("Information about the user trying to sign in, username = {}", username);
-        Member member = memberMapper.getMemberByAccount(username).orElse(new Member());
-        if (StringUtils.isBlank(member.getAccount())) {
-            throw new UsernameNotFoundException(username);
-        }
-        return member;
     }
 
     @Transactional(readOnly = true)
