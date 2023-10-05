@@ -18,25 +18,23 @@
 # ⛏ 사용 기술
 
 ## 📌 Backend
-| 기술               | 버전     | 사용 여부 |
-|------------------|--------|-------|
-| Java             | 11     | o     |
-| Spring Boot      | 2.7.1  | o     |
-| Spring Security  | 2.7.2  | o     |
-| MyBatis          | 3.0.1  | o     |
+| 기술               | 버전   | 사용 여부 |
+|------------------|------|-------|
+| Java             | 11   | o     |
+| Spring Boot      | 2.7.1 | o     |
+| Spring Security  | 2.7.2 | o     |
+| MyBatis          | 3.0.1 | o     |
 | MySQL Connector J | 8.0.28 | o     |
-| Swagger          | 3.0.0  | x     |
-| Elasticsearch    | 7.10.0 | x     |
-| Docker           | 23.0.5 | x     | 
+| Swagger          | 3.0.0 | x     |
+| Docker           | 23.0.5 | x     |
+| AWS              |      | x     |
 
 # 🎢 구현 기능
-- 검색 기능
-  - 일반 검색 [비회원, 회원]
-  - 초성 검색 [비회원, 회원] -> x(보류)
+
 - 회원 기능
+  - 로그인/로그아웃 [일반, 소셜회원]
   - 회원가입
-    - 소셜 로그인(구글, 네이버, 카카오 - OAuth 2.0)
-  - 로그인/로그아웃
+  - 소셜 로그인(구글, 네이버, 카카오 - OAuth 2.0)[소셜회원]
 - 게시판 기능
   - 모든 게시글 및 특정 게시글 조회
   - 게시글 검색 (제목, 내용, 작성자)
@@ -51,58 +49,8 @@
   - 댓글 작성 [회원]
   - 댓글 수정 [회원, 댓글 작성자]
   - 댓글 삭제 [회원, 댓글 작성자]
-
-# 소셜 로그인
-
-```yaml
-# application-oauth-sample.yaml
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 클라이언트 ID
-            client-secret: 클라이언트 Secret
-            scope:
-              - profile
-              - email
-          naver:
-            client-id: 클라이언트 ID
-            client-secret: 클라이언트 Secret
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
-            authorization-grant-type: authorization_code
-            scope:
-              - name
-              - email
-              - profile_image
-            client-name: Naver
-          kakao:
-            client-id: 클라이언트 ID
-            client-secret: 클라이언트 Secret
-            client-name: Kakao
-            scope:
-              - account_email
-              - profile_nickname
-              - profile_image
-            authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
-            client-authentication-method: POST
-        provider:
-          naver:
-            authorization-uri: https://nid.naver.com/oauth2.0/authorize
-            token-uri: https://nid.naver.com/oauth2.0/token
-            user-info-uri: https://openapi.naver.com/v1/nid/me
-            user-name-attribute: response
-          kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
-
-```
-
-- 로그인의 경우 각 업체에서 제공해주는 ClientId, ClientSecret을 기재해야 합니다.
+- 상품
+  - 비고
 
 # API 명세서
 
