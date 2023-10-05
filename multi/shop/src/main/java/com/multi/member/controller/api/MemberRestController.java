@@ -15,7 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,8 +31,13 @@ public class MemberRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            List<String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_MEMBER.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
+            Map<String, String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            return ResponseFactory.createResponseFactory(
+                    MessageCode.FAIL_SAVE_MEMBER.getCode(),
+                    MessageCode.FAIL_SAVE_MEMBER.getMessage(),
+                    errorMessage,
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         int result = memberService.signUp(memberRequestDto);
@@ -46,7 +51,11 @@ public class MemberRestController {
     @GetMapping(value = "/member/exists/{account}")
     public ResponseEntity<CommonResponse> checkDuplMemberAccount(@PathVariable("account") String account) {
         if (StringUtils.isBlank(account)) {
-            return ResponseFactory.createResponseFactory(MessageCode.NOT_FOUND_ACCOUNT.getCode(), MessageCode.NOT_FOUND_ACCOUNT.getMessage(), HttpStatus.OK);
+            return ResponseFactory.createResponseFactory(
+                    MessageCode.NOT_FOUND_ACCOUNT.getCode(),
+                    MessageCode.NOT_FOUND_ACCOUNT.getMessage(),
+                    HttpStatus.OK
+            );
         }
 
         int result = memberService.checkDuplMemberAccount(MemberRequestDto.builder().account(account).build());
