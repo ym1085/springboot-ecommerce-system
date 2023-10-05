@@ -47,6 +47,7 @@ subprojects {
 		implementation 'org.springframework.boot:spring-boot-starter-mail'
 		implementation 'mysql:mysql-connector-java'
 		implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+		implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
 		runtimeOnly 'mysql:mysql-connector-java' // 개발 환경에서 사용하는 DB(MySQL)
 		runtimeOnly 'com.h2database:h2' // 테스트 코드 작성시 사용할 DB(H2)
