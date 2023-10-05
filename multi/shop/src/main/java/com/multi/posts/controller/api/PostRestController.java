@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class PostRestController {
     @GetMapping(value = "/post")
     public ResponseEntity<CommonResponse> getPosts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
-        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POSTS.getCode(), posts, HttpStatus.OK);
+        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POSTS.getCode(), MessageCode.SUCCESS_GET_POSTS.getMessage(), posts, HttpStatus.OK);
     }
 
     @GetMapping(value = "/post/{id}")
@@ -48,7 +49,7 @@ public class PostRestController {
 
         post.addComments(comments);
 
-        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POST.getCode(), post, HttpStatus.OK);
+        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POST.getCode(), MessageCode.SUCCESS_GET_POST.getMessage(), post, HttpStatus.OK);
     }
 
     @PostMapping(value = "/post")
@@ -57,8 +58,13 @@ public class PostRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            List<String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_POST.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
+            Map<String, String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            return ResponseFactory.createResponseFactory(
+                    MessageCode.FAIL_SAVE_POST.getCode(),
+                    MessageCode.FAIL_SAVE_POST.getMessage(),
+                    errorMessage,
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         postRequestDto.setMemberId(1L); // TODO: replace hard code
@@ -77,8 +83,13 @@ public class PostRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            List<String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_UPDATE_POST.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
+            Map<String, String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            return ResponseFactory.createResponseFactory(
+                    MessageCode.FAIL_UPDATE_POST.getCode(),
+                    MessageCode.FAIL_UPDATE_POST.getMessage(),
+                    errorMessage,
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         postRequestDto.setMemberId(1L); // TODO: replace hard code

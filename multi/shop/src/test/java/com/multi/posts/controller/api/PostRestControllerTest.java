@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +41,7 @@ class PostRestControllerTest {
     private FileMapper fileMapper;
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("전체 게시글 조회 API")
     void getPosts() throws Exception {
         //given
@@ -56,15 +55,15 @@ class PostRestControllerTest {
         //then
         result.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.data.result[0].postId").isNotEmpty())
+                .andExpect(jsonPath("$.result.data.result[0].postId").isNotEmpty())
 //                .andExpect(jsonPath("$.data.result[0].postId", equalTo(1003))) // 값이 계속 변경되는데.. 흐음..
 //                .andExpect(jsonPath("$.data.result[0].title", equalTo("제목1003")))
 //                .andExpect(jsonPath("$.data.result[0].content", equalTo("내용1003")))
-                .andExpect(jsonPath("$.data.result[0].fixedYn", equalTo("N")));
+                .andExpect(jsonPath("$.result.data.result[0].fixedYn", equalTo("N")));
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("단일 게시글 조회 API")
     void getPostById() throws Exception {
         //given
@@ -78,15 +77,15 @@ class PostRestControllerTest {
         //then
         result.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.data.postId").isNotEmpty())
-                .andExpect(jsonPath("$.data.postId", is(1)))
-                .andExpect(jsonPath("$.data.title", is("제목1")))
-                .andExpect(jsonPath("$.data.content", is("내용1")))
-                .andExpect(jsonPath("$.data.fixedYn", is("N")));
+                .andExpect(jsonPath("$.result.data.postId").isNotEmpty())
+                .andExpect(jsonPath("$.result.data.postId", is(1)))
+                .andExpect(jsonPath("$.result.data.title", is("제목1")))
+                .andExpect(jsonPath("$.result.data.content", is("내용1")))
+                .andExpect(jsonPath("$.result.data.fixedYn", is("N")));
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("게시글 등록 API")
     void savePost() throws Exception {
         //given
@@ -111,7 +110,7 @@ class PostRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("게시글 수정 API - 제목 공백인 경우 예외 발생")
     void uploadPostTitleNull() throws Exception {
         //given
@@ -129,11 +128,13 @@ class PostRestControllerTest {
         //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.message[0]", Matchers.containsString("제목은 반드시 입력되어야 합니다")));
+                .andExpect(jsonPath("$.code", equalTo(2001)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("게시글 수정에 실패")))
+                .andExpect(jsonPath("$.errorMessage.title", Matchers.containsString("제목은 반드시 입력")));
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("게시글 수정 API - 내용 공백인 경우 예외 발생")
     void uploadPostContentNull() throws Exception {
         //given
@@ -151,11 +152,13 @@ class PostRestControllerTest {
         //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.message[0]", Matchers.containsString("내용은 반드시 입력되어야 합니다.")));
+                .andExpect(jsonPath("$.code", equalTo(2001)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("게시글 수정에 실패")))
+                .andExpect(jsonPath("$.errorMessage.content", Matchers.containsString("내용은 반드시 입력되어야 합니다")));
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("게시글 수정 API - 제목이 20을 초과하는 경우 예외 발생")
     void uploadPostTitleOverThan20() throws Exception {
         //given
@@ -173,11 +176,13 @@ class PostRestControllerTest {
         //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.message[0]", Matchers.containsString("제목은 20자를 초과할 수 없습니다.")));
+                .andExpect(jsonPath("$.code", equalTo(2001)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("게시글 수정에 실패하였습니다")))
+                .andExpect(jsonPath("$.errorMessage.title", Matchers.containsString("제목은 20자를 초과할 수 없습니다")));
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("게시글 수정 API - 내용이 250자를 넘는 경우 경우 예외 발생")
     void uploadPostContentOverThan250() throws Exception {
         //given
@@ -199,11 +204,13 @@ class PostRestControllerTest {
         //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.message[0]", Matchers.containsString("내용은 250자를 초과할 수 없습니다.")));
+                .andExpect(jsonPath("$.code", equalTo(2001)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("게시글 수정에 실패하였습니다")))
+                .andExpect(jsonPath("$.errorMessage.content", Matchers.containsString("내용은 250자를 초과할 수 없습니다")));
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("게시글 삭제 API 테스트")
     void deletePost() throws Exception {
         //given

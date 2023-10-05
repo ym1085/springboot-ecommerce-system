@@ -20,7 +20,7 @@ public class PasswordEncoderTest {
     private PasswordEncoder passwordEncoder;
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("패스워드 암호화 가능 여부 테스트")
     void testPasswordEncoding() {
         //given

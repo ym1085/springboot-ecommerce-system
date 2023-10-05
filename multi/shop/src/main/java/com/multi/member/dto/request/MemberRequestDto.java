@@ -71,21 +71,25 @@ public class MemberRequestDto {
     }
 
     @Builder
-    public MemberRequestDto(String name,
-                            String account,
-                            String password,
-                            String email,
-                            String phoneNumber,
-                            String certYn,
-                            String picture,
-                            Gender gender,
-                            String birthDate,
-                            Role role) {
+    public MemberRequestDto(
+            String name,
+            String account,
+            String password,
+            String email,
+            String phoneNumber,
+            String certYn,
+            String accountCertYn,
+            String picture,
+            Gender gender,
+            String birthDate,
+            Role role
+    ) {
         this.name = name;
         this.account = account;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.accountCertYn = accountCertYn;
         this.certYn = certYn;
         this.picture = picture;
         this.gender = gender;

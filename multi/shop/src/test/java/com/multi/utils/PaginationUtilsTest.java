@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PaginationUtilsTest {
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("전체 페이지 수 계산 테스트 - 데이터 1000개")
     void testTotalPageCountPer1000() {
         SearchRequestDto searchRequestDto = new SearchRequestDto();
@@ -31,7 +31,7 @@ class PaginationUtilsTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("전체 페이지 수 계산 테스트 - 데이터 1242개")
     void testTotalPageCountPer1242() {
         SearchRequestDto searchRequestDto = new SearchRequestDto();
@@ -47,7 +47,7 @@ class PaginationUtilsTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("시작 번호 테스트 - 페이지 번호 1인 경우")
     void testStartPageByPageNo1() {
         SearchRequestDto searchRequestDto = new SearchRequestDto();
@@ -63,7 +63,7 @@ class PaginationUtilsTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("시작 번호 테스트 - 페이지 번호 11인 경우")
     void testStartPageByPageNo11() {
         SearchRequestDto searchRequestDto = new SearchRequestDto();
@@ -79,7 +79,7 @@ class PaginationUtilsTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("끝 번호 테스트 - 페이지 번호 1인 경우")
     void testEndPageByPageNo1() {
         SearchRequestDto searchRequestDto = new SearchRequestDto();
@@ -95,7 +95,7 @@ class PaginationUtilsTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("끝 번호 테스트 - 페이지 번호 11인 경우")
     void testEndPageByPageNo11() {
         SearchRequestDto searchRequestDto = new SearchRequestDto();
@@ -111,7 +111,7 @@ class PaginationUtilsTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("MySQL의 LIMIT 구문의 첫번째 인자로 사용될 Limit 테스트 - 페이지 번호 1인 경우")
     void testLimitStartByPageNo1() {
         SearchRequestDto searchRequestDto = new SearchRequestDto();
@@ -129,7 +129,7 @@ class PaginationUtilsTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("MySQL의 LIMIT 구문의 첫번째 인자로 사용될 Limit 테스트 - 페이지 번호 3인 경우")
     void testLimitStartByPageNo3() {
         SearchRequestDto searchRequestDto = new SearchRequestDto();
@@ -147,7 +147,7 @@ class PaginationUtilsTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("시작 페이지 테스트 - pageNo 16로 지정하여 테스트")
     void testPageSizeAndPageNo() {
         SearchRequestDto searchRequestDto = new SearchRequestDto();
@@ -163,7 +163,7 @@ class PaginationUtilsTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    // @WithMockUser(roles = "USER")
     @DisplayName("시작 페이지 테스트 - pageNo 9로 지정하여 테스트")
     void testPageSizeAndPageNo9() {
         SearchRequestDto searchRequestDto = new SearchRequestDto();

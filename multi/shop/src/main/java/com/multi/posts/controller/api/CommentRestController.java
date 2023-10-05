@@ -14,7 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,12 +37,21 @@ public class CommentRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            List<String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_SAVE_COMMENT.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
+            Map<String, String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            return ResponseFactory.createResponseFactory(
+                    MessageCode.FAIL_SAVE_COMMENT.getCode(),
+                    MessageCode.FAIL_SAVE_COMMENT.getMessage(),
+                    errorMessage,
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         if (postId == null || postId == 0L) {
-            return ResponseFactory.createResponseFactory(MessageCode.NOT_FOUND_POST_ID.getCode(), MessageCode.NOT_FOUND_POST_ID.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseFactory.createResponseFactory(
+                    MessageCode.NOT_FOUND_POST_ID.getCode(),
+                    MessageCode.NOT_FOUND_POST_ID.getMessage(),
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         commentRequestDto.setMemberId(1L); // TODO: replace hard code
@@ -58,8 +67,13 @@ public class CommentRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            List<String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_UPDATE_COMMENT.getCode(), errorMessage, HttpStatus.BAD_REQUEST);
+            Map<String, String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            return ResponseFactory.createResponseFactory(
+                    MessageCode.FAIL_UPDATE_COMMENT.getCode(),
+                    MessageCode.FAIL_UPDATE_COMMENT.getMessage(),
+                    errorMessage,
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         int result = commentService.updateCommentById(commentRequestDto);

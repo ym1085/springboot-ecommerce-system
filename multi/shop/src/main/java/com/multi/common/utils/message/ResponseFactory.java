@@ -5,12 +5,25 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class ResponseFactory {
 
-    public static <T> ResponseEntity<CommonResponse> createResponseFactory(int code, T data, HttpStatus status) {
+    public static <T> ResponseEntity<CommonResponse> createResponseFactory(int code, String message, HttpStatus status) {
         return new ResponseEntity<>(
-                new CommonResponse(code, getSingletonList(data)), status
+                new CommonResponse(code, message), status
+        );
+    }
+
+    public static <T> ResponseEntity<CommonResponse> createResponseFactory(int code, String message, Map<String, String> errorMessage, HttpStatus status) {
+        return new ResponseEntity<>(
+                new CommonResponse(code, message, errorMessage), status
+        );
+    }
+
+    public static <T> ResponseEntity<CommonResponse> createResponseFactory(int code, String message, T result, HttpStatus status) {
+        return new ResponseEntity<>(
+                new CommonResponse(code, message, result), status
         );
     }
 
