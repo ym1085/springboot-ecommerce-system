@@ -1,5 +1,6 @@
 package com.multi.config.auth;
 
+import com.multi.member.constant.Role;
 import com.multi.member.security.CustomLogInFailerHandler;
 import com.multi.member.security.CustomLogInSuccessHandler;
 import com.multi.member.security.OAuth2LoginFailureHandler;
@@ -25,12 +26,7 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
-    // Fixme: Get URL from DB when Authorization
-    private static final String[] PERMIT_STATIC_URL = {"/css/**", "/images/**", "/js/**", "/h2-console/**", "/profile"};
-    private static final String[] PERMIT_MEMBER_URL = {"/member/login", "/member/loginForm", "/member/joinForm", "/member/access-success","/member/access-denied"};
-    private static final String[] PERMIT_API_URL = {"/api/v1/**"};
-    private static final String[] PERMIT_SWAGGER2_URL = {"/v2/api-docs", "/swagger-resources", "/swagger-resources/**", "/configuration/ui", "/configuration/security", "/swagger-ui.html", "/webjars/**"};
-    private static final String[] PERMIT_SWAGGER3_URL = {"/v3/api-docs/**", "/swagger-ui/**"};
+    //https://www.youtube.com/watch?v=uaEuT7ZfQI8&list=PL93mKxaRDidERCyMaobSLkvSPzYtIk0Ah&index=6
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -39,12 +35,9 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
-                        .antMatchers(PERMIT_STATIC_URL).permitAll()
-                        .antMatchers(PERMIT_MEMBER_URL).permitAll()
-                        .antMatchers(PERMIT_API_URL).permitAll()
-                        .antMatchers(PERMIT_SWAGGER2_URL).permitAll()
-                        .antMatchers(PERMIT_SWAGGER3_URL).permitAll()
-                        .anyRequest().authenticated()
+                        .antMatchers("/admin/**").hasRole(Role.ADMIN.name())
+                        .antMatchers("/", "/post/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name(), Role.GUEST.name())
+                        .anyRequest().permitAll()
                 .and()
                     .formLogin()
                         .loginPage("/member/loginForm")
