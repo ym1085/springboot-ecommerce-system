@@ -8,6 +8,7 @@ import com.multi.member.security.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -26,8 +28,6 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
-    //https://www.youtube.com/watch?v=uaEuT7ZfQI8&list=PL93mKxaRDidERCyMaobSLkvSPzYtIk0Ah&index=6
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .and()
                     .authorizeRequests()
                         .antMatchers("/admin/**").hasRole(Role.ADMIN.name())
-                        .antMatchers("/", "/post/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name(), Role.GUEST.name())
+                        .antMatchers("/").hasAnyRole(Role.ADMIN.name(), Role.USER.name(), Role.GUEST.name())
                         .anyRequest().permitAll()
                 .and()
                     .formLogin()

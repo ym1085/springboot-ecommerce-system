@@ -49,6 +49,10 @@ public class Member {
         return this;
     }
 
+    public String getRoleKey() {
+        return this.role.getKey();
+    }
+
     @Builder
     public Member(String name, String account, String email, String picture, Role role, String registrationId, String providerToken) {
         this.name = name;
