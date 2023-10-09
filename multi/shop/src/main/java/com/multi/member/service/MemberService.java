@@ -6,37 +6,22 @@ import com.multi.member.domain.Member;
 import com.multi.member.dto.request.MemberRequestDto;
 import com.multi.member.repository.MemberMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
-public class MemberService implements UserDetailsService {
+public class MemberService {
 
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberMapper.getMemberByAccount(username).orElse(new Member());
-        if (StringUtils.isBlank(member.getAccount())) {
-            throw new UsernameNotFoundException(username);
-        }
-        return member;
-    }
-
     @Transactional
     public int signUp(MemberRequestDto memberRequestDto) {
         memberRequestDto.replaceHyphen();
-        memberRequestDto.encodeMemberPassword(this.passwordEncoder);
-        memberRequestDto.setMemberRole(Role.ROLE_USER);
+        memberRequestDto.encodeMemberPassword(passwordEncoder);
+        memberRequestDto.setMemberRole(Role.USER);
 
         Member member = new Member(memberRequestDto);
         if (isExistsDupleMemberAccount(member) > 0) {
