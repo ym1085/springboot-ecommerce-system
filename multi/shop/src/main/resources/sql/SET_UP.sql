@@ -33,16 +33,16 @@ CREATE TABLE SOCIAL_MEMBER (
 -- INSERT INTO MEMBER
 INSERT INTO MEMBER (name, account, password, email, phone_number, picture, birth_date, use_yn, cert_yn, role)
 VALUES
-    ('아이유', 'user1', 'password1', 'user1@example.com', '010-1111-1111', NULL, '1993-09-23', 'Y', 'Y', 'ROLE_USER'),
-    ('장동건', 'user2', 'password2', 'user2@example.com', '010-2222-2222', NULL, '1994-05-15', 'Y', 'N', 'ROLE_USER'),
-    ('원빈', 'user3', 'password3', 'user3@example.com', '010-3333-3333', NULL, '1995-12-07', 'Y', 'Y', 'ROLE_USER'),
-    ('현빈', 'user4', 'password4', 'user4@example.com', '010-4444-4444', NULL, '1996-03-29', 'Y', 'N', 'ROLE_USER'),
-    ('김주혁', 'user5', 'password5', 'user5@example.com', '010-5555-5555', NULL, '1997-08-11', 'Y', 'Y', 'ROLE_USER'),
-    ('김종국', 'user6', 'password6', 'user6@example.com', '010-6666-6666', NULL, '1998-01-03', 'Y', 'N', 'ROLE_USER'),
-    ('아이린', 'user7', 'password7', 'user7@example.com', '010-7777-7777', NULL, '1999-11-21', 'Y', 'Y', 'ROLE_USER'),
-    ('김태희', 'user8', 'password8', 'user8@example.com', '010-8888-8888', NULL, '2000-06-14', 'Y', 'N', 'ROLE_USER'),
-    ('송혜교', 'user9', 'password9', 'user9@example.com', '010-9999-9999', NULL, '2001-09-05', 'Y', 'Y', 'ROLE_USER'),
-    ('한가인', 'user10', 'password10', 'user10@example.com', '010-1010-1010', NULL, '2002-02-27', 'Y', 'N', 'ROLE_USER');
+    ('아이유', 'user1', 'password1', 'user1@example.com', '010-1111-1111', NULL, '1993-09-23', 'Y', 'Y', 'USER'),
+    ('장동건', 'user2', 'password2', 'user2@example.com', '010-2222-2222', NULL, '1994-05-15', 'Y', 'N', 'USER'),
+    ('원빈', 'user3', 'password3', 'user3@example.com', '010-3333-3333', NULL, '1995-12-07', 'Y', 'Y', 'USER'),
+    ('현빈', 'user4', 'password4', 'user4@example.com', '010-4444-4444', NULL, '1996-03-29', 'Y', 'N', 'USER'),
+    ('김주혁', 'user5', 'password5', 'user5@example.com', '010-5555-5555', NULL, '1997-08-11', 'Y', 'Y', 'USER'),
+    ('김종국', 'user6', 'password6', 'user6@example.com', '010-6666-6666', NULL, '1998-01-03', 'Y', 'N', 'USER'),
+    ('아이린', 'user7', 'password7', 'user7@example.com', '010-7777-7777', NULL, '1999-11-21', 'Y', 'Y', 'USER'),
+    ('김태희', 'user8', 'password8', 'user8@example.com', '010-8888-8888', NULL, '2000-06-14', 'Y', 'N', 'USER'),
+    ('송혜교', 'user9', 'password9', 'user9@example.com', '010-9999-9999', NULL, '2001-09-05', 'Y', 'Y', 'USER'),
+    ('한가인', 'user10', 'password10', 'user10@example.com', '010-1010-1010', NULL, '2002-02-27', 'Y', 'N', 'USER');
 
 -- TALBE : POST_CATEGORY
 CREATE TABLE CATEGORY (

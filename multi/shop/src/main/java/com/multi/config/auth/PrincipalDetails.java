@@ -3,7 +3,7 @@ package com.multi.config.auth;
 // 시큐리티가 /login 주소 요청이 오면 낚아채서 로그인을 진행
 // 로그인 진행이 완료가 되면 시큐리티가 가지고 있는 session을 만들어준다. (Security ContextHolder에 저장)
 // 오브젝트 => Authentication 타입 객체
-// Authentication > UserDetails(PrincipalDetails)
+// Authentication => UserDetails(PrincipalDetails)
 
 import com.multi.member.domain.Member;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +24,7 @@ public class PrincipalDetails implements UserDetails {
     // 해당 유저의 권한을 리턴, spring security 인증 처리
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(member.getRole().name()));
+        return Collections.singletonList(new SimpleGrantedAuthority(member.getRoleKey()));
     }
 
     @Override
