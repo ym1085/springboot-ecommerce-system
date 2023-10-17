@@ -87,8 +87,6 @@
 > ✏️ API 명세서의 경우 spring boot server 구동 후 아래 URL로 접속하시면 됩니다.  
 > - http://localhost:8080/swagger-ui/index.html
 
-## API 명세서
-
 ### ✅ 회원(Member)
 
 | Method | URL                            | Description |
