@@ -5,7 +5,7 @@ package com.shoppingmall.config.auth;
 // 오브젝트 => Authentication 타입 객체
 // Authentication => UserDetails(PrincipalDetails)
 
-import com.shoppingmall.member.domain.Member;
+import com.shoppingmall.domain.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

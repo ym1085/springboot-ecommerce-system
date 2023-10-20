@@ -1,8 +1,8 @@
 package com.shoppingmall.member.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shoppingmall.member.constant.Gender;
-import com.shoppingmall.member.dto.request.MemberRequestDto;
+import com.shoppingmall.constant.Gender;
+import com.shoppingmall.dto.request.MemberRequestDto;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

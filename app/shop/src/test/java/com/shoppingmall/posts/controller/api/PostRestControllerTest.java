@@ -1,9 +1,9 @@
 package com.shoppingmall.posts.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shoppingmall.posts.dto.request.PostRequestDto;
-import com.shoppingmall.posts.repository.FileMapper;
-import com.shoppingmall.posts.repository.PostMapper;
+import com.shoppingmall.dto.request.PostRequestDto;
+import com.shoppingmall.repository.FileMapper;
+import com.shoppingmall.repository.PostMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

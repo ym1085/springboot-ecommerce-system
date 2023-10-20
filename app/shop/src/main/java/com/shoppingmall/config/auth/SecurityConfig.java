@@ -1,10 +1,10 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.member.constant.Role;
-import com.shoppingmall.member.security.CustomLogInFailerHandler;
-import com.shoppingmall.member.security.CustomLogInSuccessHandler;
-import com.shoppingmall.member.security.OAuth2LoginFailureHandler;
-import com.shoppingmall.member.security.OAuth2LoginSuccessHandler;
+import com.shoppingmall.constant.Role;
+import com.shoppingmall.handler.CustomLogInFailerHandler;
+import com.shoppingmall.handler.CustomLogInSuccessHandler;
+import com.shoppingmall.handler.OAuth2LoginFailureHandler;
+import com.shoppingmall.handler.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

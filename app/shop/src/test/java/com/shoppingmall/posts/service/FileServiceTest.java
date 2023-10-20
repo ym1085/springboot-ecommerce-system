@@ -1,6 +1,7 @@
 package com.shoppingmall.posts.service;
 
-import com.shoppingmall.posts.dto.request.FileRequestDto;
+import com.shoppingmall.dto.request.FileRequestDto;
+import com.shoppingmall.service.FileService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.shoppingmall.config;
 
-import com.shoppingmall.member.service.MemberService;
+import com.shoppingmall.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.shoppingmall.utils;
 
 import com.shoppingmall.common.utils.PaginationUtils;
-import com.shoppingmall.posts.dto.request.SearchRequestDto;
+import com.shoppingmall.dto.request.SearchRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

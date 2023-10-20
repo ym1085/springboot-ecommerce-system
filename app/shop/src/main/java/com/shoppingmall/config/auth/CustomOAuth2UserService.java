@@ -1,9 +1,9 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.config.auth.dto.OAuthAttributes;
-import com.shoppingmall.config.auth.dto.SessionMember;
-import com.shoppingmall.member.domain.Member;
-import com.shoppingmall.member.repository.MemberMapper;
+import com.shoppingmall.config.auth.attribute.OAuthAttributes;
+import com.shoppingmall.config.auth.attribute.SessionMember;
+import com.shoppingmall.domain.Member;
+import com.shoppingmall.repository.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
