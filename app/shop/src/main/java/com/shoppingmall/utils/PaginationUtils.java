@@ -1,4 +1,4 @@
-package com.shoppingmall.common.utils;
+package com.shoppingmall.utils;
 
 import com.shoppingmall.dto.request.SearchRequestDto;
 import lombok.Getter;

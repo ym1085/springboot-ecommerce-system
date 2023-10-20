@@ -1,5 +1,6 @@
 package com.shoppingmall.config;
 
+import com.shoppingmall.ShopApplication;
 import com.shoppingmall.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(classes = ShopApplication.class)
 public class PasswordEncoderTest {
 
     @Autowired

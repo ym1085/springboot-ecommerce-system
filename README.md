@@ -19,7 +19,7 @@
 
 ## 🎢 구현 기능
 
-- [Software Requirements Specification](https://docs.google.com/spreadsheets/d/1Wppy4RiBwldQL77RcXoLq9OkdGnVFCzIv5TQO75fZl8/edit?usp=sharing) 
+> ✏️ [요구사항 정의서](https://docs.google.com/spreadsheets/d/1Wppy4RiBwldQL77RcXoLq9OkdGnVFCzIv5TQO75fZl8/edit?usp=sharing) 
 
 - 공통
   - 회원가입
@@ -70,4 +70,4 @@
 
 ## API Docs
 
-> ✏️ [swagger](http://localhost:8080/swagger-ui/index.html)
+> ✏️ [swagger Document](http://localhost:8080/swagger-ui/index.html)

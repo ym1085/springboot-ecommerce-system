@@ -1,6 +1,7 @@
-package com.shoppingmall.posts.controller.api;
+package com.shoppingmall.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shoppingmall.ShopApplication;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.repository.FileMapper;
 import com.shoppingmall.repository.PostMapper;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Transactional
 @AutoConfigureMockMvc
-@SpringBootTest
+@SpringBootTest(classes = ShopApplication.class)
 class PostRestControllerTest {
 
     @Autowired

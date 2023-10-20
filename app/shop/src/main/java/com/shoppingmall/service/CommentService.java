@@ -1,6 +1,6 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.utils.message.MessageCode;
+import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.domain.Comment;
 import com.shoppingmall.dto.request.CommentRequestDto;
 import com.shoppingmall.dto.response.CommentResponseDto;

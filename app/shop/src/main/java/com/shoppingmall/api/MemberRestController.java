@@ -1,9 +1,9 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.utils.BindingResultErrorUtils;
-import com.shoppingmall.common.utils.message.CommonResponse;
-import com.shoppingmall.common.utils.message.MessageCode;
-import com.shoppingmall.common.utils.message.ResponseFactory;
+import com.shoppingmall.common.BindingResultError;
+import com.shoppingmall.common.CommonResponse;
+import com.shoppingmall.common.MessageCode;
+import com.shoppingmall.common.ResponseFactory;
 import com.shoppingmall.dto.request.MemberRequestDto;
 import com.shoppingmall.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class MemberRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            Map<String, String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            Map<String, String> errorMessage = BindingResultError.extractBindingResultErrorMessages(bindingResult);
             return ResponseFactory.createResponseFactory(
                     MessageCode.FAIL_SAVE_MEMBER.getCode(),
                     MessageCode.FAIL_SAVE_MEMBER.getMessage(),

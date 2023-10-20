@@ -1,4 +1,4 @@
-package com.shoppingmall.common.utils;
+package com.shoppingmall.common;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BindingResultErrorUtils {
+public class BindingResultError {
 
     public static Map<String, String> extractBindingResultErrorMessages(BindingResult bindingResult) {
         Map<String, String> result = new HashMap<>();
