@@ -1,7 +1,7 @@
-package com.shoppingmall.posts.service;
+package com.shoppingmall.service;
 
+import com.shoppingmall.ShopApplication;
 import com.shoppingmall.dto.request.FileRequestDto;
-import com.shoppingmall.service.FileService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Transactional
-@SpringBootTest
+@SpringBootTest(classes = ShopApplication.class)
 class FileServiceTest {
 
     @Autowired

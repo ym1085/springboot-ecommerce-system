@@ -1,6 +1,6 @@
 package com.shoppingmall.dto.response;
 
-import com.shoppingmall.common.utils.PaginationUtils;
+import com.shoppingmall.utils.PaginationUtils;
 import lombok.Getter;
 
 import java.util.ArrayList;

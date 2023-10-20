@@ -1,9 +1,9 @@
-package com.shoppingmall.posts.service;
+package com.shoppingmall.service;
 
+import com.shoppingmall.ShopApplication;
 import com.shoppingmall.domain.Comment;
 import com.shoppingmall.dto.request.CommentRequestDto;
 import com.shoppingmall.repository.CommentMapper;
-import com.shoppingmall.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-@SpringBootTest
+@SpringBootTest(classes = ShopApplication.class)
 class CommentServiceTest {
 
     @Autowired

@@ -1,6 +1,6 @@
 package com.shoppingmall.utils;
 
-import com.shoppingmall.common.utils.PaginationUtils;
+import com.shoppingmall.ShopApplication;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
-@SpringBootTest
+@SpringBootTest(classes = ShopApplication.class)
 class PaginationUtilsTest {
 
     @Test

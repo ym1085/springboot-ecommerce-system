@@ -1,6 +1,6 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.utils.message.MessageCode;
+import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.constant.Role;
 import com.shoppingmall.domain.Member;
 import com.shoppingmall.dto.request.MemberRequestDto;

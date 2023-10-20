@@ -81,7 +81,7 @@
             m.update_date,
             m.gender,
             sm.provider_type AS registrationId
-        FROM member m join social_member sm on m.member_id = sm.member_id
+        FROM member m join socialmember sm on m.member_id = sm.member_id
         WHERE email = #{email}
         AND sm.provider_type = #{registrationId}
         AND m.use_yn = 'Y'
@@ -118,7 +118,7 @@
             m.picture,
             m.role,
             sm.provider_type AS registrationId
-        FROM member m JOIN social_member sm ON m.member_id = sm.member_id
+        FROM member m JOIN socialmember sm ON m.member_id = sm.member_id
         WHERE m.email = #{email}
         AND sm.provider_type = #{registrationId}
         AND m.use_yn = 'Y'
@@ -128,7 +128,7 @@
     <!-- 소셜 로그인 사용자의 이메일, 대표 이미지가 변경 된 경우 DB 데이터 변경 -->
     <update id="updateMemberByEmailAndPicture" parameterType="com.shoppingmall.domain.Member">
         UPDATE member m
-            INNER JOIN social_member sm ON m.member_id = sm.member_id
+            INNER JOIN socialmember sm ON m.member_id = sm.member_id
         SET m.email = #{email},
             m.picture = #{picture}
         WHERE m.email = #{email}

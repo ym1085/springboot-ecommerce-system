@@ -1,9 +1,9 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.utils.BindingResultErrorUtils;
-import com.shoppingmall.common.utils.message.CommonResponse;
-import com.shoppingmall.common.utils.message.MessageCode;
-import com.shoppingmall.common.utils.message.ResponseFactory;
+import com.shoppingmall.common.BindingResultError;
+import com.shoppingmall.common.CommonResponse;
+import com.shoppingmall.common.MessageCode;
+import com.shoppingmall.common.ResponseFactory;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
@@ -58,7 +58,7 @@ public class PostRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            Map<String, String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            Map<String, String> errorMessage = BindingResultError.extractBindingResultErrorMessages(bindingResult);
             return ResponseFactory.createResponseFactory(
                     MessageCode.FAIL_SAVE_POST.getCode(),
                     MessageCode.FAIL_SAVE_POST.getMessage(),
@@ -83,7 +83,7 @@ public class PostRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            Map<String, String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            Map<String, String> errorMessage = BindingResultError.extractBindingResultErrorMessages(bindingResult);
             return ResponseFactory.createResponseFactory(
                     MessageCode.FAIL_UPDATE_POST.getCode(),
                     MessageCode.FAIL_UPDATE_POST.getMessage(),

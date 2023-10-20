@@ -1,5 +1,6 @@
 package com.shoppingmall.db;
 
+import com.shoppingmall.ShopApplication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +11,7 @@ import java.sql.DriverManager;
 
 //@TestPropertySource("classpath:application-${spring.profiles.active}.yaml")
 //@ActiveProfiles("dev")
-@SpringBootTest
+@SpringBootTest(classes = ShopApplication.class)
 public class MySQLConnectionTest {
 
     @Value("${spring.datasource.driver-class-name}")

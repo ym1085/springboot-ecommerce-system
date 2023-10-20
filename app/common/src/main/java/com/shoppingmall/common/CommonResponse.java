@@ -1,4 +1,4 @@
-package com.shoppingmall.common.utils.message;
+package com.shoppingmall.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.shoppingmall.common.utils.message;
+package com.shoppingmall.common;
 
 public enum MessageCode {
     //SERVER CODE

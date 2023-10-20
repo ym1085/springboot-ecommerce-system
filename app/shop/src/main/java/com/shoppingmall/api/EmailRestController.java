@@ -1,8 +1,8 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.utils.message.CommonResponse;
-import com.shoppingmall.common.utils.message.MessageCode;
-import com.shoppingmall.common.utils.message.ResponseFactory;
+import com.shoppingmall.common.CommonResponse;
+import com.shoppingmall.common.MessageCode;
+import com.shoppingmall.common.ResponseFactory;
 import com.shoppingmall.dto.request.EmailRequestDto;
 import com.shoppingmall.service.EmailService;
 import lombok.RequiredArgsConstructor;

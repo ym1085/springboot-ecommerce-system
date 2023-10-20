@@ -1,2 +1,5 @@
 rootProject.name = 'springboot-web-service'
 include 'app:shop'
+include 'app:common'
+findProject(':app:common')?.name = 'common'
+

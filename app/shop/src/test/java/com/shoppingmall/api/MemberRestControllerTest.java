@@ -1,6 +1,7 @@
-package com.shoppingmall.member.controller.api;
+package com.shoppingmall.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shoppingmall.ShopApplication;
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.dto.request.MemberRequestDto;
 import org.hamcrest.Matchers;
@@ -27,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Transactional
 @AutoConfigureMockMvc
-@SpringBootTest // 통합 테스트를 뺴고, 더 가볍게 만들어야 할 것 같은데
+@SpringBootTest(classes = ShopApplication.class)
 class MemberRestControllerTest {
 
     @Autowired

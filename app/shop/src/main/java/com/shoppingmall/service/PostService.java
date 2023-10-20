@@ -1,7 +1,7 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.utils.PaginationUtils;
-import com.shoppingmall.common.utils.message.MessageCode;
+import com.shoppingmall.utils.PaginationUtils;
+import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.domain.Post;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;

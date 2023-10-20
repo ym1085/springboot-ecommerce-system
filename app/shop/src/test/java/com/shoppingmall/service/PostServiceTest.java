@@ -1,10 +1,10 @@
-package com.shoppingmall.posts.service;
+package com.shoppingmall.service;
 
+import com.shoppingmall.ShopApplication;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
-import com.shoppingmall.service.PostService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 //@TestPropertySource(locations = "classpath:application-test.yaml")
 @Transactional
-@SpringBootTest
+@SpringBootTest(classes = ShopApplication.class)
 class PostServiceTest {
 
     @Autowired

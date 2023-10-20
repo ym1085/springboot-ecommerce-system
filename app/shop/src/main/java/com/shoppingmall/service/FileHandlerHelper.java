@@ -98,7 +98,7 @@ public class FileHandlerHelper {
     }
 
     private String getUploadPath(String addPath) {
-        return createDirectory(uploadPath + File.separator + addPath); // C:shop/upload-files/20230520/
+        return createDirectory(uploadPath + File.separator + addPath); // C:shoppingmall/upload-files/20230520/
     }
 
     private String createDirectory(String path) {

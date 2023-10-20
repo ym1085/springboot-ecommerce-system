@@ -1,9 +1,9 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.utils.BindingResultErrorUtils;
-import com.shoppingmall.common.utils.message.CommonResponse;
-import com.shoppingmall.common.utils.message.MessageCode;
-import com.shoppingmall.common.utils.message.ResponseFactory;
+import com.shoppingmall.common.BindingResultError;
+import com.shoppingmall.common.CommonResponse;
+import com.shoppingmall.common.MessageCode;
+import com.shoppingmall.common.ResponseFactory;
 import com.shoppingmall.dto.request.CommentRequestDto;
 import com.shoppingmall.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class CommentRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            Map<String, String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            Map<String, String> errorMessage = BindingResultError.extractBindingResultErrorMessages(bindingResult);
             return ResponseFactory.createResponseFactory(
                     MessageCode.FAIL_SAVE_COMMENT.getCode(),
                     MessageCode.FAIL_SAVE_COMMENT.getMessage(),
@@ -67,7 +67,7 @@ public class CommentRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            Map<String, String> errorMessage = BindingResultErrorUtils.extractBindingResultErrorMessages(bindingResult);
+            Map<String, String> errorMessage = BindingResultError.extractBindingResultErrorMessages(bindingResult);
             return ResponseFactory.createResponseFactory(
                     MessageCode.FAIL_UPDATE_COMMENT.getCode(),
                     MessageCode.FAIL_UPDATE_COMMENT.getMessage(),
