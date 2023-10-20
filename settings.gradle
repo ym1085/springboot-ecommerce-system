@@ -1,5 +1,2 @@
-rootProject.name = 'multi-module-project'
-include 'multi:search-api'
-include 'multi:shop'
-include 'core:elastic-client'
-
+rootProject.name = 'springboot-web-service'
+include 'app:shop'
