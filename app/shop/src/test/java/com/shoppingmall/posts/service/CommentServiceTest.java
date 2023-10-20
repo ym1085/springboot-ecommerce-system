@@ -1,8 +1,9 @@
 package com.shoppingmall.posts.service;
 
-import com.shoppingmall.posts.domain.Comment;
-import com.shoppingmall.posts.dto.request.CommentRequestDto;
-import com.shoppingmall.posts.repository.CommentMapper;
+import com.shoppingmall.domain.Comment;
+import com.shoppingmall.dto.request.CommentRequestDto;
+import com.shoppingmall.repository.CommentMapper;
+import com.shoppingmall.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

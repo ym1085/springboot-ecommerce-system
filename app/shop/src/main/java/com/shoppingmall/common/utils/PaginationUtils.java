@@ -1,6 +1,6 @@
 package com.shoppingmall.common.utils;
 
-import com.shoppingmall.posts.dto.request.SearchRequestDto;
+import com.shoppingmall.dto.request.SearchRequestDto;
 import lombok.Getter;
 
 @Getter

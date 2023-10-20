@@ -1,9 +1,10 @@
 package com.shoppingmall.posts.service;
 
-import com.shoppingmall.posts.dto.request.PostRequestDto;
-import com.shoppingmall.posts.dto.request.SearchRequestDto;
-import com.shoppingmall.posts.dto.resposne.PagingResponseDto;
-import com.shoppingmall.posts.dto.resposne.PostResponseDto;
+import com.shoppingmall.dto.request.PostRequestDto;
+import com.shoppingmall.dto.request.SearchRequestDto;
+import com.shoppingmall.dto.response.PagingResponseDto;
+import com.shoppingmall.dto.response.PostResponseDto;
+import com.shoppingmall.service.PostService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

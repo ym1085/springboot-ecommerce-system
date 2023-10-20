@@ -1,7 +1,7 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.member.domain.Member;
-import com.shoppingmall.member.repository.MemberMapper;
+import com.shoppingmall.domain.Member;
+import com.shoppingmall.repository.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
