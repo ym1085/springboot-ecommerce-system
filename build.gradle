@@ -2,7 +2,7 @@ buildscript {
 	ext {
 		springBootVersion = '2.7.2'
 		springDependencyManagement = '1.0.11.RELEASE'
-		esVersion = '7.6.1'
+		//esVersion = '7.6.1'
 	}
 	repositories {
 		mavenCentral()
@@ -67,19 +67,19 @@ subprojects {
 }
 
 // HINT : https://gist.github.com/ihoneymon/a2ed116069af470fec0d08110604c5db
-project(':core:elastic-client') {
+//project(':core:elastic-client') {
+//
+//	test.enabled = false
+//	bootJar.enabled = false
+//	jar.enabled = true
+//
+//	dependencies {
+//	}
+//}
 
-	test.enabled = false
-	bootJar.enabled = false
-	jar.enabled = true
-
-	dependencies {
-	}
-}
-
-project(':multi:search-api') {
-
-	dependencies {
-		compileOnly project(':core:elastic-client')
-	}
-}
+//project(':multi:search-api') {
+//
+//	dependencies {
+//		compileOnly project(':core:elastic-client')
+//	}
+//}

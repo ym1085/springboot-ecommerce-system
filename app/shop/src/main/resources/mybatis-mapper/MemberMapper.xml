@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shoppingmall.member.repository.MemberMapper">
+    
+    <insert id="signUp" parameterType="com.shoppingmall.member.domain.Member">
+        INSERT INTO member
+            (
+                name
+               , account
+               , password
+               , email
+               , phone_number
+               , picture
+               , birth_date
+               , use_yn
+               , cert_yn
+               , role
+               , create_date
+               , update_date
+               , gender
+            )
+        VALUES
+            (
+                #{name},
+                #{account},
+                #{password},
+                #{email},
+                #{phoneNumber},
+                <choose>
+                    <when test="picture != null and picture != ''">
+                        #{picture}
+                  </when>
+                  <otherwise>
+                     NULL
+                    </otherwise>
+                </choose>,
+                #{birthDate},
+                'Y',
+                #{certYn},
+                #{role},
+                now(),
+                now(),
+                #{gender}
+            )
+    </insert>
+
+    <!-- 소셜 로그인 : Google, Naver, Kakao.. -->
+    <insert id="signUpWithSocialLogin" parameterType="com.shoppingmall.member.domain.Member" statementType="CALLABLE">
+        <![CDATA[
+        {
+            CALL sp_insert_member
+                (
+                    #{name},
+                    #{account}, /* registrationId + providerToken */
+                    #{email},
+                    #{picture},
+                    #{role},
+                    #{registrationId},
+                    #{providerToken}
+                )
+        }
+        ]]>
+    </insert>
+
+    <select id="getMemberByEmail" parameterType="string" resultType="com.shoppingmall.member.domain.Member">
+        SELECT
+            m.member_id,
+            m.name,
+            m.account,
+            m.password,
+            m.email,
+            m.phone_number,
+            m.picture,
+            m.birth_date,
+            m.use_yn,
+            m.cert_yn,
+            m.role,
+            m.create_date,
+            m.update_date,
+            m.gender,
+            sm.provider_type AS registrationId
+        FROM member m join social_member sm on m.member_id = sm.member_id
+        WHERE email = #{email}
+        AND sm.provider_type = #{registrationId}
+        AND m.use_yn = 'Y'
+        AND m.cert_yn = 'Y'
+    </select>
+
+    <select id="getMemberById" parameterType="long" resultType="com.shoppingmall.member.domain.Member">
+        SELECT
+            m.member_id,
+            m.name,
+            m.account,
+            m.password,
+            m.email,
+            m.phone_number,
+            m.picture,
+            m.birth_date,
+            m.use_yn,
+            m.cert_yn,
+            m.role,
+            m.create_date,
+            m.update_date,
+            m.gender
+        FROM member m
+        WHERE m.member_id = #{memberId}
+        AND m.use_yn = 'Y'
+        AND m.cert_yn = 'Y'
+    </select>
+
+    <!-- 소셜 로그인 후 session에 저장 할 회원 조회 -->
+    <select id="getMemberByEmailWithSocialLogin" parameterType="string" resultType="com.shoppingmall.member.domain.Member">
+        SELECT
+            m.name,
+            m.email,
+            m.picture,
+            m.role,
+            sm.provider_type AS registrationId
+        FROM member m JOIN social_member sm ON m.member_id = sm.member_id
+        WHERE m.email = #{email}
+        AND sm.provider_type = #{registrationId}
+        AND m.use_yn = 'Y'
+        AND m.cert_yn = 'Y'
+    </select>
+
+    <!-- 소셜 로그인 사용자의 이메일, 대표 이미지가 변경 된 경우 DB 데이터 변경 -->
+    <update id="updateMemberByEmailAndPicture" parameterType="com.shoppingmall.member.domain.Member">
+        UPDATE member m
+            INNER JOIN social_member sm ON m.member_id = sm.member_id
+        SET m.email = #{email},
+            m.picture = #{picture}
+        WHERE m.email = #{email}
+        AND sm.provider_type = #{registrationId}
+        AND m.use_yn = 'Y'
+        AND m.cert_yn = 'Y';
+    </update>
+
+    <select id="getMemberByAccount" parameterType="string" resultType="com.shoppingmall.member.domain.Member">
+        SELECT
+            m.member_id,
+            m.name,
+            m.account,
+            m.password,
+            m.email,
+            m.phone_number,
+            m.picture,
+            m.birth_date,
+            m.use_yn,
+            m.cert_yn,
+            m.role,
+            m.create_date,
+            m.update_date,
+            m.gender
+        FROM member m
+        WHERE m.account = #{username}
+        AND m.use_yn = 'Y'
+        AND m.cert_yn = 'Y'
+    </select>
+    
+    <select id="checkDuplMemberAccount" parameterType="com.shoppingmall.member.domain.Member" resultType="int">
+        SELECT COUNT(1) AS CNT FROM member m where m.account = #{account}
+    </select>
+
+</mapper>
