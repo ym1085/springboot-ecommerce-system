@@ -22,22 +22,22 @@ class FileServiceTest {
     private static List<FileRequestDto> getFileRequestDtoBuilder() {
         return Arrays.asList(
                 FileRequestDto.builder()
-                        .originalName("file1.jpg")
-                        .saveName(UUID.randomUUID().toString() + ".jpg")
+                        .originFileName("file1.jpg")
+                        .storedFileName(UUID.randomUUID().toString() + ".jpg")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpg")
                         .fileSize(1024L)
                         .fileType("jpg")
                         .build(),
                 FileRequestDto.builder()
-                        .originalName("file2.jpg")
-                        .saveName(UUID.randomUUID().toString() + ".png")
+                        .originFileName("file2.jpg")
+                        .storedFileName(UUID.randomUUID().toString() + ".png")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".png")
                         .fileSize(1024L)
                         .fileType("png")
                         .build(),
                 FileRequestDto.builder()
-                        .originalName("file2.jpg")
-                        .saveName(UUID.randomUUID().toString() + ".jpeg")
+                        .originFileName("file2.jpg")
+                        .storedFileName(UUID.randomUUID().toString() + ".jpeg")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpeg")
                         .fileSize(1024L)
                         .fileType("jpeg")

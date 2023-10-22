@@ -87,9 +87,8 @@ public class PostService {
         fileHandlerHelper.deleteFiles(fileResponseDtos);
 
         int result = fileMapper.deleteFilesById(postId);
-        if (result == 0) {
-            return MessageCode.FAIL.getCode();
-        } else if (result > 0) {
+        if (result > 0) {
+            log.info("uploadFile is exists, result = {}", result);
             List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files);
             setFileInfoPostId(postId, fileRequestDtos);
             fileMapper.saveFiles(fileRequestDtos);

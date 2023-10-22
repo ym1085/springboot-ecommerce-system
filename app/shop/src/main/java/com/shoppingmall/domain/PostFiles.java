@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Files {
-    private Long fileId;
+public class PostFiles {
+    private Long postFileId;
     private Long postId;
-    private String originalName;
-    private String saveName;
+    private String originFileName;
+    private String storedFileName;
     private String filePath;
     private String fileSize;
     private String fileType;

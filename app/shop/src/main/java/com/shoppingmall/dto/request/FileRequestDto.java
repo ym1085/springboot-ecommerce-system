@@ -10,18 +10,18 @@ import lombok.Getter;
  */
 @Getter
 public class FileRequestDto {
-    private Long fileId;
+    private Long postFileId;
     private Long postId;
-    private String originalName;
-    private String saveName;
+    private String originFileName;
+    private String storedFileName;
     private String filePath;
     private long fileSize;
     private String fileType;
 
     @Builder
-    public FileRequestDto(String originalName, String saveName, String filePath, long fileSize, String fileType) {
-        this.originalName = originalName;
-        this.saveName = saveName;
+    public FileRequestDto(String originFileName, String storedFileName, String filePath, long fileSize, String fileType) {
+        this.originFileName = originFileName;
+        this.storedFileName = storedFileName;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.fileType = fileType;
