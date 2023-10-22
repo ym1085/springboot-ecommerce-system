@@ -1,6 +1,6 @@
 package com.shoppingmall.repository;
 
-import com.shoppingmall.domain.Files;
+import com.shoppingmall.domain.PostFiles;
 import com.shoppingmall.dto.request.FileRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,11 +14,11 @@ public interface FileMapper {
 
     int deleteFilesById(Long postId);
 
-    List<Files> getFiles(Long postId);
+    List<PostFiles> getFiles(Long postId);
 
     int deleteUpdateFilesById(Long postId);
 
-    Optional<Files> getFileById(Long fileId);
+    Optional<PostFiles> getFileById(Long fileId);
 
     void increaseDownloadCnt(Long fileId);
 }

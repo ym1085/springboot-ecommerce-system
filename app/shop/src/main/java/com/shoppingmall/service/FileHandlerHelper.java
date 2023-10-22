@@ -58,10 +58,10 @@ public class FileHandlerHelper {
             return null;
         }
 
-        String saveFileName = createSaveFileName(originalFilename);
+        String storedFileName = createSaveFileName(originalFilename);
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")).toString();
 
-        String uploadPath = getUploadPath(today) + File.separator + saveFileName;
+        String uploadPath = getUploadPath(today) + File.separator + storedFileName;
         File uploadFile = new File(uploadPath);
 
         try {
@@ -73,8 +73,8 @@ public class FileHandlerHelper {
         }
 
         return FileRequestDto.builder()
-                .originalName(multipartFile.getOriginalFilename())
-                .saveName(saveFileName)
+                .originFileName(multipartFile.getOriginalFilename())
+                .storedFileName(storedFileName)
                 .filePath(uploadPath)
                 .fileSize(multipartFile.getSize())
                 .fileType(ext)

@@ -16,7 +16,7 @@ VALUES
     ('송혜교', 'user9', 'password9', 'user9@example.com', '010-9999-9999', NULL, '2001-09-05', 'Y', 'Y', 'USER'),
     ('한가인', 'user10', 'password10', 'user10@example.com', '010-1010-1010', NULL, '2002-02-27', 'Y', 'N', 'USER');
 
-INSERT INTO CATEGORY (category_id, category_name)
+INSERT INTO POST_CATEGORY (category_id, category_name)
 VALUES
     (1, '일상/소통'),
     (2, '반려/생활'),

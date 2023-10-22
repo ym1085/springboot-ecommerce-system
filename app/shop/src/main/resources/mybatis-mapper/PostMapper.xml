@@ -63,7 +63,7 @@
                 AND m.use_yn = 'Y'
                 AND m.cert_yn = 'Y') AS writer,
             p.category_id,
-            (SELECT c.category_name FROM category c where c.category_id = p.category_id) AS categoryName,
+            (SELECT c.category_name FROM post_category c where c.category_id = p.category_id) AS categoryName,
             p.read_cnt,
             p.fixed_yn, /* Y, N */
             p.del_yn,
@@ -99,7 +99,7 @@
                 AND m.use_yn = 'Y'
                 AND m.cert_yn = 'Y') AS writer,
             p.category_id,
-            (SELECT c.category_name FROM category c where c.category_id = p.category_id) AS categoryName,
+            (SELECT c.category_name FROM post_category c where c.category_id = p.category_id) AS categoryName,
             p.read_cnt,
             p.fixed_yn,
             p.del_yn,

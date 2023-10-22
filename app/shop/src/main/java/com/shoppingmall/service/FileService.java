@@ -1,6 +1,6 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.domain.Files;
+import com.shoppingmall.domain.PostFiles;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.repository.FileMapper;
@@ -38,8 +38,8 @@ public class FileService {
 
     @Transactional(readOnly = true)
     public FileResponseDto getFileById(Long fileId) {
-        Files files = fileMapper.getFileById(fileId).orElseGet(Files::new);
-        return new FileResponseDto(files);
+        PostFiles postFiles = fileMapper.getFileById(fileId).orElseGet(PostFiles::new);
+        return new FileResponseDto(postFiles);
     }
 
     @Transactional

@@ -1,6 +1,6 @@
 package com.shoppingmall.dto.response;
 
-import com.shoppingmall.domain.Files;
+import com.shoppingmall.domain.PostFiles;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 public class FileResponseDto {
-    private Long fileId;
+    private Long postFileId;
     private Long postId;
-    private String originalName;
-    private String saveName;
+    private String originFileName;
+    private String storedFileName;
     private String filePath;
     private String fileSize;
     private String fileType;
@@ -21,17 +21,17 @@ public class FileResponseDto {
     private LocalDateTime createDate;
     private LocalDateTime deleteDate;
 
-    public FileResponseDto(Files file) {
-        this.fileId = file.getFileId();
-        this.postId = file.getPostId();
-        this.originalName = file.getOriginalName();
-        this.saveName = file.getSaveName();
-        this.filePath = file.getFilePath();
-        this.fileSize = file.getFileSize();
-        this.fileType = file.getFileType();
-        this.downloadCnt = file.getDownloadCnt();
-        this.delYn = file.getDelYn();
-        this.createDate = file.getCreateDate();
-        this.deleteDate = file.getDeleteDate();
+    public FileResponseDto(PostFiles postFiles) {
+        this.postFileId = postFiles.getPostFileId();
+        this.postId = postFiles.getPostId();
+        this.originFileName = postFiles.getOriginFileName();
+        this.storedFileName = postFiles.getStoredFileName();
+        this.filePath = postFiles.getFilePath();
+        this.fileSize = postFiles.getFileSize();
+        this.fileType = postFiles.getFileType();
+        this.downloadCnt = postFiles.getDownloadCnt();
+        this.delYn = postFiles.getDelYn();
+        this.createDate = postFiles.getCreateDate();
+        this.deleteDate = postFiles.getDeleteDate();
     }
 }

@@ -46,16 +46,16 @@ public class FileRestController {
             FileResponseDto files = fileService.getFileById(id);
             String parentSubDir = fileHandlerHelper.getSubFileDirPathByDate();
 
-            if (StringUtils.isBlank(files.getFilePath()) || files.getSaveName().length() == 0) {
+            if (StringUtils.isBlank(files.getFilePath()) || files.getStoredFileName().length() == 0) {
                 throw new IllegalArgumentException("file path or save name is blank");
             }
 
-            File file = new File(uploadPath + File.separator + parentSubDir + File.separator + files.getSaveName());
+            File file = new File(uploadPath + File.separator + parentSubDir + File.separator + files.getStoredFileName());
             Resource resource = resourceLoader.getResource("file:" + file.getPath());
             InputStream inputStream = resource.getInputStream();
 
             ResponseEntity<Resource> response = ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + files.getOriginalName() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + files.getOriginFileName() + "\"")
                     .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.contentLength()))
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM.toString())
                     .body(new InputStreamResource(inputStream));
