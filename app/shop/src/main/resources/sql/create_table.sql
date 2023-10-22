@@ -1,115 +1,192 @@
-# Create Table on shoppingmall database
-
-################################################################
-#                    CREATE TABLE                              #
 ################################################################
 #--------------------------------------------------------------#
 # @author: youngminkim                                         #
 #                                                              #
 # 2023. 10. 20 : 쇼핑몰 서비스 운영을 위한 테이블 생성         #
+# 2023. 10. 22 : 주문, 상품, 장바구니 테이블 추가 및 수정      #
 #--------------------------------------------------------------#
-
 USE SHOPPINGMALL;
 
-create table if not exists CATEGORY
+-- Create the MEMBER table
+CREATE TABLE MEMBER
 (
-    category_id   bigint auto_increment primary key,
-    category_name varchar(100) not null
+    member_id    INT AUTO_INCREMENT PRIMARY KEY,
+    name         VARCHAR(20) NOT NULL COMMENT '회원 이름',
+    account      VARCHAR(100),
+    password     VARCHAR(60),
+    email        VARCHAR(50) NOT NULL COMMENT '회원 이메일',
+    phone_number VARCHAR(15),
+    picture      VARCHAR(100),
+    birth_date   VARCHAR(12),
+    use_yn       CHAR      DEFAULT 'N',
+    cert_yn      CHAR      DEFAULT 'N',
+    role         VARCHAR(10) NOT NULL,
+    create_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    gender       VARCHAR(10) COMMENT '성별'
 );
 
-create table if not exists MEMBER
+-- Create the SOCIAL_MEMBER table
+CREATE TABLE SOCIAL_MEMBER
 (
-    member_id    bigint auto_increment primary key,
-    name         varchar(20)                         not null comment '회원명',
-    account      varchar(300)                        null,
-    password     varchar(60)                         null,
-    email        varchar(50)                         not null comment '회원 이메일',
-    phone_number varchar(15)                         null comment '회원 휴대폰번호',
-    picture      varchar(200)                        null comment '회원 이미지 URL',
-    birth_date   varchar(12)                         null comment '생년월일 (예: 1993-09-23)',
-    use_yn       char      default 'N'               null comment '회원 계정 사용 여부',
-    cert_yn      char      default 'N'               null comment '회원 이메일 인증 여부',
-    role         varchar(10)                         null comment '회원 권한',
-    create_date  timestamp default CURRENT_TIMESTAMP null comment '가입일',
-    update_date  timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '수정일',
-    gender       varchar(10)                         null comment '성별'
+    social_id      INT AUTO_INCREMENT PRIMARY KEY,
+    member_id      INT NOT NULL COMMENT '회원 ID',
+    provider_type  VARCHAR(30) COMMENT '소셜 로그인 타입',
+    provider_token VARCHAR(255) COMMENT '소셜 로그인 토큰',
+    FOREIGN KEY (member_id) REFERENCES MEMBER (member_id)
 );
 
-create table if not exists POST
+-- Create the POST_CATEGORY table
+CREATE TABLE POST_CATEGORY
 (
-    post_id     bigint auto_increment primary key,
-    title       varchar(40)                         not null comment '제목',
-    content     varchar(500) charset utf8mb3        not null comment '내용',
-    member_id   bigint                              not null comment '작성자 번호',
-    category_id bigint                              not null comment '서브 카테고리 번호',
-    read_cnt    int       default 0                 not null comment '조회수',
-    fixed_yn    char      default 'N'               null comment '고정글 여부',
-    del_yn      char      default 'N'               null comment '게시글 삭제 여부',
-    create_date timestamp default CURRENT_TIMESTAMP null comment '생성일',
-    update_date timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '수정일',
-    delete_date timestamp                           null comment '삭제일',
-    constraint post_ibfk_1 foreign key (member_id) references MEMBER (member_id),
-    constraint post_ibfk_2 foreign key (category_id) references CATEGORY (category_id)
+    category_id   INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100)       NOT NULL COMMENT '게시판 카테고리 이름'
 );
 
-create table if not exists COMMENT
+-- Create the POST table
+CREATE TABLE POST
 (
-    comment_id  int auto_increment comment '댓글 ID' primary key,
-    parent_id   int unsigned                        null comment '부모 댓글 번호',
-    post_id     bigint                              null comment '게시글 번호',
-    content     text                                null comment '댓글 내용',
-    member_id   bigint                              not null comment '회원 번호',
-    del_yn      char      default 'N'               null comment '댓글 삭제 여부',
-    create_date timestamp default CURRENT_TIMESTAMP null comment '생성일',
-    update_date timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '수정일',
-    constraint comment_ibfk_1 foreign key (post_id) references post (post_id),
-    constraint comment_ibfk_2 foreign key (member_id) references member (member_id)
+    post_id     INT AUTO_INCREMENT PRIMARY KEY,
+    title       VARCHAR(40)  NOT NULL COMMENT '게시글 제목',
+    content     VARCHAR(500) NOT NULL COMMENT '게시글 내용',
+    member_id   INT          NOT NULL COMMENT '회원 ID',
+    category_id INT          NOT NULL COMMENT '카테고리 ID',
+    read_cnt    INT          NOT NULL DEFAULT 0 COMMENT '조회수',
+    fixed_yn    CHAR                  DEFAULT 'N' COMMENT '고정글 지정 여부',
+    del_yn      CHAR                  DEFAULT 'N' COMMENT '삭제 여부',
+    create_date TIMESTAMP             DEFAULT CURRENT_TIMESTAMP COMMENT '게시글 생성일',
+    update_date TIMESTAMP             DEFAULT CURRENT_TIMESTAMP COMMENT '게시글 수정일',
+    delete_date TIMESTAMP,
+    FOREIGN KEY (member_id) REFERENCES MEMBER (member_id),
+    FOREIGN KEY (category_id) REFERENCES POST_CATEGORY (category_id)
 );
 
-create index member_id on COMMENT (member_id);
-create index post_id on COMMENT (post_id);
-
-create table if not exists FILE
+-- Create the COMMENT table
+CREATE TABLE COMMENT
 (
-    file_id       bigint auto_increment primary key,
-    post_id       bigint                              not null comment '게시글 ID',
-    original_name varchar(255)                        not null comment '업로드 하는 원본 파일 이름',
-    save_name     varchar(255)                        not null comment '파일 이름',
-    file_path     varchar(255)                        not null comment '파일 경로',
-    file_size     int                                 not null comment '파일 크기',
-    file_type     varchar(50)                         not null comment '파일 타입',
-    download_cnt  int       default 0                 null comment '다운로드 횟수',
-    del_Yn        char      default 'N'               null comment '파일 삭제 여부',
-    create_date   timestamp default CURRENT_TIMESTAMP null comment '생성일',
-    delete_date   timestamp                           null,
-    constraint file_ibfk_1 foreign key (post_id) references post (post_id)
+    comment_id  INT AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 ID',
+    parent_id   INT,
+    post_id     INT  NOT NULL COMMENT '게시글 번호',
+    content     TEXT NOT NULL COMMENT '댓글 내용',
+    member_id   INT  NOT NULL COMMENT '회원 번호',
+    del_yn      CHAR      DEFAULT 'N' COMMENT '댓글 삭제 여부',
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
+    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '수정일',
+    FOREIGN KEY (post_id) REFERENCES POST (post_id),
+    FOREIGN KEY (member_id) REFERENCES MEMBER (member_id)
 );
 
-create index post_id on FILE (post_id);
-create index category_id on POST (category_id);
-create index member_id on POST (member_id);
-
-create table if not exists SOCIALMEMBER
+-- Create the POST_FILE table
+CREATE TABLE POST_FILE
 (
-    social_id      bigint auto_increment primary key,
-    member_id      bigint       null comment '회원 ID',
-    provider_type  varchar(30)  null comment '소셜 로그인 타입',
-    provider_token varchar(255) null comment '소셜 로그인 토큰',
-    constraint social_member_ibfk_1 foreign key (member_id) references member (member_id)
+    post_file_id     INT AUTO_INCREMENT PRIMARY KEY,
+    post_id          INT          NOT NULL COMMENT '게시글 ID',
+    origin_file_name VARCHAR(300) NOT NULL COMMENT '원본 파일 이름',
+    stored_file_name VARCHAR(300) NOT NULL COMMENT '서버에 저장될 파일 이름',
+    file_path        VARCHAR(300) NOT NULL COMMENT '파일 경로',
+    file_size        INT          NOT NULL COMMENT '파일 크기',
+    file_type        VARCHAR(50)  NOT NULL COMMENT '파일 타입',
+    download_cnt     INT          NOT NULL DEFAULT 0 COMMENT '다운로드 횟수',
+    del_Yn           CHAR         NOT NULL DEFAULT 'N' COMMENT '파일 삭제 여부',
+    create_date      TIMESTAMP             DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
+    delete_date      TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES POST (post_id)
 );
 
-create index member_id on SOCIALMEMBER (member_id);
+-- Create the DELIVERY_ADDRESS table
+CREATE TABLE DELIVERY_ADDRESS
+(
+    delivery_id    INT AUTO_INCREMENT PRIMARY KEY,
+    member_id      INT     NOT NULL COMMENT '회원 기본 PK 번호',
+    zipcode        VARCHAR(20) NOT NULL COMMENT '배송지 우편번호',
+    address        VARCHAR(50) NOT NULL COMMENT '배송지 주소',
+    address_detail VARCHAR(50) NOT NULL COMMENT '배송지 상세 주소',
+    FOREIGN KEY (member_id) REFERENCES MEMBER (member_id)
+);
+
+-- Create the PRODUCT_CATEGORY table
+CREATE TABLE PRODUCT_CATEGORY
+(
+    category_id   INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(50) NOT NULL COMMENT '상품 카테고리명'
+);
+
+-- Create the PRODUCT_FILE table
+CREATE TABLE PRODUCT_FILE
+(
+    product_file_id     INT AUTO_INCREMENT PRIMARY KEY,
+    product_number      INT          NOT NULL COMMENT '상품 ID',
+    origin_file_name    VARCHAR(300) NOT NULL COMMENT '원본 파일 이름',
+    stored_file_name    VARCHAR(300) NOT NULL COMMENT '서버에 저장될 파일 이름',
+    stored_thumb_nail   VARCHAR(300) NOT NULL COMMENT '썸네일 이미지',
+    delegate_thumb_nail VARCHAR(1)   NOT NULL COMMENT '대표썸네일 여부',
+    file_size           INT          NOT NULL COMMENT '파일 크기',
+    create_date         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
+    del_yn              CHAR         NOT NULL DEFAULT 'N' COMMENT '파일삭제여부'
+);
+
+-- Create the PRODUCT table
+CREATE TABLE PRODUCT
+(
+    product_id          INT AUTO_INCREMENT PRIMARY KEY,
+    category_id         INT       NOT NULL COMMENT '카테고리 코드',
+    product_name        VARCHAR(50)   NOT NULL COMMENT '상품명',
+    product_price       INT       NOT NULL DEFAULT 0 COMMENT '상품 가격',
+    product_stock       INT       NOT NULL DEFAULT 0 COMMENT '상품 가격',
+    product_desc        TEXT   NOT NULL COMMENT '상품 설명',
+    product_create_date TIMESTAMP NOT NULL COMMENT '상품 등록일',
+    product_hits        INT       NOT NULL DEFAULT 0 COMMENT '상품 조회수',
+    FOREIGN KEY (category_id) REFERENCES PRODUCT_CATEGORY (category_id)
+);
+
+-- Create the ORDER table
+CREATE TABLE `ORDER`
+(
+    order_id          INT AUTO_INCREMENT PRIMARY KEY,
+    member_id         INT     NOT NULL COMMENT '회원 기본 PK 번호',
+    zipcode           VARCHAR(20) NOT NULL COMMENT '주문 우편번호',
+    address           VARCHAR(50) NOT NULL COMMENT '주문 주소',
+    address_detail    VARCHAR(50) NOT NULL COMMENT '주문 상세 주소',
+    req_upon_delivery VARCHAR(100) NOT NULL COMMENT '배송 시 요청사항',
+    receiver_name     VARCHAR(20) NOT NULL COMMENT '수령자 이름',
+    receiver_phone    VARCHAR(20) NOT NULL COMMENT '수령자 전화번호',
+    FOREIGN KEY (member_id) REFERENCES MEMBER (member_id)
+);
+
+-- Create the ORDER_DETAIL table
+CREATE TABLE ORDER_DETAIL
+(
+    order_detail_id     INT AUTO_INCREMENT PRIMARY KEY,
+    order_id            INT     NOT NULL COMMENT '주문 ID',
+    product_id          INT     NOT NULL COMMENT '상품 ID',
+    product_cnt         INT     NOT NULL DEFAULT 0 COMMENT '주문 상품 수량(개수)',
+    product_price       INT     NOT NULL DEFAULT 0 COMMENT '주문 상품 가격',
+    order_detail_status VARCHAR(10) NOT NULL COMMENT '주문 처리 상태',
+    FOREIGN KEY (order_id) REFERENCES `ORDER` (order_id),
+    FOREIGN KEY (product_id) REFERENCES PRODUCT (product_id)
+);
+
+-- Create the CART table
+CREATE TABLE CART
+(
+    cart_id     INT AUTO_INCREMENT PRIMARY KEY COMMENT '장바구니 ID',
+    member_id   INT NOT NULL COMMENT '회원 ID',
+    product_id  INT NOT NULL COMMENT '상품 ID',
+    product_cnt INT NOT NULL DEFAULT 0 COMMENT '상품 수량(개수)',
+    cart_val    VARCHAR(10) NOT NULL DEFAULT 'Guest' COMMENT '아이디 또는 비회원 식별값',
+    FOREIGN KEY (member_id) REFERENCES MEMBER (member_id),
+    FOREIGN KEY (product_id) REFERENCES PRODUCT (product_id)
+);
 
 ################################################################
-#                    CREATE STORED PROCEDURE                   #
+#                    STORED PROCEDURE                          #
 ################################################################
 #--------------------------------------------------------------#
 # @since: 2023. 10. 20                                         #
 # @author: ymkim                                               #
 # @desc                                                        #
-# > 소셜 로그인 시에 기존 MEMBER 테이블에 데이터를 INSERT하고  #
-# > SOCIALMEMBER 테이블에도 데이터를 INSERT 하도록 SP를 사용   #
-#--------------------------------------------------------------#
+# - 소셜 로그인 시에 기존 MEMBER 테이블에 데이터를 INSERT하고  #
+# - SOCIAL_MEMBER 테이블에도 데이터를 INSERT 하도록 SP를 사용   #
 #--------------------------------------------------------------#
 # @author: youngminkim                                         #
 #                                                              #
@@ -127,24 +204,20 @@ CREATE PROCEDURE sp_insert_member(
 BEGIN
     START TRANSACTION;
     INSERT INTO MEMBER
-        (
-            name,
-            account,
-            password,
-            email,
-            phone_number,
-            picture,
-            birth_date,
-            use_yn,
-            cert_yn,
-            role,
-            create_date,
-            update_date,
-            gender
-        )
-    VALUES
-        (
-            p_name,
+    (name,
+     account,
+     password,
+     email,
+     phone_number,
+     picture,
+     birth_date,
+     use_yn,
+     cert_yn,
+     role,
+     create_date,
+     update_date,
+     gender)
+    VALUES (p_name,
             p_account,
             NULL,
             p_email,
@@ -156,22 +229,16 @@ BEGIN
             p_role,
             NOW(),
             NOW(),
-            NULL
-        );
+            NULL);
 
 --     SET p_member_id = LAST_INSERT_ID();
 
-    INSERT INTO SOCIALMEMBER
-        (
-            member_id,
-            provider_type,
-            provider_token
-        )
-    VALUES
-        (
-            LAST_INSERT_ID(),
+    INSERT INTO SOCIAL_MEMBER
+    (member_id,
+     provider_type,
+     provider_token)
+    VALUES (LAST_INSERT_ID(),
             p_registration_id,
-            p_provider_token
-        );
+            p_provider_token);
     COMMIT;
 END;
