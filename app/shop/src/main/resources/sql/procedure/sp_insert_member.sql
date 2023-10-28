@@ -24,20 +24,24 @@ CREATE PROCEDURE sp_insert_member(
 BEGIN
     START TRANSACTION;
     INSERT INTO MEMBER
-    (name,
-     account,
-     password,
-     email,
-     phone_number,
-     picture,
-     birth_date,
-     use_yn,
-     cert_yn,
-     role,
-     create_date,
-     update_date,
-     gender)
-    VALUES (p_name,
+        (
+             name,
+             account,
+             password,
+             email,
+             phone_number,
+             picture,
+             birth_date,
+             use_yn,
+             cert_yn,
+             role,
+             create_date,
+             update_date,
+             gender
+        )
+    VALUES
+        (
+            p_name,
             p_account,
             NULL,
             p_email,
@@ -49,16 +53,20 @@ BEGIN
             p_role,
             NOW(),
             NOW(),
-            NULL);
-
---     SET p_member_id = LAST_INSERT_ID();
+            NULL
+        );
 
     INSERT INTO SOCIAL_MEMBER
-    (member_id,
-     provider_type,
-     provider_token)
-    VALUES (LAST_INSERT_ID(),
+        (
+            member_id,
+            provider_type,
+            provider_token
+        )
+    VALUES
+        (
+            LAST_INSERT_ID(),
             p_registration_id,
-            p_provider_token);
+            p_provider_token
+        );
     COMMIT;
 END;
