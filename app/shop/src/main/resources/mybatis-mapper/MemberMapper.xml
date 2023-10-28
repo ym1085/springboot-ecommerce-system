@@ -64,7 +64,7 @@
         ]]>
     </insert>
 
-    <select id="getMemberByEmail" parameterType="string" resultType="com.shoppingmall.domain.Member">
+    <select id="getMemberByEmail" parameterType="map" resultType="com.shoppingmall.domain.Member">
         SELECT
             m.member_id,
             m.name,
@@ -82,7 +82,7 @@
             m.gender,
             sm.provider_type AS registrationId
         FROM member m join SOCIAL_MEMBER sm on m.member_id = sm.member_id
-        WHERE email = #{email}
+        WHERE m.email = #{email}
         AND sm.provider_type = #{registrationId}
         AND m.use_yn = 'Y'
         AND m.cert_yn = 'Y'
