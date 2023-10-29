@@ -1,8 +1,9 @@
-package com.shoppingmall.service;
+package com.shoppingmall.utils;
 
 import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.response.FileResponseDto;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,22 +19,37 @@ import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Slf4j
+@Getter
 @Component
 public class FileHandlerHelper {
 
-    @Value("${upload.directory}")
+    @Value("${os.window.upload-path}")
+    private String uploadPathByWindow;
+
+    @Value("${os.mac.upload-path}")
+    private String uploadPathByMac;
+
+    @Value("${os.linux.upload-path}")
+    private String uploadPathByLinux;
+
     private String uploadPath;
 
     @PostConstruct
     public void init() {
-        uploadPath = Paths.get(uploadPath).toString();
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            uploadPath = Paths.get(uploadPathByWindow).toString();
+        } else if (os.contains("mac")) {
+            uploadPath = Paths.get(uploadPathByMac).toString();
+        } else if (os.contains("linux")) {
+            uploadPath = Paths.get(uploadPathByLinux).toString();
+        }
+        log.debug("uploadPath = {}", uploadPath); // /Users/youngminkim/projects/shoppingmall/upload-files
     }
 
     public List<FileRequestDto> uploadFiles(List<MultipartFile> multipartFiles) {
@@ -61,8 +77,8 @@ public class FileHandlerHelper {
         String storedFileName = createSaveFileName(originalFilename);
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")).toString();
 
-        String uploadPath = getUploadPath(today) + File.separator + storedFileName;
-        File uploadFile = new File(uploadPath);
+        String fileUploadPath = getFileUploadLocation(today) + File.separator + storedFileName;
+        File uploadFile = new File(fileUploadPath);
 
         try {
             log.info("start file upload to physical path..");
@@ -75,7 +91,7 @@ public class FileHandlerHelper {
         return FileRequestDto.builder()
                 .originFileName(multipartFile.getOriginalFilename())
                 .storedFileName(storedFileName)
-                .filePath(uploadPath)
+                .filePath(fileUploadPath)
                 .fileSize(multipartFile.getSize())
                 .fileType(ext)
                 .build();
@@ -93,12 +109,12 @@ public class FileHandlerHelper {
         return StringUtils.getFilenameExtension(originalFilename);
     }
 
-    private String getUploadPath() {
+    private String getFileUploadLocation() {
         return createDirectory(uploadPath);
     }
 
-    private String getUploadPath(String addPath) {
-        return createDirectory(uploadPath + File.separator + addPath); // C:shoppingmall/upload-files/20230520/
+    private String getFileUploadLocation(String addPath) {
+        return createDirectory(uploadPath + File.separator + addPath);
     }
 
     private String createDirectory(String path) {

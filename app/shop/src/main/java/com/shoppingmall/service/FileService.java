@@ -30,20 +30,20 @@ public class FileService {
     }
 
     @Transactional(readOnly = true)
-    public List<FileResponseDto> getFiles(Long postId) {
-        return fileMapper.getFiles(postId).stream()
+    public List<FileResponseDto> getFilesByPostId(Long postId) {
+        return fileMapper.getFilesByPostId(postId).stream()
                 .map(file -> new FileResponseDto(file))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public FileResponseDto getFileById(Long fileId) {
-        PostFiles postFiles = fileMapper.getFileById(fileId).orElseGet(PostFiles::new);
+    public FileResponseDto getFileByFileId(Long fileId) {
+        PostFiles postFiles = fileMapper.getFileByFileId(fileId).orElseGet(PostFiles::new);
         return new FileResponseDto(postFiles);
     }
 
     @Transactional
-    public void increaseDownloadCnt(Long fileId) {
-        fileMapper.increaseDownloadCnt(fileId);
+    public void increaseDownloadCntByFileId(Long fileId) {
+        fileMapper.increaseDownloadCntByFileId(fileId);
     }
 }

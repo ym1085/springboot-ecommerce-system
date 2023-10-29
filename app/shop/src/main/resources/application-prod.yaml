@@ -27,5 +27,16 @@ logging:
     com.shoppingmall: DEBUG
 
 # upload path - prod Linux
-upload:
-  directory: /var/www/upload-files
+os:
+  window:
+    upload-path: C:/shoppingmall/upload-files/
+  mac:
+    upload-path: /Users/youngminkim/projects/shoppingmall/upload-files/
+  linux:
+    upload-path: /var/www/upload-files/
+
+#upload:
+#  directory: /var/www/upload-files
+
+email:
+  title: "쇼핑몰 인증 번호 입니다."

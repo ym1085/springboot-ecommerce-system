@@ -1,5 +1,6 @@
 package com.shoppingmall.service;
 
+import com.shoppingmall.utils.FileHandlerHelper;
 import com.shoppingmall.utils.PaginationUtils;
 import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.domain.Post;
@@ -86,7 +87,7 @@ public class PostService {
         List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
         fileHandlerHelper.deleteFiles(fileResponseDtos);
 
-        int result = fileMapper.deleteFilesById(postId);
+        int result = fileMapper.deleteFilesByPostId(postId);
         if (result > 0) {
             log.info("uploadFile is exists, result = {}", result);
             List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files);
@@ -122,11 +123,11 @@ public class PostService {
         }
 
         fileHandlerHelper.deleteFiles(fileResponseDtos);
-        return fileMapper.deleteUpdateFilesById(postId);
+        return fileMapper.deleteUpdateFilesByPostId(postId);
     }
 
     private List<FileResponseDto> getFileResponseDtos(long postId) {
-        return fileMapper.getFiles(postId).stream()
+        return fileMapper.getFilesByPostId(postId).stream()
                 .map(file -> new FileResponseDto(file))
                 .collect(Collectors.toList());
     }

@@ -11,7 +11,7 @@ import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
 import com.shoppingmall.service.CommentService;
-import com.shoppingmall.service.FileHandlerHelper;
+import com.shoppingmall.utils.FileHandlerHelper;
 import com.shoppingmall.service.FileService;
 import com.shoppingmall.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +54,7 @@ public class PostRestController {
 
     @PostMapping(value = "/post")
     public ResponseEntity<CommonResponse> savePost(
-            @RequestBody @Valid PostRequestDto postRequestDto,
+            @ModelAttribute @Valid PostRequestDto postRequestDto,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -67,7 +67,7 @@ public class PostRestController {
             );
         }
 
-        postRequestDto.setMemberId(1L); // TODO: replace hard code
+        postRequestDto.setMemberId(1L);
         Long postId = postService.savePost(postRequestDto);
 
         List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(postRequestDto.getFiles());
