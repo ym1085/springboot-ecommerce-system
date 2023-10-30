@@ -6,20 +6,23 @@ import com.shoppingmall.dto.response.FileResponseDto;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -74,7 +77,7 @@ public class FileHandlerHelper {
             return null;
         }
 
-        String storedFileName = createSaveFileName(originalFilename);
+        String storedFileName = generateFileName(originalFilename);
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")).toString();
 
         String fileUploadPath = getFileUploadLocation(today) + File.separator + storedFileName;
@@ -97,11 +100,11 @@ public class FileHandlerHelper {
                 .build();
     }
 
-    private String createSaveFileName(String originalFilename) {
+    public String generateFileName(String originalFilename) {
         return generateUUID() + "." + getFileExtensionByOriginalFileName(originalFilename);
     }
 
-    private String generateUUID() {
+    public String generateUUID() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
@@ -152,21 +155,24 @@ public class FileHandlerHelper {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
     }
 
-    public void transferToZipFile(OutputStream os, List<File> files) {
-        try (ZipOutputStream zos = new ZipOutputStream(os)) {
+    public void responseZipFromAttachments(HttpServletResponse response, List<File> files) {
+        try(ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())) {
             for (File file : files) {
                 if (file.exists() && file.isFile()) {
-                    ZipEntry zipEntry = new ZipEntry(file.getName());
+                    FileSystemResource fsr = new FileSystemResource(file.getPath());
+                    ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(fsr.getFilename()));
+                    zipEntry.setSize(fsr.contentLength());
+                    zipEntry.setTime(System.currentTimeMillis());
+
                     zos.putNextEntry(zipEntry);
-                    try (FileInputStream fis = new FileInputStream(file)) {
-                        StreamUtils.copy(fis, zos);
-                    }
+
+                    StreamUtils.copy(fsr.getInputStream(), zos);
                     zos.closeEntry();
                 }
             }
+            zos.finish();
         } catch (IOException e) {
-            // Todo: fix this feature's IOException when convert file to zip file
-            log.error("cannot download file, e = {}", e.getMessage());
+            log.error("파일 다운로드 중 오류 발생, e = {}", e.getMessage());
         }
     }
 }
