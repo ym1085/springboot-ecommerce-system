@@ -31,19 +31,20 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/v1")
 @RestController
 public class FileRestController {
-
     private final ResourceLoader resourceLoader;
     private final FileService fileService;
     private final FileHandlerHelper fileHandlerHelper;
 
     @GetMapping("/download/{fileId}")
-    public ResponseEntity<Resource> downloadSingleFile(@PathVariable("fileId") Long fileId) {
+    public ResponseEntity<?> downloadSingleFile(@PathVariable("fileId") Long fileId) {
         try {
             FileResponseDto files = fileService.getFileByFileId(fileId);
             String parentSubDir = fileHandlerHelper.getSubFileDirPathByDate();
 
-            if (StringUtils.isBlank(files.getFilePath()) || files.getStoredFileName().length() == 0) {
-                throw new IllegalArgumentException("file path or save name is blank");
+            if (StringUtils.isBlank(files.getFilePath())) {
+                throw new FileNotFoundException("파일 경로가 존재하지 않습니다.");
+            } else if (files.getStoredFileName().isEmpty()) {
+                throw new FileNotFoundException("파일이 존재하지 않습니다.");
             }
 
             String uploadPath = fileHandlerHelper.getUploadPath();
@@ -51,40 +52,36 @@ public class FileRestController {
             Resource resource = resourceLoader.getResource("file:" + file.getPath());
             InputStream inputStream = resource.getInputStream();
 
-            ResponseEntity<Resource> response = ResponseEntity.ok()
+            fileService.increaseDownloadCntByFileId(fileId);
+            return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + files.getOriginFileName() + "\"")
                     .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.contentLength()))
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM.toString())
                     .body(new InputStreamResource(inputStream));
-
-            fileService.increaseDownloadCntByFileId(fileId);
-            return response;
-        } catch (IllegalArgumentException e) {
-            log.error("file path or save name is blank, fileId = {}", fileId, e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (FileNotFoundException e) {
-            log.error("file not found, fileId = {}", fileId, e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            log.error("e = {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("파일이 존재하지 않습니다. 다시 시도해주세요.");
         } catch (IOException e) {
-            log.error("error occurred while downloading file, fileId = {}", fileId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            log.error("e = {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 다운로드 중 서버 오류가 발생하였습니다. 다시 시도해주세요.");
         }
     }
 
-    @GetMapping("/download/compress/{postId}")
+    @GetMapping(value = "/download/compress/{postId}", produces = "application/zip")
     public void downloadMultiZipFile(@PathVariable("postId") Long postId, HttpServletResponse response) throws IOException {
+        // post(1) : files(N) + postId(required : true)
         List<File> files = fileService.getFilesByPostId(postId)
                 .stream()
                 .map(fileResponseDto -> new File(fileResponseDto.getFilePath()))
                 .collect(Collectors.toList());
 
         if (files.isEmpty()) {
-            throw new FileNotFoundException("file not found");
+            throw new FileNotFoundException("저장된 파일이 존재하지 않습니다");
         }
 
-        fileHandlerHelper.transferToZipFile(response.getOutputStream(), files);
-        response.setStatus(HttpServletResponse.SC_OK);
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileHandlerHelper.generateUUID() + ".zip\";");
         response.setContentType("application/zip");
-        response.addHeader("Content-Disposition", "attachment; filename=\"" + "zipFile" + ".zip\"");
+
+        fileHandlerHelper.responseZipFromAttachments(response, files);
     }
 }
