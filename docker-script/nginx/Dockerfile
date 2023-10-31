@@ -1,0 +1,32 @@
+FROM nginx:1.23.2
+WORKDIR /etc/nginx
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    logrotate \
+    cron \
+    vim \
+    net-tools \
+    telnet \
+    procps \
+    iputils-ping \
+    dos2unix
+
+COPY nginx.conf nginx.conf
+COPY wait-for-it.sh wait-for-it.sh
+COPY nginx /etc/logrotate.d/nginx
+
+RUN dos2unix /etc/logrotate.d/nginx /etc/nginx/wait-for-it.sh \
+    && apt-get --purge remove -y dos2unix \
+    && apt-get autoremove -y
+
+RUN chmod +x wait-for-it.sh
+RUN chmod 755 /var/log/nginx
+
+RUN echo "1 2,12 * * * root /usr/sbin/logrotate /etc/logrotate.conf" >> /etc/crontab
+
+VOLUME ["/var/log/nginx"]
+
+HEALTHCHECK --interval=10s --timeout=10s CMD curl --location --request GET 'http://127.0.0.1:80/health-check' || exit 1
+EXPOSE 80
+
+CMD ["sh", "-c", "cron && ./wait-for-it.sh 127.0.0.1:10091 -- ./wait-for-it.sh 127.0.0.1:10092 -- ./wait-for-it.sh 127.0.0.1:10093 -- ./wait-for-it.sh 127.0.0.1:10094 -- nginx -g 'daemon off;'"]
