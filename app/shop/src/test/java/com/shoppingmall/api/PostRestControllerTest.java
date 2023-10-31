@@ -2,7 +2,6 @@ package com.shoppingmall.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingmall.ShopApplication;
-import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.repository.FileMapper;
 import com.shoppingmall.repository.PostMapper;
 import org.hamcrest.Matchers;
@@ -90,19 +89,21 @@ class PostRestControllerTest {
     @DisplayName("게시글 등록 API")
     void savePost() throws Exception {
         //given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
+        /*PostRequestDto postRequestDto = PostRequestDto.builder()
                 .postId(1L)
                 .memberId(1L)
                 .title("제목1")
                 .content("내용1")
                 .fixedYn("N")
-                .build();
+                .build();*/
 
         //when
         ResultActions result = mockMvc.perform(
                 post("/api/v1/post")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(postRequestDto))
+                        .param("title", "게시글1")
+                        .param("content", "내용1")
+                        .param("fixedYn", "N")
+                        .param("memberId", "1")
         );
 
         //then

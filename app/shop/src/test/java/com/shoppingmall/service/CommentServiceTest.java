@@ -67,10 +67,10 @@ class CommentServiceTest {
     void testDeleteParentAndChildComments() {
         // 재귀 사용해서 지우고 있음
         Comment comment = new Comment(CommentRequestDto.builder()
-                .commentId(14L) // 댓글
-                .parentId(14L) // 대댓글
+                .commentId(2L) // 댓글 ID
+                .parentId(1L) // 부모 댓글 ID
                 .postId(20L)
-                .memberId(1L)
+                .memberId(2L)
                 .build());
 
         //when
@@ -87,7 +87,7 @@ class CommentServiceTest {
     void testDeleteChildComments() {
         //given
         Comment comment = new Comment(CommentRequestDto.builder()
-                .commentId(14L) // 대댓글 삭제하는 경우 parentId -> commentId에 셋팅 후 서버에 넘겨서 삭제할 예정
+                .commentId(2L) // 대댓글 삭제하는 경우 parentId -> commentId에 셋팅 후 서버에 넘겨서 삭제할 예정
                 .postId(20L)
                 .memberId(1L)
                 .build());
@@ -123,7 +123,7 @@ class CommentServiceTest {
     @DisplayName("자식 댓글이 있는 상위 댓글을 삭제 하는 경우 -> 예외 상황")
     void testDeleteCommentNoneChildCommentId() {
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
-                .commentId(14L) // 14번 부모 댓글은 15, 16 자식 댓글이 있다고 가정
+                .commentId(2L) // 2번 부모 댓글은 2, 3번 자식 댓글이 있다고 가정
                 .parentId(null) // 하위 대댓글 번호가 있어야 재귀를 통해 싹다 삭제를 한다
                 .postId(20L)
                 .memberId(1L)
@@ -141,7 +141,7 @@ class CommentServiceTest {
     @DisplayName("댓글 수정")
     void testUpdateCommentById() {
         Comment comment = new Comment(CommentRequestDto.builder()
-                .commentId(14L) // 대댓글 삭제하는 경우 parentId -> commentId에 셋팅 후 서버에 넘겨서 삭제할 예정
+                .commentId(1L) // 대댓글 삭제하는 경우 parentId -> commentId에 셋팅 후 서버에 넘겨서 삭제할 예정
                 .content("댓글 수정을 해보이겠소")
                 .build());
 
