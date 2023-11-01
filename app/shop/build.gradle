@@ -74,3 +74,14 @@ bootJar {
         into 'src/main/resources/static/docs'
     }
 }
+
+// Add opt when occurred 'no main manifest attribute error'
+// https://velog.io/@binary_j/no-main-manifest-attribute-%ED%95%B4%EA%B2%B0gradle
+jar {
+    enabled=false
+}
+
+// Skip Test for docker
+test {
+    exclude '**/*'
+}
