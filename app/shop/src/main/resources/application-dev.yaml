@@ -7,7 +7,7 @@ spring:
       on-profile: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/shoppingmall?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/shoppingmall?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: 1234
   jpa:

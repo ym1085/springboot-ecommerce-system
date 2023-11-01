@@ -1,0 +1,62 @@
+---
+version: '3'
+services:
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      context: docker-script/nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      #- "443:443"
+    environment:
+      - TZ=Asia/Seoul
+    command: sh -c "./wait-for-it.sh shopping-mall:8080 -- nginx -g 'daemon off;'"
+    volumes:
+      - /var/log/nginx:/var/log/nginx # volume
+    stdin_open: true
+    tty: true
+    #networks:
+    #  - shop-network
+
+  mysql:
+    build:
+      dockerfile: Dockerfile
+      context: docker-script/db/mysql
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306" # host port : container port
+    volumes:
+      - ./docker-script/db/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker-script/db/mysql/conf.d:/etc/mysql/conf.d
+      - ./docker-script/db/mysql/data:/var/lib/mysql
+    env_file:
+      - ./docker-script/db/mysql/.env
+    environment:
+      - TZ=Asia/Seoul
+
+  shopping-mall:
+    build:
+      dockerfile: Dockerfile
+      context: app/shop
+    container_name: shopping-mall
+    restart: always # no: no restart | always: exit code와 상관없이 항상 재시작 | on-failure : exit code 0 아닐때만 재시작 | unless-stopped: 수동 stop 전까지 재시작
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./app/shop/.env
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - /data/app_logs:/data/app_logs # volume
+    depends_on:
+      - nginx
+      - mysql
+
+# bridge(default) - 호스트 pc와 별도의 가상 네트워크 사용 + port forwarding으로 외부 네트워크 연결
+# host - container network 환경 호스트의 network 환경과 동일하게 구성
+# none - networkd 사용 x + host, 외부 연결 단절
+#networks:
+#  shop-network:

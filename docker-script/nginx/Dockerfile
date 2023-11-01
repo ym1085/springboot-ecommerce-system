@@ -24,9 +24,8 @@ RUN chmod 755 /var/log/nginx
 
 RUN echo "1 2,12 * * * root /usr/sbin/logrotate /etc/logrotate.conf" >> /etc/crontab
 
-VOLUME ["/var/log/nginx"]
-
 HEALTHCHECK --interval=10s --timeout=10s CMD curl --location --request GET 'http://127.0.0.1:80/health-check' || exit 1
 EXPOSE 80
+EXPOSE 443
 
 CMD ["sh", "-c", "cron && ./wait-for-it.sh 127.0.0.1:10091 -- ./wait-for-it.sh 127.0.0.1:10092 -- ./wait-for-it.sh 127.0.0.1:10093 -- ./wait-for-it.sh 127.0.0.1:10094 -- nginx -g 'daemon off;'"]
