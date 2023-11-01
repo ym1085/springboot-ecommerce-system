@@ -12,7 +12,7 @@
 | MyBatis         | 3.0.1 | o    |
 | MySQL           | 8.0.28 | o    |
 | Swagger         | 3.0.0 | o    |
-| Docker          | 23.0.5 | x    |
+| Docker          | 23.0.5 | o    |
 | AWS EC2             |       | x    |
 
 ## ERD
