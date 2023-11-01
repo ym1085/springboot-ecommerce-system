@@ -28,4 +28,5 @@ HEALTHCHECK --interval=10s --timeout=10s CMD curl --location --request GET 'http
 EXPOSE 80
 EXPOSE 443
 
-CMD ["sh", "-c", "cron && ./wait-for-it.sh 127.0.0.1:10091 -- ./wait-for-it.sh 127.0.0.1:10092 -- ./wait-for-it.sh 127.0.0.1:10093 -- ./wait-for-it.sh 127.0.0.1:10094 -- nginx -g 'daemon off;'"]
+# FIXME: CMD 수정 필요
+CMD ["sh", "-c", "cron && ./wait-for-it.sh shopping-mall:8080 -- nginx -g 'daemon off;'"]
