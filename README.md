@@ -91,11 +91,6 @@ gradle > app > shop > bootJar
 ### 🐳 docker-compose down
 
 ```shell
-# 프로젝트 루트 경로 이동
-cd .
-```
-
-```shell
 # docker 서버 중지
 ./stop_docker.sh
 ```
