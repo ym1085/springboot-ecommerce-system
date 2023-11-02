@@ -15,7 +15,7 @@
 | Docker          | 23.0.5 | o    |
 | AWS EC2             |       | x    |
 
-## ERD
+## ✅ ERD
 
 ## 🎢 구현 기능
 
@@ -68,6 +68,40 @@
 - 상품 주문
   - 상품 주문
 
-## API Docs
+## 🚀 프로젝트 실행 방법
+
+### 🐳 docker-compose up
+
+> MySQL PORT 3306과 충돌이 발생하는 경우 아래 링크를 참고 해주세요  
+> [[Docker] docker mysql 포트 충돌 에러 (feat. 3306)](https://lealea.tistory.com/232)
+
+```shell
+# 프로젝트 clean & Jar 생성
+gradle > app > shop > clean
+gradle > app > shop > bootJar
+```
+
+```shell
+# docker 서버 시작
+# run_docker.sh 실행 시 Docker desktop의 모든 이미지를 지우고 이미지 생성
+# 유의하여 사용할 필요가 존재하며, 기본적인 유효성 검증은 작성하였습니다 
+./run_docker.sh
+```
+
+### 🐳 docker-compose down
+
+```shell
+# 프로젝트 루트 경로 이동
+cd .
+```
+
+```shell
+# docker 서버 중지
+./stop_docker.sh
+```
+
+## 📜 API Docs
 
 > ✏️ [swagger Document](http://localhost:8080/swagger-ui/index.html)
+
+- API 규격서의 경우 swagger를 기반으로 작성 하였습니다

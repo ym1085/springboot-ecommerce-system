@@ -5,7 +5,24 @@
 # 2023. 10. 20 : 쇼핑몰 서비스 운영을 위한 테이블 생성         #
 # 2023. 10. 22 : 주문, 상품, 장바구니 테이블 추가 및 수정      #
 #--------------------------------------------------------------#
-USE SHOPPINGMALL;
+#USE shoppingmall;
+SET NAMES utf8;
+SET character_set_client = utf8mb4;
+
+-- 테이블이 존재한다면, 삭제 후 다시 생성
+DROP TABLE IF EXISTS MEMBER;
+DROP TABLE IF EXISTS SOCIAL_MEMBER;
+DROP TABLE IF EXISTS POST_CATEGORY;
+DROP TABLE IF EXISTS POST;
+DROP TABLE IF EXISTS COMMENT;
+DROP TABLE IF EXISTS POST_FILE;
+DROP TABLE IF EXISTS DELIVERY_ADDRESS;
+DROP TABLE IF EXISTS PRODUCT_CATEGORY;
+DROP TABLE IF EXISTS PRODUCT_FILE;
+DROP TABLE IF EXISTS PRODUCT;
+DROP TABLE IF EXISTS `ORDER`;
+DROP TABLE IF EXISTS ORDER_DETAIL;
+DROP TABLE IF EXISTS CART;
 
 -- Create the MEMBER table
 CREATE TABLE MEMBER
@@ -24,7 +41,7 @@ CREATE TABLE MEMBER
     create_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     gender       VARCHAR(10) COMMENT '성별'
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the SOCIAL_MEMBER table
 CREATE TABLE SOCIAL_MEMBER
@@ -34,14 +51,14 @@ CREATE TABLE SOCIAL_MEMBER
     provider_type  VARCHAR(30) COMMENT '소셜 로그인 타입',
     provider_token VARCHAR(255) COMMENT '소셜 로그인 토큰',
     FOREIGN KEY (member_id) REFERENCES MEMBER (member_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the POST_CATEGORY table
 CREATE TABLE POST_CATEGORY
 (
     category_id   INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(100)       NOT NULL COMMENT '게시판 카테고리 이름'
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the POST table
 CREATE TABLE POST
@@ -59,7 +76,7 @@ CREATE TABLE POST
     delete_date TIMESTAMP,
     FOREIGN KEY (member_id) REFERENCES MEMBER (member_id),
     FOREIGN KEY (category_id) REFERENCES POST_CATEGORY (category_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the COMMENT table
 CREATE TABLE COMMENT
@@ -74,7 +91,7 @@ CREATE TABLE COMMENT
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '수정일',
     FOREIGN KEY (post_id) REFERENCES POST (post_id),
     FOREIGN KEY (member_id) REFERENCES MEMBER (member_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the POST_FILE table
 CREATE TABLE POST_FILE
@@ -91,7 +108,7 @@ CREATE TABLE POST_FILE
     create_date      TIMESTAMP             DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
     delete_date      TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES POST (post_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the DELIVERY_ADDRESS table
 CREATE TABLE DELIVERY_ADDRESS
@@ -102,14 +119,14 @@ CREATE TABLE DELIVERY_ADDRESS
     address        VARCHAR(50) NOT NULL COMMENT '배송지 주소',
     address_detail VARCHAR(50) NOT NULL COMMENT '배송지 상세 주소',
     FOREIGN KEY (member_id) REFERENCES MEMBER (member_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the PRODUCT_CATEGORY table
 CREATE TABLE PRODUCT_CATEGORY
 (
     category_id   INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(50) NOT NULL COMMENT '상품 카테고리명'
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the PRODUCT_FILE table
 CREATE TABLE PRODUCT_FILE
@@ -123,7 +140,7 @@ CREATE TABLE PRODUCT_FILE
     file_size           INT          NOT NULL COMMENT '파일 크기',
     create_date         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
     del_yn              CHAR         NOT NULL DEFAULT 'N' COMMENT '파일삭제여부'
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the PRODUCT table
 CREATE TABLE PRODUCT
@@ -137,7 +154,7 @@ CREATE TABLE PRODUCT
     product_create_date TIMESTAMP NOT NULL COMMENT '상품 등록일',
     product_hits        INT       NOT NULL DEFAULT 0 COMMENT '상품 조회수',
     FOREIGN KEY (category_id) REFERENCES PRODUCT_CATEGORY (category_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the ORDER table
 CREATE TABLE `ORDER`
@@ -151,7 +168,7 @@ CREATE TABLE `ORDER`
     receiver_name     VARCHAR(20) NOT NULL COMMENT '수령자 이름',
     receiver_phone    VARCHAR(20) NOT NULL COMMENT '수령자 전화번호',
     FOREIGN KEY (member_id) REFERENCES MEMBER (member_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the ORDER_DETAIL table
 CREATE TABLE ORDER_DETAIL
@@ -164,7 +181,7 @@ CREATE TABLE ORDER_DETAIL
     order_detail_status VARCHAR(10) NOT NULL COMMENT '주문 처리 상태',
     FOREIGN KEY (order_id) REFERENCES `ORDER` (order_id),
     FOREIGN KEY (product_id) REFERENCES PRODUCT (product_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create the CART table
 CREATE TABLE CART
@@ -176,4 +193,4 @@ CREATE TABLE CART
     cart_val    VARCHAR(10) NOT NULL DEFAULT 'Guest' COMMENT '아이디 또는 비회원 식별값',
     FOREIGN KEY (member_id) REFERENCES MEMBER (member_id),
     FOREIGN KEY (product_id) REFERENCES PRODUCT (product_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
