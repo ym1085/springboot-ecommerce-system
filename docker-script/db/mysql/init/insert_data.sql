@@ -1,6 +1,8 @@
 -- 1정규화 : 하나의 행에 하나의 데이터만 삽입
 -- 2정규화 : 현재 테이블의 주제와 관련없는 컬럼을 다른 테이블로 뺴는 작업
-USE SHOPPINGMALL;
+# USE SHOPPINGMALL;
+SET NAMES utf8;
+SET character_set_client = utf8mb4;
 
 -- INSERT INTO MEMBER
 INSERT INTO MEMBER (name, account, password, email, phone_number, picture, birth_date, use_yn, cert_yn, role)

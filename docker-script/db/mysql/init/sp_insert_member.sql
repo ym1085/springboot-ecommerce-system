@@ -12,6 +12,9 @@
 #                                                              #
 # 2023. 10. 20 : 소셜 로그인에서 2개의 TABLE에 INSERT SP 생성  #
 #--------------------------------------------------------------#
+SET NAMES utf8;
+SET character_set_client = utf8mb4;
+
 CREATE PROCEDURE sp_insert_member(
     IN p_name VARCHAR(20),
     IN p_account VARCHAR(300),
