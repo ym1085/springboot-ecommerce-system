@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   config:
@@ -7,7 +7,7 @@ spring:
       on-profile: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/shoppingmall?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/shoppingmall?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: 1234
   jpa:
@@ -23,8 +23,8 @@ spring:
     cache: false
   servlet:
     multipart:
-      max-file-size: 20MB # size of a single file
-      max-request-size: 100MB # maximum file size that can be uploaded at once (100 MB)
+      max-file-size: 20MB
+      max-request-size: 100MB
       #enable: true
       #location: /Users/YoungminKim
   mvc:
@@ -47,23 +47,17 @@ spring:
 #          writetimeout: 5000
 #    auth-code-expiration-millis: 1800000
 
-# logging
 logging:
   level:
     org.springframework.web: DEBUG
     com.shoppingmall: DEBUG
 
-# mybatis
 mybatis:
-  type-aliases-package: com.post.domain # specify that package names can be omitted
-  mapper-locations: mybatis-mapper/**/*.xml # location of mapper file
+  type-aliases-package: com.post.domain
+  mapper-locations: mybatis-mapper/**/*.xml
   configuration:
-    map-underscore-to-camel-case: true # set model property to camel case
+    map-underscore-to-camel-case: true
 
-# 실제 물리적으로 파일을 업로드(File.transferTo()) 하기 위한 경로
-# - JAR 배포 시에는 프로젝트 내부 파일이 전부 날라가는 현상이 있을 수 있음
-# - 외부에서 src/resources/ 경로 접근이 배포 후에는 불가능하기 때문
-# - 아래 경로에 파일을 저장하고 URL 매핑을 통해 파일을 처리한다
 os:
   window:
     upload-path: C:/shoppingmall/upload-files/
