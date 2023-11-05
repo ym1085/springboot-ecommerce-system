@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    default: local
+    group:
+      local:
+        - oauth
+      dev:
+        - oauth
+      prod:
+        - oauth
+
+  devtools:
+    livereload:
+      enabled: true

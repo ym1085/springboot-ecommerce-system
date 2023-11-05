@@ -1,13 +1,13 @@
 server:
-  port: 8082
+  port: 8080
 
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3206/shoppingmall?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/shoppingmall?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: 1234
   jpa:
@@ -17,13 +17,13 @@ spring:
         format_sql: true
         default_batch_fetch_size: 1000
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     database-platform: org.hibernate.dialect.MySQL8Dialect
   thymeleaf:
-    cache: true
+    cache: false
   servlet:
     multipart:
-      max-file-size: 30MB
+      max-file-size: 20MB
       max-request-size: 100MB
       #enable: true
       #location: /Users/YoungminKim
@@ -49,7 +49,8 @@ spring:
 
 logging:
   level:
-    com.shoppingmall: INFO
+    org.springframework.web: DEBUG
+    com.shoppingmall: DEBUG
 
 mybatis:
   type-aliases-package: com.post.domain
