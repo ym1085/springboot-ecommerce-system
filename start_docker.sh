@@ -9,6 +9,28 @@ echo '==========================================================================
 echo '| ⚠️ [주의] run_docker.sh 실행 시 로컬 Docker desktop의 모든 이미지를 삭제한 후 진행 됩니다.|'
 echo '| ✏️ [주의] 빌드를 멈추시려면 ctrl + d || N을 입력해주세요.                                 |'
 echo '=============================================================================================='
+read -p "PROFILE 옵션을 숫자로 선택 해주세요 (1:dev or 2:prod): " OPTION
+echo
+
+case $OPTION in
+  1)
+    PROFILE="dev"
+    ;;
+  2)
+    PROFILE="prod"
+    ;;
+  3)
+    echo "Invalid option. Exiting..."
+    exit 1
+    ;;
+esac
+echo "👌 선택된 배포 PROFILE 옵션 => $PROFILE"
+echo
+
+if [ -z "$PROFILE" ]; then
+  echo "please enter profile..."
+  exit 1
+fi
 
 for i in {3..1}
 do
@@ -43,4 +65,4 @@ fi
 echo
 
 # docker build 및 구동
-docker-compose -f docker-compose.yaml up -d
+docker-compose -f docker-compose-${PROFILE}.yaml up -d
