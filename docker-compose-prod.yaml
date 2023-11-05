@@ -12,7 +12,7 @@ services:
       #- "443:443"
     environment:
       - TZ=Asia/Seoul
-    command: sh -c "./wait-for-it.sh shopping-mall:8080 -- nginx -g 'daemon off;'"
+    command: sh -c "./wait-for-it.sh 127.0.0.1:8080 -- nginx -g 'daemon off;'"
     volumes:
       - /var/log/nginx:/var/log/nginx # volume
     stdin_open: true
@@ -54,8 +54,8 @@ services:
     restart: always # no: no restart | always: exit code와 상관없이 항상 재시작 | on-failure : exit code 0 아닐때만 재시작 | unless-stopped: 수동 stop 전까지 재시작
     ports:
       - "8080:8080"
-    #env_file:
-    #  - ./app/shop/.env # env 파일 말고 -> application.yaml 파일로 처리
+    env_file:
+      - ./app/shop/.env-prod # env 파일 말고 -> application.yaml 파일로 처리
     environment:
       - TZ=Asia/Seoul
     volumes:
