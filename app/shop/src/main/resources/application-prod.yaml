@@ -7,25 +7,57 @@ spring:
       on-profile: prod
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #url: jdbc:mysql://localhost:3306/shoppingmall?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    url: jdbc:mysql://localhost:3306/shoppingmall?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://mysql:3206/shoppingmall?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: 1234
   jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 1000
     hibernate:
       ddl-auto: none
     database-platform: org.hibernate.dialect.MySQL8Dialect
+  thymeleaf:
+    cache: true
   servlet:
     multipart:
-      max-file-size: 30MB # 파일 하나의 크기(20M)
-      max-request-size: 100MB # 한 번에 최대 업로드 가능한 파일 용량(100MB)
-      #enable: true # 파일 업로드 가능 여부 선택
-      #location: /Users/YoungminKim # 업로드 된 파일의 임시 저장 경로(/Users/YoungminKim)
+      max-file-size: 30MB
+      max-request-size: 100MB
+      #enable: true
+      #location: /Users/YoungminKim
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: <본인 이메일 입력>
+#    password: '<본인 Google 앱 비밀번호 입력>'
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+#            required: true
+#          connectiontimeout: 5000
+#          timeout: 5000
+#          writetimeout: 5000
+#    auth-code-expiration-millis: 1800000
 
 # logging
 logging:
   level:
-    com.shoppingmall: DEBUG
+    com.shoppingmall: INFO
+
+# mybatis
+mybatis:
+  type-aliases-package: com.post.domain
+  mapper-locations: mybatis-mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
 
 # upload path - prod Linux
 os:
@@ -34,7 +66,7 @@ os:
   mac:
     upload-path: /Users/youngminkim/projects/shoppingmall/upload-files/
   linux:
-    upload-path: /var/www/upload-files/
+    upload-path: /var/www/shoppingmall/upload-files/
 
 #upload:
 #  directory: /var/www/upload-files

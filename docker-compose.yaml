@@ -54,19 +54,20 @@ services:
     restart: always # no: no restart | always: exit code와 상관없이 항상 재시작 | on-failure : exit code 0 아닐때만 재시작 | unless-stopped: 수동 stop 전까지 재시작
     ports:
       - "8080:8080"
-    env_file:
-      - ./app/shop/.env
+    #env_file:
+    #  - ./app/shop/.env # env 파일 말고 -> application.yaml 파일로 처리
     environment:
       - TZ=Asia/Seoul
     volumes:
-      - /data/app_logs:/data/app_logs # volume
+      - appdata:/data/app_logs # volume
     depends_on:
       - nginx
       - mysql
 
 # docker volume
 volumes:
-  mydata:
+  mydata: # mysql
+  appdata: # api
 
 # bridge(default) - 호스트 pc와 별도의 가상 네트워크 사용 + port forwarding으로 외부 네트워크 연결
 # host - container network 환경 호스트의 network 환경과 동일하게 구성
