@@ -4,44 +4,39 @@ services:
   nginx:
     build:
       dockerfile: Dockerfile
-      context: docker-script/nginx
+      context: docker-script/dev/nginx
     container_name: nginx
     restart: always
     ports:
       - "80:80"
-      #- "443:443"
+      - "443:443"
     environment:
       - TZ=Asia/Seoul
-    command: sh -c "./wait-for-it.sh 127.0.0.1:8080 -- nginx -g 'daemon off;'"
+    #command: sh -c "./wait-for-it.sh 127.0.0.1:8080 -- nginx -g 'daemon off;'"
     volumes:
       - /var/log/nginx:/var/log/nginx # volume
     stdin_open: true
     tty: true
     depends_on:
       - mysql
-    #networks:
-    #  - shop-network
+      - shopping-mall
 
   mysql:
     build:
       dockerfile: Dockerfile
-      context: docker-script/db/mysql
+      context: docker-script/dev/db/mysql
     container_name: mysql
     restart: always
     ports:
-      - "3306:3306" # host port : container port
+      - "3307:3306" # host port : container port
     volumes:
       #- ./docker-script/db/mysql/init:/docker-entrypoint-initdb.d
       - ./docker-script/db/mysql/conf.d:/etc/mysql/conf.d
       #- ./docker-script/db/mysql/data:/var/lib/mysql
       - mydata:/var/lib/mysql
     env_file:
-      - ./docker-script/db/mysql/.env
+      - ./docker-script/dev/db/mysql/.env
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - TZ=Asia/Seoul
     command: [ # TODO: my.cnf 설정 안먹는 것 같음, 확인 및 수정 필요 : https://gist.github.com/feltnerm/bb6e23f531803896ca1e
       'mysqld',
@@ -52,29 +47,24 @@ services:
 
   shopping-mall:
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       context: app/shop
     container_name: shopping-mall
     restart: always # no: no restart | always: exit code와 상관없이 항상 재시작 | on-failure : exit code 0 아닐때만 재시작 | unless-stopped: 수동 stop 전까지 재시작
     ports:
-      - "8080:8080"
+      - "8081:8081"
     env_file:
       - ./app/shop/.env-dev
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - TZ=Asia/Seoul
     volumes:
       - appdata:/data/app_logs
     depends_on:
-      - nginx
       - mysql
 
-# docker volume
 volumes:
-  mydata: # mysql
-  appdata: # api
+  mydata:
+  appdata:
 
 # bridge(default) - 호스트 pc와 별도의 가상 네트워크 사용 + port forwarding으로 외부 네트워크 연결
 # host - container network 환경 호스트의 network 환경과 동일하게 구성

@@ -25,8 +25,4 @@ RUN chmod 755 /var/log/nginx
 RUN echo "1 2,12 * * * root /usr/sbin/logrotate /etc/logrotate.conf" >> /etc/crontab
 
 HEALTHCHECK --interval=10s --timeout=10s CMD curl --location --request GET 'http://127.0.0.1:80/health-check' || exit 1
-EXPOSE 80
-EXPOSE 443
-
-# FIXME: CMD 수정 필요
-CMD ["sh", "-c", "cron && ./wait-for-it.sh shopping-mall:8080 -- nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "cron && ./wait-for-it.sh shopping-mall:8081 -- nginx -g 'daemon off;'"]

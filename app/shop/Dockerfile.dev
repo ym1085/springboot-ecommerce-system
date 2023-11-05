@@ -1,0 +1,21 @@
+FROM openjdk:11-jdk
+
+ENV APP_HOME=/apps/shoppingmall/lib/
+
+WORKDIR $APP_HOME
+
+COPY build/libs/*.jar shopping-mall.jar
+
+COPY wait-for-it.sh wait-for-it.sh
+
+RUN apt-get update && apt-get install -y dos2unix \
+    && dos2unix /apps/shoppingmall/lib/wait-for-it.sh \
+    && apt-get --purge remove -y dos2unix \
+    && apt-get autoremove -y
+
+RUN chmod +x wait-for-it.sh
+
+EXPOSE 8081
+
+# 컨테이너가 시작될 때 실행할 명령을 정의
+ENTRYPOINT ["/bin/sh", "-c", "./wait-for-it.sh mysql:3306 -s -t 100 && java -Dspring.profiles.active=dev -Xms1g -Xmx1g -jar shopping-mall.jar"]
