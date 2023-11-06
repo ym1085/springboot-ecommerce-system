@@ -61,7 +61,6 @@ services:
       - appdata:/data/app_logs
     depends_on:
       - mysql
-      - nginx
 
 volumes:
   mydata:
