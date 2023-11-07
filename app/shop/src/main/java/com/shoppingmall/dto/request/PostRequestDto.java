@@ -1,5 +1,6 @@
 package com.shoppingmall.dto.request;
 
+import com.shoppingmall.constant.FileType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,7 @@ public class PostRequestDto {
     private String fixedYn;
 
     private List<MultipartFile> files = new ArrayList<>();
+    private FileType fileType = FileType.POSTS;
 
     private int categoryId;
 

@@ -1,8 +1,11 @@
 package com.shoppingmall.utils;
 
 import com.shoppingmall.constant.FileExtension;
+import com.shoppingmall.constant.FileType;
+import com.shoppingmall.constant.OSType;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.response.FileResponseDto;
+import com.shoppingmall.exception.UploadFileException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,29 +47,28 @@ public class FileHandlerHelper {
 
     @PostConstruct
     public void init() {
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")) {
-            uploadPath = Paths.get(uploadPathByWindow).toString();
-        } else if (os.contains("mac")) {
-            uploadPath = Paths.get(uploadPathByMac).toString();
-        } else if (os.contains("linux")) {
-            uploadPath = Paths.get(uploadPathByLinux).toString();
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains(OSType.WINDOW.getOsName())) {
+            this.uploadPath = Paths.get(uploadPathByWindow).toString();
+        } else if (osName.contains(OSType.MAC.getOsName())) {
+            this.uploadPath = Paths.get(uploadPathByMac).toString();
+        } else if (osName.contains(OSType.LINUX.getOsName())) {
+            this.uploadPath = Paths.get(uploadPathByLinux).toString();
         }
-        log.debug("uploadPath = {}", uploadPath); // /Users/youngminkim/projects/shoppingmall/upload-files
     }
 
-    public List<FileRequestDto> uploadFiles(List<MultipartFile> multipartFiles) {
+    public List<FileRequestDto> uploadFiles(List<MultipartFile> multipartFiles, FileType fileType) {
         List<FileRequestDto> files = new ArrayList<>();
         for (MultipartFile file : multipartFiles) {
             if (file.isEmpty()) {
                 continue;
             }
-            files.add(uploadFile(file));
+            files.add(uploadFile(file, fileType));
         }
         return files;
     }
 
-    private FileRequestDto uploadFile(MultipartFile multipartFile) {
+    private FileRequestDto uploadFile(MultipartFile multipartFile, FileType fileType) {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -77,19 +79,13 @@ public class FileHandlerHelper {
             return null;
         }
 
-        String storedFileName = generateFileName(originalFilename);
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")).toString();
+        String storedFileName = generateStoredFileName(originalFilename);
+        String today = getCurrentLocalDateTime();
 
-        String fileUploadPath = getFileUploadLocation(today) + File.separator + storedFileName;
+        String fileUploadPath = getFileUploadPathTotransfer(fileType, today, storedFileName); // file upload path on physical server
         File uploadFile = new File(fileUploadPath);
 
-        try {
-            log.info("start file upload to physical path..");
-            multipartFile.transferTo(uploadFile);
-        } catch (IOException e) {
-            log.error("error when uploading file to physical path, e = {}", e.getMessage());
-            throw new RuntimeException(e);
-        }
+        transferUploadFileToServer(multipartFile, fileUploadPath, uploadFile); // upload file to server
 
         return FileRequestDto.builder()
                 .originFileName(multipartFile.getOriginalFilename())
@@ -100,7 +96,22 @@ public class FileHandlerHelper {
                 .build();
     }
 
-    public String generateFileName(String originalFilename) {
+    private void transferUploadFileToServer(MultipartFile multipartFile, String fileUploadPath, File uploadFile) {
+        try {
+            log.info("start transfer file to server, fileUploadPath = {}", fileUploadPath);
+            multipartFile.transferTo(uploadFile);
+            log.info("finish transfer file to server, fileUploadPath = {}", fileUploadPath);
+        } catch (IOException e) {
+            log.error("[IOException] error occurred, e = {}", e.getMessage());
+        } catch (IllegalStateException e) {
+            log.error("[IllegalStateException] error occurred, e = {}", e.getMessage());
+        } catch (Exception e) {
+            log.error("[Exception] error occurred, e = {}", e.getMessage());
+            throw new UploadFileException("error occurred, fail to file upload to server");
+        }
+    }
+
+    public String generateStoredFileName(String originalFilename) {
         return generateUUID() + "." + getFileExtensionByOriginalFileName(originalFilename);
     }
 
@@ -108,16 +119,32 @@ public class FileHandlerHelper {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
+    /**
+     * 디렉토리 경로 yyyy-MM-dd 형태로 생성하기 위해 사용
+     */
+    private String getCurrentLocalDateTime() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    /**
+     * 특정 경로에 dir 없으면 해당 경로 dir 생성 후 파일 업로드 경로 생성하여 반환
+     */
+    private String getFileUploadPathTotransfer(FileType fileType, String today, String storedFileName) {
+        return (fileType == FileType.POSTS)
+                ? getPhysicalExternalFileUploadPath(FileType.POSTS.getFileTypeName(), today) + File.separator + storedFileName
+                : getPhysicalExternalFileUploadPath(FileType.SHOP.getFileTypeName(), today) + File.separator + storedFileName;
+    }
+
     private String getFileExtensionByOriginalFileName(String originalFilename) {
         return StringUtils.getFilenameExtension(originalFilename);
     }
 
-    private String getFileUploadLocation() {
-        return createDirectory(uploadPath);
+    private String getPhysicalExternalFileUploadPath(String fileType, String today) {
+        return createDirectory(uploadPath + File.separator + fileType + File.separator + today);
     }
 
-    private String getFileUploadLocation(String addPath) {
-        return createDirectory(uploadPath + File.separator + addPath);
+    private String getPhysicalExternalFileUploadPath(String today) {
+        return createDirectory(uploadPath + File.separator + today);
     }
 
     private String createDirectory(String path) {

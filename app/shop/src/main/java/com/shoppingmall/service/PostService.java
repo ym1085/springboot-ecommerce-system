@@ -1,5 +1,6 @@
 package com.shoppingmall.service;
 
+import com.shoppingmall.constant.FileType;
 import com.shoppingmall.utils.FileHandlerHelper;
 import com.shoppingmall.utils.PaginationUtils;
 import com.shoppingmall.common.MessageCode;
@@ -90,7 +91,7 @@ public class PostService {
         int result = fileMapper.deleteFilesByPostId(postId);
         if (result > 0) {
             log.info("uploadFile is exists, result = {}", result);
-            List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files);
+            List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files, FileType.POSTS);
             setFileInfoPostId(postId, fileRequestDtos);
             fileMapper.saveFiles(fileRequestDtos);
         }
