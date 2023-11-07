@@ -28,6 +28,8 @@ public class PostResponseDto {
     private LocalDateTime updateDate;
     private LocalDateTime deleteDate;
     private List<CommentResponseDto> comments;
+    private String filePath;
+    private String storedFileName;
 
     public PostResponseDto(Post post) {
         this.postId = post.getPostId();
@@ -42,6 +44,8 @@ public class PostResponseDto {
         this.createDate = post.getCreateDate();
         this.updateDate = post.getUpdateDate();
         this.deleteDate = post.getDeleteDate();
+        this.filePath = post.getFilePath();
+        this.storedFileName = post.getStoredFileName();
     }
 
     public void addComments(List<CommentResponseDto> commentResponseDto) {

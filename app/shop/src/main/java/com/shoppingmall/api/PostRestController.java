@@ -70,7 +70,7 @@ public class PostRestController {
         postRequestDto.setMemberId(1L);
         Long postId = postService.savePost(postRequestDto);
 
-        List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(postRequestDto.getFiles());
+        List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(postRequestDto.getFiles(), postRequestDto.getFileType());
         fileService.saveFiles(postId, fileRequestDtos);
 
         return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_SAVE_POST.getCode(), MessageCode.SUCCESS_SAVE_POST.getMessage(), HttpStatus.OK);

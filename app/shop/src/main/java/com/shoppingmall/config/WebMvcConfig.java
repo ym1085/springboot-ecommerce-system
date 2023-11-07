@@ -1,6 +1,8 @@
 package com.shoppingmall.config;
 
+import com.shoppingmall.constant.OSType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -24,49 +26,37 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${os.linux.upload-path}")
     private String uploadPathByLinux;
 
-    private static final String[] templateFolders = {"classpath:/templates/", "classpath:/static/", "classpath:/images/"};
-    private static final List<String> imageFolders = Arrays.asList("shop", "board");
+    private static final String resourcePath = "/upload/"; // view에서 접근할 경로
+    private static final String[] classPathTemplatePath = {"classpath:/templates/", "classpath:/static/", "classpath:/images/"};
+    private static final List<String> resourceAddDirPath = Arrays.asList("shop", "posts");
 
     // JAR 배포 후 해당 경로 접근이 안되기에 -> /** 요청 -> 아래 경로로 URL 매핑을 해준다
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //WebMvcConfigurer.super.addResourceHandlers(registry);
-        // 정적 static template 경로 매핑
         registry.addResourceHandler("/**")
-                .addResourceLocations(templateFolders);
+                .addResourceLocations(classPathTemplatePath);
 
-        // 외부 파일 경로 URL 매핑
-        // ---> [개발] localhost:8080/static/img/shop/**
-        // ---> [운영] domain.co.kr/static/img/shop/**
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")) {
-            addResourceLocationsForWindow(registry);
-        } else if (os.contains("mac")) {
-            addResourceLocationsForMac(registry);
-        } else if (os.contains("linux")) {
-            addResourceLocationsForLinux(registry);
+        String osPath = "";
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains(OSType.WINDOW.getOsName())) {
+            osPath = uploadPathByWindow;
+        } else if (osName.contains(OSType.MAC.getOsName())) {
+            osPath = uploadPathByMac;
+        } else if (osName.contains(OSType.LINUX.getOsName())) {
+            osPath = uploadPathByLinux;
+        }
+
+        // Todo: 다른 OS는 어떻게 구분 할지 고민 필요
+
+        if (StringUtils.isNotBlank(osPath)) {
+            addResourceLocations(registry, osPath);
         }
     }
 
-    private void addResourceLocationsForWindow(ResourceHandlerRegistry registry) {
-        for (String imageFolder : imageFolders) {
-            registry.addResourceHandler("/static/img/" + imageFolder + "/**")
-                    .addResourceLocations("file:///" + uploadPathByWindow + imageFolder + "/");
-        }
-    }
-
-    private void addResourceLocationsForMac(ResourceHandlerRegistry registry) {
-        for (String imageFolder : imageFolders) {
-            registry.addResourceHandler("/static/img/" + imageFolder + "/**")
-                    .addResourceLocations("file:///" + uploadPathByMac + imageFolder + "/");
-        }
-        log.debug("registry = {}", registry);
-    }
-
-    private void addResourceLocationsForLinux(ResourceHandlerRegistry registry) {
-        for (String imageFolder : imageFolders) {
-            registry.addResourceHandler("/static/img/" + imageFolder + "/**")
-                    .addResourceLocations("file:///" + uploadPathByLinux + imageFolder + "/");
+    private void addResourceLocations(ResourceHandlerRegistry registry, String osPath) {
+        for (String domain : resourceAddDirPath) {
+            registry.addResourceHandler(resourcePath + domain + "/**")
+                    .addResourceLocations("file:///" + osPath + domain + "/"); // 실제 파일 저장 경로
         }
     }
 }

@@ -44,11 +44,11 @@ mybatis:
 
 os:
   window:
-    upload-path: C:/shoppingmall/upload-files/
+    upload-path: C:/shoppingmall/upload/
   mac:
-    upload-path: /Users/youngminkim/projects/shoppingmall/upload-files/
+    upload-path: /Users/youngminkim/projects/shoppingmall/upload/
   linux:
-    upload-path: /var/www/shoppingmall/upload-files/
+    upload-path: /var/www/shoppingmall/upload/
 
 email:
   title: "쇼핑몰 인증 번호 입니다."

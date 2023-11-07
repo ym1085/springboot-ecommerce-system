@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>게시판 출력 테스트</title>
+</head>
+<body>
+<h1>게시판 출력 테스트</h1>
+<table class="tb_col">
+    <tr>
+        <th>seq</th>
+        <th>name</th>
+        <th>price</th>
+        <th>quantity</th>
+    </tr>
+    <tr th:each="post, postStat : ${posts.result}">
+        <td th:text="${postStat.index + 1}"></td>
+        <td th:text="${post.title}"></td>
+        <td th:text="${post.content}"></td>
+        <td>
+            <!-- #temporals.format -> string -> date type -->
+            <img style="width: 100px; height: 100px;" th:src="@{'/upload/posts/' + ${#temporals.format(post.createDate, 'yyyy-MM-dd')} + '/' + ${post.storedFileName}}" alt="Image" />
+            <!--<img style="width: 100px; height: 100px;" th:src="@{'/upload/posts/' + ${#dates.format(post.createDate, 'yyyy-MM-dd')} + '/' + ${post.storedFileName}}" alt="Image" />-->
+            <!--<img style="width: 100px; height: 100px;" th:src="@{'/upload/posts/' + ${post.createDate} + '/' + ${post.storedFileName}}" alt="Image" />-->
+        </td>
+    </tr>
+</table>
+</body>
+</html>
