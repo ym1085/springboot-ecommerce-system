@@ -93,6 +93,7 @@ public class FileHandlerHelper {
                 .filePath(fileUploadPath)
                 .fileSize(multipartFile.getSize())
                 .fileType(ext)
+                .fileAttached("Y")
                 .build();
     }
 

@@ -7,11 +7,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * @author      :   ymkim
- * @since       :   2023. 05. 20
- * @description :   게시글 조회 후 게시글 반환 시 사용
- */
 @NoArgsConstructor
 @Getter
 public class PostResponseDto {
@@ -30,6 +25,7 @@ public class PostResponseDto {
     private List<CommentResponseDto> comments;
     private String filePath;
     private String storedFileName;
+    private String fileAttached;
 
     public PostResponseDto(Post post) {
         this.postId = post.getPostId();
@@ -46,6 +42,7 @@ public class PostResponseDto {
         this.deleteDate = post.getDeleteDate();
         this.filePath = post.getFilePath();
         this.storedFileName = post.getStoredFileName();
+        this.fileAttached = post.getFileAttached();
     }
 
     public void addComments(List<CommentResponseDto> commentResponseDto) {
