@@ -71,7 +71,8 @@
             p.update_date,
             p.delete_date,
             f.file_path,
-            f.stored_file_name
+            f.stored_file_name,
+            f.file_attached
         FROM post p INNER JOIN post_file f
         ON p.post_id = f.post_id
         WHERE p.del_yn != 'Y'

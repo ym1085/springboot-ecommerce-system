@@ -24,7 +24,7 @@ public class CommentService {
     public List<CommentResponseDto> getComments(Long postId) {
         return commentMapper.getComments(postId)
                 .stream()
-                .map(comment -> new CommentResponseDto(comment))
+                .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
     }
 

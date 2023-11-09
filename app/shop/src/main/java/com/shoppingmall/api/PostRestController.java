@@ -11,9 +11,9 @@ import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
 import com.shoppingmall.service.CommentService;
-import com.shoppingmall.utils.FileHandlerHelper;
 import com.shoppingmall.service.FileService;
 import com.shoppingmall.service.PostService;
+import com.shoppingmall.utils.FileHandlerHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -45,8 +45,8 @@ public class PostRestController {
     @GetMapping(value = "/post/{id}")
     public ResponseEntity<CommonResponse> getPostById(@PathVariable("id") Long id) {
         PostResponseDto post = postService.getPostById(id);
-        List<CommentResponseDto> comments = commentService.getComments(id);
 
+        List<CommentResponseDto> comments = commentService.getComments(id);
         post.addComments(comments);
 
         return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POST.getCode(), MessageCode.SUCCESS_GET_POST.getMessage(), post, HttpStatus.OK);

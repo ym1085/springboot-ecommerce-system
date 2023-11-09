@@ -37,6 +37,7 @@ public class PostRequestDto {
 
     private List<MultipartFile> files = new ArrayList<>();
     private FileType fileType = FileType.POSTS;
+    private String fileAttached = "N";
 
     private int categoryId;
 

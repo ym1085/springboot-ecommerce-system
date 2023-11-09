@@ -49,7 +49,7 @@ class PostServiceTest {
     @DisplayName("테스트 데이터 생성")
     @Rollback(false)
     void insertPostData() {
-        List<PostResponseDto> posts = postService.getPosts(new SearchRequestDto()).getResult();
+        List<PostResponseDto> posts = postService.getPosts(new SearchRequestDto()).getData();
         if (CollectionUtils.isEmpty(posts)) {
             for (int i = 1; i <= 1000; i++) {
                 PostRequestDto postSaveRequestDto = new PostRequestDto();
@@ -70,7 +70,7 @@ class PostServiceTest {
         //given
         //when
         PagingResponseDto<PostResponseDto> pagingResponseDto = postService.getPosts(new SearchRequestDto());
-        List<PostResponseDto> posts = pagingResponseDto.getResult();
+        List<PostResponseDto> posts = pagingResponseDto.getData();
 
         //then
         assertThat(posts).isNotEmpty();

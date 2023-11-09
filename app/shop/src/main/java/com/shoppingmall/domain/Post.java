@@ -28,6 +28,7 @@ public class Post {
     private LocalDateTime deleteDate;
     private String filePath; // Todo: POST(1) : POST_FILE(N) --> filePath(POST_FILE) --> Entity에 해당 필드 선언한 부분은 고민 필요
     private String storedFileName;
+    private String fileAttached;
 
     public Post(PostRequestDto postRequestDto) {
         this.postId = postRequestDto.getPostId();

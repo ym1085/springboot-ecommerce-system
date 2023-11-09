@@ -8,11 +8,11 @@ import java.util.List;
 
 @Getter
 public class PagingResponseDto<T> {
-    private List<T> result = new ArrayList<>();
+    private List<T> data = new ArrayList<>();
     private PaginationUtils pagination;
 
-    public PagingResponseDto(List<T> result, PaginationUtils pagination) {
-        this.result.addAll(result);
+    public PagingResponseDto(List<T> data, PaginationUtils pagination) {
+        this.data.addAll(data);
         this.pagination = pagination;
     }
 }

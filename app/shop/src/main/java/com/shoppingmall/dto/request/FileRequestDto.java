@@ -17,14 +17,16 @@ public class FileRequestDto {
     private String filePath;
     private long fileSize;
     private String fileType;
+    private String fileAttached;
 
     @Builder
-    public FileRequestDto(String originFileName, String storedFileName, String filePath, long fileSize, String fileType) {
+    public FileRequestDto(String originFileName, String storedFileName, String filePath, long fileSize, String fileType, String fileAttached) {
         this.originFileName = originFileName;
         this.storedFileName = storedFileName;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.fileType = fileType;
+        this.fileAttached = fileAttached;
     }
 
     /**

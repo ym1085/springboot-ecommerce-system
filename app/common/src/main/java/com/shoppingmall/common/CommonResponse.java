@@ -2,7 +2,6 @@ package com.shoppingmall.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashMap;
@@ -13,8 +12,12 @@ import java.util.Map;
 public class CommonResponse<T> {
     private int code;
     private String message;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) // NULL아니고 공백 아닌 경우
     private Map<String, String> errorMessage = new HashMap<>();
-    private Result result = new Result();
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) // NULL아니고 공백 아닌 경우
+    private T result;
 
     public CommonResponse(int code, String message) {
         this.code = code;
@@ -27,21 +30,9 @@ public class CommonResponse<T> {
         this.errorMessage = errorMessage;
     }
 
-    public CommonResponse(int code, String message, T data) {
+    public CommonResponse(int code, String message, T result) {
         this.code = code;
         this.message = message;
-        this.result = new Result(data);
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public class Result {
-        private T data;
-
-        public Result(T data) {
-            this.data = data;
-        }
+        this.result = result;
     }
 }

@@ -1,64 +1,90 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>게시판 상세 화면</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<meta charset="UTF-8">
+<title>게시판 상세 화면</title>
+<style>
+    body {
+        text-align: center;
+    }
+
+    .container {
+        margin-top: 50px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    #comment-list {
+        margin-bottom: 20px;
+    }
+
+    #comment-form {
+        display: none;
+        margin-top: 20px;
+    }
+
+    #comment-content {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+</style>
 </head>
 <body>
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <table name="post-detail" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>제목</th>
-                        <th>카테고리</th>
-                        <th>내용</th>
-                        <th>조회수</th>
-                        <th>작성자</th>
-                        <th>작성일</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td th:text="${post.title}"></td>
-                        <td th:text="${post.categoryName}"></td>
-                        <td th:text="${post.content}"></td>
-                        <td th:text="${post.readCnt}"></td>
-                        <td th:text="${post.writer}"></td>
-                        <td th:text="${post.createDate}"></td>
-                    </tr>
-                </tbody>
-            </table>
+<div class="container">
+    <div>
+        <label for="title">* 제목:</label>
+        <input type="text" id="title" th:value="${post.title}" readonly><br>
 
-            <!-- 댓글 표시 -->
-            <h2>댓글 목록</h2>
-            <div id="comment-list">
-                <div th:each="comment : ${comment}">
-                    <div>
-                        <!-- 일반 댓글 표시 -->
-                        <!-- 댓글 등록시 일반 댓글의 commentId를 가져가서 서버에 넘긴 후 에 INSERT 하는 걸로 -->
-                        <p th:if="${!comment.path.contains('-')}" th:text="${comment.content}" th:attr="data-comment-id=${comment.commentId}"></p>
+        <label for="category">* 카테고리:</label>
+        <input type="text" id="category" th:value="${post.categoryId}" readonly><br>
 
-                        <!-- 대댓글 표시 -->
-                        <div th:if="${comment.path != null and comment.path.contains('-')}" th:attr="data-parent-id=${comment.parentId}">
-                            <ul>
-                                <li th:text="${comment.content}"></li>
-                            </ul>
-                        </div>
-                    </div>
+        <!--<label for="content">* 내용:</label>
+        <div th:text="${post.content}" id="content"></div><br>-->
+        <!-- https://rebornbb.tistory.com/entry/HTML-iframe-%EC%9C%A0%ED%8A%9C%EB%B8%8C-%EB%8F%99%EC%98%81%EC%83%81-%EC%9E%90%EB%8F%99-%EC%97%B0%EC%86%8D%EC%9E%AC%EC%83%9D -->
+        <!--<iframe width="893" height="502" src="https://www.youtube.com/embed/gZhF6Z2qqh0?autoplay=1&mute=1" title="《큰 거 온다!》 미친 몰입감으로 한국 액션 누아르의 한 휙을 긋게 될 2023년 하반기 최대 기대작 영화 《더 와일드: 야수들의 전쟁》" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>-->
+        <textarea rows="4" cols="50" placeholder="내용을 입력하세요..." th:text="${post.content}"></textarea><br>
+        <label for="readCount">* 조회수:</label>
+        <input type="text" id="readCount" th:value="${post.readCnt}" readonly><br>
+
+        <label for="author">* 작성자:</label>
+        <input type="text" id="author" th:value="${post.writer}" readonly><br>
+    </div>
+
+    <div id="comment-list">
+        <div th:each="comment : ${comment}">
+            <div>
+                <!-- 일반 댓글 표시 -->
+                <!-- 댓글 등록시 일반 댓글의 commentId를 가져가서 서버에 넘긴 후 에 INSERT 하는 걸로 -->
+                <p th:if="${!comment.path.contains('-')}" th:text="${comment.content}" th:attr="data-comment-id=${comment.commentId}"></p>
+                <!-- 대댓글 표시 -->
+                <div th:if="${comment.path != null and comment.path.contains('-')}" th:attr="data-parent-id=${comment.parentId}">
+                    <ul>
+                        <li th:text="${comment.content}"></li>
+                    </ul>
                 </div>
-            </div>
-
-            <div class="mt-3">
-                <button id="write-comment-btn" class="btn btn-primary">댓글 작성</button>
-            </div>
-
-            <div id="comment-form" class="mt-3" style="display: none;">
-                <textarea id="comment-content" class="form-control" rows="3"></textarea>
-                <button id="submit-comment-btn" class="btn btn-success mt-3">댓글 등록</button>
             </div>
         </div>
     </div>
+    <div>
+        <button id="write-comment-btn">댓글 작성</button>
+    </div>
+    <div id="comment-form" style="display: none;">
+        <textarea id="comment-content" rows="3"></textarea>
+        <button id="submit-comment-btn">댓글 등록</button>
+    </div>
 </div>
+</body>
+</html>
