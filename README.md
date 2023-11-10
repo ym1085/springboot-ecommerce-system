@@ -4,16 +4,16 @@
 
 ### 📌 01-1. Backend
 | 기술              | 버전    | 적용 여부 |
-|-----------------|-------|------|
-| Java            | 11    | o    |
-| Spring Boot     | 2.7.1 | o    |
-| Spring Security | 2.7.2 | o    |
-| Spring Data JPA | 2.7.2 | o    |
-| MyBatis         | 3.0.1 | o    |
-| MySQL           | 8.0.28 | o    |
-| Swagger         | 3.0.0 | o    |
-| Docker          | 23.0.5 | o    |
-| AWS EC2             |       | x    |
+|-----------------|-------|---|
+| Java            | 11    | o |
+| Spring Boot     | 2.7.1 | o |
+| Spring Security | 2.7.2 | o |
+| Spring Data JPA | 2.7.2 | o |
+| MyBatis         | 3.0.1 | o |
+| MySQL           | 8.0.28 | o |
+| Swagger         | 3.0.0 | o |
+| Docker          | 23.0.5 | o |
+| AWS EC2         |       | x |
 
 ## ✅ 02. ERD
 
@@ -79,18 +79,34 @@
 > 프로젝트 구동 전 Docker 환경과 상관없이 반드시 아래 내용을 설정 해주셔야 합니다.  
 > MySQL 데이터의 경우 docker-compose를 구동하는 경우 docker container 내 자동 생성합니다.
 
-### 05-1. Google 이메일 전송 관련 SMTP 설정
+### 05-1. classpath:/resources/application.yaml 파일 추가
 
 > 구글 이메일 전송의 경우 본인의 앱 키를 넣어주셔야 합니다  
 > [Google App 비밀번호 생성](https://cloudtechflow.com/2023/10/28/%ea%b5%ac%ea%b8%80-%ec%95%b1-%eb%b9%84%eb%b0%80%eb%b2%88%ed%98%b8-%ec%83%9d%ec%84%b1%ed%95%98%ea%b8%b0/)
 
 ```yaml
-# application-dev.yaml | application-prod.yaml 
+# application.yaml
+# 위 파일이 없는 경우 서버 구동 안될 수 있음
+spring:
+  profiles:
+    default: local
+    group:
+      local:
+        - oauth
+      dev:
+        - oauth
+      prod:
+        - oauth
+
+  devtools:
+    livereload:
+      enabled: true
+
   mail:
     host: smtp.gmail.com
     port: 587
-    username: '<본인 이메일 입력>'
-    password: '<본인 Google 앱 비밀번호 입력>'
+    username: <구글 계정>
+    password: <앱 비밀번호>
     properties:
       mail:
         smtp:
@@ -158,41 +174,34 @@ spring:
 
 ### ⚙️ 05-3. 파일 권한 변경
 
-> 위 설정이 완료 되었으면 로트 경로의 해당 파일의 권한 변경, 실행이 가능하도록 아래 명령어 입력
+> 위 설정이 모두 완료 되면 다음 내용을 따라주세요
 
 ```shell
-# 파일 실행 가능 권한 변경
 chmod +x run_docker.sh
 chmod +x stop_docker.sh
 ```
 
+- 파일 실행 권한 변경
+
 ### 🐳 05-4. docker-compose up
 
-> MySQL PORT 3306과 충돌이 발생하는 경우 아래 링크를 참고 해주세요  
-> 기존 로컬 MySQL의 구동 없이 실행이 가능하여야 합니다  
-> [[Docker] docker mysql 포트 충돌 에러 (feat. 3306)](https://lealea.tistory.com/232)
-
-```shell
-# 프로젝트 clean & Jar 생성
-gradle > app > shop > clean
-gradle > app > shop > bootJar
-```
-
-```shell
-# docker 서버 시작
-# run_docker.sh 실행 시 Docker desktop의 모든 이미지를 지우고 이미지 생성
-# 유의하여 사용할 필요가 존재하며, 기본적인 유효성 검증은 작성하였습니다 
+```shell 
 ./run_docker.sh
 ```
+
+- run_docker.sh 실행시 로컬 Docker desktop의 모든 이미지를 지우고 이미지 생성
+- 위 shell script는 유의하여 사용할 필요가 존재합니다
+- gradle clean bootJar 진행 후 생성된 jar 파일을 가지고 docker 실행
 
 ### 🐳 05-5. docker-compose down
 
 ```shell
-# docker 서버 중지
 ./stop_docker.sh
 ```
 
-### 05-6. 참고 사항
+- docker 서버 중지
+
+### 📂 05-6. 참고 사항
 
 ```shell
 추가적으로 파일 업로드의 경우 본인 운영체제 맞춰서 업로드 하나  

@@ -90,6 +90,7 @@ CREATE TABLE POST_FILE
     del_Yn           CHAR         NOT NULL DEFAULT 'N' COMMENT '파일 삭제 여부',
     create_date      TIMESTAMP             DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
     delete_date      TIMESTAMP,
+    file_attached    char      default 'N'               not null,
     FOREIGN KEY (post_id) REFERENCES POST (post_id)
 );
 

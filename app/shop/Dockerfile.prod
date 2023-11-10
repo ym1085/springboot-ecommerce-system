@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y dos2unix \
 
 RUN chmod +x wait-for-it.sh
 
-EXPOSE 8082
+EXPOSE 8088
 
 # 컨테이너가 시작될 때 실행할 명령을 정의
 ENTRYPOINT ["/bin/sh", "-c", "./wait-for-it.sh mysql:3306 -s -t 100 && java -Dspring.profiles.active=prod -Xms1g -Xmx1g -jar shopping-mall.jar"]
