@@ -186,7 +186,7 @@ chmod +x stop_docker.sh
 ### 🐳 05-4. docker-compose up
 
 ```shell 
-./run_docker.sh
+./start_docker.sh
 ```
 
 - run_docker.sh 실행시 로컬 Docker desktop의 모든 이미지를 지우고 이미지 생성
