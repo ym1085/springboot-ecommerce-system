@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <!--
+        <springProfile>
+        - desc: 현재 Spring Boot profile 구분
+        - name: profile 이름 지정
+
+        <appender>
+        - desc: 전달 받은 로그를 어디에 출력할지 결정 (Console, DB, File.. 등등)
+        - name: appender 이름 지정
+        - class: appender 클래스 지정(압축, 콘솔.. 등등)
+        - file: 로그 파일 경로 지정
+        - encoder: 로그 이벤트 출력 형식 지정
+        - rollingPolicy: 파일 Rolling 정책
+          - FileNamePattern: gzip 파일명
+          - timeBasedFileNamingAndTriggeringPolicy: 시간 기반 파일 명명 및 트리거 정책 100MB 넘기면 트리거 발생
+          - maxHistory: 로그 보존 최대 기간 지정(7일)
+          - totalSizeCap: 로그 파일 총 크기 제한한다 현재는 3GB이며 전체 크기가 3GB 넘지 않도록 관리
+
+        <logger>
+        - desc: 로그를 출력하는 요소로 appender에게 전달한다
+        - name: 로거의 이름 및 패키지 지정
+        - level: 로그 레벨 지정
+        - additivity: 상위 로거에서 정의된 이벤트를 하위 로거 전파 여부(false: 독립적, true: 상위 로그 이벤트 전파)
+        - appender-ref ref: 로거가 어떤 appender를 사용할지 지정
+    -->
+
+    <!--<include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />-->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+
+    <springProfile name="local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%clr(%d{yyyyMMdd HH:mm:ss.SSS}[%thread]){magenta} %clr([%thread]){blue} %clr(%-5level){} %clr([%logger{0}:%line]){cyan} : %msg %n</pattern>
+                <!--<pattern>%cyan([%contextName]) - %magenta([%d{yyyy.MM.dd HH:mm:ss.SSS}]) - %highlight([%-5level]) - [%thread] - [%X{traceId}] - %green([%logger{5}]) - [%marker] - %msg%n</pattern>-->
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="!local">
+        <appender name="SERVICE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!--<file>./shopping-mall-service.log</file>-->
+            <file>/data/app_logs/shopping-mall-service.log</file>
+            <encoder>
+                <Pattern>[%d{yyyyMMdd HH:mm:ss.SSS}][%thread][%-5level][%logger{36}] - %msg%n</Pattern>
+            </encoder>
+
+            <!-- gzip policy -->
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>/data/app_logs/%d{yyyyMMdd}.shopping-mall-service.%i.log.gz</FileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>7</maxHistory>
+                <totalSizeCap>10GB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+    </springProfile>
+
+    <!-- local -->
+    <springProfile name="local">
+        <logger name="com.shoppingmall"                                                 level="DEBUG" additivity="false"><appender-ref ref="CONSOLE"/></logger>
+        <!--<logger name="org.springframework"												level="DEBUG" additivity="false"><appender-ref ref="CONSOLE"/></logger>-->
+
+        <!--
+            jdbc                    :   log4jdbc option settings
+            jdbc.connection         :   connection open/close event logs
+            jdbc.sqlonly            :   write only SQL to log, PreparedStatement -> 관련된 argument 값으로 대체된 SQL 출력
+            jdbc.sqltiming          :   SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보(milliseconds)를 포함
+            jdbc.audit              :   ResultSet 제외 모든 JDBC 호출 정보 출력, JDBC 문제 추적 시에만 사용 권장
+            jdbc.resultset          :   ResultSet 포함 모든 JDBC 호출 정보 출력, JDBC 문제 추적 시에만 사용 권장
+            jdbc.resultsettable     :   SQL 조회 결과 데이터의 table을 로그로 출력
+        -->
+        <logger name="jdbc"                                                             level="OFF" additivity="false"><appender-ref ref="CONSOLE" /></logger>
+        <logger name="jdbc.connection"                                                  level="OFF" additivity="false"><appender-ref ref="CONSOLE" /></logger>
+        <logger name="jdbc.sqlonly"                                                     level="DEBUG" additivity="false"><appender-ref ref="CONSOLE" /></logger>
+        <logger name="jdbc.sqltiming"                                                   level="DEBUG" additivity="false"><appender-ref ref="CONSOLE" /></logger>
+        <logger name="jdbc.audit"                                                       level="OFF" additivity="false"><appender-ref ref="CONSOLE" /></logger>
+        <logger name="jdbc.resultset"                                                   level="OFF" additivity="false"><appender-ref ref="CONSOLE" /></logger>
+        <logger name="jdbc.resultsettable"                                              level="INFO" additivity="false"><appender-ref ref="CONSOLE" /></logger>
+
+        <!-- 최상위 레벨 로그 지정 -->
+        <root>
+            <level value="INFO" />
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <!-- development -->
+    <springProfile name="dev">
+        <logger name="com.shoppingmall"                                                 level="DEBUG" additivity="false"><appender-ref ref="SERVICE_LOG" /></logger>
+        <logger name="org.springframework"												level="DEBUG" additivity="false"><appender-ref ref="SERVICE_LOG"/></logger>
+
+        <!--
+            jdbc                    :   log4jdbc option settings
+            jdbc.connection         :   connection open/close event logs
+            jdbc.sqlonly            :   write only SQL to log, PreparedStatement -> 관련된 argument 값으로 대체된 SQL 출력
+            jdbc.sqltiming          :   SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보(milliseconds)를 포함
+            jdbc.audit              :   ResultSet 제외 모든 JDBC 호출 정보 출력, JDBC 문제 추적 시에만 사용 권장
+            jdbc.resultset          :   ResultSet 포함 모든 JDBC 호출 정보 출력, JDBC 문제 추적 시에만 사용 권장
+            jdbc.resultsettable     :   SQL 조회 결과 데이터의 table을 로그로 출력
+        -->
+        <logger name="jdbc"                                                             level="OFF" additivity="false"><appender-ref ref="SERVICE_LOG" /></logger>
+        <logger name="jdbc.connection"                                                  level="OFF" additivity="false"><appender-ref ref="SERVICE_LOG" /></logger>
+        <logger name="jdbc.sqlonly"                                                     level="DEBUG" additivity="false"><appender-ref ref="SERVICE_LOG" /></logger>
+        <logger name="jdbc.sqltiming"                                                   level="DEBUG" additivity="false"><appender-ref ref="SERVICE_LOG" /></logger>
+        <logger name="jdbc.audit"                                                       level="OFF" additivity="false"><appender-ref ref="SERVICE_LOG" /></logger>
+        <logger name="jdbc.resultset"                                                   level="OFF" additivity="false"><appender-ref ref="SERVICE_LOG" /></logger>
+        <logger name="jdbc.resultsettable"                                              level="INFO" additivity="false"><appender-ref ref="SERVICE_LOG" /></logger>
+
+        <root>
+            <level value="DEBUG" />
+            <appender-ref ref="SERVICE_LOG" />
+        </root>
+    </springProfile>
+
+    <!-- production -->
+    <springProfile name="prod">
+        <logger name="com.shoppingmall"                                                 level="INFO" additivity="false"><appender-ref ref="SERVICE_LOG" /></logger>
+        <!--<logger name="org.springframework"												level="INFO" additivity="false"><appender-ref ref="SERVICE_LOG"/></logger>-->
+
+        <root>
+            <level value="INFO" />
+            <appender-ref ref="SERVICE_LOG" />
+        </root>
+    </springProfile>
+</configuration>
