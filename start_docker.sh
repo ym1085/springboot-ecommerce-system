@@ -64,5 +64,40 @@ else
 fi
 echo
 
+APP_PATH=$(pwd)
+echo 'spring boot jar -> bootJar를 위해 -> APP 폴더 경로로 이동 전 ==> ' $APP_PATH
+APP_PATH=./app/shop/
+cd $APP_PATH
+echo 'spring boot jar -> bootJar를 위해 -> APP 폴더 경로로 이동 후 ==> '$APP_PATH
+
+echo 'APP 빌드 시작..'
+echo
+
+echo 'gradle clean..'
+sh ./gradlew clean
+
+for i in {5..1}
+do
+  echo "gradle clean 후 5초 대기... $i 초 전.."
+  sleep 1
+done
+echo
+
+echo
+echo 'gradle bootJar..'
+sh ./gradlew bootJar
+echo
+
+echo 'APP 빌드 완료..'
+echo '현재 경로 => ' $APP_PATH
+echo
+
+# 빌드 완료 후 루트 경로로 이동하여 docker-compose-{profile}.yaml 파일 실행
+cd ../../
+APP_PATH=$(pwd)
+echo '빌드 완료 후 폴더 변경, 현재 경로 => ' $APP_PATH
+
+sleep 3
+
 # docker build 및 구동
 docker-compose -f docker-compose-${PROFILE}.yaml up -d

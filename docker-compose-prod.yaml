@@ -52,7 +52,7 @@ services:
     container_name: shopping-mall
     restart: always # no: no restart | always: exit code와 상관없이 항상 재시작 | on-failure : exit code 0 아닐때만 재시작 | unless-stopped: 수동 stop 전까지 재시작
     ports:
-      - "8082:8082"
+      - "8088:8088"
     env_file:
       - ./app/shop/.env-prod
     environment:
