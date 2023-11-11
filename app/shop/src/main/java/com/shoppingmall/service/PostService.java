@@ -1,18 +1,18 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.constant.FileType;
-import com.shoppingmall.utils.FileHandlerHelper;
-import com.shoppingmall.utils.PaginationUtils;
 import com.shoppingmall.common.MessageCode;
+import com.shoppingmall.constant.FileType;
 import com.shoppingmall.domain.Post;
+import com.shoppingmall.domain.PostFiles;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
-import com.shoppingmall.dto.response.FileResponseDto;
-import com.shoppingmall.dto.response.PagingResponseDto;
-import com.shoppingmall.dto.response.PostResponseDto;
+import com.shoppingmall.dto.response.*;
+import com.shoppingmall.repository.CommentMapper;
 import com.shoppingmall.repository.FileMapper;
 import com.shoppingmall.repository.PostMapper;
+import com.shoppingmall.utils.FileHandlerHelper;
+import com.shoppingmall.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,6 +34,7 @@ public class PostService {
     private final PostMapper postMapper;
     private final FileMapper fileMapper;
     private final FileHandlerHelper fileHandlerHelper;
+    private final CommentMapper commentMapper;
 
     @Transactional(readOnly = true)
     public PagingResponseDto<PostResponseDto> getPosts(SearchRequestDto searchRequestDto) {
@@ -45,17 +48,38 @@ public class PostService {
 
         List<PostResponseDto> posts = postMapper.getPosts(searchRequestDto)
                 .stream()
-                .map(PostResponseDto::new)
-                .collect(Collectors.toList());
+                .filter(Objects::nonNull)
+                .map(post -> {
+                    PostResponseDto postResponseDto = new PostResponseDto(post);
+                    List<PostFileResponseDto> postFileResponseDtos = new ArrayList<>();
+                    for (PostFiles postFile : post.getPostFiles()) {
+                        if (postFile.getPostFileId() == null) {
+                            postResponseDto.addPostFiles(Collections.emptyList());
+                            continue;
+                        }
+                        postFileResponseDtos.add(new PostFileResponseDto(postFile));
+                        postResponseDto.addPostFiles(postFileResponseDtos);
+                    }
+                    return postResponseDto;
+                }).collect(Collectors.toList());
 
         return new PagingResponseDto<>(posts, pagination);
     }
 
     @Transactional(readOnly = true)
     public PostResponseDto getPostById(Long postId) {
-        return postMapper.getPostById(postId)
-                .map(post -> new PostResponseDto(post))
+        PostResponseDto postResponseDto = postMapper.getPostById(postId)
+                .map(PostResponseDto::new)
                 .orElse(new PostResponseDto());
+
+        List<CommentResponseDto> commentResponseDtos = commentMapper.getComments(postId)
+                .stream()
+                .filter(Objects::nonNull)
+                .map(CommentResponseDto::new)
+                .collect(Collectors.toList());
+
+        postResponseDto.addComments(commentResponseDtos);
+        return postResponseDto;
     }
 
     @Transactional

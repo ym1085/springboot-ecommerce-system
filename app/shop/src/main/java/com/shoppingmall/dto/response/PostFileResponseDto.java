@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
-public class FileResponseDto {
+public class PostFileResponseDto {
     private Long postFileId;
     private Long postId;
     private String originFileName;
@@ -22,8 +22,9 @@ public class FileResponseDto {
     private LocalDateTime createDate;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime deleteDate;
+    private String fileAttached;
 
-    public FileResponseDto(PostFiles postFiles) {
+    public PostFileResponseDto(PostFiles postFiles) {
         this.postFileId = postFiles.getPostFileId();
         this.postId = postFiles.getPostId();
         this.originFileName = postFiles.getOriginFileName();
@@ -35,5 +36,6 @@ public class FileResponseDto {
         this.delYn = postFiles.getDelYn();
         this.createDate = postFiles.getCreateDate();
         this.deleteDate = postFiles.getDeleteDate();
+        this.fileAttached = postFiles.getFileAttached();
     }
 }

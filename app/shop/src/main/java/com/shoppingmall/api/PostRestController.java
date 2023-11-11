@@ -7,10 +7,8 @@ import com.shoppingmall.common.ResponseFactory;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
-import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
-import com.shoppingmall.service.CommentService;
 import com.shoppingmall.service.FileService;
 import com.shoppingmall.service.PostService;
 import com.shoppingmall.utils.FileHandlerHelper;
@@ -34,7 +32,6 @@ public class PostRestController {
     private final PostService postService;
     private final FileHandlerHelper fileHandlerHelper;
     private final FileService fileService;
-    private final CommentService commentService;
 
     @GetMapping(value = "/post")
     public ResponseEntity<CommonResponse> getPosts(SearchRequestDto searchRequestDto) {
@@ -45,10 +42,6 @@ public class PostRestController {
     @GetMapping(value = "/post/{id}")
     public ResponseEntity<CommonResponse> getPostById(@PathVariable("id") Long id) {
         PostResponseDto post = postService.getPostById(id);
-
-        List<CommentResponseDto> comments = commentService.getComments(id);
-        post.addComments(comments);
-
         return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POST.getCode(), MessageCode.SUCCESS_GET_POST.getMessage(), post, HttpStatus.OK);
     }
 

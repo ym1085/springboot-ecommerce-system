@@ -64,7 +64,7 @@
     </div>
 
     <div id="comment-list">
-        <div th:each="comment : ${comment}">
+        <div th:each="comment : ${post.comments}">
             <div>
                 <!-- 일반 댓글 표시 -->
                 <!-- 댓글 등록시 일반 댓글의 commentId를 가져가서 서버에 넘긴 후 에 INSERT 하는 걸로 -->
