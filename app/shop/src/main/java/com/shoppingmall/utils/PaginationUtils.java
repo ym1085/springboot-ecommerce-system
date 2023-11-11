@@ -46,19 +46,21 @@ public class PaginationUtils {
 
         setLimitStart(searchRequestDto);
 
-        isExistsPrevPage();
+        checkExistsPrevPage();
 
-        isExistsNextPage(searchRequestDto);
+        checkExistsNextPage(searchRequestDto);
     }
 
     // 전체 페이지 수 계산 -> ((전체 데이터 갯수 - 1) / 페이징 당 출력할 게시글 개수)) + 1
-    // * ((1000 - 1) / 10) + 1
+    // * ((50 - 1) / 10) + 1
     public void setTotalPageCount(SearchRequestDto searchRequestDto) {
         this.totalPageCount = ((this.totalRecordCount - 1) / searchRequestDto.getRecordSizePerPage()) + 1;
     }
 
     // 시작 페이지 셋팅
     public void setStartPage(SearchRequestDto searchRequestDto) {
+        // ((4 - 1) / 10) * 10 + 1)
+        // ((11 - 1) / 10) * 10 + 1)
         this.startPage = ((searchRequestDto.getPageNo() - 1) / searchRequestDto.getPageSize()) * searchRequestDto.getPageSize() + 1;
     }
 
@@ -76,12 +78,12 @@ public class PaginationUtils {
     }
 
     // 이전 페이지 존재 여부
-    public void isExistsPrevPage() {
+    public void checkExistsPrevPage() {
         this.existsPrevPage = this.startPage != 1;
     }
 
     // 다음 페이지 존재 여부
-    public void isExistsNextPage(SearchRequestDto searchRequestDto) {
+    public void checkExistsNextPage(SearchRequestDto searchRequestDto) {
         this.existsNextPage = (this.endPage * searchRequestDto.getRecordSizePerPage()) < this.totalRecordCount;
     }
 }

@@ -27,6 +27,7 @@ class FileServiceTest {
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpg")
                         .fileSize(1024L)
                         .fileType("jpg")
+                        .fileAttached("Y")
                         .build(),
                 FileRequestDto.builder()
                         .originFileName("file2.jpg")
@@ -34,6 +35,7 @@ class FileServiceTest {
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".png")
                         .fileSize(1024L)
                         .fileType("png")
+                        .fileAttached("Y")
                         .build(),
                 FileRequestDto.builder()
                         .originFileName("file2.jpg")
@@ -41,6 +43,7 @@ class FileServiceTest {
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpeg")
                         .fileSize(1024L)
                         .fileType("jpeg")
+                        .fileAttached("Y")
                         .build()
         );
     }

@@ -47,12 +47,46 @@
         </if>
     </sql>
 
+    <!--
+        https://www.sysout.co.kr/home/webbook/page/read/643;jsessionid=54B3D5320E73A41FC4088D5E3D322141
+        아래 부분은 조금 고민... Map or VO에 그냥 필드 넣어서 처리가 가능하긴 한데.. resultMap이 맞을지
+        그래도 1 : N 처리를 위해 resultMap을 사용해서 일단 처리하고 추후 테이블이 복잡해지면 VO를 분리
+        시키든지 할 것 입니다
+     -->
+    <resultMap id="postResultMap" type="com.shoppingmall.domain.Post">
+        <id property="postId" column="post_id" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="memberId" column="member_id" />
+        <result property="categoryId" column="category_id" />
+        <result property="readCnt" column="read_cnt" />
+        <result property="fixedYn" column="fixed_yn" />
+        <result property="delYn" column="del_yn" />
+        <result property="createDate" column="create_date" />
+        <result property="updateDate" column="update_date" />
+        <result property="deleteDate" column="delete_date" />
+        <collection property="postFiles" ofType="com.shoppingmall.domain.PostFiles">
+            <id property="postFileId" column="post_file_id" />
+            <result property="postId" column="post_id" />
+            <result property="originFileName" column="origin_file_name" />
+            <result property="storedFileName" column="stored_file_name" />
+            <result property="filePath" column="file_path" />
+            <result property="fileSize" column="file_size" />
+            <result property="fileType" column="file_type" />
+            <result property="downloadCnt" column="download_cnt" />
+            <result property="delYn" column="del_Yn" />
+            <result property="createDate" column="create_date" />
+            <result property="deleteDate" column="delete_date" />
+            <result property="fileAttached" column="file_attached" />
+        </collection>
+    </resultMap>
+
     <!-- 전체 게시글 조회 -->
     <!--
         Mybatis에서 쿼리의 parameterType이 클래스의 객체인 경우, XML Mapper의 #{parameter}
         는 맴버 변수의 getter에 해당. 쉽게 말해 getter를 통해 파라미터 바인딩 수행.
     -->
-    <select id="getPosts" parameterType="com.shoppingmall.dto.request.SearchRequestDto" resultType="com.shoppingmall.domain.Post">
+    <select id="getPosts" parameterType="com.shoppingmall.dto.request.SearchRequestDto" resultMap="postResultMap">
         SELECT
             p.post_id,
             p.title,
@@ -70,8 +104,17 @@
             p.create_date,
             p.update_date,
             p.delete_date,
-            f.file_path,
+            f.post_file_id,
+            f.post_id,
+            f.origin_file_name,
             f.stored_file_name,
+            f.file_path,
+            f.file_size,
+            f.file_type,
+            f.download_cnt,
+            f.del_Yn,
+            f.create_date,
+            f.delete_date,
             f.file_attached
         FROM post p LEFT JOIN post_file f
         ON p.post_id = f.post_id

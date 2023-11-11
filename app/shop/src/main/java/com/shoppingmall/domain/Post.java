@@ -1,5 +1,6 @@
 package com.shoppingmall.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.dto.request.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @ToString
 @Getter
@@ -25,10 +28,10 @@ public class Post {
     private String delYn;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime deleteDate;
-    private String filePath; // Todo: POST(1) : POST_FILE(N) --> filePath(POST_FILE) --> Entity에 해당 필드 선언한 부분은 고민 필요
-    private String storedFileName;
-    private String fileAttached;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    List<PostFiles> postFiles = new ArrayList<>();
 
     public Post(PostRequestDto postRequestDto) {
         this.postId = postRequestDto.getPostId();

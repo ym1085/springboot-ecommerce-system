@@ -78,18 +78,18 @@ class PostServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = 1L)
+    @ValueSource(longs = 2L)
     // @WithMockUser(roles = "USER")
     @DisplayName("단일 게시글 조회 테스트")
     void getPostById(Long input) {
         //given
         //when
-        PostResponseDto posts = postService.getPostById(1L);
+        PostResponseDto posts = postService.getPostById(input);
 
         //then
         assertThat(posts).isNotNull();
         //assertThat(posts).isNull();
-        assertThat(posts.getPostId()).isEqualTo(1);
+        assertThat(posts.getPostId()).isEqualTo(2);
     }
 
     @Test

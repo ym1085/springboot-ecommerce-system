@@ -1,10 +1,12 @@
 package com.shoppingmall.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.domain.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -21,11 +23,12 @@ public class PostResponseDto {
     private String delYn;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime deleteDate;
-    private List<CommentResponseDto> comments;
-    private String filePath;
-    private String storedFileName;
-    private String fileAttached;
+
+    private List<CommentResponseDto> comments = new ArrayList<>();
+    private List<PostFileResponseDto> postFiles = new ArrayList<>();
 
     public PostResponseDto(Post post) {
         this.postId = post.getPostId();
@@ -40,12 +43,13 @@ public class PostResponseDto {
         this.createDate = post.getCreateDate();
         this.updateDate = post.getUpdateDate();
         this.deleteDate = post.getDeleteDate();
-        this.filePath = post.getFilePath();
-        this.storedFileName = post.getStoredFileName();
-        this.fileAttached = post.getFileAttached();
     }
 
     public void addComments(List<CommentResponseDto> commentResponseDto) {
         this.comments = commentResponseDto;
+    }
+
+    public void addPostFiles(List<PostFileResponseDto> postFileResponseDto) {
+        this.postFiles = postFileResponseDto;
     }
 }

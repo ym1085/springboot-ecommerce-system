@@ -55,11 +55,11 @@ class PostRestControllerTest {
         //then
         result.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.result.data.result[0].postId").isNotEmpty())
+                .andExpect(jsonPath("$.result.data[0].postId").isNotEmpty())
 //                .andExpect(jsonPath("$.data.result[0].postId", equalTo(1003))) // 값이 계속 변경되는데.. 흐음..
 //                .andExpect(jsonPath("$.data.result[0].title", equalTo("제목1003")))
 //                .andExpect(jsonPath("$.data.result[0].content", equalTo("내용1003")))
-                .andExpect(jsonPath("$.result.data.result[0].fixedYn", equalTo("N")));
+                .andExpect(jsonPath("$.result.data[0].fixedYn", equalTo("N")));
     }
 
     @Test
@@ -69,7 +69,7 @@ class PostRestControllerTest {
         //given
         //when
         ResultActions result = mockMvc.perform(
-                get("/api/v1/post/1")
+                get("/api/v1/post/2")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -77,11 +77,11 @@ class PostRestControllerTest {
         //then
         result.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.result.data.postId").isNotEmpty())
-                .andExpect(jsonPath("$.result.data.postId", is(1)))
-                .andExpect(jsonPath("$.result.data.title", is("제목1")))
-                .andExpect(jsonPath("$.result.data.content", is("내용1")))
-                .andExpect(jsonPath("$.result.data.fixedYn", is("N")));
+                .andExpect(jsonPath("$.result.postId").isNotEmpty())
+                .andExpect(jsonPath("$.result.postId", is(2)))
+                .andExpect(jsonPath("$.result.title", is("제목2")))
+                .andExpect(jsonPath("$.result.content", is("내용2")))
+                .andExpect(jsonPath("$.result.fixedYn", is("N")));
     }
 
     @Test
@@ -218,7 +218,7 @@ class PostRestControllerTest {
         //given
         //when
         ResultActions result = mockMvc.perform(
-                delete("/api/v1/post/{id}", 1L)
+                delete("/api/v1/post/{id}", 2L)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -226,7 +226,7 @@ class PostRestControllerTest {
         result.andExpect(status().isOk())
                 .andDo(print());
 
-        assertThat(postMapper.getPostById(1L)).isEmpty();
-        assertThat(fileMapper.getFilesByPostId(1L)).isEmpty();
+        assertThat(postMapper.getPostById(2L)).isEmpty();
+        assertThat(fileMapper.getFilesByPostId(2L)).isEmpty();
     }
 }
