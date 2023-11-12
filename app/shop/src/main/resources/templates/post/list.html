@@ -25,30 +25,16 @@
 
 <div class="content">
     <section>
-        <!--/* 검색 */-->
-        <div class="search_box">
-            <form id="searchForm" onsubmit="return false;" autocomplete="off">
-                <div class="sch_group fl">
-                    <select title="검색 유형 선택">
-                        <option value="">전체 검색</option>
-                        <option value="">제목</option>
-                        <option value="">내용</option>
-                    </select>
-                    <input type="text" placeholder="키워드를 입력해 주세요." title="키워드 입력"/>
-                    <button type="button" class="bt_search"><i class="fas fa-search"></i><span class="skip_info">검색</span></button>
-                </div>
-            </form>
-        </div>
-
-        <table class="tb tb_col">
+        <table border="1">
             <colgroup>
-                <col style="width:50px;"/>
-                <col style="width:7.5%;"/>
-                <col style="width:auto;"/>
-                <col style="width:10%;"/>
-                <col style="width:15%;"/>
-                <col style="width:7.5%;"/>
-                <col style="width:7.5%;"/>
+                <col style="width: 5%;"/>
+                <col style="width: 5%;"/>
+                <col style="width: 30%;"/>
+                <col style="width: 20%;"/>
+                <col style="width: 15%;"/>
+                <col style="width: 10%;"/>
+                <col style="width: 15%;"/>
+                <col style="width: 10%;"/>
             </colgroup>
             <thead>
                 <tr>
@@ -69,13 +55,14 @@
                     <td><a th:href="@{'/post/' + ${post.postId}}" th:text="${post.title}"></a></td>
                     <td><a th:href="@{'/post/' + ${post.postId}}" th:text="${post.content}"></a></td>
                     <td th:text="${post.writer != null} ? ${post.writer} : ${'비고'}"></td>
-                    <th:block th:if="${post.fileAttached != null and post.fileAttached != 'N'}" >
-                        <i class="fas fa-file"></i>
-                        <td th:text="${post.storedFileName}"></td> <!-- TODO: 원본 파일명으로 수정 -->
+                    <th:block th:if="${post.postFiles != null and post.postFiles.size() > postStat.index and post.postFiles.get(postStat.index).fileAttached != 'N'}">
+                        <td>
+                            <i class="fas fa-file"></i>
+                            <span th:text="${post.postFiles.get(postStat.index).storedFileName}"></span>
+                        </td>
                     </th:block>
-                    <th:block th:if="${post.fileAttached == null or post.fileAttached == 'N'}">
-                        <i class="fas fa-file"></i>
-                        <td th:text="${post.storedFileName}"></td>
+                    <th:block th:if="${post.postFiles == null or post.postFiles.size() == 0 or post.postFiles.get(postStat.index).fileAttached == 'N'}">
+                        <td>파일 없음</td>
                     </th:block>
                     <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd')}"></td>
                     <td th:text="${post.readCnt}"></td>
@@ -105,6 +92,21 @@
         <!--<p class="btn_set tr">
             <a th:href="@{/post/}" class="btns btn_st3 btn_mid">글쓰기</a>
         </p>-->
+
+        <br>
+        <div class="search_box">
+            <form id="searchForm" onsubmit="return false;" autocomplete="off">
+                <div class="sch_group fl">
+                    <select title="검색 유형 선택">
+                        <option value="">전체 검색</option>
+                        <option value="">제목</option>
+                        <option value="">내용</option>
+                    </select>
+                    <input type="text" placeholder="키워드를 입력해 주세요." title="키워드 입력"/>
+                    <button type="button" class="bt_search"><i class="fas fa-search"></i><span class="skip_info">검색</span></button>
+                </div>
+            </form>
+        </div>
     </section>
 </div>
 </html>
