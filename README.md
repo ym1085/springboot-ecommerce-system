@@ -17,6 +17,10 @@
 
 ## ✅ 02. ERD
 
+> ⚠️ DB 설계의 경우 지속적으로 수정을 하고 있으며 아래 링크를 참고해주세요
+
+- [dbdiagram.io](https://dbdiagram.io/d/20231015_TOY_PROJECT_DB_DIAGRAM-652b82a9ffbf5169f0b329e7)
+
 ## 🎢 03. 구현 기능
 
 > ✏️ [요구사항 정의서](https://docs.google.com/spreadsheets/d/1Wppy4RiBwldQL77RcXoLq9OkdGnVFCzIv5TQO75fZl8/edit?usp=sharing) 
