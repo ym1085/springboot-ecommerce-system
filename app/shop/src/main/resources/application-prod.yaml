@@ -36,7 +36,7 @@ logging:
     com.shoppingmall: INFO
 
 mybatis:
-  type-aliases-package: com.post.domain
+  type-aliases-package: com.shoppingmall.domain, com.shoppingmall.dto.request
   mapper-locations: mybatis-mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true

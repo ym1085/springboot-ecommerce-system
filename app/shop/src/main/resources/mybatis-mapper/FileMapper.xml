@@ -47,7 +47,7 @@
     </update>
 
     <!-- 파일 조회 -->
-    <select id="getFilesByPostId" parameterType="long" resultType="com.shoppingmall.domain.PostFiles">
+    <select id="getFilesByPostId" parameterType="long" resultType="PostFiles">
         SELECT
             post_file_id
              , post_id
@@ -75,7 +75,7 @@
     </update>
 
     <!-- 단건 파일 조회 -->
-    <select id="getFileByFileId" parameterType="long" resultType="com.shoppingmall.domain.PostFiles">
+    <select id="getFileByFileId" parameterType="long" resultType="PostFiles">
         SELECT
             post_file_id
              , post_id

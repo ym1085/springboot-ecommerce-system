@@ -4,7 +4,7 @@
 
 <mapper namespace="com.shoppingmall.repository.MemberMapper">
     
-    <insert id="signUp" parameterType="com.shoppingmall.domain.Member">
+    <insert id="signUp" parameterType="Member">
         INSERT INTO member
             (
                 name
@@ -47,7 +47,7 @@
     </insert>
 
     <!-- 소셜 로그인 : Google, Naver, Kakao.. -->
-    <insert id="signUpWithSocialLogin" parameterType="com.shoppingmall.domain.Member" statementType="CALLABLE">
+    <insert id="signUpWithSocialLogin" parameterType="Member" statementType="CALLABLE">
         <![CDATA[
         {
             CALL sp_insert_member
@@ -64,7 +64,7 @@
         ]]>
     </insert>
 
-    <select id="getMemberByEmail" parameterType="map" resultType="com.shoppingmall.domain.Member">
+    <select id="getMemberByEmail" parameterType="map" resultType="Member">
         SELECT
             m.member_id,
             m.name,
@@ -88,7 +88,7 @@
         AND m.cert_yn = 'Y'
     </select>
 
-    <select id="getMemberById" parameterType="long" resultType="com.shoppingmall.domain.Member">
+    <select id="getMemberById" parameterType="long" resultType="Member">
         SELECT
             m.member_id,
             m.name,
@@ -111,7 +111,7 @@
     </select>
 
     <!-- 소셜 로그인 후 session에 저장 할 회원 조회 -->
-    <select id="getMemberByEmailWithSocialLogin" parameterType="string" resultType="com.shoppingmall.domain.Member">
+    <select id="getMemberByEmailWithSocialLogin" parameterType="string" resultType="Member">
         SELECT
             m.name,
             m.email,
@@ -126,7 +126,7 @@
     </select>
 
     <!-- 소셜 로그인 사용자의 이메일, 대표 이미지가 변경 된 경우 DB 데이터 변경 -->
-    <update id="updateMemberByEmailAndPicture" parameterType="com.shoppingmall.domain.Member">
+    <update id="updateMemberByEmailAndPicture" parameterType="Member">
         UPDATE member m
             INNER JOIN SOCIAL_MEMBER sm ON m.member_id = sm.member_id
         SET m.email = #{email},
@@ -137,7 +137,7 @@
         AND m.cert_yn = 'Y';
     </update>
 
-    <select id="getMemberByAccount" parameterType="string" resultType="com.shoppingmall.domain.Member">
+    <select id="getMemberByAccount" parameterType="string" resultType="Member">
         SELECT
             m.member_id,
             m.name,
@@ -159,8 +159,8 @@
         AND m.cert_yn = 'Y'
     </select>
     
-    <select id="checkDuplMemberAccount" parameterType="com.shoppingmall.domain.Member" resultType="int">
-        SELECT COUNT(1) AS CNT FROM member m where m.account = #{account}
+    <select id="checkDuplMemberAccount" parameterType="Member" resultType="int">
+        SELECT COUNT(*) AS CNT FROM member m where m.account = #{account}
     </select>
 
 </mapper>
