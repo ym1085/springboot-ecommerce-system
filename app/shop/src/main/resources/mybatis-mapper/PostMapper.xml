@@ -49,11 +49,10 @@
 
     <!--
         https://www.sysout.co.kr/home/webbook/page/read/643;jsessionid=54B3D5320E73A41FC4088D5E3D322141
-        아래 부분은 조금 고민... Map or VO에 그냥 필드 넣어서 처리가 가능하긴 한데.. resultMap이 맞을지
-        그래도 1 : N 처리를 위해 resultMap을 사용해서 일단 처리하고 추후 테이블이 복잡해지면 VO를 분리
-        시키든지 할 것 입니다
+        아래 부분은 조금 고민 Map or VO에 그냥 필드 넣어서 처리가 가능하긴 한데 resultMap으로 하는게 좋을 듯?
+        그래도 1 : N 처리를 위해 resultMap을 사용해서 일단 처리하고 추후 테이블이 복잡해지면 VO를 분리할 것
      -->
-    <resultMap id="postResultMap" type="com.shoppingmall.domain.Post">
+    <resultMap id="PostResultMap" type="Post">
         <id property="postId" column="post_id" />
         <result property="title" column="title" />
         <result property="content" column="content" />
@@ -65,20 +64,23 @@
         <result property="createDate" column="create_date" />
         <result property="updateDate" column="update_date" />
         <result property="deleteDate" column="delete_date" />
-        <collection property="postFiles" ofType="com.shoppingmall.domain.PostFiles">
-            <id property="postFileId" column="post_file_id" />
-            <result property="postId" column="post_id" />
-            <result property="originFileName" column="origin_file_name" />
-            <result property="storedFileName" column="stored_file_name" />
-            <result property="filePath" column="file_path" />
-            <result property="fileSize" column="file_size" />
-            <result property="fileType" column="file_type" />
-            <result property="downloadCnt" column="download_cnt" />
-            <result property="delYn" column="del_Yn" />
-            <result property="createDate" column="create_date" />
-            <result property="deleteDate" column="delete_date" />
-            <result property="fileAttached" column="file_attached" />
-        </collection>
+        <!-- 1(Post) : N(PostFiles) -->
+        <collection property="postFiles" resultMap="PostFilesResultMap" />
+    </resultMap>
+
+    <resultMap id="PostFilesResultMap" type="PostFiles">
+        <id property="postFileId" column="post_file_id" />
+        <result property="postId" column="post_id" />
+        <result property="originFileName" column="origin_file_name" />
+        <result property="storedFileName" column="stored_file_name" />
+        <result property="filePath" column="file_path" />
+        <result property="fileSize" column="file_size" />
+        <result property="fileType" column="file_type" />
+        <result property="downloadCnt" column="download_cnt" />
+        <result property="delYn" column="del_Yn" />
+        <result property="createDate" column="create_date" />
+        <result property="deleteDate" column="delete_date" />
+        <result property="fileAttached" column="file_attached" />
     </resultMap>
 
     <!-- 전체 게시글 조회 -->
@@ -86,7 +88,7 @@
         Mybatis에서 쿼리의 parameterType이 클래스의 객체인 경우, XML Mapper의 #{parameter}
         는 맴버 변수의 getter에 해당. 쉽게 말해 getter를 통해 파라미터 바인딩 수행.
     -->
-    <select id="getPosts" parameterType="com.shoppingmall.dto.request.SearchRequestDto" resultMap="postResultMap">
+    <select id="getPosts" parameterType="SearchRequestDto" resultMap="PostResultMap">
         SELECT
             p.post_id,
             p.title,
@@ -126,7 +128,7 @@
     </select>
 
     <!-- 게시글 수 카운팅 -->
-    <select id="count" parameterType="com.shoppingmall.dto.request.SearchRequestDto" resultType="int">
+    <select id="count" parameterType="SearchRequestDto" resultType="int">
         SELECT COUNT(*)
         FROM post p
         WHERE
@@ -135,7 +137,7 @@
     </select>
 
     <!-- 단일 게시글 조회 -->
-    <select id="getPostById" parameterType="long" resultType="com.shoppingmall.domain.Post">
+    <select id="getPostById" parameterType="long" resultType="Post">
         SELECT
             p.post_id,
             p.title,
@@ -160,7 +162,7 @@
     </select>
 
     <!-- 게시글 등록 -->
-    <insert id="savePost" parameterType="com.shoppingmall.domain.Post" useGeneratedKeys="true" keyProperty="postId">
+    <insert id="savePost" parameterType="Post" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO post (member_id, title, content, fixed_yn, category_id)
         VALUE
             (
@@ -180,7 +182,7 @@
     </insert>
 
     <!-- 게시글 수정 -->
-    <update id="updatePostById" parameterType="com.shoppingmall.domain.Post">
+    <update id="updatePostById" parameterType="Post">
         UPDATE post
         SET
             title = #{title},
@@ -193,7 +195,7 @@
     </update>
 
     <!-- 게시글 삭제 -->
-    <update id="deletePostById" parameterType="com.shoppingmall.domain.Post" useGeneratedKeys="true" keyProperty="postId">
+    <update id="deletePostById" parameterType="Post" useGeneratedKeys="true" keyProperty="postId">
         UPDATE post
         SET
             del_yn = 'Y',
