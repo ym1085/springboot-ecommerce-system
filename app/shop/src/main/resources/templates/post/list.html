@@ -9,10 +9,15 @@
 <script src="/js/common/message.js"></script>
 <script th:inline="javascript">
     function movePageWithPageNo(pageNo) {
+        const searchForm = document.getElementById("searchForm");
+        // console.log(`searchForm.searchType.value => ${searchForm.searchType.value}`);
+        // console.log(`searchForm.keyword.value => ${searchForm.keyword.value}`);
         const queryString = {
             pageNo: (pageNo) ? pageNo : 1,
             recordSizePerPage: 10,
-            pageSize: 10
+            pageSize: 10,
+            searchType: searchForm.searchType.value, // 검색 조건
+            searchKeyword: searchForm.keyword.value // 검색어
         }
         location.href = location.pathname + '?' + new URLSearchParams(queryString).toString();
     }
@@ -67,24 +72,34 @@
                     <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd')}"></td>
                     <td th:text="${post.readCnt}"></td>
                 </tr>
+                <tr th:unless="${posts.data != null and not #lists.isEmpty(posts.data)}">
+                    <td colspan="8">게시글이 없습니다.</td>
+                </tr>
             </tbody>
         </table>
 
         <div class="paging">
             <p>
-                <a th:if="${posts.pagination.existsPrevPage == true}" href="javascript:void(0);"
-                   th:attr="onclick='movePageWithPageNo(' + ${1} +')'" class="page_bt first">첫 페이지</a>
-                <a th:if="${posts.pagination.existsPrevPage == true}" href="javascript:void(0);"
-                   th:attr="onclick='movePageWithPageNo(' + ${posts.pagination.startPage - 1} +')'" class="page_bt prev">이전 페이지</a>
-                <span th:each="i : ${#numbers.sequence(posts.pagination.startPage, posts.pagination.endPage)}">
-                    <!--<a th:if="${i != searchRequestDto.pageNo}" href="javascript:void(0);" onclick="movePageWithPageNo(i)" th:text="${i}"></a>-->
-                    <a th:if="${i != searchRequestDto.pageNo}" href="javascript:void(0);" th:attr="onclick='movePageWithPageNo(' + ${i} + ')'" th:text="${i}"></a>
-                    <span th:if="${i == searchRequestDto.pageNo}" th:text="${i}" class="on"></span>
-                </span>
-                <a th:if="${posts.pagination.existsNextPage == true}" href="javascript:void(0);"
-                   th:attr="onclick='movePageWithPageNo(' + ${posts.pagination.endPage + 1} + ')'" class="page_bt next">다음 페이지</a>
-                <a th:if="${posts.pagination.existsNextPage == true}" href="javascript:void(0);"
-                   th:attr="onclick='movePageWithPageNo(' + ${posts.pagination.totalPageCount} + ')'" class="page_bt last">마지막 페이지</a>
+                <!-- 첫, 이전 페이지 -->
+                <a th:if="${posts.pagination != null and not #strings.isEmpty(posts.pagination.existsPrevPage) and posts.pagination.existsPrevPage == true}"
+                   href="javascript:void(0);" th:attr="onclick='movePageWithPageNo(' + ${1} +')'" class="page_bt first">첫 페이지</a>
+                <a th:if="${posts.pagination != null and not #strings.isEmpty(posts.pagination.existsPrevPage) and posts.pagination.existsPrevPage == true}"
+                   href="javascript:void(0);" th:attr="onclick='movePageWithPageNo(' + ${posts.pagination.startPage - 1} +')'" class="page_bt prev">이전 페이지</a>
+
+                <!-- 1, 2, 3, 4.. -->
+                <th:block th:if="${posts.pagination != null and not #strings.isEmpty(posts.pagination.getStartPage())}">
+                    <span th:each="i : ${#numbers.sequence(posts.pagination.startPage, posts.pagination.endPage)}">
+                        <!--<a th:if="${i != searchRequestDto.pageNo}" href="javascript:void(0);" onclick="movePageWithPageNo(i)" th:text="${i}"></a>-->
+                        <a th:if="${i != searchRequestDto.pageNo}" href="javascript:void(0);" th:attr="onclick='movePageWithPageNo(' + ${i} + ')'" th:text="${i}"></a>
+                        <span th:if="${i == searchRequestDto.pageNo}" th:text="${i}" class="on"></span>
+                    </span>
+                </th:block>
+
+                <!-- 다음, 마지막 페이지 -->
+                <a th:if="${posts.pagination != null and not #strings.isEmpty(posts.pagination.existsNextPage) and posts.pagination.existsNextPage == true}"
+                   href="javascript:void(0);" th:attr="onclick='movePageWithPageNo(' + ${posts.pagination.endPage + 1} + ')'" class="page_bt next">다음 페이지</a>
+                <a th:if="${posts.pagination != null and not #strings.isEmpty(posts.pagination.existsNextPage) and posts.pagination.existsNextPage == true}"
+                   href="javascript:void(0);" th:attr="onclick='movePageWithPageNo(' + ${posts.pagination.totalPageCount} + ')'" class="page_bt last">마지막 페이지</a>
             </p>
         </div>
 
@@ -92,18 +107,25 @@
         <!--<p class="btn_set tr">
             <a th:href="@{/post/}" class="btns btn_st3 btn_mid">글쓰기</a>
         </p>-->
-
         <br>
         <div class="search_box">
             <form id="searchForm" onsubmit="return false;" autocomplete="off">
                 <div class="sch_group fl">
-                    <select title="검색 유형 선택">
+                    <select id="searchType" name="searchType" title="검색 유형 선택">
                         <option value="">전체 검색</option>
-                        <option value="">제목</option>
-                        <option value="">내용</option>
+                        <option value="title">제목</option>
+                        <option value="content">내용</option>
+                        <option value="writer">작성자</option>
                     </select>
-                    <input type="text" placeholder="키워드를 입력해 주세요." title="키워드 입력"/>
-                    <button type="button" class="bt_search"><i class="fas fa-search"></i><span class="skip_info">검색</span></button>
+                    <input type="text" id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." title="키워드 입력" />
+                    <!--
+                        검색 처리에서는 현재 페이지가 항상 1로 유지 되어야 한다
+                        - ex) 예시
+                        - A가 작성한 게시글 20 개 존재
+                        - B가 3페이지에서 게시글을 보다가 A 가 작성한 글을 보기 위해 "작성자"를 A로 검색
+                        - A가 작성한 글을 보았으나, A의 게시글 검색이 안됨
+                    -->
+                    <button type="button" class="bt_search" onclick="movePageWithPageNo(1);"><i class="fas fa-search"></i><span class="skip_info">검색</span></button>
                 </div>
             </form>
         </div>
