@@ -9,8 +9,8 @@
         </if>
     </sql>
 
+    <!-- 검색 키워드가 존재하는 경우 -->
     <sql id="search">
-        /* 검색 키워드가 존재하는 경우 */
         <if test="searchKeyword != null and searchKeyword != ''">
             <choose>
                 <when test="searchType != null and searchType != '' and 'title'.equals(searchType)">
@@ -54,10 +54,12 @@
      -->
     <resultMap id="PostResultMap" type="Post">
         <id property="postId" column="post_id" />
+        <result property="memberId" column="member_id" />
         <result property="title" column="title" />
         <result property="content" column="content" />
-        <result property="memberId" column="member_id" />
         <result property="categoryId" column="category_id" />
+        <result property="categoryName" column="categoryName" />
+        <result property="writer" column="writer" />
         <result property="readCnt" column="read_cnt" />
         <result property="fixedYn" column="fixed_yn" />
         <result property="delYn" column="del_yn" />
@@ -89,15 +91,11 @@
         는 맴버 변수의 getter에 해당. 쉽게 말해 getter를 통해 파라미터 바인딩 수행.
     -->
     <select id="getPosts" parameterType="SearchRequestDto" resultMap="PostResultMap">
-        SELECT
+        select
             p.post_id,
             p.title,
             p.content,
-            (SELECT m.name
-                FROM member m
-                WHERE m.member_id = p.member_id
-                AND m.use_yn = 'Y'
-                AND m.cert_yn = 'Y') AS writer,
+            (SELECT m.name FROM member m WHERE m.member_id = p.member_id AND m.use_yn = 'Y' AND m.cert_yn = 'Y') AS writer,
             p.category_id,
             (SELECT c.category_name FROM post_category c where c.category_id = p.category_id) AS categoryName,
             p.read_cnt,
@@ -124,7 +122,7 @@
             <include refid="search" />
         ORDER BY p.create_date desc,
                  p.post_id desc
-        LIMIT #{pagination.limitStart}, #{recordSizePerPage} /* 조회 데이터 시작 위치(0부터 시작), 페이지 당 가져올 데이터 갯수 */
+        LIMIT #{pagination.limitStart}, #{recordSizePerPage}
     </select>
 
     <!-- 게시글 수 카운팅 -->

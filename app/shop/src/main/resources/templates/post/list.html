@@ -8,16 +8,38 @@
 <script src="/js/common/common.js"></script>
 <script src="/js/common/message.js"></script>
 <script th:inline="javascript">
+    /* page onload */
+    window.onload = () => {
+        setURLQueryString();
+    }
+
+    function setURLQueryString() {
+        // query string이 존재하지 않으면 return
+        if (!location.search) {
+            return false;
+        }
+        console.log(`no exists query string from URL`);
+
+        const searchForm = document.getElementById("searchForm");
+        new URLSearchParams(location.search).forEach((value, key) => {
+            console.debug(`key => ${key}`);
+            if (searchForm[key]) {
+                searchForm[key].value = value;
+                console.debug(`searchForm[key].value => ${searchForm[key].value}`);
+            }
+        });
+    }
+
     function movePageWithPageNo(pageNo) {
         const searchForm = document.getElementById("searchForm");
         // console.log(`searchForm.searchType.value => ${searchForm.searchType.value}`);
-        // console.log(`searchForm.keyword.value => ${searchForm.keyword.value}`);
+        // console.log(`searchForm.searchKeyword.value => ${searchForm.searchKeyword.value}`);
         const queryString = {
             pageNo: (pageNo) ? pageNo : 1,
             recordSizePerPage: 10,
             pageSize: 10,
             searchType: searchForm.searchType.value, // 검색 조건
-            searchKeyword: searchForm.keyword.value // 검색어
+            searchKeyword: searchForm.searchKeyword.value // 검색어
         }
         location.href = location.pathname + '?' + new URLSearchParams(queryString).toString();
     }
@@ -117,7 +139,7 @@
                         <option value="content">내용</option>
                         <option value="writer">작성자</option>
                     </select>
-                    <input type="text" id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." title="키워드 입력" />
+                    <input type="text" id="searchKeyword" name="searchKeyword" placeholder="키워드를 입력해 주세요." title="키워드 입력" />
                     <!--
                         검색 처리에서는 현재 페이지가 항상 1로 유지 되어야 한다
                         - ex) 예시
