@@ -72,14 +72,25 @@ public class PostService {
                 .map(PostResponseDto::new)
                 .orElse(new PostResponseDto());
 
-        List<CommentResponseDto> commentResponseDtos = commentMapper.getComments(postId)
+        postResponseDto.addComments(getCommentsByPostId(postId));
+        postResponseDto.addPostFiles(getFilesByPostId(postId));
+        return postResponseDto;
+    }
+
+    private List<PostFileResponseDto> getFilesByPostId(Long postId) {
+        return fileMapper.getFilesByPostId(postId)
+                .stream()
+                .filter(Objects::nonNull)
+                .map(PostFileResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    private List<CommentResponseDto> getCommentsByPostId(Long postId) {
+        return commentMapper.getComments(postId)
                 .stream()
                 .filter(Objects::nonNull)
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
-
-        postResponseDto.addComments(commentResponseDtos);
-        return postResponseDto;
     }
 
     @Transactional
@@ -134,7 +145,6 @@ public class PostService {
     @Transactional
     public int deletePost(long postId) {
         Long deletedPostId = postMapper.deletePostById(postId);
-        log.debug("deletedPostId = {}", deletedPostId);
         if (deletedPostId == 0) {
             return MessageCode.FAIL.getCode();
         }
@@ -147,13 +157,14 @@ public class PostService {
             return MessageCode.SUCCESS.getCode();
         }
 
-        fileHandlerHelper.deleteFiles(fileResponseDtos);
-        return fileMapper.deleteUpdateFilesByPostId(postId);
+         fileHandlerHelper.deleteFiles(fileResponseDtos);
+                                  return fileMapper.deleteUpdateFilesByPostId(postId);
     }
 
     private List<FileResponseDto> getFileResponseDtos(long postId) {
-        return fileMapper.getFilesByPostId(postId).stream()
-                .map(file -> new FileResponseDto(file))
+        return fileMapper.getFilesByPostId(postId)
+                .stream()
+                .map(FileResponseDto::new)
                 .collect(Collectors.toList());
     }
 }

@@ -3,7 +3,6 @@ package com.shoppingmall.web;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
-import com.shoppingmall.service.CommentService;
 import com.shoppingmall.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class PostController {
 
     private final PostService postService;
-    private final CommentService commentService;
 
     @GetMapping(value = "/post")
     public String getPosts(@ModelAttribute SearchRequestDto searchRequestDto, Model model) {
@@ -30,7 +28,7 @@ public class PostController {
     }
 
     @GetMapping(value = "/post/{id}")
-    public String getPostById(@PathVariable("id") Long id, Model model) {
+    public String getPostById(@PathVariable("id") Long id, @ModelAttribute SearchRequestDto searchRequestDto, Model model) {
         PostResponseDto post = postService.getPostById(id);
         model.addAttribute("post", post);
         return "post/detail";

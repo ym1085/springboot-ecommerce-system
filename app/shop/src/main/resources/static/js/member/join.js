@@ -331,15 +331,19 @@ function sendAuthEmail(event) {
         return;
     }
 
-    let dataObj = {
+    let request = {
         url: '/api/v1/email/verify-request',
         method: 'POST',
-        data: { email: certEmail.value },
+        contentType: 'application/json',
+        requestBody: {
+            email: certEmail.value,
+        },
     };
 
     printLoadingWithMask();
 
-    sendFetchRequest(dataObj)
+    commonFetchTemplate
+        .sendFetchRequest(request)
         .then(response => {
             return response.json();
         })
@@ -384,16 +388,18 @@ function verifyEmailAuthCode() {
         return;
     }
 
-    let dataObj = {
+    let request = {
         url: '/api/v1/email/verify',
         method: 'GET',
-        data: {
+        contentType: 'application/json',
+        queryString: {
             email: certEmail.value,
             code: verificationCode.value,
         },
     };
 
-    sendFetchRequest(dataObj)
+    commonFetchTemplate
+        .sendFetchRequest(request)
         .then(response => {
             return response.json();
         })
@@ -418,7 +424,7 @@ function verifyEmailAuthCode() {
         })
         .catch(error => {
             ``;
-            console.error(`URL => ${dataObj.url}, 이메일 인증코드 인증 확인 시 오류 발생`);
+            console.error(`URL => ${request.url}, 이메일 인증코드 인증 확인 시 오류 발생`);
         });
 }
 
@@ -430,15 +436,17 @@ function checkDuplAccount() {
         return;
     }
 
-    let dataObj = {
+    let request = {
         url: '/api/v1/member/exists/{account}',
         method: 'GET',
+        contentType: 'application/json',
         pathVariable: {
             account: account.value,
         },
     };
 
-    sendFetchRequest(dataObj)
+    commonFetchTemplate
+        .sendFetchRequest(request)
         .then(response => {
             return response.json();
         })
@@ -517,10 +525,11 @@ const main = {
     },
     join: function () {
         console.log(`start join for new member`);
-        let dataObj = {
+        let request = {
             url: '/api/v1/member/join',
             method: 'POST',
-            data: {
+            contentType: 'application/json',
+            requestBody: {
                 name: memberJoinInfo.username.value, // Todo: username -> userName camel case
                 account: memberJoinInfo.account.value,
                 password: memberJoinInfo.password1.value,
@@ -534,7 +543,8 @@ const main = {
             },
         };
 
-        sendFetchRequest(dataObj)
+        commonFetchTemplate
+            .sendFetchRequest(request)
             .then(response => {
                 return response.json();
             })

@@ -2,18 +2,21 @@
 
 ## ⛏ 01. 사용 기술
 
+> ✏️ 프로젝트 성격 상 프론트 페이지(HTML)의 경우 데이터 출력만을 목적으로 만들어졌기에  
+> Javascript가 HTML 안에 들어있거나, CSS도 따로 분리하지 않았습니다.
+
 ### 📌 01-1. Backend
 | 기술              | 버전    | 적용 여부 |
-|-----------------|-------|---|
-| Java            | 11    | o |
-| Spring Boot     | 2.7.1 | o |
-| Spring Security | 2.7.2 | o |
-| Spring Data JPA | 2.7.2 | o |
-| MyBatis         | 3.0.1 | o |
-| MySQL           | 8.0.28 | o |
-| Swagger         | 3.0.0 | o |
-| Docker          | 23.0.5 | o |
-| AWS EC2         |       | x |
+|-----------------|-------|------|
+| Java            | 11    | o    |
+| Spring Boot     | 2.7.1 | o    |
+| Spring Security | 2.7.2 | o    |
+| Spring Data JPA | 2.7.2 | x    |
+| MyBatis         | 3.0.1 | o    |
+| MySQL           | 8.0.28 | o    |
+| Swagger         | 3.0.0 | o    |
+| Docker          | 23.0.5 | o    |
+| AWS EC2         |       | x    |
 
 ## ✅ 02. ERD
 
@@ -23,7 +26,7 @@
 
 ## 🎢 03. 구현 기능
 
-> ✏️ [요구사항 정의서](https://docs.google.com/spreadsheets/d/1Wppy4RiBwldQL77RcXoLq9OkdGnVFCzIv5TQO75fZl8/edit?usp=sharing) 
+> ✏️ [요구사항 정의서](https://docs.google.com/spreadsheets/d/1Wppy4RiBwldQL77RcXoLq9OkdGnVFCzIv5TQO75fZl8/edit?usp=sharing)
 
 - 공통
   - 회원가입
