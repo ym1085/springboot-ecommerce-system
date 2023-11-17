@@ -3,47 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>게시판 상세 화면</title>
-<style>
-    body {
-        text-align: center;
-    }
-
-    .container {
-        margin-top: 50px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-
-    #comment-list {
-        margin-bottom: 20px;
-    }
-
-    #comment-form {
-        display: none;
-        margin-top: 20px;
-    }
-
-    #comment-content {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-</style>
 </head>
 <body>
-<div class="container">
+<div class="page_tits">
+    <h3>게시판 관리</h3>
+    <p class="path"><strong>현재 위치 :</strong> <span>게시판 관리</span> <span>상세</span></p>
+</div>
+<div class="content">
     <div>
         <label for="title">* 제목:</label>
         <input type="text" id="title" th:value="${post.title}" readonly><br>
@@ -60,11 +26,16 @@
         <input type="text" id="readCount" th:value="${post.readCnt}" readonly><br>
 
         <label for="author">* 작성자:</label>
-        <input type="text" id="author" th:value="${post.writer}" readonly><br>
+        <input type="text" id="author" th:value="${post.writer != null} ? ${post.writer} : ${'비고'}" readonly><br>
     </div>
+    <p class="btn_set">
+        <button type="button" th:onclick="updatePosts()" class="btns btn_bdr4 btn_mid">수정</button>
+        <button type="button" th:onclick="'deletePosts(' + ${post.postId} + ')'" class="btns btn_bdr1 btn_mid">삭제</button>
+        <button type="button" th:onclick="goListPage();" class="btns btn_bdr3 btn_mid">뒤로</button>
+    </p><br><br>
 
-    <div id="comment-list">
-        <div th:each="comment : ${post.comments}">
+    <div id="commentList">
+        <div th:if="${post.comments != null and not #lists.isEmpty(post.comments)}" th:each="comment : ${post.comments}">
             <div>
                 <!-- 일반 댓글 표시 -->
                 <!-- 댓글 등록시 일반 댓글의 commentId를 가져가서 서버에 넘긴 후 에 INSERT 하는 걸로 -->
@@ -78,13 +49,16 @@
             </div>
         </div>
     </div>
-    <div>
-        <button id="write-comment-btn">댓글 작성</button>
-    </div>
-    <div id="comment-form" style="display: none;">
-        <textarea id="comment-content" rows="3"></textarea>
-        <button id="submit-comment-btn">댓글 등록</button>
-    </div>
+    <!--<div id="comment-form" style="display: none;">-->
+    <div id="commentForm">
+        <textarea id="commentContent" rows="3"></textarea>
+        <button id="submitCommentBtn">댓글 등록</button>
+    </div><br><br>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="/js/common/common.js"></script>
+    <script src="/js/common/message.js"></script>
+    <script src="/js/common/sendFetchTemplate.js"></script>
+    <script src="/js/post/postDetail.js"></script>
 </div>
 </body>
 </html>
