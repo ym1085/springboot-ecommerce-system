@@ -52,8 +52,8 @@ public class MemberRestController {
     public ResponseEntity<CommonResponse> checkDuplMemberAccount(@PathVariable("account") String account) {
         if (StringUtils.isBlank(account)) {
             return ResponseFactory.createResponseFactory(
-                    MessageCode.NOT_FOUND_ACCOUNT.getCode(),
-                    MessageCode.NOT_FOUND_ACCOUNT.getMessage(),
+                    MessageCode.NOT_FOUND_MEMBER_ACCOUNT.getCode(),
+                    MessageCode.NOT_FOUND_MEMBER_ACCOUNT.getMessage(),
                     HttpStatus.OK
             );
         }

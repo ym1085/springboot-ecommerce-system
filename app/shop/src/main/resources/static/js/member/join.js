@@ -1,18 +1,9 @@
-/**
- * @since           :       2023-08-13
- * @author          :       youngmin
- * @version         :       1.0.0
- * @description     :       회원 가입 시 기본적인 Validation과 회원 가입 요청을 위해 사용
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-08-13       youngmin           최초 생성
- * 2023-08-14       youngmin           유효성 검증 시 하나의 함수가 너무 많은 역할을 가지고 있어 분리
- **/
-
-$(function () {});
-
 let memberJoinInfo = {};
+
+const URL_VERIFY_REQUEST = '/api/v1/email/verify-request'; // 인증 코드 전송
+const URL_VERIFY_EMAIL = '/api/v1/email/verify'; // 인증
+const URL_MEMBER_EXISTS_ACCOUNT = '/api/v1/member/exists/{account}'; // 아이디 중복
+const URL_MEMBER_JOIN = '/api/v1/member/join'; // 회원 가입
 
 /**
  * 회원 가입 버튼을 클릭 하는 순간에, 사용자의 모든 데이터를 객체에 저장 해둔다
@@ -34,10 +25,6 @@ function initializedMemberInfo() {
     };
 }
 
-function showMessage(message) {
-    alert(message);
-}
-
 /*
     공통 함수로 만들어서 유효성 검증을 할 수 도 있지만,
     이왕이면 SRP에 맞춰서 함수를 가장 작게 만들어서 사용 한다
@@ -45,11 +32,11 @@ function showMessage(message) {
 
 function validateUserName(userName) {
     if (isEmpty(userName.value)) {
-        showMessage(messages.EMPTY_USER_NAME);
+        showMessage(messages.EMPTY_USER_NAME.message);
         userName.focus();
         return false;
     } else if (userName.length > 6) {
-        showMessage(messages.OVER_LENGTH_USER_NAME);
+        showMessage(messages.OVER_LENGTH_MEMBER_NAME.message);
         userName.focus();
         return false;
     }
@@ -60,7 +47,7 @@ function validateUserNameRegExp(userName) {
     // const regEx = /^[ㄱ-ㅎㅏ-ㅣ가-힣]*$/;
     const regEx = /^[가-힣]{2,}$/;
     if (!regEx.test(userName.value)) {
-        showMessage(messages.NOT_VALID_USER_NAME);
+        showMessage(messages.INVALID_MEMBER_NAME.message);
         userName.focus();
         return false;
     }
@@ -69,11 +56,11 @@ function validateUserNameRegExp(userName) {
 
 function validateAccount(account) {
     if (isEmpty(account.value)) {
-        showMessage(messages.EMPTY_ACCOUNT);
+        showMessage(messages.EMPTY_ACCOUNT.message);
         account.focus();
         return false;
     } else if (account.length > 30) {
-        showMessage(messages.OVER_LENGTH_ACCOUNT);
+        showMessage(messages.OVER_LENGTH_ACCOUNT.message);
         account.focus();
         return false;
     }
@@ -83,7 +70,7 @@ function validateAccount(account) {
 function validateAccountRegExp(account) {
     const regEx = /^(?=.*\d)[a-zA-Z\d]+$/; // 숫자가 한 개 이상 포함, 영문자 또는 숫자로 구성
     if (!regEx.test(account.value)) {
-        showMessage(messages.NOT_VALID_ACCOUNT);
+        showMessage(messages.INVALID_MEMBER_ACCOUNT.message);
         account.focus();
         return false;
     }
@@ -93,12 +80,12 @@ function validateAccountRegExp(account) {
 function validatePasswordRegExp(password1, password2) {
     const regEx = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$/;
     if (!regEx.test(password1.value)) {
-        showMessage(messages.NOT_VALID_PWD);
+        showMessage(messages.INVALID_MEMBER_PWD.message);
         password1.focus();
         return false;
     }
     if (!regEx.test(password2.value)) {
-        showMessage(messages.NOT_VALID_PWD);
+        showMessage(messages.INVALID_MEMBER_PWD.message);
         password2.focus();
         return false;
     }
@@ -107,7 +94,7 @@ function validatePasswordRegExp(password1, password2) {
 
 function validateEqualsPasswords(password1, password2) {
     if (password1.value !== password2.value) {
-        showMessage(messages.NOT_MATCH_PWD);
+        showMessage(messages.NOT_MATCH_PWD.message);
         password1.focus();
         return false;
     }
@@ -116,11 +103,11 @@ function validateEqualsPasswords(password1, password2) {
 
 function validatePrefixPwd(password1) {
     if (isEmpty(password1.value)) {
-        showMessage(messages.EMPTY_PASSWORD1);
+        showMessage(messages.EMPTY_PASSWORD1.message);
         password1.focus();
         return false;
     } else if (password1.length < 8) {
-        showMessage(messages.OVER_LENGTH_PWD);
+        showMessage(messages.OVER_LENGTH_PWD.message);
         password1.focus();
         return false;
     }
@@ -129,11 +116,11 @@ function validatePrefixPwd(password1) {
 
 function validateLastPwd(password2) {
     if (isEmpty(password2.value)) {
-        showMessage(messages.EMPTY_PASSWORD2);
+        showMessage(messages.EMPTY_PASSWORD2.message);
         password2.focus();
         return false;
     } else if (password2.length < 8) {
-        showMessage(messages.OVER_LENGTH_PWD);
+        showMessage(messages.OVER_LENGTH_PWD.message);
         password2.focus();
         return false;
     }
@@ -143,7 +130,7 @@ function validateLastPwd(password2) {
 function validateEmailRegExp(email) {
     const regExp = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!regExp.test(email.value)) {
-        showMessage(messages.NOT_VALID_EMAIL);
+        showMessage(messages.INVALID_MEMBER_EMAIL.message);
         email.focus();
         return false;
     }
@@ -152,11 +139,11 @@ function validateEmailRegExp(email) {
 
 function validateEmail(email) {
     if (isEmpty(email.value)) {
-        showMessage(messages.EMPTY_EMAIL);
+        showMessage(messages.EMPTY_EMAIL.message);
         email.focus();
         return false;
     } else if (email.length > 45) {
-        showMessage(messages.OVER_LENGTH_EMAIL);
+        showMessage(messages.OVER_LENGTH_EMAIL.message);
         email.focus();
         return false;
     }
@@ -164,8 +151,12 @@ function validateEmail(email) {
 }
 
 function validateNumericPhoneNumber(phonePrefix, phoneMiddle, phoneLast) {
-    if (isNotNumericRegExp(phonePrefix.value) && isNotNumericRegExp(phoneMiddle.value) && isNotNumericRegExp(phoneLast.value)) {
-        showMessage(messages.NOT_VALID_PHONE);
+    if (
+        isNotNumericRegExp(phonePrefix.value) &&
+        isNotNumericRegExp(phoneMiddle.value) &&
+        isNotNumericRegExp(phoneLast.value)
+    ) {
+        showMessage(messages.INVALID_MEMBER_PHONE.message);
         phoneMiddle.focus();
         return false;
     }
@@ -174,11 +165,11 @@ function validateNumericPhoneNumber(phonePrefix, phoneMiddle, phoneLast) {
 
 function validatePhonePrefix(phonePrefix) {
     if (isEmpty(phonePrefix.value)) {
-        showMessage(messages.EMPTY_PHONE_PREFIX);
+        showMessage(messages.EMPTY_PHONE_PREFIX.message);
         phonePrefix.focus();
         return false;
     } else if (phonePrefix.value.trim().length > 3) {
-        showMessage(messages.EMPTY_PHONE_PREFIX);
+        showMessage(messages.EMPTY_PHONE_PREFIX.message);
         phonePrefix.focus();
         return false;
     }
@@ -187,11 +178,11 @@ function validatePhonePrefix(phonePrefix) {
 
 function validatePhoneMiddle(phoneMiddle) {
     if (isEmpty(phoneMiddle.value)) {
-        showMessage(messages.EMPTY_PHONE_MIDDLE);
+        showMessage(messages.EMPTY_PHONE_MIDDLE.message);
         phoneMiddle.focus();
         return false;
     } else if (phoneMiddle.value.trim().length > 4) {
-        showMessage(messages.OVER_LENGTH_PHONE_MIDDLE);
+        showMessage(messages.OVER_LENGTH_PHONE_MIDDLE.message);
         phoneMiddle.focus();
         return false;
     }
@@ -200,11 +191,11 @@ function validatePhoneMiddle(phoneMiddle) {
 
 function validatePhoneLast(phoneLast) {
     if (isEmpty(phoneLast.value)) {
-        showMessage(messages.EMPTY_PHONE_LAST);
+        showMessage(messages.EMPTY_PHONE_LAST.message);
         phoneLast.focus();
         return false;
     } else if (phoneLast.value.trim().length > 4) {
-        showMessage(messages.OVER_LENGTH_PHONE_LAST);
+        showMessage(messages.OVER_LENGTH_PHONE_LAST.message);
         phoneLast.focus();
         return false;
     }
@@ -217,11 +208,11 @@ function isNotValidGender(gender) {
 
 function validateGender(gender) {
     if (isEmpty(gender.value)) {
-        showMessage(messages.EMPTY_GENDER);
+        showMessage(messages.EMPTY_GENDER.message);
         gender.focus();
         return false;
     } else if (isNotValidGender(gender.value)) {
-        showMessage(messages.NOT_VALID_GENDER);
+        showMessage(messages.INVALID_MEMBER_GENDER.message);
         gender.focus();
         return false;
     }
@@ -235,11 +226,11 @@ function isNotValidBirthDateFormat(birthDate) {
 
 function validateBirthDate(birthDate) {
     if (isEmpty(birthDate.value)) {
-        showMessage(messages.EMPTY_BIRTH_DATE);
+        showMessage(messages.EMPTY_BIRTH_DATE.message);
         birthDate.focus();
         return false;
     } else if (isNotValidBirthDateFormat(birthDate.value)) {
-        showMessage(messages.NOT_VALID_DATE);
+        showMessage(messages.INVALID_MEMBER_BIRTHDATE.message);
         birthDate.focus();
         return false;
     }
@@ -250,10 +241,10 @@ function validateCertYn(certYn) {
     if (certYn.value === 'Y') {
         return true;
     } else if (certYn.value === 'N') {
-        showMessage(messages.NOT_CERT_EMAIL);
+        showMessage(messages.NOT_CERT_EMAIL.message);
         return false;
     } else {
-        showMessage(messages.NOT_CERT_EMAIL);
+        showMessage(messages.NOT_CERT_EMAIL.message);
         return false;
     }
 }
@@ -262,10 +253,10 @@ function validateAccountDupl(accountCertYn) {
     if (accountCertYn.value === 'Y') {
         return true;
     } else if (accountCertYn.value === 'N') {
-        showMessage(messages.NOT_CERT_ACCOUNT);
+        showMessage(messages.NOT_CERT_ACCOUNT.message);
         return false;
     } else {
-        showMessage(messages.NOT_CERT_ACCOUNT);
+        showMessage(messages.NOT_CERT_ACCOUNT.message);
         return false;
     }
 }
@@ -277,13 +268,15 @@ function startTimer() {
         const min = Math.floor(timeLeft / 60);
         const sec = timeLeft % 60;
 
-        document.getElementById('timeLeft').innerText = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        document.getElementById('timeLeft').innerText = `${min
+            .toString()
+            .padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
 
         timeLeft--;
 
         if (timeLeft < 0) {
             // 제한 시간 모두 경과
-            showMessage(messages.END_EMAIL_AUTH_TIME);
+            showMessage(messages.END_EMAIL_AUTH_TIME.message);
             stopInterval();
             resetInterval();
         }
@@ -319,67 +312,100 @@ window.addEventListener('beforeunload', function () {
     localStorage.removeItem('isClickEnabled');
 });
 
+function hideVerifySectionLayer() {
+    let verifySection = document.getElementById('verifySection');
+    if (verifySection.style.display === 'none') {
+        verifySection.style.display = 'block';
+    } else {
+        verifySection.style.display = 'none';
+    }
+}
+
+function hideTimerSectionLayer() {
+    let timeLimitArea = document.getElementById('timeLimitArea');
+    if (timeLimitArea.style.display === 'none') {
+        timeLimitArea.style.display = 'block';
+    } else {
+        timeLimitArea.style.display = 'none';
+    }
+}
+
 // 인증 이메일 전송
 function sendAuthEmail(event) {
     let certEmail = document.getElementById('email');
+
+    alert(1);
     if (!validateEmail(certEmail)) {
         return;
     }
 
+    alert(2);
+
     if (checkDoubleClick()) {
-        showMessage(messages.CANNOT_SEND_EMAIL);
+        showMessage(messages.CANNOT_SEND_EMAIL.message);
         return;
     }
 
-    let request = {
-        url: '/api/v1/email/verify-request',
-        method: 'POST',
-        contentType: 'application/json',
-        requestBody: {
+    alert(3);
+
+    const request = queryBuilder
+        .createQueryBuilder()
+        .url(URL_VERIFY_REQUEST)
+        .method('POST')
+        .contentType('application/json')
+        .requestBody({
             email: certEmail.value,
-        },
-    };
+        })
+        .build();
+
+    alert(4);
+    alert(`request = > ${JSON.stringify(request)}`);
 
     printLoadingWithMask();
 
-    commonFetchTemplate
+    alert(5);
+
+    const response = commonFetchTemplate
         .sendFetchRequest(request)
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            if (data.code === 1009) {
+        .then(response => response.json())
+        .then(result => {
+            alert(6);
+
+            if (result.code === messages.SUCCESS_SEND_EMAIL.code) {
+                showMessage(result.message);
                 closeLoadingWithMask();
-                showMessage(messages.SUCCESS_SEND_EMAIL);
-
-                // 인증번호 입력 영역
-                let verifySection = document.getElementById('verifySection');
-                if (verifySection.style.display === 'none') {
-                    verifySection.style.display = 'block';
-                } else {
-                    verifySection.style.display = 'none';
-                }
-
-                // 타이머 영역
-                let timeLimitArea = document.getElementById('timeLimitArea');
-                if (timeLimitArea.style.display === 'none') {
-                    timeLimitArea.style.display = 'block';
-                } else {
-                    timeLimitArea.style.display = 'none';
-                }
-                startTimer(); // 타이머 시작
+                hideVerifySectionLayer();
+                hideTimerSectionLayer();
+                startTimer();
+            } else if (result.code === messages.EMPTY_EMAIL.code) {
+                showMessage(result.message);
+                certEmail.focus();
             } else {
-                showMessage(messages.FAIL_SEND_EMAIL);
-                document.getElementById('email').focus();
+                showMessage(result.message);
+                certEmail.focus();
             }
         });
 }
 
+// 이메일 인증 후 버튼 비활성화
+function changeCertYnStatusLayer() {
+    document.getElementById('certYn').value = 'Y';
+    document.getElementById('verificationCode').disabled = true;
+    document.getElementById('sendVerification').disabled = true;
+    document.getElementById('verifyCode').disabled = true;
+    document
+        .getElementById('sendVerification')
+        .removeEventListener('click', sendAuthEmail);
+}
+
 function verifyEmailAuthCode() {
-    let certEmail = document.getElementById('email');
-    let verificationCode = document.getElementById('verificationCode');
-    if (isEmpty(verificationCode.value) || isNotNumericRegExp(verificationCode.value)) {
-        showMessage(messages.EMPTY_EMAIL_AUTH_CODE);
+    const certEmail = document.getElementById('email');
+    const verificationCode = document.getElementById('verificationCode');
+    if (
+        isEmpty(verificationCode.value) ||
+        isNotNumericRegExp(verificationCode.value)
+    ) {
+        showMessage(messages.EMPTY_EMAIL_AUTH_CODE.message);
         verificationCode.focus();
         return;
     }
@@ -388,94 +414,77 @@ function verifyEmailAuthCode() {
         return;
     }
 
-    let request = {
-        url: '/api/v1/email/verify',
-        method: 'GET',
-        contentType: 'application/json',
-        queryString: {
+    const request = queryBuilder
+        .createQueryBuilder()
+        .url(URL_VERIFY_EMAIL)
+        .method('GET')
+        .contentType('application/json')
+        .queryString({
             email: certEmail.value,
             code: verificationCode.value,
-        },
-    };
-
-    commonFetchTemplate
-        .sendFetchRequest(request)
-        .then(response => {
-            return response.json();
         })
-        .then(data => {
-            if (data.code === 1010) {
-                showMessage(messages.SUCCESS_CERT_EMAIL);
+        .build();
 
-                document.getElementById('certYn').value = 'Y';
-                document.getElementById('verificationCode').disabled = true;
-                document.getElementById('sendVerification').disabled = true;
-                document.getElementById('verifyCode').disabled = true;
-                document.getElementById('sendVerification').removeEventListener('click', sendAuthEmail);
-
-                stopInterval();
-                resetInterval();
+    const response = commonFetchTemplate
+        .sendFetchRequest(request)
+        .then(response => response.json())
+        .then(result => {
+            if (result.code === messages.SUCCESS_CERT_EMAIL.code) {
+                showMessage(messages.SUCCESS_CERT_EMAIL.message);
+                changeCertYnStatusLayer();
             } else {
-                showMessage(messages.FAIL_CERT_EMAIL);
-                document.getElementById('email').focus();
-                stopInterval();
-                resetInterval();
+                showMessage(messages.FAIL_CERT_EMAIL.message);
+                certEmail.focus();
             }
         })
-        .catch(error => {
-            ``;
-            console.error(`URL => ${request.url}, 이메일 인증코드 인증 확인 시 오류 발생`);
+        .catch(error => handleResponseError(error, request))
+        .finally(() => {
+            stopInterval();
+            resetInterval();
         });
 }
 
 function checkDuplAccount() {
-    let account = document.getElementById('account');
+    const account = document.getElementById('account');
+    const accountCertYn = document.getElementById('accountCertYn');
+    const password1 = document.getElementById('password1');
     if (!validateAccount(account)) {
         return;
     } else if (!validateAccountRegExp(account)) {
         return;
     }
 
-    let request = {
-        url: '/api/v1/member/exists/{account}',
-        method: 'GET',
-        contentType: 'application/json',
-        pathVariable: {
+    const request = queryBuilder
+        .createQueryBuilder()
+        .url(URL_MEMBER_EXISTS_ACCOUNT)
+        .method('GET')
+        .contentType('application/json')
+        .pathVariable({
             account: account.value,
-        },
-    };
-
-    commonFetchTemplate
-        .sendFetchRequest(request)
-        .then(response => {
-            return response.json();
         })
-        .then(data => {
-            if (data.code === 1010) {
-                showMessage(messages.SUCCESS_DUPL_ACCOUNT);
-                document.getElementById('accountCertYn').value = 'Y';
-                document.getElementById('password1').focus();
-            } else if (data.code === 3001) {
-                showMessage(messages.EMPTY_ACCOUNT);
+        .build();
+
+    const response = commonFetchTemplate
+        .sendFetchRequest(request)
+        .then(response => response.json())
+        .then(result => {
+            if (result.code === messages.SUCCESS_DUPL_ACCOUNT.code) {
+                showMessage(result.message);
+                accountCertYn.value = 'Y';
+                password1.focus();
+            } else if (result.code === messages.EMPTY_ACCOUNT.code) {
+                showMessage(result.message);
                 account.focus();
-            } else if (data.code === 2008) {
-                showMessage(messages.FAIL_DUPL_MEMBER);
-                document.getElementById('accountCertYn').value = 'N';
-                account.focus();
-            } else if (data.code === 2009) {
-                showMessage(messages.FAIL_VALIDATE_DUPL_MEMBER);
-                document.getElementById('accountCertYn').value = 'N';
+            } else if (result.code === messages.FAIL_DUPL_MEMBER.code) {
+                showMessage(result.message);
+                accountCertYn.value = 'N';
                 account.focus();
             } else {
-                showMessage(messages.FAIL_VALIDATE_DUPL_MEMBER);
-                document.getElementById('accountCertYn').value = 'N';
+                showMessage(result.message);
+                accountCertYn.value = 'N';
                 account.focus();
             }
         });
-}
-
-function onSignUpSuccess() {
-    location.href = '/';
 }
 
 /**
@@ -491,8 +500,18 @@ function validateMemberJoinInfo() {
     } else if (!validateAccountRegExp(memberJoinInfo.account)) {
     } else if (!validatePrefixPwd(memberJoinInfo.password1)) {
     } else if (!validateLastPwd(memberJoinInfo.password2)) {
-    } else if (!validateEqualsPasswords(memberJoinInfo.password1, memberJoinInfo.password2)) {
-    } else if (!validatePasswordRegExp(memberJoinInfo.password1, memberJoinInfo.password2)) {
+    } else if (
+        !validateEqualsPasswords(
+            memberJoinInfo.password1,
+            memberJoinInfo.password2,
+        )
+    ) {
+    } else if (
+        !validatePasswordRegExp(
+            memberJoinInfo.password1,
+            memberJoinInfo.password2,
+        )
+    ) {
     } else if (!validateEmail(memberJoinInfo.email)) {
     } else if (!validateEmailRegExp(memberJoinInfo.email)) {
     } else if (!validatePhonePrefix(memberJoinInfo.phonePrefix)) {
@@ -500,7 +519,13 @@ function validateMemberJoinInfo() {
     } else if (!validatePhoneLast(memberJoinInfo.phoneLast)) {
     } else if (!validateGender(memberJoinInfo.gender)) {
     } else if (!validateBirthDate(memberJoinInfo.birthDate)) {
-    } else if (!validateNumericPhoneNumber(memberJoinInfo.phonePrefix, memberJoinInfo.phoneMiddle, memberJoinInfo.phoneLast)) {
+    } else if (
+        !validateNumericPhoneNumber(
+            memberJoinInfo.phonePrefix,
+            memberJoinInfo.phoneMiddle,
+            memberJoinInfo.phoneLast,
+        )
+    ) {
     } else if (!validateCertYn(memberJoinInfo.certYn)) {
     } else if (!validateAccountDupl(memberJoinInfo.accountCertYn)) {
     } else {
@@ -514,7 +539,7 @@ const main = {
         let _this = this;
         $('#btn-join').on('click', function () {
             if (_this.validate()) {
-                showMessage(messages.PROCEED_MEMBER_JOIN);
+                showMessage(messages.PROCEED_MEMBER_JOIN.message);
                 _this.join(); // 회원 가입 진행
             }
         });
@@ -523,42 +548,48 @@ const main = {
         memberJoinInfo = initializedMemberInfo();
         return validateMemberJoinInfo();
     },
-    join: function () {
-        console.log(`start join for new member`);
-        let request = {
-            url: '/api/v1/member/join',
-            method: 'POST',
-            contentType: 'application/json',
-            requestBody: {
-                name: memberJoinInfo.username.value, // Todo: username -> userName camel case
+    createMemberJoinBuilder: function () {
+        return queryBuilder
+            .createQueryBuilder()
+            .url(URL_MEMBER_JOIN)
+            .method('POST')
+            .contentType('application/json')
+            .requestBody({
+                name: memberJoinInfo.username.value,
                 account: memberJoinInfo.account.value,
                 password: memberJoinInfo.password1.value,
                 email: memberJoinInfo.email.value,
-                phoneNumber: [memberJoinInfo.phonePrefix.value, memberJoinInfo.phoneMiddle.value, memberJoinInfo.phoneLast.value].join('-'),
+                phoneNumber: [
+                    memberJoinInfo.phonePrefix.value,
+                    memberJoinInfo.phoneMiddle.value,
+                    memberJoinInfo.phoneLast.value,
+                ].join('-'),
                 certYn: memberJoinInfo.certYn.value,
                 accountCertYn: memberJoinInfo.accountCertYn.value,
                 gender: memberJoinInfo.gender.value,
                 birthDate: memberJoinInfo.birthDate.value,
                 // picture: memberJoinInfo.picture.value
-            },
-        };
-
-        commonFetchTemplate
-            .sendFetchRequest(request)
-            .then(response => {
-                return response.json();
             })
-            .then(data => {
-                if (data.code === 1008) {
-                    showMessage(messages.SUCCESS_SAVE_MEMBER);
-                    onSignUpSuccess();
-                } else if (data.code === 2008) {
-                    showMessage(messages.FAIL_DUPL_MEMBER);
+            .build();
+    },
+    join: function () {
+        console.log(`start join for new member`);
+        const request = this.createMemberJoinBuilder();
+
+        const response = commonFetchTemplate
+            .sendFetchRequest(request)
+            .then(response => response.json())
+            .then(result => {
+                if (result.code === messages.SUCCESS_SAVE_MEMBER.code) {
+                    showMessage(result.message);
+                    redirectURL('/');
+                } else if (result.code === messages.FAIL_DUPL_MEMBER.code) {
+                    showMessage(result.message);
                     memberJoinInfo.account.focus();
-                } else if (data.code === 2006) {
-                    showMessage(messages.FAIL_SAVE_MEMBER);
+                } else if (result.code === messages.FAIL_SAVE_MEMBER.code) {
+                    showMessage(result.message);
                 } else {
-                    showMessage(messages.FAIL_SAVE_MEMBER);
+                    showMessage(result.message);
                 }
             });
     },
