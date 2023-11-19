@@ -30,7 +30,7 @@ public class PostRequestDto {
     private String title;
 
     @NotEmpty(message = "내용은 반드시 입력되어야 합니다. 다시 한번 시도해주세요.")
-    @Size(max = 250, message = "내용은 250자를 초과할 수 없습니다. 다시 한번 시도해주세요.")
+    @Size(max = 1000, message = "내용은 1000자를 초과할 수 없습니다. 다시 한번 시도해주세요.")
     private String content;
 
     private String fixedYn;

@@ -25,12 +25,20 @@ public class EmailRestController {
             @RequestBody EmailRequestDto emailRequestDto) {
 
         if (StringUtils.isBlank(emailRequestDto.getEmail())) {
-            return ResponseFactory.createResponseFactory(MessageCode.NOT_FOUND_EMAIL.getCode(), MessageCode.NOT_FOUND_EMAIL.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseFactory.createResponseFactory(
+                    MessageCode.NOT_FOUND_MEMBER_EMAIL.getCode(),
+                    MessageCode.NOT_FOUND_MEMBER_EMAIL.getMessage(),
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         emailService.sendAuthCodeToMemberEmail(emailRequestDto.getEmail());
 
-        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_SEND_CODE.getCode(), MessageCode.SUCCESS_SEND_CODE.getMessage(), HttpStatus.OK);
+        return ResponseFactory.createResponseFactory(
+                MessageCode.SUCCESS_SEND_EMAIL.getCode(),
+                MessageCode.SUCCESS_SEND_EMAIL.getMessage(),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping(value = "/email/verify")
@@ -39,9 +47,17 @@ public class EmailRestController {
             @RequestParam("code") String authCode) {
 
         if (!EmailService.emailAuthKey.equals(authCode)) {
-            return ResponseFactory.createResponseFactory(MessageCode.FAIL_CERT_EMAIL.getCode(), MessageCode.FAIL_CERT_EMAIL.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseFactory.createResponseFactory(
+                    MessageCode.FAIL_CERT_EMAIL.getCode(),
+                    MessageCode.FAIL_CERT_EMAIL.getMessage(),
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
-        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_CERT_EMAIL.getCode(), MessageCode.SUCCESS_CERT_EMAIL.getMessage(), HttpStatus.OK);
+        return ResponseFactory.createResponseFactory(
+                MessageCode.SUCCESS_CERT_EMAIL.getCode(),
+                MessageCode.SUCCESS_CERT_EMAIL.getMessage(),
+                HttpStatus.OK
+        );
     }
 }

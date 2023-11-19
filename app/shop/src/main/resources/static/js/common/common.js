@@ -10,11 +10,46 @@
  **/
 
 /**
+ * 이벤트 성공 및 실패 후 화면 이동
+ * @param url
+ * @param query
+ */
+function redirectURL(url, query) {
+    if (typeof url !== 'string' || isEmpty(url)) {
+        showMessage(messages.EMPTY_URL);
+        return;
+    }
+
+    if (isEmpty(query)) {
+        location.href = url;
+    } else if (isNotEmpty(query)) {
+        location.href = url + '?' + query;
+    } else {
+        throw new Error('Invalid query and url location, please try again');
+    }
+}
+
+/**
+ * 경고 문구 얼럿 출력
+ * @param message
+ */
+function showMessage(message) {
+    alert(message);
+}
+
+/**
  * 문자열 공백 여부 체크
  * @param str
  */
 function isEmpty(str) {
-    return str === undefined || str === 'undefined' || str === null || str === 'null' || str.trim() === '';
+    return (
+        str === '' ||
+        str === undefined ||
+        str === 'undefined' ||
+        str === null ||
+        str === 'null'
+        // str.trim() === ''
+    );
 }
 
 /**
