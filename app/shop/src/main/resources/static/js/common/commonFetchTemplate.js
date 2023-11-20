@@ -1,11 +1,8 @@
-const requestParamMethod = ['GET', 'DELETE'];
-const requestBodyMethod = ['POST', 'PUT', 'PATCH'];
+const requestParamMethod = ['GET', 'DELETE', 'POST', 'PUT', 'PATCH'];
 const requestHttpFieldType = ['pathVariable', 'queryString', 'requestBody']; // fetch 요청 시 { 키워드 : 데이터 }
 
 function handleResponseError(error, request) {
-    console.error(
-        `[fetch Request] error => ${error}, URL => ${request.url}, METHOD => ${request.method} `,
-    );
+    console.error(`[fetch Request] error => ${error}, URL => ${request.url}, METHOD => ${request.method} `);
     showMessage(messages.COMMON_SERVER_ERROR_MSG);
 }
 
@@ -83,50 +80,34 @@ const commonFetchTemplate = {
     setRequestURLByExtractedPathVariables: function (request) {
         for (let key in request.pathVariable) {
             // pathVariable 로 들어온 경우 /api/v1/{id} -> /api/v1/54 형태로 변경해서 서버에 요청
-            URL = URL.replace(
-                `{${key}}`,
-                encodeURIComponent(request.pathVariable[key]),
-            );
+            URL = URL.replace(`{${key}}`, encodeURIComponent(request.pathVariable[key]));
         }
     },
     setRequestURLByExtractQueryString: function (request) {
         URL += `?${Object.keys(request.queryString)
-            .map(
-                key =>
-                    `${encodeURIComponent(key)}=${encodeURIComponent(
-                        request.queryString[key],
-                    )}`,
-            )
+            .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(request.queryString[key])}`)
             .join('&')}`;
-    },
-    setRequestParam: function (request) {
-        console.info(`request => ${JSON.stringify(request)}`);
-        try {
-            // https://negabaro.github.io/archive/js-exists_keys_in_object
-            if (
-                isNotEmptyObject(request.pathVariable) &&
-                request.pathVariable
-            ) {
-                this.setRequestURLByExtractedPathVariables(request);
-            } else if (
-                isNotEmptyObject(request.queryString) &&
-                request.queryString
-            ) {
-                this.setRequestURLByExtractQueryString(request);
-            }
-        } catch (error) {
-            console.error(
-                `setRequestParam => error => ${error}, URL => ${request.url}, METHOD => ${request.method} `,
-            );
-        }
     },
     setRequestBody: function (request) {
         httpReqOptions.body =
-            isNotEmptyObject(request.requestBody) &&
-            isNotEmpty(request.requestBody) &&
-            request.requestBody
-                ? JSON.stringify(request.requestBody)
-                : '';
+            isNotEmptyObject(request.requestBody) && isNotEmpty(request.requestBody) && request.requestBody ? JSON.stringify(request.requestBody) : '';
+    },
+    setRequestData: function (request) {
+        console.info(`request => ${JSON.stringify(request)}`);
+        try {
+            // https://negabaro.github.io/archive/js-exists_keys_in_object
+            if (isNotEmptyObject(request.pathVariable) && request.pathVariable) {
+                this.setRequestURLByExtractedPathVariables(request);
+            }
+            if (isNotEmptyObject(request.queryString) && request.queryString) {
+                this.setRequestURLByExtractQueryString(request);
+            }
+            if (isNotEmptyObject(request.requestBody) && request.requestBody) {
+                this.setRequestBody(request);
+            }
+        } catch (error) {
+            console.error(`setRequestParam => error => ${error}, URL => ${request.url}, METHOD => ${request.method} `);
+        }
     },
     isValidRequestData: function (request) {
         if (isEmptyObject(request.url) || isEmpty(request.url)) {
@@ -136,19 +117,17 @@ const commonFetchTemplate = {
             return false;
         }
         //https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Array/every
-        if (
-            !Object.keys(request).some(key =>
-                requestHttpFieldType.includes(key),
-            )
-        ) {
+        if (!Object.keys(request).some(key => requestHttpFieldType.includes(key))) {
             return false;
         }
         return true;
     },
     setRequestURLByHttpMethod: function (request) {
-        requestParamMethod.includes(request.method)
-            ? this.setRequestParam(request)
-            : this.setRequestBody(request);
+        if (requestParamMethod.includes(request.method)) {
+            this.setRequestData(request);
+        } else {
+            throw new Error('Not supported Method type');
+        }
     },
     sendFetchRequest: async function (request) {
         if (!this.isValidRequestData(request)) {
@@ -162,9 +141,7 @@ const commonFetchTemplate = {
             this.setRequestURLByHttpMethod(request);
             return await fetch(URL, httpReqOptions);
         } catch (error) {
-            console.error(
-                `sendFetchRequest => error => ${error}, URL => ${request.url}, METHOD => ${request.method}`,
-            );
+            console.error(`sendFetchRequest => error => ${error}, URL => ${request.url}, METHOD => ${request.method}`);
         }
     },
 };

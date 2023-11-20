@@ -64,6 +64,10 @@ const messages = {
         message: '고정글 여부(Y/N)가 선택되지 않았습니다. 다시 시도해주세요',
         code: 3003,
     },
+    EMPTY_POST_FILES: {
+        message: '첨부 파일이 존재하지 않습니다. 다시 시도해주세요.',
+        code: 3004,
+    },
     EMPTY_URL: {
         message: '요청 URL이 존재하지 않습니다. 다시 시도해주세요',
         code: 9999,
@@ -105,8 +109,7 @@ const messages = {
         code: 3109,
     },
     INVALID_MEMBER_ACCOUNT: {
-        message:
-            '계정은 숫자 한 개 이상 포함, 영문자 또는 숫자로 구성 되어야 합니다.',
+        message: '계정은 숫자 한 개 이상 포함, 영문자 또는 숫자로 구성 되어야 합니다.',
         code: 3110,
     },
     INVALID_MEMBER_PWD: {
@@ -215,6 +218,10 @@ const messages = {
     },
     COMMON_SERVER_ERROR_MSG: {
         message: '알 수 없는 서버 오류 입니다. 다시 시도해주세요.',
+        code: -9999,
+    },
+    COMMON_FRONT_ERROR_MSG: {
+        message: '알 수 없는 오류 입니다. 다시 시도해주세요.',
         code: -9999,
     },
 };

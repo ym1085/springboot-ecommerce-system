@@ -77,8 +77,11 @@ public enum MessageCode {
     INVALID_MEMBER_DUPL_ACCOUNT_CERT_YN(3115, "사용자 인증에 실패하였습니다. 다시 시도해주세요."),
 
     //COMMENT
-    NOT_FOUND_COMMENT_CONTENT(3200, "댓글 내용은 반드시 입력되어야 합니다. 다시 한번 시도해주세요."),
-    INVALID_COMMENT_CONTENT(3201, "댓글 내용은 50자를 초과할 수 없습니다. 다시 한번 시도해주세요."),
+    NOT_FOUND_COMMENT_CONTENT(3200, "댓글 내용은 반드시 입력되어야 합니다. 다시 시도해주세요."),
+    INVALID_COMMENT_CONTENT(3201, "댓글 내용은 50자를 초과할 수 없습니다. 다시 시도해주세요."),
+
+    //FILE
+    NOT_FOUND_POST_FILES(3300, "첨부 파일이 존재하지 않습니다. 다시 시도해주세요."),
     ;
 
     private final int code;
