@@ -54,7 +54,7 @@
 
     </div>
     <p class="btn_set">
-        <button type="button" th:onclick="updatePosts()" class="btns btn_bdr4 btn_mid">수정</button>
+        <button type="button" th:onclick="'updatePosts(' + ${post.postId} + ')'" class="btns btn_bdr1 btn_mid">수정</button>
         <button type="button" th:onclick="'deletePosts(' + ${post.postId} + ')'" class="btns btn_bdr1 btn_mid">삭제</button>
         <button type="button" th:onclick="goListPage()" class="btns btn_bdr3 btn_mid">뒤로</button>
     </p><br><br>

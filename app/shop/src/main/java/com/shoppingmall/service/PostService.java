@@ -100,29 +100,25 @@ public class PostService {
         return post.getPostId();
     }
 
-    /**
-     * Modifying the current file consists of deleting all existing files and re-uploading the user's uploads.
-     * It looks like it needs to be modified.
-     */
     @Transactional
     public int updatePost(PostRequestDto postRequestDto) {
+        // Todo: 방어 로직 허술, 아래 로직 수정 필요
         Long result = postMapper.updatePostById(new Post(postRequestDto));
-        if (result == null || result == 0) {
-            return MessageCode.FAIL.getCode();
+
+        List<MultipartFile> files;
+        if (!isEmptyFiles(postRequestDto.getFiles())) {
+            files = postRequestDto.getFiles();
+            return updateFilesByPostId(postRequestDto.getPostId(), files);
         }
 
-        List<MultipartFile> files = postRequestDto.getFiles();
-        return updateFilesByPostId(postRequestDto.getPostId(), files);
+        return MessageCode.SUCCESS.getCode();
     }
 
     private int updateFilesByPostId(Long postId, List<MultipartFile> files) {
-        if (!isFileSizeOverThanZero(files)) {
-            return MessageCode.FAIL.getCode();
-        }
-
         List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
-        fileHandlerHelper.deleteFiles(fileResponseDtos);
+        fileHandlerHelper.deleteFiles(fileResponseDtos); // 서버 특정 경로의 파일 삭제
 
+        // Todo: DB 파일 삭제, 아래 로직 수정 필요
         int result = fileMapper.deleteFilesByPostId(postId);
         if (result > 0) {
             log.info("uploadFile is exists, result = {}", result);
@@ -133,8 +129,8 @@ public class PostService {
         return MessageCode.SUCCESS.getCode();
     }
 
-    private boolean isFileSizeOverThanZero(List<MultipartFile> files) {
-        return (files.size() > 0);
+    private boolean isEmptyFiles(List<MultipartFile> files) {
+        return (files.isEmpty());
     }
 
     private void setFileInfoPostId(Long postId, List<FileRequestDto> fileRequestDtos) {
