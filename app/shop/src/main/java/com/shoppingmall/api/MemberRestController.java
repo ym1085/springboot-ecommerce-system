@@ -40,11 +40,13 @@ public class MemberRestController {
             );
         }
 
-        int result = memberService.signUp(memberRequestDto);
-        return ResponseFactory.handlerResponseFactory(
-                result,
-                MessageCode.SUCCESS_SAVE_MEMBER,
-                (result == 0) ? MessageCode.FAIL_DUPL_MEMBER : MessageCode.FAIL_SAVE_MEMBER
+        MessageCode messageCode = memberService.join(memberRequestDto);
+        return ResponseFactory.createResponseFactory(
+                messageCode.getCode(),
+                messageCode.getMessage(),
+                (messageCode == MessageCode.SUCCESS_SAVE_MEMBER)
+                        ? HttpStatus.OK
+                        : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
@@ -54,17 +56,17 @@ public class MemberRestController {
             return ResponseFactory.createResponseFactory(
                     MessageCode.NOT_FOUND_MEMBER_ACCOUNT.getCode(),
                     MessageCode.NOT_FOUND_MEMBER_ACCOUNT.getMessage(),
-                    HttpStatus.OK
+                    HttpStatus.BAD_REQUEST
             );
         }
 
-        int result = memberService.checkDuplMemberAccount(MemberRequestDto.builder().account(account).build());
-
-        MessageCode messageCode = (result == 1) ? MessageCode.FAIL_DUPL_MEMBER : MessageCode.SUCCESS_DUPL_ACCOUNT;
+        MessageCode messageCode = memberService.checkDuplMemberAccount(MemberRequestDto.builder().account(account).build());
         return ResponseFactory.createResponseFactory(
                 messageCode.getCode(),
                 messageCode.getMessage(),
-                HttpStatus.OK
+                (messageCode == MessageCode.SUCCESS_DUPL_ACCOUNT)
+                        ? HttpStatus.OK
+                        : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 }

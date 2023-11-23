@@ -28,10 +28,15 @@ public class Post {
     private String delYn;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime deleteDate;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<PostFiles> postFiles = new ArrayList<>();
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    List<Comment> comments = new ArrayList<>();
 
     public Post(PostRequestDto postRequestDto) {
         this.postId = postRequestDto.getPostId();

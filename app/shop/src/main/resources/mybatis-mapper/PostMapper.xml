@@ -14,32 +14,32 @@
         <if test="searchKeyword != null and searchKeyword != ''">
             <choose>
                 <when test="searchType != null and searchType != '' and 'title'.equals(searchType)">
-                    AND title LIKE CONCAT('%', #{searchKeyword}, '%')
+                    AND TITLE LIKE CONCAT('%', #{searchKeyword}, '%')
                 </when>
                 <when test="searchType != null and searchType != '' and 'content'.equals(searchType)">
-                    AND content LIKE CONCAT('%', #{searchKeyword}, '%')
+                    AND CONTENT LIKE CONCAT('%', #{searchKeyword}, '%')
                 </when>
                 <when test="searchType != null and searchType != '' and 'writer'.equals(searchType)">
                     AND EXISTS (
                         SELECT 1
-                        FROM member m
-                        WHERE m.member_id = p.member_id
-                        AND m.use_yn = 'Y'
-                        AND m.cert_yn = 'Y'
-                        AND m.name LIKE CONCAT('%', #{searchKeyword}, '%')
+                        FROM MEMBER M
+                        WHERE M.MEMBER_ID = P.MEMBER_ID
+                        AND M.USE_YN = 'Y'
+                        AND M.CERT_YN = 'Y'
+                        AND M.NAME LIKE CONCAT('%', #{searchKeyword}, '%')
                     )
                 </when>
                 <otherwise>
                     AND (
-                        title LIKE CONCAT('%', #{searchKeyword}, '%')
-                        OR content LIKE CONCAT('%', #{searchKeyword}, '%')
+                        TITLE LIKE CONCAT('%', #{searchKeyword}, '%')
+                        OR CONTENT LIKE CONCAT('%', #{searchKeyword}, '%')
                         OR EXISTS (
                             SELECT 1
-                            FROM member m
-                            WHERE m.member_id = p.member_id
-                            AND m.use_yn = 'Y'
-                            AND m.cert_yn = 'Y'
-                            AND m.name LIKE CONCAT('%', #{searchKeyword}, '%')
+                            FROM MEMBER M
+                            WHERE M.MEMBER_ID = P.MEMBER_ID
+                            AND M.USE_YN = 'Y'
+                            AND M.CERT_YN = 'Y'
+                            AND M.NAME LIKE CONCAT('%', #{searchKeyword}, '%')
                         )
                     )
                 </otherwise>
@@ -53,36 +53,37 @@
         그래도 1 : N 처리를 위해 resultMap을 사용해서 일단 처리하고 추후 테이블이 복잡해지면 VO를 분리할 것
      -->
     <resultMap id="PostResultMap" type="Post">
-        <id property="postId" column="post_id" />
-        <result property="memberId" column="member_id" />
-        <result property="title" column="title" />
-        <result property="content" column="content" />
-        <result property="categoryId" column="category_id" />
-        <result property="categoryName" column="categoryName" />
-        <result property="writer" column="writer" />
-        <result property="readCnt" column="read_cnt" />
-        <result property="fixedYn" column="fixed_yn" />
-        <result property="delYn" column="del_yn" />
-        <result property="createDate" column="create_date" />
-        <result property="updateDate" column="update_date" />
-        <result property="deleteDate" column="delete_date" />
+        <id property="postId" column="POST_ID" />
+        <result property="memberId" column="MEMBER_ID" />
+        <result property="title" column="TITLE" />
+        <result property="content" column="CONTENT" />
+        <result property="categoryId" column="CATEGORY_ID" />
+        <result property="categoryName" column="CATEGORYNAME" />
+        <result property="writer" column="WRITER" />
+        <result property="readCnt" column="READ_CNT" />
+        <result property="fixedYn" column="FIXED_YN" />
+        <result property="delYn" column="DEL_YN" />
+        <result property="createDate" column="CREATE_DATE" />
+        <result property="updateDate" column="UPDATE_DATE" />
+        <result property="deleteDate" column="DELETE_DATE" />
+
         <!-- 1(Post) : N(PostFiles) -->
         <collection property="postFiles" resultMap="PostFilesResultMap" />
     </resultMap>
 
     <resultMap id="PostFilesResultMap" type="PostFiles">
-        <id property="postFileId" column="post_file_id" />
-        <result property="postId" column="post_id" />
-        <result property="originFileName" column="origin_file_name" />
-        <result property="storedFileName" column="stored_file_name" />
-        <result property="filePath" column="file_path" />
-        <result property="fileSize" column="file_size" />
-        <result property="fileType" column="file_type" />
-        <result property="downloadCnt" column="download_cnt" />
-        <result property="delYn" column="del_Yn" />
-        <result property="createDate" column="create_date" />
-        <result property="deleteDate" column="delete_date" />
-        <result property="fileAttached" column="file_attached" />
+        <id property="postFileId" column="POST_FILE_ID" />
+        <result property="postId" column="POST_ID" />
+        <result property="originFileName" column="ORIGIN_FILE_NAME" />
+        <result property="storedFileName" column="STORED_FILE_NAME" />
+        <result property="filePath" column="FILE_PATH" />
+        <result property="fileSize" column="FILE_SIZE" />
+        <result property="fileType" column="FILE_TYPE" />
+        <result property="downloadCnt" column="DOWNLOAD_CNT" />
+        <result property="delYn" column="DEL_YN" />
+        <result property="createDate" column="CREATE_DATE" />
+        <result property="deleteDate" column="DELETE_DATE" />
+        <result property="fileAttached" column="FILE_ATTACHED" />
     </resultMap>
 
     <!-- 전체 게시글 조회 -->
@@ -91,74 +92,74 @@
         는 맴버 변수의 getter에 해당. 쉽게 말해 getter를 통해 파라미터 바인딩 수행.
     -->
     <select id="getPosts" parameterType="SearchRequestDto" resultMap="PostResultMap">
-        select
-            p.post_id,
-            p.title,
-            p.content,
-            (SELECT m.name FROM member m WHERE m.member_id = p.member_id AND m.use_yn = 'Y' AND m.cert_yn = 'Y') AS writer,
-            p.category_id,
-            (SELECT c.category_name FROM post_category c where c.category_id = p.category_id) AS categoryName,
-            p.read_cnt,
-            p.fixed_yn,
-            p.del_yn,
-            p.create_date,
-            p.update_date,
-            p.delete_date,
-            f.post_file_id,
-            f.post_id,
-            f.origin_file_name,
-            f.stored_file_name,
-            f.file_path,
-            f.file_size,
-            f.file_type,
-            f.download_cnt,
-            f.del_Yn,
-            f.create_date,
-            f.delete_date,
-            f.file_attached
-        FROM post p
-            LEFT OUTER JOIN post_file f
-        ON p.post_id = f.post_id
-        WHERE p.del_yn != 'Y'
+        SELECT
+            P.POST_ID,
+            P.TITLE,
+            P.CONTENT,
+            (SELECT M.NAME FROM MEMBER M WHERE M.MEMBER_ID = P.MEMBER_ID AND M.USE_YN = 'Y' AND M.CERT_YN = 'Y') AS WRITER,
+            P.CATEGORY_ID,
+            (SELECT C.CATEGORY_NAME FROM POST_CATEGORY C WHERE C.CATEGORY_ID = P.CATEGORY_ID) AS CATEGORYNAME,
+            P.READ_CNT,
+            P.FIXED_YN,
+            P.DEL_YN,
+            P.CREATE_DATE,
+            P.UPDATE_DATE,
+            P.DELETE_DATE,
+            F.POST_FILE_ID,
+            F.POST_ID,
+            F.ORIGIN_FILE_NAME,
+            F.STORED_FILE_NAME,
+            F.FILE_PATH,
+            F.FILE_SIZE,
+            F.FILE_TYPE,
+            F.DOWNLOAD_CNT,
+            F.DEL_YN,
+            F.CREATE_DATE,
+            F.DELETE_DATE,
+            F.FILE_ATTACHED
+        FROM POST P
+            LEFT OUTER JOIN POST_FILE F
+        ON P.POST_ID = F.POST_ID
+        WHERE P.DEL_YN != 'Y'
             <include refid="search" />
-        ORDER BY p.create_date desc,
-                 p.post_id desc
+        ORDER BY P.CREATE_DATE DESC,
+                 P.POST_ID DESC
         LIMIT #{pagination.limitStart}, #{recordSizePerPage}
     </select>
 
     <!-- 게시글 수 카운팅 -->
     <select id="count" parameterType="SearchRequestDto" resultType="int">
         SELECT COUNT(*)
-        FROM post p
+        FROM POST P
         WHERE
-            p.del_yn = 'N'
+            P.DEL_YN = 'N'
             <include refid="search" />
     </select>
 
     <!-- 단일 게시글 조회 -->
     <select id="getPostById" parameterType="long" resultType="Post">
         SELECT
-            p.post_id,
-            p.title,
-            p.content,
-            p.member_id,
-            (SELECT m.name FROM member m WHERE m.member_id = p.member_id AND m.use_yn = 'Y' AND m.cert_yn = 'Y') AS writer,
-            p.category_id,
-            (SELECT c.category_name FROM post_category c where c.category_id = p.category_id) AS categoryName,
-            p.read_cnt,
-            p.fixed_yn,
-            p.del_yn,
-            p.create_date,
-            p.update_date,
-            p.delete_date
-        FROM post p
-        WHERE p.post_id = #{postId}
-        AND p.del_yn != 'Y'
+            P.POST_ID,
+            P.TITLE,
+            P.CONTENT,
+            P.MEMBER_ID,
+            (SELECT M.NAME FROM MEMBER M WHERE M.MEMBER_ID = P.MEMBER_ID AND M.USE_YN = 'Y' AND M.CERT_YN = 'Y') AS WRITER,
+            P.CATEGORY_ID,
+            (SELECT C.CATEGORY_NAME FROM POST_CATEGORY C WHERE C.CATEGORY_ID = P.CATEGORY_ID) AS CATEGORYNAME,
+            P.READ_CNT,
+            P.FIXED_YN,
+            P.DEL_YN,
+            P.CREATE_DATE,
+            P.UPDATE_DATE,
+            P.DELETE_DATE
+        FROM POST P
+        WHERE P.POST_ID = #{postId}
+        AND P.DEL_YN != 'Y'
     </select>
 
     <!-- 게시글 등록 -->
     <insert id="savePost" parameterType="Post" useGeneratedKeys="true" keyProperty="postId">
-        INSERT INTO post (member_id, title, content, fixed_yn, category_id)
+        INSERT INTO POST (MEMBER_ID, TITLE, CONTENT, FIXED_YN, CATEGORY_ID)
         VALUE
             (
                 #{memberId},
@@ -178,23 +179,23 @@
 
     <!-- 게시글 수정 -->
     <update id="updatePostById" parameterType="Post">
-        UPDATE post
+        UPDATE POST
         SET
-            title = #{title},
-            content = #{content},
-            fixed_yn = #{fixedYn} /* FIXME: Admin인 경우에만 처리 하도록 수정 */
+            TITLE = #{title},
+            CONTENT = #{content},
+            FIXED_YN = #{fixedYn} /* FIXME: Admin인 경우에만 처리 하도록 수정 */
         WHERE
-            post_id = #{postId}
+            POST_ID = #{postId}
         AND
-            member_id = #{memberId}
+            MEMBER_ID = #{memberId}
     </update>
 
     <!-- 게시글 삭제 -->
     <update id="deletePostById" parameterType="Post" useGeneratedKeys="true" keyProperty="postId">
-        UPDATE post
+        UPDATE POST
         SET
-            del_yn = 'Y',
-            delete_date = NOW()
-        WHERE post_id = #{postId}
+            DEL_YN = 'Y',
+            DELETE_DATE = NOW()
+        WHERE POST_ID = #{postId}
     </update>
 </mapper>

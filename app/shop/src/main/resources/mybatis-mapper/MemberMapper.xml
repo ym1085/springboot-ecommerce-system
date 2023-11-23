@@ -4,22 +4,22 @@
 
 <mapper namespace="com.shoppingmall.repository.MemberMapper">
     
-    <insert id="signUp" parameterType="Member">
-        INSERT INTO member
+    <insert id="join" parameterType="Member">
+        INSERT INTO MEMBER
             (
-                name
-               , account
-               , password
-               , email
-               , phone_number
-               , picture
-               , birth_date
-               , use_yn
-               , cert_yn
-               , role
-               , create_date
-               , update_date
-               , gender
+                NAME
+               , ACCOUNT
+               , PASSWORD
+               , EMAIL
+               , PHONE_NUMBER
+               , PICTURE
+               , BIRTH_DATE
+               , USE_YN
+               , CERT_YN
+               , ROLE
+               , CREATE_DATE
+               , UPDATE_DATE
+               , GENDER
             )
         VALUES
             (
@@ -47,10 +47,10 @@
     </insert>
 
     <!-- 소셜 로그인 : Google, Naver, Kakao.. -->
-    <insert id="signUpWithSocialLogin" parameterType="Member" statementType="CALLABLE">
+    <insert id="joinWithSocialLogin" parameterType="Member" statementType="CALLABLE">
         <![CDATA[
         {
-            CALL sp_insert_member
+            CALL SP_INSERT_MEMBER
                 (
                     #{name},
                     #{account}, /* registrationId + providerToken */
@@ -66,101 +66,101 @@
 
     <select id="getMemberByEmail" parameterType="map" resultType="Member">
         SELECT
-            m.member_id,
-            m.name,
-            m.account,
-            m.password,
-            m.email,
-            m.phone_number,
-            m.picture,
-            m.birth_date,
-            m.use_yn,
-            m.cert_yn,
-            m.role,
-            m.create_date,
-            m.update_date,
-            m.gender,
-            sm.provider_type AS registrationId
-        FROM member m join SOCIAL_MEMBER sm on m.member_id = sm.member_id
-        WHERE m.email = #{email}
-        AND sm.provider_type = #{registrationId}
-        AND m.use_yn = 'Y'
-        AND m.cert_yn = 'Y'
+            M.MEMBER_ID,
+            M.NAME,
+            M.ACCOUNT,
+            M.PASSWORD,
+            M.EMAIL,
+            M.PHONE_NUMBER,
+            M.PICTURE,
+            M.BIRTH_DATE,
+            M.USE_YN,
+            M.CERT_YN,
+            M.ROLE,
+            M.CREATE_DATE,
+            M.UPDATE_DATE,
+            M.GENDER,
+            SM.PROVIDER_TYPE AS REGISTRATIONID
+        FROM MEMBER M JOIN SOCIAL_MEMBER SM ON M.MEMBER_ID = SM.MEMBER_ID
+        WHERE M.EMAIL = #{email}
+        AND SM.PROVIDER_TYPE = #{registrationId}
+        AND M.USE_YN = 'Y'
+        AND M.CERT_YN = 'Y'
     </select>
 
     <select id="getMemberById" parameterType="long" resultType="Member">
         SELECT
-            m.member_id,
-            m.name,
-            m.account,
-            m.password,
-            m.email,
-            m.phone_number,
-            m.picture,
-            m.birth_date,
-            m.use_yn,
-            m.cert_yn,
-            m.role,
-            m.create_date,
-            m.update_date,
-            m.gender
-        FROM member m
-        WHERE m.member_id = #{memberId}
-        AND m.use_yn = 'Y'
-        AND m.cert_yn = 'Y'
+            M.MEMBER_ID,
+            M.NAME,
+            M.ACCOUNT,
+            M.PASSWORD,
+            M.EMAIL,
+            M.PHONE_NUMBER,
+            M.PICTURE,
+            M.BIRTH_DATE,
+            M.USE_YN,
+            M.CERT_YN,
+            M.ROLE,
+            M.CREATE_DATE,
+            M.UPDATE_DATE,
+            M.GENDER
+        FROM MEMBER M
+        WHERE M.MEMBER_ID = #{memberId}
+        AND M.USE_YN = 'Y'
+        AND M.CERT_YN = 'Y'
     </select>
 
     <!-- 소셜 로그인 후 session에 저장 할 회원 조회 -->
     <select id="getMemberByEmailWithSocialLogin" parameterType="string" resultType="Member">
         SELECT
-            m.name,
-            m.email,
-            m.picture,
-            m.role,
-            sm.provider_type AS registrationId
-        FROM member m JOIN SOCIAL_MEMBER sm ON m.member_id = sm.member_id
-        WHERE m.email = #{email}
-        AND sm.provider_type = #{registrationId}
-        AND m.use_yn = 'Y'
-        AND m.cert_yn = 'Y'
+            M.NAME,
+            M.EMAIL,
+            M.PICTURE,
+            M.ROLE,
+            SM.PROVIDER_TYPE AS REGISTRATIONID
+        FROM MEMBER M JOIN SOCIAL_MEMBER SM ON M.MEMBER_ID = SM.MEMBER_ID
+        WHERE M.EMAIL = #{email}
+        AND SM.PROVIDER_TYPE = #{registrationId}
+        AND M.USE_YN = 'Y'
+        AND M.CERT_YN = 'Y'
     </select>
 
     <!-- 소셜 로그인 사용자의 이메일, 대표 이미지가 변경 된 경우 DB 데이터 변경 -->
     <update id="updateMemberByEmailAndPicture" parameterType="Member">
-        UPDATE member m
-            INNER JOIN SOCIAL_MEMBER sm ON m.member_id = sm.member_id
-        SET m.email = #{email},
-            m.picture = #{picture}
-        WHERE m.email = #{email}
-        AND sm.provider_type = #{registrationId}
-        AND m.use_yn = 'Y'
-        AND m.cert_yn = 'Y';
+        UPDATE MEMBER M
+            INNER JOIN SOCIAL_MEMBER SM ON M.MEMBER_ID = SM.MEMBER_ID
+        SET M.EMAIL = #{email},
+            M.PICTURE = #{picture}
+        WHERE M.EMAIL = #{email}
+        AND SM.PROVIDER_TYPE = #{registrationId}
+        AND M.USE_YN = 'Y'
+        AND M.CERT_YN = 'Y';
     </update>
 
     <select id="getMemberByAccount" parameterType="string" resultType="Member">
         SELECT
-            m.member_id,
-            m.name,
-            m.account,
-            m.password,
-            m.email,
-            m.phone_number,
-            m.picture,
-            m.birth_date,
-            m.use_yn,
-            m.cert_yn,
-            m.role,
-            m.create_date,
-            m.update_date,
-            m.gender
-        FROM member m
-        WHERE m.account = #{username}
-        AND m.use_yn = 'Y'
-        AND m.cert_yn = 'Y'
+            M.MEMBER_ID,
+            M.NAME,
+            M.ACCOUNT,
+            M.PASSWORD,
+            M.EMAIL,
+            M.PHONE_NUMBER,
+            M.PICTURE,
+            M.BIRTH_DATE,
+            M.USE_YN,
+            M.CERT_YN,
+            M.ROLE,
+            M.CREATE_DATE,
+            M.UPDATE_DATE,
+            M.GENDER
+        FROM MEMBER M
+        WHERE M.ACCOUNT = #{username}
+        AND M.USE_YN = 'Y'
+        AND M.CERT_YN = 'Y'
     </select>
     
     <select id="checkDuplMemberAccount" parameterType="Member" resultType="int">
-        SELECT COUNT(*) AS CNT FROM member m where m.account = #{account}
+        SELECT COUNT(*) AS CNT FROM MEMBER M WHERE M.ACCOUNT = #{account}
     </select>
 
 </mapper>

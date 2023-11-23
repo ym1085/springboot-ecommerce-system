@@ -9,9 +9,9 @@ import java.util.Optional;
 @Mapper
 public interface MemberMapper {
 
-    int signUp(Member member);
+    int join(Member member);
 
-    void signUpWithSocialLogin(Member member);
+    void joinWithSocialLogin(Member member);
 
     Optional<Member> getMemberByEmail(@Param("email") String email, @Param("registrationId") String registrationId);
 

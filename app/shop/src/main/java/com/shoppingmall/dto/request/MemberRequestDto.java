@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -49,44 +47,15 @@ public class MemberRequestDto {
     @Pattern(regexp = "^Y$", message = "사용자 인증에 실패하였습니다. 다시 시도해주세요.")
     private String accountCertYn;
 
-    private String picture;
-    private Gender gender;
-    private Role role;
-
     @NotBlank(message = "생년월일은 필수 입력 항목입니다. 다시 시도해주세요.")
     private String birthDate;
 
-    // 사용자가 회원 가입 요청 시, 해당 사용자의 비밀번호를 해싱(hashing), 변환 하기 위함
-    public void encodeMemberPassword(PasswordEncoder passwordEncoder) {
-        if (StringUtils.isEmpty(this.password)) {
-            return;
-        }
-        this.password = passwordEncoder.encode(this.password);
-    }
-
-    public void replaceHyphen() {
-        if (StringUtils.isNotBlank(this.phoneNumber)) this.phoneNumber = this.phoneNumber.replace("-", "");
-        if (StringUtils.isNotBlank(this.birthDate)) this.birthDate = this.birthDate.replace("-", "");
-    }
-
-    public void setMemberRole(Role role) {
-        this.role = role;
-    }
+    private String picture;
+    private Gender gender;
+    private Role role = Role.USER;
 
     @Builder
-    public MemberRequestDto(
-            String name,
-            String account,
-            String password,
-            String email,
-            String phoneNumber,
-            String certYn,
-            String accountCertYn,
-            String picture,
-            Gender gender,
-            String birthDate,
-            Role role
-    ) {
+    public MemberRequestDto(String name, String account, String password, String email, String phoneNumber, String certYn, String accountCertYn, String picture, Gender gender, String birthDate, Role role) {
         this.name = name;
         this.account = account;
         this.password = password;
