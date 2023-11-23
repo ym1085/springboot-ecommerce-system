@@ -70,7 +70,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
         } else {
             Member savedMember = attributes.toEntity();
-            memberMapper.signUpWithSocialLogin(savedMember);
+            memberMapper.joinWithSocialLogin(savedMember);
             return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
         }
     }

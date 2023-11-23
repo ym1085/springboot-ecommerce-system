@@ -151,11 +151,7 @@ function validateEmail(email) {
 }
 
 function validateNumericPhoneNumber(phonePrefix, phoneMiddle, phoneLast) {
-    if (
-        isNotNumericRegExp(phonePrefix.value) &&
-        isNotNumericRegExp(phoneMiddle.value) &&
-        isNotNumericRegExp(phoneLast.value)
-    ) {
+    if (isNotNumericRegExp(phonePrefix.value) && isNotNumericRegExp(phoneMiddle.value) && isNotNumericRegExp(phoneLast.value)) {
         showMessage(messages.INVALID_MEMBER_PHONE.message);
         phoneMiddle.focus();
         return false;
@@ -268,9 +264,7 @@ function startTimer() {
         const min = Math.floor(timeLeft / 60);
         const sec = timeLeft % 60;
 
-        document.getElementById('timeLeft').innerText = `${min
-            .toString()
-            .padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        document.getElementById('timeLeft').innerText = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
 
         timeLeft--;
 
@@ -334,19 +328,14 @@ function hideTimerSectionLayer() {
 function sendAuthEmail(event) {
     let certEmail = document.getElementById('email');
 
-    alert(1);
     if (!validateEmail(certEmail)) {
         return;
     }
-
-    alert(2);
 
     if (checkDoubleClick()) {
         showMessage(messages.CANNOT_SEND_EMAIL.message);
         return;
     }
-
-    alert(3);
 
     const request = queryBuilder
         .createQueryBuilder()
@@ -358,19 +347,12 @@ function sendAuthEmail(event) {
         })
         .build();
 
-    alert(4);
-    alert(`request = > ${JSON.stringify(request)}`);
-
     printLoadingWithMask();
-
-    alert(5);
 
     const response = commonFetchTemplate
         .sendFetchRequest(request)
         .then(response => response.json())
         .then(result => {
-            alert(6);
-
             if (result.code === messages.SUCCESS_SEND_EMAIL.code) {
                 showMessage(result.message);
                 closeLoadingWithMask();
@@ -393,18 +375,13 @@ function changeCertYnStatusLayer() {
     document.getElementById('verificationCode').disabled = true;
     document.getElementById('sendVerification').disabled = true;
     document.getElementById('verifyCode').disabled = true;
-    document
-        .getElementById('sendVerification')
-        .removeEventListener('click', sendAuthEmail);
+    document.getElementById('sendVerification').removeEventListener('click', sendAuthEmail);
 }
 
 function verifyEmailAuthCode() {
     const certEmail = document.getElementById('email');
     const verificationCode = document.getElementById('verificationCode');
-    if (
-        isEmpty(verificationCode.value) ||
-        isNotNumericRegExp(verificationCode.value)
-    ) {
+    if (isEmpty(verificationCode.value) || isNotNumericRegExp(verificationCode.value)) {
         showMessage(messages.EMPTY_EMAIL_AUTH_CODE.message);
         verificationCode.focus();
         return;
@@ -500,18 +477,8 @@ function validateMemberJoinInfo() {
     } else if (!validateAccountRegExp(memberJoinInfo.account)) {
     } else if (!validatePrefixPwd(memberJoinInfo.password1)) {
     } else if (!validateLastPwd(memberJoinInfo.password2)) {
-    } else if (
-        !validateEqualsPasswords(
-            memberJoinInfo.password1,
-            memberJoinInfo.password2,
-        )
-    ) {
-    } else if (
-        !validatePasswordRegExp(
-            memberJoinInfo.password1,
-            memberJoinInfo.password2,
-        )
-    ) {
+    } else if (!validateEqualsPasswords(memberJoinInfo.password1, memberJoinInfo.password2)) {
+    } else if (!validatePasswordRegExp(memberJoinInfo.password1, memberJoinInfo.password2)) {
     } else if (!validateEmail(memberJoinInfo.email)) {
     } else if (!validateEmailRegExp(memberJoinInfo.email)) {
     } else if (!validatePhonePrefix(memberJoinInfo.phonePrefix)) {
@@ -519,13 +486,7 @@ function validateMemberJoinInfo() {
     } else if (!validatePhoneLast(memberJoinInfo.phoneLast)) {
     } else if (!validateGender(memberJoinInfo.gender)) {
     } else if (!validateBirthDate(memberJoinInfo.birthDate)) {
-    } else if (
-        !validateNumericPhoneNumber(
-            memberJoinInfo.phonePrefix,
-            memberJoinInfo.phoneMiddle,
-            memberJoinInfo.phoneLast,
-        )
-    ) {
+    } else if (!validateNumericPhoneNumber(memberJoinInfo.phonePrefix, memberJoinInfo.phoneMiddle, memberJoinInfo.phoneLast)) {
     } else if (!validateCertYn(memberJoinInfo.certYn)) {
     } else if (!validateAccountDupl(memberJoinInfo.accountCertYn)) {
     } else {
@@ -559,11 +520,7 @@ const main = {
                 account: memberJoinInfo.account.value,
                 password: memberJoinInfo.password1.value,
                 email: memberJoinInfo.email.value,
-                phoneNumber: [
-                    memberJoinInfo.phonePrefix.value,
-                    memberJoinInfo.phoneMiddle.value,
-                    memberJoinInfo.phoneLast.value,
-                ].join('-'),
+                phoneNumber: [memberJoinInfo.phonePrefix.value, memberJoinInfo.phoneMiddle.value, memberJoinInfo.phoneLast.value].join('-'),
                 certYn: memberJoinInfo.certYn.value,
                 accountCertYn: memberJoinInfo.accountCertYn.value,
                 gender: memberJoinInfo.gender.value,

@@ -8,6 +8,7 @@ import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.*;
+import com.shoppingmall.exception.FailUpdateFilesException;
 import com.shoppingmall.repository.CommentMapper;
 import com.shoppingmall.repository.FileMapper;
 import com.shoppingmall.repository.PostMapper;
@@ -17,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -101,17 +101,27 @@ public class PostService {
     }
 
     @Transactional
-    public int updatePost(PostRequestDto postRequestDto) {
+    public MessageCode updatePost(PostRequestDto postRequestDto) {
         // Todo: 방어 로직 허술, 아래 로직 수정 필요
         Long result = postMapper.updatePostById(new Post(postRequestDto));
+        if (result == 0) {
+            return MessageCode.FAIL_UPDATE_POST;
+        }
 
         List<MultipartFile> files;
         if (!isEmptyFiles(postRequestDto.getFiles())) {
-            files = postRequestDto.getFiles();
-            return updateFilesByPostId(postRequestDto.getPostId(), files);
+            try {
+                int fileUpdatedResult = updateFilesByPostId(postRequestDto.getPostId(), postRequestDto.getFiles());
+                if (fileUpdatedResult == 0) {
+                    // Fixme: 추후 MessageCode 값에 넣어서 code 값을 반환하도록 수정
+                    throw new FailUpdateFilesException("파일 삭제 및 업데이트에 실패 하였습니다.");
+                }
+            } catch (FailUpdateFilesException e) {
+                log.error("File updated: " + postRequestDto.getFiles().toString());
+            }
         }
 
-        return MessageCode.SUCCESS.getCode();
+        return MessageCode.SUCCESS_UPDATE_POST;
     }
 
     private int updateFilesByPostId(Long postId, List<MultipartFile> files) {
@@ -139,22 +149,18 @@ public class PostService {
     }
 
     @Transactional
-    public int deletePost(long postId) {
+    public MessageCode deletePost(long postId) {
         Long deletedPostId = postMapper.deletePostById(postId);
         if (deletedPostId == 0) {
-            return MessageCode.FAIL.getCode();
+            return MessageCode.NOT_FOUND_POST_ID;
         }
 
         List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
+        fileHandlerHelper.deleteFiles(fileResponseDtos);
 
-        // empty라는 것은 해당 게시글에 매핑된 파일이 없다는 의미
-        // 게시글 삭제 성공으로 판단 후 성공 코드 반환
-        if (CollectionUtils.isEmpty(fileResponseDtos)) {
-            return MessageCode.SUCCESS.getCode();
-        }
-
-         fileHandlerHelper.deleteFiles(fileResponseDtos);
-                                  return fileMapper.deleteUpdateFilesByPostId(postId);
+        return (fileMapper.deleteUpdateFilesByPostId(postId) > 0)
+                ? MessageCode.SUCCESS_DELETE_FILES
+                : MessageCode.FAIL_DELETE_FILES;
     }
 
     private List<FileResponseDto> getFileResponseDtos(long postId) {

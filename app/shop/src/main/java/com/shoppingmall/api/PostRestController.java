@@ -36,13 +36,23 @@ public class PostRestController {
     @GetMapping(value = "/post")
     public ResponseEntity<CommonResponse> getPosts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
-        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POSTS.getCode(), MessageCode.SUCCESS_GET_POSTS.getMessage(), posts, HttpStatus.OK);
+        return ResponseFactory.createResponseFactory(
+                MessageCode.SUCCESS_GET_POSTS.getCode(),
+                MessageCode.SUCCESS_GET_POSTS.getMessage(),
+                posts,
+                HttpStatus.OK
+        );
     }
 
     @GetMapping(value = "/post/{id}")
     public ResponseEntity<CommonResponse> getPostById(@PathVariable("id") Long id) {
         PostResponseDto post = postService.getPostById(id);
-        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_GET_POST.getCode(), MessageCode.SUCCESS_GET_POST.getMessage(), post, HttpStatus.OK);
+        return ResponseFactory.createResponseFactory(
+                MessageCode.SUCCESS_GET_POST.getCode(),
+                MessageCode.SUCCESS_GET_POST.getMessage(),
+                post,
+                HttpStatus.OK
+        );
     }
 
     @PostMapping(value = "/post")
@@ -88,13 +98,25 @@ public class PostRestController {
         postRequestDto.setMemberId(1L); // TODO: replace hard code
         postRequestDto.setPostId(id);
 
-        int result = postService.updatePost(postRequestDto);
-        return ResponseFactory.handlerResponseFactory(result, MessageCode.SUCCESS_UPDATE_POST, MessageCode.FAIL_UPDATE_POST);
+        MessageCode messageCode = postService.updatePost(postRequestDto);
+        return ResponseFactory.createResponseFactory(
+            messageCode.getCode(),
+            messageCode.getMessage(),
+            (messageCode == MessageCode.SUCCESS_UPDATE_POST)
+                    ? HttpStatus.OK
+                    : HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @DeleteMapping(value = "/post/{id}")
     public ResponseEntity<CommonResponse> deletePost(@PathVariable("id") Long id) {
-        int result = postService.deletePost(id);
-        return ResponseFactory.handlerResponseFactory(result, MessageCode.SUCCESS_DELETE_POST, MessageCode.FAIL_DELETE_POST);
+        MessageCode messageCode = postService.deletePost(id);
+        return ResponseFactory.createResponseFactory(
+                messageCode.getCode(),
+                messageCode.getMessage(),
+                (messageCode == MessageCode.SUCCESS_UPDATE_POST)
+                        ? HttpStatus.OK
+                        : HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 }

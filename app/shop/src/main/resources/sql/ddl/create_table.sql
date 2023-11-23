@@ -12,7 +12,7 @@ CREATE TABLE MEMBER
 (
     member_id    INT AUTO_INCREMENT PRIMARY KEY,
     name         VARCHAR(20) NOT NULL COMMENT '회원 이름',
-    account      VARCHAR(500),
+    account      VARCHAR(300),
     password     VARCHAR(60),
     email        VARCHAR(50) NOT NULL COMMENT '회원 이메일',
     phone_number VARCHAR(15),
@@ -47,11 +47,11 @@ CREATE TABLE POST_CATEGORY
 CREATE TABLE POST
 (
     post_id     INT AUTO_INCREMENT PRIMARY KEY,
-    title       VARCHAR(40)  NOT NULL COMMENT '게시글 제목',
-    content     VARCHAR(500) NOT NULL COMMENT '게시글 내용',
-    member_id   INT          NOT NULL COMMENT '회원 ID',
-    category_id INT          NOT NULL COMMENT '카테고리 ID',
-    read_cnt    INT          NOT NULL DEFAULT 0 COMMENT '조회수',
+    title       VARCHAR(40)     NOT NULL COMMENT '게시글 제목',
+    content     VARCHAR(1000)   NOT NULL COMMENT '게시글 내용',
+    member_id   INT             NOT NULL COMMENT '회원 ID',
+    category_id INT             NOT NULL COMMENT '카테고리 ID',
+    read_cnt    INT             NOT NULL DEFAULT 0 COMMENT '조회수',
     fixed_yn    CHAR                  DEFAULT 'N' COMMENT '고정글 지정 여부',
     del_yn      CHAR                  DEFAULT 'N' COMMENT '삭제 여부',
     create_date TIMESTAMP             DEFAULT CURRENT_TIMESTAMP COMMENT '게시글 생성일',
