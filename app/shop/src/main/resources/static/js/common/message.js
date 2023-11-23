@@ -49,19 +49,19 @@ const messages = {
         code: 3108,
     },
     EMPTY_POST_ID: {
-        message: '게시글 번호가 존재하지 않습니다. 다시 시도해주세요',
+        message: '게시글 번호가 존재하지 않습니다. 다시 시도해주세요.',
         code: 3000,
     },
     EMPTY_POST_TITLE: {
-        message: '게시글 제목이 존재하지 않습니다. 다시 시도해주세요',
+        message: '게시글 제목이 존재하지 않습니다. 다시 시도해주세요.',
         code: 3001,
     },
     EMPTY_POST_CONTENT: {
-        message: '게시글 내용이 존재하지 않습니다. 다시 시도해주세요',
+        message: '게시글 내용이 존재하지 않습니다. 다시 시도해주세요.',
         code: 3002,
     },
     EMPTY_POST_FIXED_YN: {
-        message: '고정글 여부(Y/N)가 선택되지 않았습니다. 다시 시도해주세요',
+        message: '고정글 여부(Y/N)가 선택되지 않았습니다. 다시 시도해주세요.',
         code: 3003,
     },
     EMPTY_POST_FILES: {
@@ -69,11 +69,15 @@ const messages = {
         code: 3004,
     },
     EMPTY_URL: {
-        message: '요청 URL이 존재하지 않습니다. 다시 시도해주세요',
+        message: '요청 URL이 존재하지 않습니다. 다시 시도해주세요.',
         code: 9999,
     },
     EMPTY_REQUEST_RESULT_DATA: {
-        message: 'API 요청 결과값이 존재하지 않습니다. 다시 시도해주세요',
+        message: 'API 요청 결과값이 존재하지 않습니다. 다시 시도해주세요.',
+        code: 9999,
+    },
+    EMPTY_COMMENT_CONTENT: {
+        message: '댓글이 존재하지 않습니다. 다시 시도해주세요.',
         code: 9999,
     },
     OVER_LENGTH_MEMBER_NAME: {
@@ -102,6 +106,10 @@ const messages = {
     },
     OVER_LENGTH_PHONE_LAST: {
         message: '휴대폰 마지막 자리는 4자리를 초과할 수 없습니다.',
+        code: 9999,
+    },
+    OVER_LENGTH_COMMENT: {
+        message: '댓글을 300자를 초과할 수 없습니다.',
         code: 9999,
     },
     INVALID_MEMBER_NAME: {
@@ -180,6 +188,10 @@ const messages = {
         message: '사용 가능한 계정입니다.',
         code: 1103,
     },
+    SUCCESS_SAVE_COMMENT: {
+        message: '댓글 등록에 성공 하였습니다.',
+        code: 1200,
+    },
     FAIL_SAVE_MEMBER: {
         message: '회원 가입 진행 중 오류가 발생하였습니다.',
         code: 2100,
@@ -203,6 +215,10 @@ const messages = {
     FAIL_DELETE_POST: {
         message: '게시글 삭제에 실패하였습니다. 다시 시도해주세요.',
         code: 2002,
+    },
+    FAIL_SAVE_COMMENT: {
+        message: '댓글 등록에 실패하였습니다. 다시 시도해주세요.',
+        code: 2003,
     },
     END_EMAIL_AUTH_TIME: {
         message: '이메일 인증 시간이 모두 경과하였습니다. 다시 시도해주세요.',

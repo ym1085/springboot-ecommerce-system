@@ -9,6 +9,17 @@
  * 2023-08-13       youngmin           최초 생성
  **/
 
+function focus(element) {
+    element.focus();
+}
+
+/**
+ * 페이지 리로드 함수
+ */
+function reload() {
+    location.reload();
+}
+
 /**
  * 이벤트 성공 및 실패 후 화면 이동
  * @param url
@@ -43,11 +54,7 @@ function showMessage(message) {
  */
 function isEmpty(str) {
     return (
-        str === '' ||
-        str === undefined ||
-        str === 'undefined' ||
-        str === null ||
-        str === 'null'
+        str === '' || str === undefined || str === 'undefined' || str === null || str === 'null'
         // str.trim() === ''
     );
 }

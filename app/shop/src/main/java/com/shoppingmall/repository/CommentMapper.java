@@ -11,7 +11,7 @@ public interface CommentMapper {
     /* 계층형 댓글 리스트 조회 */
     List<Comment> getComments(Long postId);
 
-    int getCommentCountById(Long commentId);
+    int getCommentCountByCommentId(Long commentId);
 
     int saveComment(Comment comment);
 

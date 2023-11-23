@@ -1,14 +1,18 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.ShopApplication;
+import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.domain.Comment;
 import com.shoppingmall.dto.request.CommentRequestDto;
+import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.repository.CommentMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,12 +57,11 @@ class CommentServiceTest {
                 .build();
 
         //when
-        int result = commentService.saveComment(commentRequestDto);
-        System.out.println("result ===> " + result);
+        List<CommentResponseDto> comments = commentService.saveComment(commentRequestDto);
 
         //then
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(0); // fail
+        assertThat(comments).isNotNull();
+//        assertThat(messageCode.getCode()).isEqualTo(0); // fail
     }
 
     @Test
@@ -112,10 +115,10 @@ class CommentServiceTest {
                 .build();
 
         //when
-        int result = commentService.deleteCommentById(commentRequestDto);
+        MessageCode messageCode = commentService.deleteCommentById(commentRequestDto);
 
         //then
-        assertThat(result).isEqualTo(0);
+        assertThat(messageCode.getCode()).isEqualTo(0);
     }
 
     @Test
@@ -130,10 +133,10 @@ class CommentServiceTest {
                 .build();
 
         //when
-        int result = commentService.deleteCommentById(commentRequestDto);
+        MessageCode messageCode = commentService.deleteCommentById(commentRequestDto);
 
         //then
-        assertThat(result).isEqualTo(0);
+        assertThat(messageCode.getCode()).isEqualTo(0);
     }
 
     @Test

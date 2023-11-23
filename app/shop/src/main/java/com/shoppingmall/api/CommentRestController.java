@@ -5,6 +5,7 @@ import com.shoppingmall.common.CommonResponse;
 import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.common.ResponseFactory;
 import com.shoppingmall.dto.request.CommentRequestDto;
+import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -32,7 +34,7 @@ public class CommentRestController {
      */
     @PostMapping("/post/{postId}/comments")
     public ResponseEntity<CommonResponse> saveComment(
-            @RequestBody @Valid CommentRequestDto commentRequestDto,
+            @Valid @RequestBody CommentRequestDto commentRequestDto,
             @PathVariable("postId") Long postId,
             BindingResult bindingResult) {
 
@@ -53,17 +55,21 @@ public class CommentRestController {
                     HttpStatus.BAD_REQUEST
             );
         }
+        commentRequestDto.setMemberId(1L);
+        commentRequestDto.setPostId(postId);
 
-        commentRequestDto.setMemberId(1L); // TODO: replace hard code
-        commentRequestDto.setPostId(20L);
-
-        int result = commentService.saveComment(commentRequestDto);
-        return ResponseFactory.handlerResponseFactory(result, MessageCode.SUCCESS_SAVE_COMMENT, MessageCode.FAIL_SAVE_COMMENT);
+        List<CommentResponseDto> comments = commentService.saveComment(commentRequestDto);
+        return ResponseFactory.createResponseFactory(
+                MessageCode.SUCCESS_SAVE_COMMENT.getCode(),
+                MessageCode.SUCCESS_SAVE_COMMENT.getMessage(),
+                comments,
+                HttpStatus.OK
+        );
     }
 
     @PutMapping("/post/comments")
     public ResponseEntity<CommonResponse> updateCommentById(
-            @Valid CommentRequestDto commentRequestDto,
+            @Valid @RequestBody CommentRequestDto commentRequestDto,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -76,14 +82,26 @@ public class CommentRestController {
             );
         }
 
-        int result = commentService.updateCommentById(commentRequestDto);
-        return ResponseFactory.handlerResponseFactory(result, MessageCode.SUCCESS_UPDATE_COMMENT, MessageCode.FAIL_UPDATE_COMMENT);
+        MessageCode messageCode = commentService.updateCommentById(commentRequestDto);
+        return ResponseFactory.createResponseFactory(
+                messageCode.getCode(),
+                messageCode.getMessage(),
+                (messageCode == MessageCode.SUCCESS_UPDATE_COMMENT)
+                        ? HttpStatus.OK
+                        : HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @DeleteMapping("/post/comments")
-    public ResponseEntity<CommonResponse> deleteCommentById(CommentRequestDto commentRequestDto) {
-
-        int result = commentService.deleteCommentById(commentRequestDto);
-        return ResponseFactory.handlerResponseFactory(result, MessageCode.SUCCESS_DELETE_COMMENT, MessageCode.FAIL_DELETE_COMMENT);
+    public ResponseEntity<CommonResponse> deleteCommentById(
+            @ModelAttribute CommentRequestDto commentRequestDto) {
+        MessageCode messageCode = commentService.deleteCommentById(commentRequestDto);
+        return ResponseFactory.createResponseFactory(
+                messageCode.getCode(),
+                messageCode.getMessage(),
+                (messageCode == MessageCode.SUCCESS_DELETE_COMMENT)
+                        ? HttpStatus.OK
+                        : HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 }

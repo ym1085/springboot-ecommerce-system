@@ -17,8 +17,7 @@
         </th:block>
         <th:block th:unless="${#lists.isEmpty(post)}">
             <label for="postId"></label>
-            <input type="text" id="postId" class="postId" data-key="postId"
-                   th:if="${not #lists.isEmpty(post.postId)}" th:value="${post.postId}" />
+            <input type="hidden" id="postId" class="postId" data-key="postId" th:if="${not #lists.isEmpty(post.postId)}" th:value="${post.postId}" />
 
             <label for="fixedYn">고정글:</label>
             <input type="checkbox" id="fixedYn" th:checked="${post.fixedYn == 'Y'}"><br>
@@ -26,8 +25,9 @@
             <label for="title">* 제목:</label>
             <input type="text" id="title" th:value="${post.title}"><br>
 
+            <!-- Todo: 변경 필요 -->
             <label for="category">* 카테고리:</label>
-            <input type="text" id="category" th:value="${post.categoryId}"><br>
+            <input type="text" id="category" th:value="${post.categoryName}"><br>
 
             <label for="content">
                 * 내용
@@ -57,16 +57,16 @@
         <button type="button" th:onclick="'updatePosts(' + ${post.postId} + ')'" class="btns btn_bdr1 btn_mid">수정</button>
         <button type="button" th:onclick="'deletePosts(' + ${post.postId} + ')'" class="btns btn_bdr1 btn_mid">삭제</button>
         <button type="button" th:onclick="goListPage()" class="btns btn_bdr3 btn_mid">뒤로</button>
-    </p><br><br>
+    </p><br>
 
-    <div id="commentList">
-        <div th:if="${post.comments != null and not #lists.isEmpty(post.comments)}" th:each="comment : ${post.comments}">
-            <div>
+    <div id="comment_parent">
+        <div id="comment_first_child" th:if="${post.comments != null and not #lists.isEmpty(post.comments)}" th:each="comment : ${post.comments}">
+            <div id="comment_second_child">
                 <!-- 일반 댓글 표시 -->
                 <!-- 댓글 등록시 일반 댓글의 commentId를 가져가서 서버에 넘긴 후 에 INSERT 하는 걸로 -->
-                <p th:if="${!comment.path.contains('-')}" th:text="${comment.content}" th:attr="data-comment-id=${comment.commentId}"></p>
+                <p id="parent" th:if="${!comment.path.contains('-')}" th:text="${comment.content}" th:attr="data-comment-id=${comment.commentId}"></p>
                 <!-- 대댓글 표시 -->
-                <div th:if="${comment.path != null and comment.path.contains('-')}" th:attr="data-parent-id=${comment.parentId}">
+                <div id="child" th:if="${comment.path != null and comment.path.contains('-')}" th:attr="data-parent-id=${comment.parentId}">
                     <ul>
                         <li th:text="${comment.content}"></li>
                     </ul>
@@ -74,11 +74,11 @@
             </div>
         </div>
     </div>
-    <!--<div id="comment-form" style="display: none;">-->
     <div id="commentForm">
-        <textarea id="commentContent" rows="3"></textarea>
-        <button id="submitCommentBtn">댓글 등록</button>
+        <textarea id="commentContent" rows="3"></textarea><br>
+        <button type="button" th:onclick="'saveComment(' + ${post.postId} + ')'" class="submitCommentBtn" id="submitCommentBtn">댓글 등록</button>
     </div><br><br>
+    <!--<div id="comment-form" style="display: none;">-->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="/js/common/common.js"></script>
     <script src="/js/common/message.js"></script>
