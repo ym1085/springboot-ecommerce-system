@@ -10,7 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,41 +32,58 @@ public class CommentService {
     }
 
     @Transactional
-    public int saveComment(CommentRequestDto commentRequestDto) {
-        // 대댓글을 등록하는 경우 부모 댓글(commentId)가 존재하는지 먼저 확인 후 대댓글 등록을 진행 한다
-        if (commentRequestDto.getParentId() != null && !isExistsCommentId(commentRequestDto.getParentId())) {
-            log.error("parent comment does not exist at the time of the reply, parentId = {}", commentRequestDto.getParentId());
-            return MessageCode.FAIL.getCode();
+    public List<CommentResponseDto> saveComment(CommentRequestDto commentRequestDto) {
+        // 대댓글 등록 전 부모 댓글 존재 유무 판단, 일반 댓글은 해당 없음
+        if (commentRequestDto.getParentId() != null) {
+            if (!isExistsCommentsCountByParentId(commentRequestDto.getParentId())) {
+                // https://velog.io/@ychxexn/Collections.emptyList-vs-new-ArrayList
+                log.error("commentId, parentId not exist!, commentId = {}, parentId = {}", commentRequestDto.getCommentId(), commentRequestDto.getParentId());
+                return Collections.emptyList();
+            }
         }
+
         Comment comment = new Comment(commentRequestDto);
-        return commentMapper.saveComment(comment); // 일반 댓글 등록
+        MessageCode messageCode = (commentMapper.saveComment(comment) > 0) ? MessageCode.SUCCESS_SAVE_COMMENT : MessageCode.FAIL_SAVE_COMMENT;
+
+        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+        if (messageCode == MessageCode.SUCCESS_SAVE_COMMENT) {
+            commentResponseDtos = commentMapper.getComments(commentRequestDto.getPostId())
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .map(CommentResponseDto::new)
+                    .collect(Collectors.toList());
+        }
+        return commentResponseDtos;
     }
 
-    private boolean isExistsCommentId(Long parentId) {
-        return commentMapper.getCommentCountById(parentId) > 0;
+    private boolean isExistsCommentsCountByParentId(Long parentId) {
+        return commentMapper.getCommentCountByCommentId(parentId) > 0;
     }
 
     @Transactional
-    public int deleteCommentById(CommentRequestDto commentRequestDto) {
-        if (commentRequestDto.getCommentId() == null && commentRequestDto.getParentId() == null) {
-            log.error("comment ID and parent comment ID do not exist error!");
-            return MessageCode.FAIL.getCode();
+    public MessageCode deleteCommentById(CommentRequestDto commentRequestDto) {
+        if (!commentRequestDto.hasBothIds()) {
+            log.error("commentId, parentId not exist!");
+            return MessageCode.FAIL_DELETE_COMMENT;
         }
 
-        int result = 0;
+        MessageCode messageCode = null;
         Comment comment = new Comment(commentRequestDto);
-        if (commentRequestDto.getCommentId() != null && commentRequestDto.getParentId() != null) {
-            result = commentMapper.deleteCommentByCommentIdAndParentId(comment); // 댓글 + 대댓글 전부 삭제
+
+        if (commentRequestDto.hasBothIds()) { // commentId + parentId ==> null 이 아니면 단일, 대댓글 전부 삭제
+            messageCode = (commentMapper.deleteCommentByCommentIdAndParentId(comment) > 0)
+                    ? MessageCode.SUCCESS_DELETE_COMMENT
+                    : MessageCode.FAIL_DELETE_COMMENT;
         } else {
-            Long commentId = comment.getCommentId();
-            boolean isExistsChildCount = getChildCommentCount(commentId);
-            if (isExistsChildCount) { // 자식 댓글이 있는 경우 삭제 하면 안됨
-                log.error("comment number where the child reply exists, error, commentId = {}", commentId);
-                return MessageCode.FAIL.getCode();
+            if (getChildCommentCount(comment.getCommentId())) { // 자식 댓글이 있는 경우 삭제를 막기 위해 아래 로직 구현
+                log.error("comment number where the child reply exists, error, commentId = {}", comment.getCommentId());
+                return MessageCode.FAIL_DELETE_COMMENT;
             }
-            result = commentMapper.deleteCommentByCommentId(comment); // 대댓글, 단일 댓글 삭제
+            messageCode = (commentMapper.deleteCommentByCommentId(comment) > 0)
+                    ? MessageCode.SUCCESS_DELETE_COMMENT
+                    : MessageCode.FAIL_DELETE_COMMENT;
         }
-        return result;
+        return messageCode;
     }
 
     private boolean getChildCommentCount(Long commentId) {
@@ -71,8 +91,10 @@ public class CommentService {
     }
 
     @Transactional
-    public int updateCommentById(CommentRequestDto commentRequestDto) {
+    public MessageCode updateCommentById(CommentRequestDto commentRequestDto) {
         Comment comment = new Comment(commentRequestDto);
-        return commentMapper.updateCommentById(comment);
+        return (commentMapper.updateCommentById(comment) > 0)
+                ? MessageCode.SUCCESS_UPDATE_COMMENT
+                : MessageCode.FAIL_UPDATE_COMMENT;
     }
 }

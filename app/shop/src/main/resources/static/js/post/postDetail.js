@@ -1,4 +1,5 @@
 const URL_BY_POST_ID = '/api/v1/post/{id}';
+const URL_SAVE_COMMENT = '/api/v1/post/{postId}/comments';
 
 let postInfo = {
     postId: document.getElementById('postId'),
@@ -132,4 +133,94 @@ function updatePosts(postId) {
     } else {
         showMessage(messages.COMMON_FRONT_ERROR_MSG.message);
     }
+}
+
+// 굳이 재사용 안할 것 같기는 하지만...
+const renderParentComment = (comment, parentElement) => {
+    const parent = document.createElement('p');
+    parent.textContent = comment.content;
+    parent.setAttribute('id', 'parent');
+    parent.setAttribute('data-comment-id', comment.commentId);
+    parentElement.appendChild(parent);
+};
+
+const renderChildComment = (comment, parentElement) => {
+    const child = document.createElement('div');
+    child.setAttribute('id', 'child');
+    child.setAttribute('data-parent-id', comment.parentId);
+
+    const commentListElement = document.createElement('ul');
+    const commentListItem = document.createElement('li');
+    commentListItem.textContent = comment.content;
+    commentListElement.appendChild(commentListItem);
+
+    child.appendChild(commentListElement);
+    parentElement.appendChild(child);
+};
+
+const renderCommentFirstChild = comments => {
+    const commentContent = document.getElementById('commentContent');
+    const commentParent = document.getElementById('comment_parent');
+    commentParent.innerHTML = '';
+
+    comments.forEach(comment => {
+        const commentSecondChild = document.createElement('div');
+        commentSecondChild.setAttribute('id', 'comment_second_child');
+
+        if (!comment.path || !comment.path.includes('-')) {
+            renderParentComment(comment, commentSecondChild); // 댓글
+        } else {
+            renderChildComment(comment, commentSecondChild); // 대댓글
+        }
+        commentParent.appendChild(commentSecondChild); // 댓글 랜더링
+        commentContent.value = '';
+    });
+};
+
+function saveComment(postId) {
+    const commentContent = document.getElementById('commentContent');
+    if (isEmpty(commentContent.value)) {
+        showMessage(messages.EMPTY_COMMENT_CONTENT.message);
+        focus(commentContent);
+        return;
+    } else if (commentContent.value.length > 300) {
+        showMessage(messages.OVER_LENGTH_COMMENT.message);
+        focus(commentContent);
+        return;
+    }
+
+    if (isEmpty(postId)) {
+        showMessage(messages.EMPTY_POST_ID.message);
+        return;
+    }
+
+    const request = queryBuilder
+        .createQueryBuilder()
+        .url(URL_SAVE_COMMENT)
+        .method('POST')
+        .contentType('application/json')
+        .pathVariable({
+            postId: postId,
+        })
+        .requestBody({
+            content: commentContent.value,
+        })
+        .build();
+
+    const response = commonFetchTemplate
+        .sendFetchRequest(request)
+        .then(response => response.json())
+        .then(result => {
+            if (result.code === messages.SUCCESS_SAVE_COMMENT.code) {
+                showMessage(messages.SUCCESS_SAVE_COMMENT.message);
+                renderCommentFirstChild(result.result);
+            } else if (result.code === messages.FAIL_SAVE_COMMENT.code) {
+                showMessage(messages.FAIL_SAVE_COMMENT.message);
+            } else if (result.code === messages.EMPTY_POST_ID.code) {
+                showMessage(messages.EMPTY_POST_ID.message);
+            } else {
+                showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+            }
+        })
+        .catch(error => handleResponseError(error, request));
 }

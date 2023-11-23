@@ -47,18 +47,4 @@ public class ResponseFactory {
                 new CommonResponse(code, message, errorMessage), status
         );
     }
-
-    /**
-     * 게시글 수정, 삭제.. 등등 결과값(0: 실패, 1: 성공)에 따라서 분기 처리를 하기 위해 사용
-     *
-     * @param result
-     * @param successCode
-     * @param failCode
-     * @return
-     */
-    public static ResponseEntity<CommonResponse> handlerResponseFactory(int result, MessageCode successCode, MessageCode failCode) {
-        return (result == 0)
-                ? createResponseFactory(failCode.getCode(), failCode.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR)
-                : createResponseFactory(successCode.getCode(), successCode.getMessage(), HttpStatus.OK);
-    }
 }
