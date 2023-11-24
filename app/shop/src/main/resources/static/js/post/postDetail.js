@@ -97,7 +97,6 @@ function updatePosts(postId) {
         alert('게시글 수정이 중지 되었습니다.');
         return;
     }
-    alert(`postId => ${postId}`);
 
     if (validatePostInfo()) {
         const request = queryBuilder
@@ -114,7 +113,6 @@ function updatePosts(postId) {
                 fixedYn: postInfo.fixedYn.value === 'on' ? 'Y' : 'N',
             })
             .build();
-        alert(`postId => ${postId}`);
 
         const response = commonFetchTemplate
             .sendFetchRequest(request)
@@ -135,46 +133,114 @@ function updatePosts(postId) {
     }
 }
 
-// 굳이 재사용 안할 것 같기는 하지만...
-const renderParentComment = (comment, parentElement) => {
-    const parent = document.createElement('p');
-    parent.textContent = comment.content;
-    parent.setAttribute('id', 'parent');
-    parent.setAttribute('data-comment-id', comment.commentId);
-    parentElement.appendChild(parent);
+const renderComment = (comment, parentElement) => {
+    const commentListArea = document.createElement('commentListArea');
+    // 댓글 영역 <div></div>
+    const commentInfo = document.createElement('div');
+    commentInfo.setAttribute('id', 'commentInfo');
+
+    // 댓글 내용
+    const commentSpan = document.createElement('span');
+    commentSpan.textContent = comment.content;
+    commentSpan.setAttribute('style', 'margin-right: 10px;');
+    commentSpan.setAttribute('id', 'comment');
+    commentSpan.setAttribute('data-comment-id', comment.commentId);
+
+    // 수정 버튼
+    const editButton = document.createElement('button');
+    editButton.textContent = '수정';
+    editButton.setAttribute('style', 'margin-right: 10px;');
+    editButton.setAttribute('type', 'button');
+    editButton.setAttribute('onclick', `showEditBox(${comment.commentId})`);
+
+    // 삭제 버튼
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '삭제';
+    deleteButton.setAttribute('style', 'margin-right: 10px;');
+    deleteButton.setAttribute('type', 'button');
+    deleteButton.setAttribute('onclick', `deleteComment(${comment.commentId})`);
+
+    // 답글달기 버튼
+    const replyButton = document.createElement('button');
+    replyButton.textContent = '답글달기';
+    replyButton.setAttribute('style', 'margin-right: 10px;');
+    replyButton.setAttribute('type', 'button');
+    replyButton.setAttribute('onclick', `replyToComment(${comment.commentId})`);
+
+    // 댓글 영역에 댓글 내용 + 버튼 추가
+    commentInfo.appendChild(commentSpan);
+    commentInfo.appendChild(editButton);
+    commentInfo.appendChild(deleteButton);
+    commentInfo.appendChild(replyButton);
+
+    // 댓글 랜더링
+    commentListArea.appendChild(commentInfo);
+    parentElement.appendChild(commentListArea);
 };
 
-const renderChildComment = (comment, parentElement) => {
-    const child = document.createElement('div');
-    child.setAttribute('id', 'child');
-    child.setAttribute('data-parent-id', comment.parentId);
+const renderNestedComment = (comment, parentElement) => {
+    const commentListArea = document.createElement('commentListArea');
+    // 대댓글 영역 <div></div>
+    const nestedComment = document.createElement('div');
+    nestedComment.setAttribute('id', 'nestedComment');
+    nestedComment.setAttribute('data-parent-id', comment.parentId);
 
-    const commentListElement = document.createElement('ul');
-    const commentListItem = document.createElement('li');
-    commentListItem.textContent = comment.content;
-    commentListElement.appendChild(commentListItem);
+    // 대댓글을 계층 구조 방식으로 그리기 위한 태그 영역
+    const commentList = document.createElement('ul');
+    const commentItem = document.createElement('li');
 
-    child.appendChild(commentListElement);
-    parentElement.appendChild(child);
+    // 대댓글 내용
+    const commentSpan = document.createElement('span');
+    commentSpan.textContent = comment.content;
+    commentSpan.setAttribute('style', 'margin-right: 10px;');
+    commentSpan.style.marginRight = '10px';
+
+    // 수정 버튼
+    const editButton = document.createElement('button');
+    editButton.textContent = '수정';
+    editButton.setAttribute('style', 'margin-right: 10px;');
+    editButton.setAttribute('type', 'button');
+    editButton.setAttribute('onclick', `editComment(${comment.commentId})`);
+
+    // 삭제 버튼
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '삭제';
+    deleteButton.setAttribute('style', 'margin-right: 10px;');
+    deleteButton.setAttribute('type', 'button');
+    deleteButton.setAttribute('onclick', `deleteComment(${comment.commentId})`);
+
+    // 대댓글 영역에 수정 + 삭제 버튼 추가
+    commentItem.appendChild(commentSpan);
+    commentItem.appendChild(editButton);
+    commentItem.appendChild(deleteButton);
+
+    commentList.appendChild(commentItem);
+    nestedComment.appendChild(commentList);
+
+    // 대댓글 랜더링
+    commentListArea.appendChild(nestedComment);
+    parentElement.appendChild(commentListArea);
 };
 
 const renderCommentFirstChild = comments => {
+    const commentList = document.getElementById('commentList');
     const commentContent = document.getElementById('commentContent');
-    const commentParent = document.getElementById('comment_parent');
-    commentParent.innerHTML = '';
+
+    // 모든 자식 노드 삭제 : https://hianna.tistory.com/722
+    commentList.replaceChildren();
 
     comments.forEach(comment => {
-        const commentSecondChild = document.createElement('div');
-        commentSecondChild.setAttribute('id', 'comment_second_child');
-
         if (!comment.path || !comment.path.includes('-')) {
-            renderParentComment(comment, commentSecondChild); // 댓글
+            renderComment(comment, commentList);
         } else {
-            renderChildComment(comment, commentSecondChild); // 대댓글
+            renderNestedComment(comment, commentList);
         }
-        commentParent.appendChild(commentSecondChild); // 댓글 랜더링
-        commentContent.value = '';
     });
+
+    // 입력 필드 초기화
+    if (commentContent) {
+        commentContent.value = '';
+    }
 };
 
 function saveComment(postId) {
@@ -214,9 +280,9 @@ function saveComment(postId) {
             if (result.code === messages.SUCCESS_SAVE_COMMENT.code) {
                 showMessage(messages.SUCCESS_SAVE_COMMENT.message);
                 renderCommentFirstChild(result.result);
-            } else if (result.code === messages.FAIL_SAVE_COMMENT.code) {
+            } else if (result.code === messages.FAIL_SAVE_COMMENT.message) {
                 showMessage(messages.FAIL_SAVE_COMMENT.message);
-            } else if (result.code === messages.EMPTY_POST_ID.code) {
+            } else if (result.code === messages.EMPTY_POST_ID.message) {
                 showMessage(messages.EMPTY_POST_ID.message);
             } else {
                 showMessage(messages.COMMON_SERVER_ERROR_MSG.message);

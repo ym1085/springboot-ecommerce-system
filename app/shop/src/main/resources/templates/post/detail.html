@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>게시판 상세 화면</title>
+    <meta charset="UTF-8">
+    <title>게시판 상세 화면</title>
 </head>
 <body>
 <div class="page_tits">
@@ -59,21 +59,35 @@
         <button type="button" th:onclick="goListPage()" class="btns btn_bdr3 btn_mid">뒤로</button>
     </p><br>
 
-    <div id="comment_parent">
-        <div id="comment_first_child" th:if="${post.comments != null and not #lists.isEmpty(post.comments)}" th:each="comment : ${post.comments}">
-            <div id="comment_second_child">
-                <!-- 일반 댓글 표시 -->
-                <!-- 댓글 등록시 일반 댓글의 commentId를 가져가서 서버에 넘긴 후 에 INSERT 하는 걸로 -->
-                <p id="parent" th:if="${!comment.path.contains('-')}" th:text="${comment.content}" th:attr="data-comment-id=${comment.commentId}"></p>
-                <!-- 대댓글 표시 -->
-                <div id="child" th:if="${comment.path != null and comment.path.contains('-')}" th:attr="data-parent-id=${comment.parentId}">
-                    <ul>
-                        <li th:text="${comment.content}"></li>
-                    </ul>
-                </div>
+    <!-- 댓글 -->
+    <div id="commentList">
+        <div id="commentListArea" th:if="${post.comments != null and not #lists.isEmpty(post.comments)}" th:each="comment : ${post.comments}">
+            <div id="commentInfo" th:if="${comment.path != null and !comment.path.contains('-')}">
+                <span id="comment"  th:text="${comment.content}" th:attr="data-comment-id=${comment.commentId}"></span>
+                <button type="button" th:onclick="'showEditBox(' + ${comment.commentId} + ')'">수정</button>
+                <button type="button" th:onclick="'deleteComment(' + ${comment.commentId} + ')'">삭제</button>
+                <button type="button" th:onclick="'replyToComment(' + ${comment.commentId} + ')'">답글달기</button>
+            </div>
+
+            <div id="commentEdit" th:if="${comment.path != null and !comment.path.contains('-')}" style="display:none;">
+                <input type="text" id="parent_edit_comment" th:value="${comment.content}" />
+                <button type="button" th:onclick="'submitEdit(' + ${comment.commentId} + ')'">수정 완료</button>
+                <button type="button" th:onclick="'cancelEdit(' + ${comment.commentId} + ')'">취소</button>
+            </div>
+
+            <div id="nestedComment" th:if="${comment.path != null and comment.path.contains('-')}" th:attr="data-parent-id=${comment.parentId}">
+                <ul>
+                    <li>
+                        <span th:text="${comment.content}">${comment.content}</span>
+                        <button type="button" th:onclick="'editComment(' + ${comment.commentId} + ')'">수정</button>
+                        <button type="button" th:onclick="'deleteComment(' + ${comment.commentId} + ')'">삭제</button>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
+
+    <!-- 댓글 등록 -->
     <div id="commentForm">
         <textarea id="commentContent" rows="3"></textarea><br>
         <button type="button" th:onclick="'saveComment(' + ${post.postId} + ')'" class="submitCommentBtn" id="submitCommentBtn">댓글 등록</button>
