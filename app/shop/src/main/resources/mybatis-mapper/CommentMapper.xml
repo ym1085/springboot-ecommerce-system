@@ -140,7 +140,7 @@
     </select>
 
     <!-- 댓글 수정, 댓글은 1:1 로만 수정이 가능 -->
-    <update id="updateCommentById" parameterType="Comment">
+    <update id="updateCommentByCommentId" parameterType="Comment">
         UPDATE COMMENT
         SET CONTENT = #{content}
         WHERE COMMENT_ID = #{commentId}

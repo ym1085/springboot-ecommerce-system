@@ -21,6 +21,6 @@ public interface CommentMapper {
 
     int getChildCommentCountById(Long commentId);
 
-    int updateCommentById(Comment comment);
+    int updateCommentByCommentId(Comment comment);
 
 }

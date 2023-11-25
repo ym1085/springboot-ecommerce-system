@@ -67,9 +67,10 @@ public class CommentRestController {
         );
     }
 
-    @PutMapping("/post/comments")
-    public ResponseEntity<CommonResponse> updateCommentById(
+    @PutMapping("/post/{postId}/comments")
+    public ResponseEntity<CommonResponse> updateCommentByCommentId(
             @Valid @RequestBody CommentRequestDto commentRequestDto,
+            @PathVariable("postId") Long postId,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -81,14 +82,14 @@ public class CommentRestController {
                     HttpStatus.BAD_REQUEST
             );
         }
+        commentRequestDto.setPostId(postId);
 
-        MessageCode messageCode = commentService.updateCommentById(commentRequestDto);
+        List<CommentResponseDto> comments = commentService.updateCommentByCommentId(commentRequestDto);
         return ResponseFactory.createResponseFactory(
-                messageCode.getCode(),
-                messageCode.getMessage(),
-                (messageCode == MessageCode.SUCCESS_UPDATE_COMMENT)
-                        ? HttpStatus.OK
-                        : HttpStatus.INTERNAL_SERVER_ERROR
+                MessageCode.SUCCESS_UPDATE_COMMENT.getCode(),
+                MessageCode.SUCCESS_UPDATE_COMMENT.getMessage(),
+                comments,
+                HttpStatus.OK
         );
     }
 

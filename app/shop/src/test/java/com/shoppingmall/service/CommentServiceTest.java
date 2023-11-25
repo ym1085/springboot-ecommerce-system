@@ -149,7 +149,7 @@ class CommentServiceTest {
                 .build());
 
         //when
-        int result = commentMapper.updateCommentById(comment);
+        int result = commentMapper.updateCommentByCommentId(comment);
 
         //then
         assertThat(result).isGreaterThan(0);

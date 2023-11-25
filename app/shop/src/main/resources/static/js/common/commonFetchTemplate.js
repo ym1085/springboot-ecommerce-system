@@ -80,6 +80,7 @@ const commonFetchTemplate = {
     setRequestURLByExtractedPathVariables: function (request) {
         for (let key in request.pathVariable) {
             // pathVariable 로 들어온 경우 /api/v1/{id} -> /api/v1/54 형태로 변경해서 서버에 요청
+            // Todo: 주의! pathVariable에 넣은 key값이 URL로 표현되기에 서버의 key 값이랑 맞춰줘야 한다
             URL = URL.replace(`{${key}}`, encodeURIComponent(request.pathVariable[key]));
         }
     },

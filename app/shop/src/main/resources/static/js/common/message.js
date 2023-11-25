@@ -192,6 +192,14 @@ const messages = {
         message: '댓글 등록에 성공 하였습니다.',
         code: 1200,
     },
+    SUCCESS_DELETE_COMMENT: {
+        message: '댓글 삭제에 성공 하였습니다.',
+        code: 1201,
+    },
+    SUCCESS_UPDATE_COMMENT: {
+        message: '댓글 수정에 성공 하였습니다.',
+        code: 1202,
+    },
     FAIL_SAVE_MEMBER: {
         message: '회원 가입 진행 중 오류가 발생하였습니다.',
         code: 2100,
@@ -219,6 +227,14 @@ const messages = {
     FAIL_SAVE_COMMENT: {
         message: '댓글 등록에 실패하였습니다. 다시 시도해주세요.',
         code: 2003,
+    },
+    FAIL_DELETE_COMMENT: {
+        message: '댓글 삭제에 실패하였습니다. 다시 시도해주세요.',
+        code: 2004,
+    },
+    FAIL_UPDATE_COMMENT: {
+        message: '댓글 수정에 실패하였습니다. 다시 시도해주세요..',
+        code: 2005,
     },
     END_EMAIL_AUTH_TIME: {
         message: '이메일 인증 시간이 모두 경과하였습니다. 다시 시도해주세요.',
