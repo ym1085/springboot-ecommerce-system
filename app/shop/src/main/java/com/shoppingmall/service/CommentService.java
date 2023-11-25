@@ -91,10 +91,18 @@ public class CommentService {
     }
 
     @Transactional
-    public MessageCode updateCommentById(CommentRequestDto commentRequestDto) {
+    public List<CommentResponseDto> updateCommentByCommentId(CommentRequestDto commentRequestDto) {
         Comment comment = new Comment(commentRequestDto);
-        return (commentMapper.updateCommentById(comment) > 0)
-                ? MessageCode.SUCCESS_UPDATE_COMMENT
-                : MessageCode.FAIL_UPDATE_COMMENT;
+        MessageCode messageCode = (commentMapper.updateCommentByCommentId(comment) > 0) ? MessageCode.SUCCESS_UPDATE_COMMENT : MessageCode.FAIL_UPDATE_COMMENT;
+
+        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+        if (messageCode == MessageCode.SUCCESS_UPDATE_COMMENT) {
+            commentResponseDtos = commentMapper.getComments(commentRequestDto.getPostId())
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .map(CommentResponseDto::new)
+                    .collect(Collectors.toList());
+        }
+        return commentResponseDtos;
     }
 }

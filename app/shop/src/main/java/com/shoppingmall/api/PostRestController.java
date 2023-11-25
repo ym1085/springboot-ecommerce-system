@@ -95,7 +95,7 @@ public class PostRestController {
             );
         }
 
-        postRequestDto.setMemberId(1L); // TODO: replace hard code
+        postRequestDto.setMemberId(1L);
         postRequestDto.setPostId(id);
 
         MessageCode messageCode = postService.updatePost(postRequestDto);
@@ -114,7 +114,7 @@ public class PostRestController {
         return ResponseFactory.createResponseFactory(
                 messageCode.getCode(),
                 messageCode.getMessage(),
-                (messageCode == MessageCode.SUCCESS_UPDATE_POST)
+                (messageCode == MessageCode.SUCCESS_DELETE_POST)
                         ? HttpStatus.OK
                         : HttpStatus.INTERNAL_SERVER_ERROR
         );

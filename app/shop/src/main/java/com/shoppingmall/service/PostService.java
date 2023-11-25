@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -104,9 +105,6 @@ public class PostService {
     public MessageCode updatePost(PostRequestDto postRequestDto) {
         // Todo: 방어 로직 허술, 아래 로직 수정 필요
         Long result = postMapper.updatePostById(new Post(postRequestDto));
-        if (result == 0) {
-            return MessageCode.FAIL_UPDATE_POST;
-        }
 
         List<MultipartFile> files;
         if (!isEmptyFiles(postRequestDto.getFiles())) {
@@ -150,17 +148,22 @@ public class PostService {
 
     @Transactional
     public MessageCode deletePost(long postId) {
-        Long deletedPostId = postMapper.deletePostById(postId);
-        if (deletedPostId == 0) {
-            return MessageCode.NOT_FOUND_POST_ID;
-        }
+        MessageCode messageCode = MessageCode.FAIL_DELETE_POST;
+        Long deletedPost = postMapper.deletePostById(postId);
 
         List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
-        fileHandlerHelper.deleteFiles(fileResponseDtos);
-
-        return (fileMapper.deleteUpdateFilesByPostId(postId) > 0)
-                ? MessageCode.SUCCESS_DELETE_FILES
-                : MessageCode.FAIL_DELETE_FILES;
+        if (deletedPost > 0 && !CollectionUtils.isEmpty(fileResponseDtos)) {
+            fileHandlerHelper.deleteFiles(fileResponseDtos);
+            int deleteFiles = fileMapper.deleteUpdateFilesByPostId(postId);
+            if (deletedPost > 0 && deleteFiles > 0) {
+                messageCode = MessageCode.SUCCESS_DELETE_POST;
+            }
+        } else {
+            if (deletedPost > 0) {
+                messageCode = MessageCode.SUCCESS_DELETE_POST;
+            }
+        }
+        return messageCode;
     }
 
     private List<FileResponseDto> getFileResponseDtos(long postId) {
