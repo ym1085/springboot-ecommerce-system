@@ -436,7 +436,5 @@ const commentInfo = {
 
     showReplyToCommentEditBox: function (element, commentId) {
         console.log(`commentId => ${commentId}`);
-
-        nestedCommentSubEdit;
     },
 };
