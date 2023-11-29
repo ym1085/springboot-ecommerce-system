@@ -24,11 +24,8 @@ public class CommentService {
     private final CommentMapper commentMapper;
 
     @Transactional(readOnly = true)
-    public List<CommentResponseDto> getComments(Long postId) {
-        return commentMapper.getComments(postId)
-                .stream()
-                .map(CommentResponseDto::new)
-                .collect(Collectors.toList());
+    public List<CommentResponseDto> getCommentsByPostId(Long postId) {
+        return this.getCommentsByPostId(postId);
     }
 
     @Transactional
@@ -47,11 +44,7 @@ public class CommentService {
 
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
         if (messageCode == MessageCode.SUCCESS_SAVE_COMMENT) {
-            commentResponseDtos = commentMapper.getComments(commentRequestDto.getPostId())
-                    .stream()
-                    .filter(Objects::nonNull)
-                    .map(CommentResponseDto::new)
-                    .collect(Collectors.toList());
+            commentResponseDtos = this.getCommentsByPostId(commentRequestDto);
         }
         return commentResponseDtos;
     }
@@ -60,49 +53,57 @@ public class CommentService {
         return commentMapper.getCommentCountByCommentId(parentId) > 0;
     }
 
+    /**
+     * 부모 댓글, 대댓글 삭제
+     *
+     * commentId, parentId 둘다 파라미터로 들어오는 경우는 '부모 댓글 + 대댓글 삭제',
+     * commentId만 파라미터로 들어오면 '대댓글 삭제'
+     *
+     * 중복 로직 수정은 고민 해봅시다
+     */
     @Transactional
-    public MessageCode deleteCommentById(CommentRequestDto commentRequestDto) {
-        if (!commentRequestDto.hasBothIds()) {
-            log.error("commentId, parentId not exist!");
-            return MessageCode.FAIL_DELETE_COMMENT;
-        }
-
-        MessageCode messageCode = null;
+    public List<CommentResponseDto> deleteComments(CommentRequestDto commentRequestDto) {
         Comment comment = new Comment(commentRequestDto);
+        MessageCode messageCode = commentMapper.deleteComment(comment) > 0 ? MessageCode.SUCCESS_DELETE_COMMENT : MessageCode.FAIL_DELETE_COMMENT; // 댓글 + 대댓글 삭제
 
-        if (commentRequestDto.hasBothIds()) { // commentId + parentId ==> null 이 아니면 단일, 대댓글 전부 삭제
-            messageCode = (commentMapper.deleteCommentByCommentIdAndParentId(comment) > 0)
-                    ? MessageCode.SUCCESS_DELETE_COMMENT
-                    : MessageCode.FAIL_DELETE_COMMENT;
-        } else {
-            if (getChildCommentCount(comment.getCommentId())) { // 자식 댓글이 있는 경우 삭제를 막기 위해 아래 로직 구현
-                log.error("comment number where the child reply exists, error, commentId = {}", comment.getCommentId());
-                return MessageCode.FAIL_DELETE_COMMENT;
-            }
-            messageCode = (commentMapper.deleteCommentByCommentId(comment) > 0)
-                    ? MessageCode.SUCCESS_DELETE_COMMENT
-                    : MessageCode.FAIL_DELETE_COMMENT;
+        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+        if (messageCode == MessageCode.SUCCESS_DELETE_COMMENT) {
+            commentResponseDtos = this.getCommentsByPostId(commentRequestDto);
         }
-        return messageCode;
+
+        return commentResponseDtos;
     }
 
-    private boolean getChildCommentCount(Long commentId) {
-        return commentMapper.getChildCommentCountById(commentId) > 0;
+    @Transactional
+    public List<CommentResponseDto> deleteCommentsReply(CommentRequestDto commentRequestDto) {
+        Comment comment = new Comment(commentRequestDto);
+        MessageCode messageCode = commentMapper.deleteCommentReply(comment) > 0 ? MessageCode.SUCCESS_DELETE_COMMENT : MessageCode.FAIL_DELETE_COMMENT; // 대댓글 삭제
+
+        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+        if (messageCode == MessageCode.SUCCESS_DELETE_COMMENT) {
+            commentResponseDtos = this.getCommentsByPostId(commentRequestDto);
+        }
+
+        return commentResponseDtos;
     }
 
     @Transactional
     public List<CommentResponseDto> updateCommentByCommentId(CommentRequestDto commentRequestDto) {
         Comment comment = new Comment(commentRequestDto);
-        MessageCode messageCode = (commentMapper.updateCommentByCommentId(comment) > 0) ? MessageCode.SUCCESS_UPDATE_COMMENT : MessageCode.FAIL_UPDATE_COMMENT;
+        MessageCode messageCode = commentMapper.updateCommentByCommentId(comment) > 0 ? MessageCode.SUCCESS_UPDATE_COMMENT : MessageCode.FAIL_UPDATE_COMMENT;
 
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
         if (messageCode == MessageCode.SUCCESS_UPDATE_COMMENT) {
-            commentResponseDtos = commentMapper.getComments(commentRequestDto.getPostId())
-                    .stream()
-                    .filter(Objects::nonNull)
-                    .map(CommentResponseDto::new)
-                    .collect(Collectors.toList());
+            commentResponseDtos = this.getCommentsByPostId(commentRequestDto);
         }
         return commentResponseDtos;
+    }
+
+    private List<CommentResponseDto> getCommentsByPostId(CommentRequestDto commentRequestDto) {
+        return commentMapper.getComments(commentRequestDto.getPostId())
+                .stream()
+                .filter(Objects::nonNull)
+                .map(CommentResponseDto::new)
+                .collect(Collectors.toList());
     }
 }

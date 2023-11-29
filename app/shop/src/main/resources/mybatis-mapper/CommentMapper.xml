@@ -22,7 +22,7 @@
               AND PARENT.POST_ID = #{postId}
             UNION ALL
             SELECT
-                CHILD.POST_ID,
+                CHILD.COMMENT_ID,
                 CHILD.PARENT_ID,
                 CHILD.POST_ID,
                 CHILD.CONTENT,
@@ -103,30 +103,30 @@
         )
     </insert>
 
-    <!-- 대댓글이 있는 부모 댓글 삭제 시 사용 -->
-    <update id="deleteCommentByCommentIdAndParentId" parameterType="Comment">
+    <!-- 부모 댓글 삭제 시 하위 대댓글도 전부 'N' 삭제 처리 -->
+    <update id="deleteComment" parameterType="Comment">
         UPDATE COMMENT
         SET DEL_YN = 'Y'
-        WHERE COMMENT_ID IN ( /* 일반 댓글 삭제 시 하위 대댓글이 존재하는 경우 */
+        WHERE COMMENT_ID IN (
             SELECT COMMENT_ID
             FROM (
                 SELECT COMMENT_ID
                 FROM COMMENT
                 WHERE COMMENT_ID = #{commentId}
-                OR PARENT_ID = #{parentId}
+                OR PARENT_ID = #{commentId}
             ) A
         )
     </update>
 
-    <!-- 단일 댓글 삭제 시 사용 -->
-    <update id="deleteCommentByCommentId" parameterType="Comment">
+    <!-- 하위 대댓글 삭제 시 사용 -->
+    <update id="deleteCommentReply" parameterType="Comment">
         UPDATE COMMENT
         SET DEL_YN = 'Y'
         WHERE COMMENT_ID = #{commentId}
     </update>
 
     <!-- 하위 대댓글 존재 여부 확인  -->
-    <select id="getChildCommentCountById" parameterType="long" resultType="int">
+    <select id="getCommentReplyCountByCommentId" parameterType="long" resultType="int">
         SELECT COUNT(*) AS CNT
         FROM COMMENT
         WHERE COMMENT_ID IN ( /* 일반 댓글 삭제 시 하위 대댓글이 존재하는 경우 */

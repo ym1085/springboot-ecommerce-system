@@ -25,7 +25,7 @@
             <label for="title">* 제목:</label>
             <input type="text" id="title" th:value="${post.title}"><br>
 
-            <!-- Todo: 변경 필요 -->
+            <!-- select - option으로 수정 -->
             <label for="category">* 카테고리:</label>
             <input type="text" id="category" th:value="${post.categoryName}"><br>
 
@@ -60,38 +60,57 @@
     </p><br>
 
     <!-- 댓글 -->
-    <!-- https://wangtak.tistory.com/27 | https://zoetechlog.tistory.com/112 -->
+    <!-- Todo: 2023. 11. 26
+        - 수정
+            - 댓글 : 수정완료 버튼 클릭하면 postId 서버에 전달 해서 댓글 UPDATE 진행
+            - 대댓글 : 수정완료 버튼 클릭하면 postId 서버에 전달 해서 댓글 UPDATE 진행
+        - 삭제
+            - 댓글 삭제 버튼 클릭 시 해당 댓글 삭제
+                - 부모 댓글 삭제하면 하위 자식 댓글 존재하는지 확인 후 해당 자식들도 다 삭제 필요
+            - 대댓글 삭제 버튼 클릭 시 해당 대댓글 삭제
+                - 대댓글은 그냥 삭제하면 됨
+        - 답글
+            - 댓글 > 답글 클릭 > 빈 input tag 보여줌
+            - id="comment" 부분만 바꿔주고 버튼명이랑 이벤트만 바꿔주면 될 것 같은데?
+    -->
     <div id="commentList">
         <th:block th:if="${post.comments != null and not #lists.isEmpty(post.comments)}" th:each="comment : ${post.comments}">
-            <div id="commentEdit" th:if="${comment.path != null and !comment.path.contains('-') and comment.content != null and comment.content != ''}" style="display:none;">
-                <input type="text" id="commentEditContent" th:value="${comment.content}" />
-                <button id="commentEditUpdateBtn"  type="button" th:onclick="commentInfo.updateComment(this, [[${comment.commentId}]])" th:attr="data-post-id=${comment.postId}">수정 완료</button>
-                <button id="commentEditCancelBtn" type="button" th:onclick="commentInfo.cancelCommentEdit(this, [[${comment.commentId}]])">취소</button>
-                <button id="commentEditReplyBtn" type="button" th:onclick="commentInfo.showReplyToCommentEditBox(this, [[${comment.commentId}]])">답글달기</button>
+            <!-- 댓글 템플릿-->
+            <div id="commentTemplate" th:if="${comment.path != null and !comment.path.contains('-') and comment.content != null and comment.content != ''}" style="display:none;">
+                <input type="text" id="commentTemplateContent" th:value="${comment.content}" />
+                <button type="button" th:onclick="commentInfo.updateComment(this, [[${comment.commentId}]])" th:attr="data-post-id=${comment.postId}">수정 완료</button>
+                <button type="button" th:onclick="commentInfo.hideCommentEditBox(this, [[${comment.commentId}]])">취소</button>
+                <button type="button" th:onclick="commentInfo.deleteComments(this, [[${comment.commentId}]])" th:attr="data-post-id=${comment.postId}">삭제</button>
+                <button type="button" th:onclick="commentInfo.showReplyToCommentEditBox(this, [[${comment.commentId}]])">댓글 달기</button>
             </div>
 
+            <!-- 댓글 -->
             <div id="commentInfo" th:if="${comment.path != null and !comment.path.contains('-') and comment.content != null and comment.content != ''}">
-                <span id="comment"  th:text="${comment.content}" th:attr="data-comment-id=${comment.commentId}"></span>
-                <button id="commentInfoUpdateBtn" type="button" th:onclick="commentInfo.showCommentEditBox(this, [[${comment.commentId}]])">수정</button>
-                <button id="commentInfoDeleteBtn" type="button" th:onclick="commentInfo.deleteComment([[${comment.commentId}]])">삭제</button>
-                <button id="commentInfoReplyBtn" type="button" th:onclick="commentInfo.showReplyToCommentEditBox(this, [[${comment.commentId}]])">답글달기</button>
+                <span id="comment" th:text="${comment.content}" th:attr="data-comment-id=${comment.commentId}"></span>
+                <button type="button" th:onclick="commentInfo.showCommentEditBox(this, [[${comment.commentId}]])">수정</button>
+                <button type="button" th:onclick="commentInfo.deleteComments(this, [[${comment.commentId}]])" th:attr="data-post-id=${comment.postId}">삭제</button>
+                <button type="button" th:onclick="commentInfo.showReplyToCommentEditBox(this, [[${comment.commentId}]])">댓글 달기</button>
             </div>
 
-            <div id="nestedComment" th:if="${comment.path != null and comment.path.contains('-') and comment.content != null and comment.content != ''}" th:attr="data-parent-id=${comment.parentId}">
-                <ul id="nestedCommentSubEdit" class="nestedCommentSubEdit" style="display: none;">
+            <!-- 대댓글 템플릿 -->
+            <div id="commentReplyTemplate" th:if="${comment.path != null and comment.path.contains('-') and comment.content != null and comment.content != ''}" th:attr="data-parent-id=${comment.parentId}" style="display: none">
+                <ul id="commentReplySubInfoTemplate" class="commentReplySubInfoTemplate">
                     <li>
                         <input type="text" th:value="${comment.content}"></input>
-                        <button id="nestedCommentSubEditUpdateBtn" type="button" th:onclick="commentInfo.updateComment(this, [[${comment.commentId}]])" th:attr="data-post-id=${comment.postId}">수정 완료</button>
-                        <button id="nestedCommentSubEditCancelBtn" type="button" th:onclick="commentInfo.cancelNestedCommentEdit(this, [[${comment.commentId}]])">취소</button>
-                        <button id="nestedCommentSubEditDeleteBtn" type="button" th:onclick="commentInfo.deleteNestedComment([[${comment.commentId}]])">삭제</button>
+                        <button type="button" th:onclick="commentInfo.updateComment(this, [[${comment.commentId}]])" th:attr="data-post-id=${comment.postId}">수정 완료</button>
+                        <button type="button" th:onclick="commentInfo.hideCommentReplyEditBox(this, [[${comment.commentId}]])">취소</button>
+                        <button type="button" th:onclick="commentInfo.deleteCommentsReply(this, [[${comment.commentId}]])" th:attr="data-post-id=${comment.postId}">삭제</button>
                     </li>
                 </ul>
-                <ul id="nestedCommentSubInfo" class="nestedCommentSubInfo">
+            </div>
+
+            <!-- 대댓글 -->
+            <div id="commentReply" th:if="${comment.path != null and comment.path.contains('-') and comment.content != null and comment.content != ''}" th:attr="data-parent-id=${comment.parentId}">
+                <ul id="commentReplySubInfo" class="commentReplySubInfo">
                     <li>
-                        <!--<button type="button" th:onclick="showNestedCommentEditBody(this.getAttribute('data-comment-id'))" th:data-comment-id="${comment.commentId}">수정</button>-->
                         <span th:text="${comment.content}"></span>
-                        <button id="nestedCommentSubInfoUpdateBtn" type="button" th:onclick="commentInfo.showNestedCommentEditBody(this, [[${comment.commentId}]])">수정</button>
-                        <button id="nestedCommentSubInfoDeleteBtn" type="button" th:onclick="commentInfo.deleteNestedComment([[${comment.commentId}]]))">삭제</button>
+                        <button type="button" th:onclick="commentInfo.showCommentReplyEditBox(this, [[${comment.commentId}]])">수정</button>
+                        <button type="button" th:onclick="commentInfo.deleteCommentsReply(this, [[${comment.commentId}]])" th:attr="data-post-id=${comment.postId}">삭제</button>
                     </li>
                 </ul>
             </div>
@@ -103,7 +122,6 @@
         <textarea id="commentContent" rows="3"></textarea><br>
         <button type="button" th:onclick="commentInfo.saveComment([[${post.postId}]])" class="submitCommentBtn" id="submitCommentBtn">댓글 등록</button>
     </div><br><br>
-    <!--<div id="comment-form" style="display: none;">-->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="/js/common/common.js"></script>
     <script src="/js/common/message.js"></script>

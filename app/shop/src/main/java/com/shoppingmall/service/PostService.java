@@ -106,7 +106,6 @@ public class PostService {
         // Todo: 방어 로직 허술, 아래 로직 수정 필요
         Long result = postMapper.updatePostById(new Post(postRequestDto));
 
-        List<MultipartFile> files;
         if (!isEmptyFiles(postRequestDto.getFiles())) {
             try {
                 int fileUpdatedResult = updateFilesByPostId(postRequestDto.getPostId(), postRequestDto.getFiles());

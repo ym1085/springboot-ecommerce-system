@@ -4,9 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
 @Getter
 @Setter
 public class CommentRequestDto {
@@ -15,8 +12,8 @@ public class CommentRequestDto {
     private Long parentId;
     private Long commentId;
 
-    @NotEmpty(message = "댓글 내용은 반드시 입력되어야 합니다. 다시 한번 시도해주세요.")
-    @Size(max = 300, message = "댓글 내용은 300자를 초과할 수 없습니다. 다시 한번 시도해주세요.")
+    /*@NotEmpty(message = "댓글 내용은 반드시 입력되어야 합니다. 다시 한번 시도해주세요.")
+    @Size(max = 300, message = "댓글 내용은 300자를 초과할 수 없습니다. 다시 한번 시도해주세요.")*/
     private String content;
 
     @Builder
@@ -26,9 +23,5 @@ public class CommentRequestDto {
         this.parentId = parentId;
         this.commentId = commentId;
         this.content = content;
-    }
-
-    public boolean hasBothIds() {
-        return (this.commentId != null && this.parentId != null);
     }
 }
