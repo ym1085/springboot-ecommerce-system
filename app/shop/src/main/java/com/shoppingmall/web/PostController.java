@@ -27,9 +27,9 @@ public class PostController {
         return "post/list";
     }
 
-    @GetMapping(value = "/post/{id}")
-    public String getPostById(@PathVariable("id") Long id, @ModelAttribute SearchRequestDto searchRequestDto, Model model) {
-        PostResponseDto post = postService.getPostById(id);
+    @GetMapping(value = "/post/{postId}")
+    public String getPostById(@PathVariable("postId") Long postId, @ModelAttribute SearchRequestDto searchRequestDto, Model model) {
+        PostResponseDto post = postService.getPostById(postId);
         model.addAttribute("post", post);
         return "post/detail";
     }

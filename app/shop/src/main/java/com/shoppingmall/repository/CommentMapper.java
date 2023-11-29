@@ -15,11 +15,11 @@ public interface CommentMapper {
 
     int saveComment(Comment comment);
 
-    int deleteCommentByCommentIdAndParentId(Comment comment);
+    int deleteComment(Comment comment);
 
-    int deleteCommentByCommentId(Comment comment);
+    int deleteCommentReply(Comment comment);
 
-    int getChildCommentCountById(Long commentId);
+    int getCommentReplyCountByCommentId(Long commentId);
 
     int updateCommentByCommentId(Comment comment);
 

@@ -183,11 +183,10 @@
         SET
             TITLE = #{title},
             CONTENT = #{content},
-            FIXED_YN = #{fixedYn} /* FIXME: Admin인 경우에만 처리 하도록 수정 */
-        WHERE
-            POST_ID = #{postId}
-        AND
-            MEMBER_ID = #{memberId}
+            FIXED_YN = #{fixedYn} /* Admin인 경우에만 수정/삭제 가능 하도록 수정 필요 */
+        WHERE POST_ID = #{postId}
+        AND MEMBER_ID = #{memberId}
+        AND DEL_YN = 'N'
     </update>
 
     <!-- 게시글 삭제 -->

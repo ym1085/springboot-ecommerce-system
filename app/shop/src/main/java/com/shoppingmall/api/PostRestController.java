@@ -4,6 +4,7 @@ import com.shoppingmall.common.BindingResultError;
 import com.shoppingmall.common.CommonResponse;
 import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.common.ResponseFactory;
+import com.shoppingmall.config.auth.PrincipalDetails;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
@@ -16,10 +17,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -44,9 +47,9 @@ public class PostRestController {
         );
     }
 
-    @GetMapping(value = "/post/{id}")
-    public ResponseEntity<CommonResponse> getPostById(@PathVariable("id") Long id) {
-        PostResponseDto post = postService.getPostById(id);
+    @GetMapping(value = "/post/{postId}")
+    public ResponseEntity<CommonResponse> getPostById(@PathVariable("postId") Long postId) {
+        PostResponseDto post = postService.getPostById(postId);
         return ResponseFactory.createResponseFactory(
                 MessageCode.SUCCESS_GET_POST.getCode(),
                 MessageCode.SUCCESS_GET_POST.getMessage(),
@@ -79,10 +82,12 @@ public class PostRestController {
         return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_SAVE_POST.getCode(), MessageCode.SUCCESS_SAVE_POST.getMessage(), HttpStatus.OK);
     }
 
-    @PutMapping(value = "/post/{id}")
+    @PutMapping(value = "/post/{postId}")
     public ResponseEntity<CommonResponse> updatePost(
-            @PathVariable("id") Long id,
+            @PathVariable("postId") Long postId,
             @Valid @RequestBody PostRequestDto postRequestDto,
+            @AuthenticationPrincipal PrincipalDetails principalDetails, // https://www.baeldung.com/get-user-in-spring-security
+            Principal principal,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -95,8 +100,8 @@ public class PostRestController {
             );
         }
 
-        postRequestDto.setMemberId(1L);
-        postRequestDto.setPostId(id);
+        postRequestDto.setMemberId(1L); // TODO: Spring Security 통해 사용자 정보 받아서 셋팅
+        postRequestDto.setPostId(postId);
 
         MessageCode messageCode = postService.updatePost(postRequestDto);
         return ResponseFactory.createResponseFactory(
@@ -108,9 +113,9 @@ public class PostRestController {
         );
     }
 
-    @DeleteMapping(value = "/post/{id}")
-    public ResponseEntity<CommonResponse> deletePost(@PathVariable("id") Long id) {
-        MessageCode messageCode = postService.deletePost(id);
+    @DeleteMapping(value = "/post/{postId}")
+    public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") Long postId) {
+        MessageCode messageCode = postService.deletePost(postId);
         return ResponseFactory.createResponseFactory(
                 messageCode.getCode(),
                 messageCode.getMessage(),

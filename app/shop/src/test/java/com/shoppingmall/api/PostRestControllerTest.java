@@ -119,7 +119,7 @@ class PostRestControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                put("/api/v1/post/{id}", 1L)
+                put("/api/v1/post/{postId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("title", "")
                         .param("content", "내용1")
@@ -143,7 +143,7 @@ class PostRestControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                put("/api/v1/post/{id}", 1L)
+                put("/api/v1/post/{postId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("title", "제목1")
                         .param("content", "")
@@ -167,7 +167,7 @@ class PostRestControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                put("/api/v1/post/{id}", 1L)
+                put("/api/v1/post/{postId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("title", "제목1제목1제목1제목1제목1제목1제목1")
                         .param("content", "내용1")
@@ -195,7 +195,7 @@ class PostRestControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                put("/api/v1/post/{id}", 1L)
+                put("/api/v1/post/{postId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("title", "제목1")
                         .param("content", sb.toString())
@@ -218,7 +218,7 @@ class PostRestControllerTest {
         //given
         //when
         ResultActions result = mockMvc.perform(
-                delete("/api/v1/post/{id}", 2L)
+                delete("/api/v1/post/{postId}", 2L)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 

@@ -94,15 +94,31 @@ public class CommentRestController {
     }
 
     @DeleteMapping("/post/comments")
-    public ResponseEntity<CommonResponse> deleteCommentById(
+    public ResponseEntity<CommonResponse> deleteComments(
             @ModelAttribute CommentRequestDto commentRequestDto) {
-        MessageCode messageCode = commentService.deleteCommentById(commentRequestDto);
+
+        List<CommentResponseDto> comments = commentService.deleteComments(commentRequestDto);
+
+        // SUCCESS로 response 해도 빈 comments 값이 나가기 때문에 상관 없을 것으로 판단
         return ResponseFactory.createResponseFactory(
-                messageCode.getCode(),
-                messageCode.getMessage(),
-                (messageCode == MessageCode.SUCCESS_DELETE_COMMENT)
-                        ? HttpStatus.OK
-                        : HttpStatus.INTERNAL_SERVER_ERROR
+                MessageCode.SUCCESS_DELETE_COMMENT.getCode(),
+                MessageCode.SUCCESS_DELETE_COMMENT.getMessage(),
+                comments,
+                HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping("/post/comments/reply")
+    public ResponseEntity<CommonResponse> deleteCommentsReply(
+            @ModelAttribute CommentRequestDto commentRequestDto) {
+
+        List<CommentResponseDto> comments = commentService.deleteCommentsReply(commentRequestDto);
+
+        return ResponseFactory.createResponseFactory(
+                MessageCode.SUCCESS_DELETE_COMMENT.getCode(),
+                MessageCode.SUCCESS_DELETE_COMMENT.getMessage(),
+                comments,
+                HttpStatus.OK
         );
     }
 }

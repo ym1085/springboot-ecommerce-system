@@ -77,7 +77,7 @@ class CommentServiceTest {
                 .build());
 
         //when
-        int result = commentMapper.deleteCommentByCommentIdAndParentId(comment);
+        int result = commentMapper.deleteComment(comment);
 
         //then
         assertThat(result).isNotNull();
@@ -96,7 +96,7 @@ class CommentServiceTest {
                 .build());
 
         //when
-        int result = commentMapper.deleteCommentByCommentId(comment);
+        int result = commentMapper.deleteCommentReply(comment);
 
         //then
         assertThat(result).isGreaterThan(0);
@@ -115,10 +115,10 @@ class CommentServiceTest {
                 .build();
 
         //when
-        MessageCode messageCode = commentService.deleteCommentById(commentRequestDto);
+        List<CommentResponseDto> commentResponseDtos = commentService.deleteComments(commentRequestDto);
 
         //then
-        assertThat(messageCode.getCode()).isEqualTo(0);
+        assertThat(commentResponseDtos.get(0)).isNotNull();
     }
 
     @Test
@@ -133,10 +133,10 @@ class CommentServiceTest {
                 .build();
 
         //when
-        MessageCode messageCode = commentService.deleteCommentById(commentRequestDto);
+        List<CommentResponseDto> commentResponseDtos = commentService.deleteComments(commentRequestDto);
 
         //then
-        assertThat(messageCode.getCode()).isEqualTo(0);
+        assertThat(commentResponseDtos).isNotNull();
     }
 
     @Test
