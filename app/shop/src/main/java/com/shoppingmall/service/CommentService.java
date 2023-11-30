@@ -32,9 +32,7 @@ public class CommentService {
     public List<CommentResponseDto> saveComment(CommentRequestDto commentRequestDto) {
         // 대댓글 등록 전 부모 댓글 존재 유무 판단, 일반 댓글은 해당 없음
         if (commentRequestDto.getParentId() != null) {
-            if (!isExistsCommentsCountByParentId(commentRequestDto.getParentId())) {
-                // https://velog.io/@ychxexn/Collections.emptyList-vs-new-ArrayList
-                log.error("commentId, parentId not exist!, commentId = {}, parentId = {}", commentRequestDto.getCommentId(), commentRequestDto.getParentId());
+            if (isNotExistsCommentByCommentId(commentRequestDto.getParentId())) {
                 return Collections.emptyList();
             }
         }
@@ -49,8 +47,8 @@ public class CommentService {
         return commentResponseDtos;
     }
 
-    private boolean isExistsCommentsCountByParentId(Long parentId) {
-        return commentMapper.getCommentCountByCommentId(parentId) > 0;
+    private boolean isNotExistsCommentByCommentId(Long parentId) {
+        return commentMapper.getCommentCountByCommentId(parentId) <= 0;
     }
 
     /**
