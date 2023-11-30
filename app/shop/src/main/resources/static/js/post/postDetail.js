@@ -136,8 +136,46 @@ const postInfo = {
 
 const commentInfo = {
     renderComment: function (comment, parentElement) {
+        // 대댓글 작성 영역
+        const executeReplyTemplate = document.createElement('div');
+        executeReplyTemplate.setAttribute('id', 'executeReplyTemplate');
+        executeReplyTemplate.style.display = 'none';
+
+        const executeReplySubInfoTemplate = document.createElement('ul');
+        executeReplySubInfoTemplate.setAttribute('id', 'executeReplySubInfoTemplate');
+
+        const executeReplySubInfoContentTemplate = document.createElement('li');
+
+        // 입력창(input) 생성
+        const input = document.createElement('input');
+        input.type = 'text';
+
+        // 대댓글 작성 버튼 생성
+        const saveButton = document.createElement('button');
+        saveButton.type = 'button';
+        saveButton.textContent = '대댓글 작성';
+        saveButton.setAttribute('onclick', `commentInfo.saveCommentReply(this)`);
+        saveButton.setAttribute('data-post-id', `${comment.postId}`);
+
+        // 취소 버튼 생성
+        const cancelButton = document.createElement('button');
+        cancelButton.type = 'button';
+        cancelButton.textContent = '취소';
+        cancelButton.setAttribute('onclick', `commentInfo.hideReplyToCommentEditBox(this)`);
+
+        // 요소들을 DOM에 추가
+        executeReplySubInfoContentTemplate.appendChild(input);
+        executeReplySubInfoContentTemplate.appendChild(saveButton);
+        executeReplySubInfoContentTemplate.appendChild(cancelButton);
+
+        executeReplySubInfoTemplate.appendChild(executeReplySubInfoContentTemplate);
+        executeReplyTemplate.appendChild(executeReplySubInfoTemplate);
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+
         // 댓글 수정 영역 <div></div>
         const commentTemplate = document.createElement('div');
+        commentTemplate.setAttribute('data-comment-id', `${comment.commentId}`);
         commentTemplate.setAttribute('id', 'commentTemplate');
         commentTemplate.style.display = 'none';
 
@@ -168,11 +206,11 @@ const commentInfo = {
         cancelButtonTemplate.setAttribute('type', 'button');
         cancelButtonTemplate.setAttribute('onclick', `commentInfo.hideCommentEditBox(this, ${comment.commentId})`);
 
-        // 답글달기 버튼
+        // 댓글 달기 버튼
         const replyButtonTemplate = document.createElement('button');
-        replyButtonTemplate.textContent = '답글달기';
+        replyButtonTemplate.textContent = '댓글 달기';
         replyButtonTemplate.setAttribute('type', 'button');
-        replyButtonTemplate.setAttribute('onclick', `commentInfo.showReplyToCommentEditBox(this, ${comment.commentId})`);
+        replyButtonTemplate.setAttribute('onclick', `commentInfo.showReplyToCommentEditBox(this)`);
 
         // 댓글 수정 영역에 요소들 추가
         commentTemplate.appendChild(inputFieldTemplate);
@@ -182,6 +220,7 @@ const commentInfo = {
 
         // 댓글 영역 <div></div>
         const commentInfo = document.createElement('div');
+        commentInfo.setAttribute('data-comment-id', `${comment.commentId}`);
         commentInfo.setAttribute('id', 'commentInfo');
 
         // 댓글 내용
@@ -208,10 +247,10 @@ const commentInfo = {
 
         // 답글달기 버튼
         const replyButtonInfo = document.createElement('button');
-        replyButtonInfo.textContent = '답글달기';
+        replyButtonInfo.textContent = '댓글 달기';
         replyButtonInfo.setAttribute('style', 'margin-right: 10px;');
         replyButtonInfo.setAttribute('type', 'button');
-        replyButtonInfo.setAttribute('onclick', `commentInfo.showReplyToCommentEditBox(this, ${comment.commentId})`);
+        replyButtonInfo.setAttribute('onclick', `commentInfo.showReplyToCommentEditBox(this)`);
 
         // 댓글 영역에 댓글 내용 + 버튼 추가
         commentInfo.appendChild(commentSpanInfo);
@@ -222,15 +261,54 @@ const commentInfo = {
         // 댓글 랜더링
         parentElement.appendChild(commentTemplate);
         parentElement.appendChild(commentInfo);
+        parentElement.appendChild(executeReplyTemplate);
     },
 
     renderReplyComment: function (comment, parentElement) {
-        // 대댓글 수정 영역 <ul></ul>
+        // 대댓글 작성 영역
+        const executeReplyTemplate = document.createElement('div');
+        executeReplyTemplate.setAttribute('id', 'executeReplyTemplate');
+        executeReplyTemplate.style.display = 'none';
+
+        const executeReplySubInfoTemplate = document.createElement('ul');
+        executeReplySubInfoTemplate.setAttribute('id', 'executeReplySubInfoTemplate');
+
+        const executeReplySubInfoContentTemplate = document.createElement('li');
+
+        // 입력창(input) 생성
+        const input = document.createElement('input');
+        input.type = 'text';
+
+        // 대댓글 작성 버튼 생성
+        const saveButton = document.createElement('button');
+        saveButton.type = 'button';
+        saveButton.textContent = '대댓글 작성';
+        saveButton.setAttribute('onclick', `commentInfo.saveCommentReply(this)`);
+        saveButton.setAttribute('data-post-id', `${comment.postId}`);
+
+        // 취소 버튼 생성
+        const cancelButton = document.createElement('button');
+        cancelButton.type = 'button';
+        cancelButton.textContent = '취소';
+        cancelButton.setAttribute('onclick', `commentInfo.hideReplyToCommentEditBox(this)`);
+
+        // 요소들을 DOM에 추가
+        executeReplySubInfoContentTemplate.appendChild(input);
+        executeReplySubInfoContentTemplate.appendChild(saveButton);
+        executeReplySubInfoContentTemplate.appendChild(cancelButton);
+
+        executeReplySubInfoTemplate.appendChild(executeReplySubInfoContentTemplate);
+        executeReplyTemplate.appendChild(executeReplySubInfoTemplate);
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+        // 대댓글 수정 영역
         const commentReplyTemplate = document.createElement('div');
         commentReplyTemplate.setAttribute('id', 'commentReplyTemplate');
         commentReplyTemplate.setAttribute('data-parent-id', comment.parentId);
         commentReplyTemplate.style.display = 'none';
 
+        // ul > li
         const commentReplySubInfoTemplate = document.createElement('ul');
         commentReplySubInfoTemplate.setAttribute('id', 'commentReplySubInfoTemplate');
 
@@ -259,7 +337,7 @@ const commentInfo = {
         deleteButtonEdit.textContent = '삭제';
         deleteButtonEdit.setAttribute('data-post-id', `${comment.postId}`);
         deleteButtonEdit.setAttribute('type', 'button');
-        deleteButtonEdit.setAttribute('onclick', `commentInfo.deleteCommentsReply(this, ${comment.commentId})`);
+        deleteButtonEdit.setAttribute('onclick', `commentInfo.deleteCommentReply(this, ${comment.commentId})`);
 
         // 대댓글 수정 영역에 요소들 추가
         commentReplySubInfoContentsTemplate.appendChild(editInput);
@@ -270,7 +348,9 @@ const commentInfo = {
         commentReplySubInfoTemplate.appendChild(commentReplySubInfoContentsTemplate);
         commentReplyTemplate.appendChild(commentReplySubInfoTemplate);
 
-        // 대댓글 영역 <div></div>
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+        // 대댓글 영역
         const commentReply = document.createElement('div');
         commentReply.setAttribute('id', 'commentReply');
         commentReply.setAttribute('data-parent-id', comment.parentId);
@@ -299,7 +379,7 @@ const commentInfo = {
         deleteButton.setAttribute('data-post-id', `${comment.postId}`);
         deleteButton.setAttribute('style', 'margin-right: 10px;');
         deleteButton.setAttribute('type', 'button');
-        deleteButton.setAttribute('onclick', `commentInfo.deleteCommentsReply(this, ${comment.commentId})`);
+        deleteButton.setAttribute('onclick', `commentInfo.deleteCommentReply(this, ${comment.commentId})`);
 
         // 대댓글 영역에 수정 + 삭제 버튼 추가
         commentReplySubInfoContents.appendChild(commentSpan);
@@ -310,6 +390,7 @@ const commentInfo = {
         commentReply.appendChild(commentReplySubInfo);
 
         // 대댓글 랜더링
+        parentElement.appendChild(executeReplyTemplate);
         parentElement.appendChild(commentReplyTemplate);
         parentElement.appendChild(commentReply);
     },
@@ -494,5 +575,142 @@ const commentInfo = {
             .catch(error => handleResponseError(error, request));
     },
 
-    showReplyToCommentEditBox: function (element, commentId) {},
+    deleteCommentsReply: function (element, commentId) {
+        const postId = element.getAttribute('data-post-id');
+        if (isEmpty(postId)) {
+            showMessage(messages.EMPTY_POST_ID.message);
+            return;
+        }
+
+        if (!confirm('댓글을 삭제하시겠습니까?')) {
+            return;
+        }
+
+        const request = queryBuilder
+            .createQueryBuilder()
+            .url('/api/v1/post/comments')
+            .method('DELETE')
+            .contentType('application/json')
+            .queryString({
+                commentId: commentId,
+                postId: postId, // 댓글 정보 조회시 사용
+            })
+            .build();
+
+        const response = commonFetchTemplate
+            .sendFetchRequest(request)
+            .then(response => response.json())
+            .then(result => {
+                if (result.code === messages.SUCCESS_DELETE_COMMENT.code) {
+                    showMessage(messages.SUCCESS_DELETE_COMMENT.message);
+                    this.renderComments(result.result);
+                } else if (result.code === messages.FAIL_DELETE_COMMENT.message) {
+                    showMessage(messages.FAIL_DELETE_COMMENT.message);
+                } else {
+                    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                }
+            })
+            .catch(error => handleResponseError(error, request));
+    },
+
+    deleteCommentReply: function (element, commentId) {
+        const postId = element.getAttribute('data-post-id');
+        if (isEmpty(postId)) {
+            showMessage(messages.EMPTY_POST_ID.message);
+            return;
+        }
+
+        if (!confirm('대댓글을 삭제하시겠습니까?')) {
+            return;
+        }
+
+        const request = queryBuilder
+            .createQueryBuilder()
+            .url('/api/v1/post/comments/reply')
+            .method('DELETE')
+            .contentType('application/json')
+            .queryString({
+                commentId: commentId,
+                postId: postId,
+            })
+            .build();
+
+        const response = commonFetchTemplate
+            .sendFetchRequest(request)
+            .then(response => response.json())
+            .then(result => {
+                if (result.code === messages.SUCCESS_DELETE_COMMENT.code) {
+                    showMessage(messages.SUCCESS_DELETE_COMMENT.message);
+                    this.renderComments(result.result);
+                } else if (result.code === messages.FAIL_DELETE_COMMENT.message) {
+                    showMessage(messages.FAIL_DELETE_COMMENT.message);
+                } else {
+                    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                }
+            })
+            .catch(error => handleResponseError(error, request));
+    },
+
+    showReplyToCommentEditBox: function (element, commentId) {
+        const commentInfo = element.closest('#commentInfo');
+        commentInfo.nextElementSibling.style.display = 'block';
+    },
+
+    hideReplyToCommentEditBox: function (element, commentId) {
+        const executeReplyTemplate = element.closest('#executeReplyTemplate');
+        executeReplyTemplate.style.display = 'none';
+        executeReplyTemplate.previousElementSibling.style.display = 'block';
+    },
+
+    saveCommentReply: function (element) {
+        const commentInfo = element.closest('#executeReplyTemplate').previousElementSibling;
+        const parentId = commentInfo.getAttribute('data-comment-id');
+        const commentContent = element.previousElementSibling;
+        const postId = element.getAttribute('data-post-id');
+        if (isEmpty(postId)) {
+            showMessage(messages.EMPTY_POST_ID.message);
+            return;
+        }
+
+        if (isEmpty(commentContent.value)) {
+            showMessage(messages.EMPTY_COMMENT_CONTENT.message);
+            commentContent.focus();
+            return;
+        }
+
+        if (!confirm('대댓글을 작성하시겠습니까?')) {
+            return;
+        }
+
+        const request = queryBuilder
+            .createQueryBuilder()
+            .url('/api/v1/post/{postId}/comments')
+            .method('POST')
+            .contentType('application/json')
+            .pathVariable({
+                postId: postId,
+            })
+            .requestBody({
+                content: commentContent.value,
+                parentId: parentId,
+            })
+            .build();
+
+        const response = commonFetchTemplate
+            .sendFetchRequest(request)
+            .then(response => response.json())
+            .then(result => {
+                if (result.code === messages.SUCCESS_SAVE_COMMENT.code) {
+                    showMessage(messages.SUCCESS_SAVE_COMMENT.message);
+                    this.renderComments(result.result);
+                } else if (result.code === messages.FAIL_SAVE_COMMENT.message) {
+                    showMessage(messages.FAIL_SAVE_COMMENT.message);
+                } else if (result.code === messages.EMPTY_POST_ID.message) {
+                    showMessage(messages.EMPTY_POST_ID.message);
+                } else {
+                    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                }
+            })
+            .catch(error => handleResponseError(error, request));
+    },
 };
