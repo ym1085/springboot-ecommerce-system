@@ -31,12 +31,11 @@
 
 ## 🚀 05. 프로젝트 실행 방법
 
-### classpath:/resources/application.yaml 파일 수정
+### [classpath:/resources/application.yaml 파일 수정](./app/shop/src/main/resources/application-sample.yaml)
 
-> 구글 이메일 전송의 경우 본인의 앱 키를 넣어주셔야 합니다  
-> [Google App 비밀번호 생성](https://cloudtechflow.com/2023/10/28/%ea%b5%ac%ea%b8%80-%ec%95%b1-%eb%b9%84%eb%b0%80%eb%b2%88%ed%98%b8-%ec%83%9d%ec%84%b1%ed%95%98%ea%b8%b0/)
+> 구글 이메일 전송 기능이 존재하기에 구글 앱 비밀번호 생성 후 application.yaml 파일에 입력
 
-### classpath:/resources/application-oauth.yaml
+### [classpath:/resources/application-oauth.yaml](./app/shop/src/main/resources/application-oauth-sample.yaml)
 
 > 소셜 로그인을 위해서 각 플랫폼별로 제공해주는 클라이언트 ID, Secret을 기재 필요  
 > application-oauth-sample.yaml 설정 후 파일 이름 변경 -> application-oauth.yaml
