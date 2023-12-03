@@ -33,6 +33,8 @@ public enum MessageCode {
     // FILE
     SUCCESS_UPDATE_FILES(1300, "파일 업데이트에 성공 하였습니다."),
     SUCCESS_DELETE_FILES(1301, "파일 삭제에 성공 하였습니다."),
+    SUCCESS_DOWNLOAD_FILES(1302, "파일 다운로드에 성공 하였습니다."),
+    SUCCESS_SAVE_FILES(1303, "파일 저장에 성공 하였습니다."),
 
     //////////////////////////////////////////////////////////////////////////////////////
     // FAIL CODE
@@ -54,6 +56,8 @@ public enum MessageCode {
     // FILE
     FAIL_UPDATE_FILES(2200, "파일 업데이트에 실패 하였습니다."),
     FAIL_DELETE_FILES(2201, "파일 삭제에 실패 하였습니다."),
+    FAIL_DOWNLOAD_FILES(2202, "파일 다운로드에 실패 하였습니다."),
+    FAIL_SAVE_FILES(2203, "파일 저장에 실패 하였습니다."),
 
     //////////////////////////////////////////////////////////////////////////////////////
     // VALIDATION CODE
@@ -90,6 +94,7 @@ public enum MessageCode {
 
     //FILE
     NOT_FOUND_POST_FILES(3300, "첨부 파일이 존재하지 않습니다. 다시 시도해주세요."),
+    NOT_FOUND_POST_FILES_PATH(3301, "첨부 파일이 경로가 존재하지 않습니다. 다시 시도해주세요.")
     ;
 
     private final int code;

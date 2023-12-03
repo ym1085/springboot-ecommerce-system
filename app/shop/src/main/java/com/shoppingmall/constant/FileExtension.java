@@ -8,7 +8,8 @@ public enum FileExtension {
     PNG("png"),
     GIF("gif"),
     PDF("pdf"),
-    MP4("mp4")
+    MP4("mp4"),
+    SVG("svg"),
     ;
 
     private final String extension;

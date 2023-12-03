@@ -58,7 +58,7 @@ public class MemberService {
 
     private String encryptMemberPassword(String password) {
         if (StringUtils.isEmpty(password)) {
-            throw new PasswordNotFoundException("비밀번호가 존재하지 않습니다");
+            throw new PasswordNotFoundException(MessageCode.NOT_FOUND_MEMBER_PASSWORD);
         }
         return passwordEncoder.encode(password);
     }

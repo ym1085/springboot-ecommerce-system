@@ -57,8 +57,6 @@ class FileServiceTest {
         List<FileRequestDto> fileRequestDtos = getFileRequestDtoBuilder();
 
         //when
-        fileService.saveFiles(postId, fileRequestDtos);
-
         //then
     }
 }

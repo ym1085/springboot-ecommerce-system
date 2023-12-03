@@ -64,9 +64,13 @@ const messages = {
         message: '고정글 여부(Y/N)가 선택되지 않았습니다. 다시 시도해주세요.',
         code: 3003,
     },
-    EMPTY_POST_FILES: {
+    NOT_FOUND_POST_FILES: {
         message: '첨부 파일이 존재하지 않습니다. 다시 시도해주세요.',
-        code: 3004,
+        code: 3300,
+    },
+    NOT_FOUND_POST_FILES_PATH: {
+        message: '첨부 파일이 경로가 존재하지 않습니다. 다시 시도해주세요.',
+        code: 3301,
     },
     EMPTY_URL: {
         message: '요청 URL이 존재하지 않습니다. 다시 시도해주세요.',
@@ -78,6 +82,10 @@ const messages = {
     },
     EMPTY_COMMENT_CONTENT: {
         message: '댓글이 존재하지 않습니다. 다시 시도해주세요.',
+        code: 9999,
+    },
+    EMPTY_POST_FILES: {
+        message: '첨부 파일 번호가 존재하지 않습니다. 다시 시도해주세요.',
         code: 9999,
     },
     OVER_LENGTH_MEMBER_NAME: {
@@ -200,6 +208,18 @@ const messages = {
         message: '댓글 수정에 성공 하였습니다.',
         code: 1202,
     },
+    SUCCESS_UPDATE_FILES: {
+        message: '파일 업데이트에 성공 하였습니다.',
+        code: 1300,
+    },
+    SUCCESS_DELETE_FILES: {
+        message: '파일 삭제에 성공 하였습니다.',
+        code: 1301,
+    },
+    SUCCESS_DOWNLOAD_FILES: {
+        message: '파일 다운로드에 성공 하였습니다.',
+        code: 1302,
+    },
     FAIL_SAVE_MEMBER: {
         message: '회원 가입 진행 중 오류가 발생하였습니다.',
         code: 2100,
@@ -233,8 +253,20 @@ const messages = {
         code: 2004,
     },
     FAIL_UPDATE_COMMENT: {
-        message: '댓글 수정에 실패하였습니다. 다시 시도해주세요..',
+        message: '댓글 수정에 실패하였습니다. 다시 시도해주세요.',
         code: 2005,
+    },
+    FAIL_UPDATE_FILES: {
+        message: '파일 업데이트에 실패 하였습니다.',
+        code: 2200,
+    },
+    FAIL_DELETE_FILES: {
+        message: '파일 삭제에 실패 하였습니다.',
+        code: 2201,
+    },
+    FAIL_DOWNLOAD_FILES: {
+        message: '파일 다운로드에 실패 하였습니다.',
+        code: 2202,
     },
     END_EMAIL_AUTH_TIME: {
         message: '이메일 인증 시간이 모두 경과하였습니다. 다시 시도해주세요.',

@@ -57,10 +57,6 @@ const postInfo = {
         }
 
         if (this.validatePostInfo()) {
-            console.log(`title => ${this.title.value}`);
-            console.log(`content => ${this.content.value}`);
-            console.log(`fixedYn => ${this.fixedYn.checked}`);
-
             const request = queryBuilder
                 .createQueryBuilder()
                 .url('/api/v1/post/{postId}')
@@ -128,6 +124,62 @@ const postInfo = {
                     showMessage(result.message);
                 } else {
                     showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                }
+            })
+            .catch(error => handleResponseError(error, request));
+    },
+
+    createFileDownloadElement: function (file, filename) {
+        const downloadFileUrl = window.URL.createObjectURL(file); // 해당 file을 가르키는 url 생성
+        const downloadFileElement = document.createElement('a');
+        document.body.appendChild(downloadFileElement);
+        downloadFileElement.download = filename; // a tag에 download 속성을 줘서 클릭할 때 다운로드가 일어날 수 있도록 하기
+        downloadFileElement.href = downloadFileUrl; // href에 url 달아주기
+        downloadFileElement.click(); // 코드 상 클릭을 해줘서 다운로드 트리거_
+
+        document.body.removeChild(downloadFileElement); // 쓰임을 다한 a 태그 삭제
+        window.URL.revokeObjectURL(downloadFileUrl); // 쓰임을 다한 url 객체 삭제
+    },
+
+    downloadAttachedFile: function (element, postFileId) {
+        if (isEmpty(postFileId)) {
+            showMessage(messages.EMPTY_POST_FILES.message);
+            return;
+        }
+
+        const request = queryBuilder
+            .createQueryBuilder()
+            .url('/api/v1/download/{domain}/{postFileId}')
+            .method('GET')
+            .pathVariable({
+                domain: 'posts',
+                postFileId: postFileId,
+            })
+            .build();
+
+        // https://developer-alle.tistory.com/435
+        const response = commonFetchTemplate
+            .sendFetchRequest(request)
+            .then(response => {
+                if (response.status === 200) {
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    const filename = contentDisposition.match(/filename="(.+)"/)[1];
+
+                    return response.blob().then(file => ({
+                        file: file,
+                        filename: filename,
+                        status: response.status,
+                    }));
+                } else {
+                    showMessage(messages.FAIL_DOWNLOAD_FILES.message);
+                }
+            })
+            .then(({ file, filename, status }) => {
+                if (status === 200) {
+                    showMessage(messages.SUCCESS_DOWNLOAD_FILES.message);
+                    this.createFileDownloadElement(file, filename);
+                } else {
+                    showMessage(messages.FAIL_DOWNLOAD_FILES.message);
                 }
             })
             .catch(error => handleResponseError(error, request));

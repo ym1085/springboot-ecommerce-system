@@ -8,6 +8,8 @@ import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.*;
+import com.shoppingmall.exception.FailSaveFileException;
+import com.shoppingmall.exception.FailSavePostException;
 import com.shoppingmall.exception.FailUpdateFilesException;
 import com.shoppingmall.repository.CommentMapper;
 import com.shoppingmall.repository.FileMapper;
@@ -78,14 +80,6 @@ public class PostService {
         return postResponseDto;
     }
 
-    private List<PostFileResponseDto> getFilesByPostId(Long postId) {
-        return fileMapper.getFilesByPostId(postId)
-                .stream()
-                .filter(Objects::nonNull)
-                .map(PostFileResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
     private List<CommentResponseDto> getCommentsByPostId(Long postId) {
         return commentMapper.getComments(postId)
                 .stream()
@@ -94,11 +88,45 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    private List<PostFileResponseDto> getFilesByPostId(Long postId) {
+        return fileMapper.getFilesByPostId(postId)
+                .stream()
+                .filter(Objects::nonNull)
+                .map(PostFileResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public Long savePost(PostRequestDto postRequestDto) {
         Post post = new Post(postRequestDto);
-        postMapper.savePost(post);
+        int responseCode = postMapper.savePost(post);
+        if (responseCode <= 0) {
+            throw new FailSavePostException(MessageCode.FAIL_SAVE_POST);
+        }
+
+        List<FileRequestDto> fileRequestDtos;
+        if (!postRequestDto.getFiles().isEmpty()) {
+            fileRequestDtos = fileHandlerHelper.uploadFiles(postRequestDto.getFiles(), postRequestDto.getFileType());
+            responseCode = saveFiles(post.getPostId(), fileRequestDtos);
+            if (responseCode <= 0) {
+                throw new FailSaveFileException(MessageCode.FAIL_SAVE_FILES);
+            }
+        }
+
         return post.getPostId();
+    }
+
+    public int saveFiles(Long postId, List<FileRequestDto> files) {
+        if (CollectionUtils.isEmpty(files) || files.get(0) == null || postId == null) {
+            return MessageCode.FAIL.getCode();
+        }
+        for (FileRequestDto file : files) {
+            if (file == null) {
+                continue;
+            }
+            file.setPostId(postId);
+        }
+        return fileMapper.saveFiles(files);
     }
 
     @Transactional
@@ -111,7 +139,7 @@ public class PostService {
                 int fileUpdatedResult = updateFilesByPostId(postRequestDto.getPostId(), postRequestDto.getFiles());
                 if (fileUpdatedResult == 0) {
                     // Fixme: 추후 MessageCode 값에 넣어서 code 값을 반환하도록 수정
-                    throw new FailUpdateFilesException("파일 삭제 및 업데이트에 실패 하였습니다.");
+                    throw new FailUpdateFilesException(MessageCode.FAIL_UPDATE_FILES);
                 }
             } catch (FailUpdateFilesException e) {
                 log.error("File updated: " + postRequestDto.getFiles().toString());

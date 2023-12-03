@@ -1,15 +1,21 @@
 package com.shoppingmall.utils;
 
+import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.constant.FileType;
 import com.shoppingmall.constant.OSType;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.response.FileResponseDto;
+import com.shoppingmall.exception.FailDownloadFilesException;
 import com.shoppingmall.exception.UploadFileException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
@@ -19,6 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -26,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -57,18 +66,25 @@ public class FileHandlerHelper {
         }
     }
 
+    private final ResourceLoader resourceLoader;
+
+    public FileHandlerHelper(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
+
     public List<FileRequestDto> uploadFiles(List<MultipartFile> multipartFiles, FileType fileType) {
         List<FileRequestDto> files = new ArrayList<>();
         for (MultipartFile file : multipartFiles) {
             if (file.isEmpty()) {
                 continue;
             }
-            files.add(uploadFile(file, fileType));
+            FileRequestDto fileRequestDto = uploadFileToServer(file, fileType); // client 측 파일을 서버 특정 경로에 Upload
+            files.add(fileRequestDto);
         }
         return files;
     }
 
-    private FileRequestDto uploadFile(MultipartFile multipartFile, FileType fileType) {
+    private FileRequestDto uploadFileToServer(MultipartFile multipartFile, FileType fileType) {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -85,7 +101,7 @@ public class FileHandlerHelper {
         String fileUploadPath = getFileUploadPathTotransfer(fileType, today, storedFileName); // file upload path on physical server
         File uploadFile = new File(fileUploadPath);
 
-        transferUploadFileToServer(multipartFile, fileUploadPath, uploadFile); // upload file to server
+        transferTo(multipartFile, fileUploadPath, uploadFile); // upload file to server
 
         return FileRequestDto.builder()
                 .originFileName(multipartFile.getOriginalFilename())
@@ -97,7 +113,7 @@ public class FileHandlerHelper {
                 .build();
     }
 
-    private void transferUploadFileToServer(MultipartFile multipartFile, String fileUploadPath, File uploadFile) {
+    private void transferTo(MultipartFile multipartFile, String fileUploadPath, File uploadFile) {
         try {
             log.info("start transfer file to server, fileUploadPath = {}", fileUploadPath);
             multipartFile.transferTo(uploadFile);
@@ -108,7 +124,7 @@ public class FileHandlerHelper {
             log.error("[IllegalStateException] error occurred, e = {}", e.getMessage());
         } catch (Exception e) {
             log.error("[Exception] error occurred, e = {}", e.getMessage());
-            throw new UploadFileException("error occurred, fail to file upload to server");
+            throw new UploadFileException(MessageCode.FAIL_UPDATE_FILES);
         }
     }
 
@@ -183,24 +199,74 @@ public class FileHandlerHelper {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
     }
 
+    /*public String extractFileDateTime(String filePath) {
+        Path path = Paths.get(filePath);
+        if (!StringUtils.isEmpty(path.getName(3).toString())) {
+            return path.getName(3).toString();
+        }
+        return "";
+    }*/
+
+    public String extractFileDateTimeByFilePath(String filePath) {
+        if (filePath.isEmpty()) {
+            return "";
+        }
+
+        final Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
+        Matcher matcher = pattern.matcher(filePath);
+        return matcher.find() ? matcher.group(0) : "";
+    }
+
+    public File getDownloadFile(String uploadPath, String domain, String fileCreatedDate, String storedFileName) {
+        return new File(uploadPath + File.separator + domain + File.separator + fileCreatedDate + File.separator + storedFileName);
+    }
+
+    public Resource getDownloadFileResource(String uploadPath) {
+        return resourceLoader.getResource("file:" + uploadPath);
+    }
+
+    public InputStream getDownloadFileInputStream(Resource resource) {
+        try {
+            return resource.getInputStream();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new FailDownloadFilesException(MessageCode.FAIL_DOWNLOAD_FILES);
+        }
+    }
+
+    public HttpHeaders getHttpHeadersByDownloadFile(FileResponseDto files, Resource resource, InputStream inputStream) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        try {
+            httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + files.getOriginFileName() + "\"");
+            httpHeaders.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.contentLength()));
+            httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE.toString());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new FailDownloadFilesException(MessageCode.FAIL_DOWNLOAD_FILES);
+        }
+        return httpHeaders;
+    }
+
     public void responseZipFromAttachments(HttpServletResponse response, List<File> files) {
-        try(ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())) {
+        try (ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())) {
             for (File file : files) {
-                if (file.exists() && file.isFile()) {
-                    FileSystemResource fsr = new FileSystemResource(file.getPath());
-                    ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(fsr.getFilename()));
-                    zipEntry.setSize(fsr.contentLength());
-                    zipEntry.setTime(System.currentTimeMillis());
-
-                    zos.putNextEntry(zipEntry);
-
-                    StreamUtils.copy(fsr.getInputStream(), zos);
-                    zos.closeEntry();
+                if (!file.exists() || file.isFile()) {
+                    continue;
                 }
+
+                FileSystemResource fsr = new FileSystemResource(file.getPath());
+                ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(fsr.getFilename()));
+                zipEntry.setSize(fsr.contentLength());
+                zipEntry.setTime(System.currentTimeMillis());
+
+                zos.putNextEntry(zipEntry);
+
+                StreamUtils.copy(fsr.getInputStream(), zos);
+                zos.closeEntry();
             }
             zos.finish();
         } catch (IOException e) {
-            log.error("파일 다운로드 중 오류 발생, e = {}", e.getMessage());
+            log.error(e.getMessage());
         }
     }
 }
