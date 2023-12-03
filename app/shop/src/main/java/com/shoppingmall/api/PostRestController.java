@@ -5,7 +5,6 @@ import com.shoppingmall.common.CommonResponse;
 import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.common.ResponseFactory;
 import com.shoppingmall.config.auth.PrincipalDetails;
-import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -75,9 +73,6 @@ public class PostRestController {
 
         postRequestDto.setMemberId(1L);
         Long postId = postService.savePost(postRequestDto);
-
-        List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(postRequestDto.getFiles(), postRequestDto.getFileType());
-        fileService.saveFiles(postId, fileRequestDtos);
 
         return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_SAVE_POST.getCode(), MessageCode.SUCCESS_SAVE_POST.getMessage(), HttpStatus.OK);
     }

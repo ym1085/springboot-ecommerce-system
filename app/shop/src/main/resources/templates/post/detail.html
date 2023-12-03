@@ -41,18 +41,27 @@
             <label for="author">* 작성자:</label>
             <input type="text" id="author" th:value="${post.writer != null} ? ${post.writer} : ${'비고'}" readonly><br>
 
-            <!-- File Attachment Area -->
-            <label for="fileAttachment">파일 첨부:</label>
-            <input type="file" id="fileAttachment" name="fileAttachment"><br>
-            <!--
-                Todo
-                    - 단일 게시글 조회에서 파일 조인해서 가져오고, 첨부 파일이 붙은 게시글이면 확인 후 해당 파일명(orginFileName)
-                    을 뿌려주고, 그렇지 않다면 파일 업로드 input 태그를 보여준다. 또한 파일명 클릭했을때는 파일 다운로드가 가능해야
-                    하는데 일반 파일 다운로드는 /api/v1/download/{fileId} ::::: /api/v1/download/compress/{postId}
-            <input th:if="${post.fileAttached}" type="file" id="fileAttachment" name="fileAttachment"><br>-->
-        </th:block>
 
+            <th:block th:if="${not #lists.isEmpty(post.postFiles)}">
+                <!-- 단일 파일 다운로드 -->
+                <th:block th:each="postFile : ${post.postFiles}">
+                    <label for="file">* 파일 첨부:</label>
+                    <a href="#" th:if="${postFile.fileAttached == 'Y'}" th:onclick="postInfo.downloadAttachedFile(this, [[${postFile.postFileId}]]);">
+                        <span id="attachedFile" th:text="${postFile.originFileName}"/>
+                    </a><br>
+                </th:block>
+                <!-- 게시글 번호에 매핑 되어 있는 파일은 gzip 처리 하여 다운로드 -->
+                <button type="button" th:onclick="postInfo.downloadAttachedFilesByCompressed([[${post.postId}]]);">전체 파일 압축 다운로드</button>
+            </th:block>
+
+            <th:block th:if="${#lists.isEmpty(post.postFiles)}">
+                <label for="file">* 파일 첨부:</label>
+                <input type="file" id="file" name="file"><br>
+            </th:block>
+        </th:block>
     </div>
+
+    <!-- 게시글 수정, 삭제, 뒤로 -->
     <p class="btn_set">
         <button type="button" th:onclick="postInfo.updatePosts([[${post.postId}]])" class="btns btn_bdr1 btn_mid">수정</button>
         <button type="button" th:onclick="postInfo.deletePosts([[${post.postId}]])" class="btns btn_bdr1 btn_mid">삭제</button>

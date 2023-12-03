@@ -50,16 +50,17 @@
     <select id="getFilesByPostId" parameterType="long" resultType="PostFiles">
         SELECT
             POST_FILE_ID
-             , POST_ID
-             , ORIGIN_FILE_NAME
-             , STORED_FILE_NAME
-             , FILE_PATH
-             , FILE_SIZE
-             , FILE_TYPE
-             , DOWNLOAD_CNT
-             , DEL_YN
-             , CREATE_DATE
-             , DELETE_DATE
+            , POST_ID
+            , ORIGIN_FILE_NAME
+            , STORED_FILE_NAME
+            , FILE_PATH
+            , FILE_SIZE
+            , FILE_TYPE
+            , DOWNLOAD_CNT
+            , DEL_YN
+            , CREATE_DATE
+            , DELETE_DATE
+            , FILE_ATTACHED
         FROM POST_FILE F
         WHERE F.POST_ID = #{postId}
         AND F.DEL_YN = 'N'
@@ -75,19 +76,20 @@
     </update>
 
     <!-- 단건 파일 조회 -->
-    <select id="getFileByFileId" parameterType="long" resultType="PostFiles">
+    <select id="getFileByPostFileId" parameterType="long" resultType="PostFiles">
         SELECT
             POST_FILE_ID
-             , POST_ID
-             , ORIGIN_FILE_NAME
-             , STORED_FILE_NAME
-             , FILE_PATH
-             , FILE_SIZE
-             , FILE_TYPE
-             , DOWNLOAD_CNT
-             , DEL_YN
-             , CREATE_DATE
-             , DELETE_DATE
+            , POST_ID
+            , ORIGIN_FILE_NAME
+            , STORED_FILE_NAME
+            , FILE_PATH
+            , FILE_SIZE
+            , FILE_TYPE
+            , DOWNLOAD_CNT
+            , DEL_YN
+            , CREATE_DATE
+            , DELETE_DATE
+            , FILE_ATTACHED
         FROM POST_FILE F
         WHERE F.POST_FILE_ID = #{postFileId}
         AND F.DEL_YN = 'N'

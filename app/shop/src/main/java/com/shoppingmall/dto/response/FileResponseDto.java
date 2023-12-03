@@ -22,6 +22,7 @@ public class FileResponseDto {
     private LocalDateTime createDate;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime deleteDate;
+    private String fileAttached;
 
     public FileResponseDto(PostFiles postFiles) {
         this.postFileId = postFiles.getPostFileId();
@@ -35,5 +36,6 @@ public class FileResponseDto {
         this.delYn = postFiles.getDelYn();
         this.createDate = postFiles.getCreateDate();
         this.deleteDate = postFiles.getDeleteDate();
+        this.fileAttached = postFiles.getFileAttached();
     }
 }

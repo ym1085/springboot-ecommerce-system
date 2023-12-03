@@ -3,7 +3,7 @@ const requestHttpFieldType = ['pathVariable', 'queryString', 'requestBody']; // 
 
 function handleResponseError(error, request) {
     console.error(`[fetch Request] error => ${error}, URL => ${request.url}, METHOD => ${request.method} `);
-    showMessage(messages.COMMON_SERVER_ERROR_MSG);
+    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
 }
 
 const queryBuilder = {

@@ -18,7 +18,7 @@ public interface FileMapper {
 
     int deleteUpdateFilesByPostId(Long postId);
 
-    Optional<PostFiles> getFileByFileId(Long fileId);
+    Optional<PostFiles> getFileByPostFileId(Long fileId);
 
     void increaseDownloadCntByFileId(Long fileId);
 }

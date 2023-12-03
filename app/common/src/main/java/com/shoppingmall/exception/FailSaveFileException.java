@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Getter
 @AllArgsConstructor
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-public class PasswordNotFoundException extends RuntimeException {
+public class FailSaveFileException extends RuntimeException {
 
     private final MessageCode messageCode;
 
