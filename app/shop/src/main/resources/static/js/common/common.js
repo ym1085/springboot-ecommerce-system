@@ -27,7 +27,7 @@ function reload() {
  */
 function redirectURL(url, query) {
     if (typeof url !== 'string' || isEmpty(url)) {
-        showMessage(messages.EMPTY_URL);
+        showMessage(messages.NOT_FOUND_URL);
         return;
     }
 

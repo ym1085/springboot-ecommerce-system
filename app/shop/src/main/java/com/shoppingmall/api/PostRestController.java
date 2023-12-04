@@ -1,17 +1,15 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.BindingResultError;
+import com.shoppingmall.common.ApiUtils;
 import com.shoppingmall.common.CommonResponse;
-import com.shoppingmall.common.MessageCode;
-import com.shoppingmall.common.ResponseFactory;
+import com.shoppingmall.common.SuccessCode;
 import com.shoppingmall.config.auth.PrincipalDetails;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
-import com.shoppingmall.service.FileService;
+import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.PostService;
-import com.shoppingmall.utils.FileHandlerHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,15 +28,13 @@ import java.util.Map;
 public class PostRestController {
 
     private final PostService postService;
-    private final FileHandlerHelper fileHandlerHelper;
-    private final FileService fileService;
 
     @GetMapping(value = "/post")
     public ResponseEntity<CommonResponse> getPosts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
-        return ResponseFactory.createResponseFactory(
-                MessageCode.SUCCESS_GET_POSTS.getCode(),
-                MessageCode.SUCCESS_GET_POSTS.getMessage(),
+        return ApiUtils.success(
+                SuccessCode.SUCCESS_GET_POSTS.getCode(),
+                SuccessCode.SUCCESS_GET_POSTS.getMessage(),
                 posts,
                 HttpStatus.OK
         );
@@ -48,9 +43,9 @@ public class PostRestController {
     @GetMapping(value = "/post/{postId}")
     public ResponseEntity<CommonResponse> getPostById(@PathVariable("postId") Long postId) {
         PostResponseDto post = postService.getPostById(postId);
-        return ResponseFactory.createResponseFactory(
-                MessageCode.SUCCESS_GET_POST.getCode(),
-                MessageCode.SUCCESS_GET_POST.getMessage(),
+        return ApiUtils.success(
+                SuccessCode.SUCCESS_GET_POST.getCode(),
+                SuccessCode.SUCCESS_GET_POST.getMessage(),
                 post,
                 HttpStatus.OK
         );
@@ -62,19 +57,17 @@ public class PostRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            Map<String, String> errorMessage = BindingResultError.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(
-                    MessageCode.FAIL_SAVE_POST.getCode(),
-                    MessageCode.FAIL_SAVE_POST.getMessage(),
-                    errorMessage,
-                    HttpStatus.BAD_REQUEST
-            );
+            throw new InvalidParameterException(bindingResult);
         }
 
         postRequestDto.setMemberId(1L);
         Long postId = postService.savePost(postRequestDto);
 
-        return ResponseFactory.createResponseFactory(MessageCode.SUCCESS_SAVE_POST.getCode(), MessageCode.SUCCESS_SAVE_POST.getMessage(), HttpStatus.OK);
+        return ApiUtils.success(
+                SuccessCode.SUCCESS_SAVE_POST.getCode(),
+                SuccessCode.SUCCESS_SAVE_POST.getMessage(),
+                HttpStatus.OK
+        );
     }
 
     @PutMapping(value = "/post/{postId}")
@@ -86,37 +79,27 @@ public class PostRestController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            Map<String, String> errorMessage = BindingResultError.extractBindingResultErrorMessages(bindingResult);
-            return ResponseFactory.createResponseFactory(
-                    MessageCode.FAIL_UPDATE_POST.getCode(),
-                    MessageCode.FAIL_UPDATE_POST.getMessage(),
-                    errorMessage,
-                    HttpStatus.BAD_REQUEST
-            );
+            throw new InvalidParameterException(bindingResult);
         }
 
-        postRequestDto.setMemberId(1L); // TODO: Spring Security 통해 사용자 정보 받아서 셋팅
+        postRequestDto.setMemberId(1L);
         postRequestDto.setPostId(postId);
 
-        MessageCode messageCode = postService.updatePost(postRequestDto);
-        return ResponseFactory.createResponseFactory(
-            messageCode.getCode(),
-            messageCode.getMessage(),
-            (messageCode == MessageCode.SUCCESS_UPDATE_POST)
-                    ? HttpStatus.OK
-                    : HttpStatus.INTERNAL_SERVER_ERROR
+        int responseCode = postService.updatePost(postRequestDto);
+        return ApiUtils.success(
+                SuccessCode.SUCCESS_UPDATE_POST.getCode(),
+                SuccessCode.SUCCESS_UPDATE_POST.getMessage(),
+                responseCode == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
     @DeleteMapping(value = "/post/{postId}")
     public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") Long postId) {
-        MessageCode messageCode = postService.deletePost(postId);
-        return ResponseFactory.createResponseFactory(
-                messageCode.getCode(),
-                messageCode.getMessage(),
-                (messageCode == MessageCode.SUCCESS_DELETE_POST)
-                        ? HttpStatus.OK
-                        : HttpStatus.INTERNAL_SERVER_ERROR
+        int responseCode = postService.deletePost(postId);
+        return ApiUtils.success(
+                SuccessCode.SUCCESS_DELETE_FILES.getCode(),
+                SuccessCode.SUCCESS_DELETE_FILES.getMessage(),
+                responseCode == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 }
