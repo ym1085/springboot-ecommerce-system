@@ -1,16 +1,12 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.MessageCode;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.shoppingmall.common.ErrorCode;
 
-@Getter
-@AllArgsConstructor
-@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-public class FailUpdateFilesException extends RuntimeException {
+public class FailUpdateFilesException extends CustomException {
 
-    private final MessageCode messageCode;
+    private static final long serialVersionUID = -2116671122895194101L;
 
+    public FailUpdateFilesException() {
+        super(ErrorCode.FAIL_UPDATE_FILES);
+    }
 }

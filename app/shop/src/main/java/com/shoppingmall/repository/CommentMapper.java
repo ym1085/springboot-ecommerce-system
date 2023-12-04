@@ -22,5 +22,4 @@ public interface CommentMapper {
     int getCommentReplyCountByCommentId(Long commentId);
 
     int updateCommentByCommentId(Comment comment);
-
 }

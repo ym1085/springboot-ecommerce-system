@@ -1,7 +1,7 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.MessageCode;
-import com.shoppingmall.common.ResponseFactory;
+import com.shoppingmall.common.ApiUtils;
+import com.shoppingmall.common.ErrorCode;
 import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.service.FileService;
 import com.shoppingmall.utils.FileHandlerHelper;
@@ -35,40 +35,22 @@ public class FileRestController {
     private final FileService fileService;
     private final FileHandlerHelper fileHandlerHelper;
 
-    /**
-     * 파일 번호 기반 단일 파일 다운로드
-     * @param postFileId 다운로드 받고자 하는 file seq
-     * @param domain 다운로드 받고자 하는 도메인 (shop, posts..등)
-     * @return
-     */
-    @GetMapping("/download/{domain}/{postFileId}") // Todo: pathvariable shop, posts 수정
+    @GetMapping("/download/{domain}/{postFileId}")
     public ResponseEntity downloadPostFile(
             @PathVariable("postFileId") Long postFileId,
             @PathVariable("domain") String domain) {
         FileResponseDto files = fileService.getFileByPostFileId(postFileId);
         if (files.getStoredFileName().isBlank()) {
-            return ResponseFactory.createResponseFactory(
-                    MessageCode.NOT_FOUND_POST_FILES.getCode(),
-                    MessageCode.NOT_FOUND_POST_FILES.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            return ApiUtils.fail(ErrorCode.NOT_FOUND_POST_FILES.getCode(), ErrorCode.NOT_FOUND_POST_FILES.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         if (StringUtils.isBlank(files.getFilePath())) {
-            return ResponseFactory.createResponseFactory(
-                    MessageCode.NOT_FOUND_POST_FILES_PATH.getCode(),
-                    MessageCode.NOT_FOUND_POST_FILES_PATH.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            return ApiUtils.fail(ErrorCode.NOT_FOUND_POST_FILES_PATH.getCode(), ErrorCode.NOT_FOUND_POST_FILES_PATH.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         String serverUploadPath = fileHandlerHelper.getUploadPath();
         if (StringUtils.isBlank(serverUploadPath)) {
-            return ResponseFactory.createResponseFactory(
-                    MessageCode.NOT_FOUND_POST_FILES_PATH.getCode(),
-                    MessageCode.NOT_FOUND_POST_FILES_PATH.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            return ApiUtils.fail(ErrorCode.NOT_FOUND_POST_FILES.getCode(), ErrorCode.NOT_FOUND_POST_FILES.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         String fileUploadPath = fileHandlerHelper.extractFileDateTimeByFilePath(files.getFilePath());

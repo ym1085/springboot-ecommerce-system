@@ -1,6 +1,6 @@
 package com.shoppingmall.utils;
 
-import com.shoppingmall.common.MessageCode;
+import com.shoppingmall.common.ErrorCode;
 import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.constant.FileType;
 import com.shoppingmall.constant.OSType;
@@ -124,7 +124,7 @@ public class FileHandlerHelper {
             log.error("[IllegalStateException] error occurred, e = {}", e.getMessage());
         } catch (Exception e) {
             log.error("[Exception] error occurred, e = {}", e.getMessage());
-            throw new UploadFileException(MessageCode.FAIL_UPDATE_FILES);
+            throw new UploadFileException();
         }
     }
 
@@ -230,7 +230,7 @@ public class FileHandlerHelper {
             return resource.getInputStream();
         } catch (IOException e) {
             log.error(e.getMessage());
-            throw new FailDownloadFilesException(MessageCode.FAIL_DOWNLOAD_FILES);
+            throw new FailDownloadFilesException();
         }
     }
 
@@ -242,7 +242,7 @@ public class FileHandlerHelper {
             httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE.toString());
         } catch (IOException e) {
             log.error(e.getMessage());
-            throw new FailDownloadFilesException(MessageCode.FAIL_DOWNLOAD_FILES);
+            throw new FailDownloadFilesException();
         }
         return httpHeaders;
     }

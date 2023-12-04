@@ -1,9 +1,8 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.CommonResponse;
-import com.shoppingmall.common.MessageCode;
-import com.shoppingmall.common.ResponseFactory;
+import com.shoppingmall.common.*;
 import com.shoppingmall.dto.request.EmailRequestDto;
+import com.shoppingmall.exception.EmailNotFoundException;
 import com.shoppingmall.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,20 +24,12 @@ public class EmailRestController {
             @RequestBody EmailRequestDto emailRequestDto) {
 
         if (StringUtils.isBlank(emailRequestDto.getEmail())) {
-            return ResponseFactory.createResponseFactory(
-                    MessageCode.NOT_FOUND_MEMBER_EMAIL.getCode(),
-                    MessageCode.NOT_FOUND_MEMBER_EMAIL.getMessage(),
-                    HttpStatus.BAD_REQUEST
-            );
+            throw new EmailNotFoundException();
         }
 
         emailService.sendAuthCodeToMemberEmail(emailRequestDto.getEmail());
 
-        return ResponseFactory.createResponseFactory(
-                MessageCode.SUCCESS_SEND_EMAIL.getCode(),
-                MessageCode.SUCCESS_SEND_EMAIL.getMessage(),
-                HttpStatus.OK
-        );
+        return ApiUtils.success(SuccessCode.SUCCESS_SEND_EMAIL.getCode(), SuccessCode.SUCCESS_SEND_EMAIL.getMessage(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/email/verify")
@@ -47,17 +38,9 @@ public class EmailRestController {
             @RequestParam("code") String authCode) {
 
         if (!EmailService.emailAuthKey.equals(authCode)) {
-            return ResponseFactory.createResponseFactory(
-                    MessageCode.FAIL_CERT_EMAIL.getCode(),
-                    MessageCode.FAIL_CERT_EMAIL.getMessage(),
-                    HttpStatus.BAD_REQUEST
-            );
+            return ApiUtils.fail(ErrorCode.FAIL_CERT_EMAIL.getCode(), ErrorCode.FAIL_CERT_EMAIL.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        return ResponseFactory.createResponseFactory(
-                MessageCode.SUCCESS_CERT_EMAIL.getCode(),
-                MessageCode.SUCCESS_CERT_EMAIL.getMessage(),
-                HttpStatus.OK
-        );
+        return ApiUtils.success(SuccessCode.SUCCESS_CERT_EMAIL.getCode(), SuccessCode.SUCCESS_CERT_EMAIL.getMessage(), HttpStatus.OK);
     }
 }

@@ -1,16 +1,17 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.domain.Comment;
 import com.shoppingmall.dto.request.CommentRequestDto;
 import com.shoppingmall.dto.response.CommentResponseDto;
+import com.shoppingmall.exception.FailDeleteCommentException;
+import com.shoppingmall.exception.FailSaveCommentException;
+import com.shoppingmall.exception.FailUpdateCommentException;
 import com.shoppingmall.repository.CommentMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -38,12 +39,12 @@ public class CommentService {
         }
 
         Comment comment = new Comment(commentRequestDto);
-        MessageCode messageCode = (commentMapper.saveComment(comment) > 0) ? MessageCode.SUCCESS_SAVE_COMMENT : MessageCode.FAIL_SAVE_COMMENT;
-
-        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
-        if (messageCode == MessageCode.SUCCESS_SAVE_COMMENT) {
-            commentResponseDtos = this.getCommentsByPostId(commentRequestDto);
+        int responseCode = commentMapper.saveComment(comment);
+        if (responseCode == 0) {
+            throw new FailSaveCommentException();
         }
+
+        List<CommentResponseDto> commentResponseDtos = getCommentsByPostId(commentRequestDto);
         return commentResponseDtos;
     }
 
@@ -62,38 +63,36 @@ public class CommentService {
     @Transactional
     public List<CommentResponseDto> deleteComments(CommentRequestDto commentRequestDto) {
         Comment comment = new Comment(commentRequestDto);
-        MessageCode messageCode = commentMapper.deleteComment(comment) > 0 ? MessageCode.SUCCESS_DELETE_COMMENT : MessageCode.FAIL_DELETE_COMMENT; // 댓글 + 대댓글 삭제
-
-        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
-        if (messageCode == MessageCode.SUCCESS_DELETE_COMMENT) {
-            commentResponseDtos = this.getCommentsByPostId(commentRequestDto);
+        int responseCode = commentMapper.deleteComment(comment);
+        if (responseCode == 0) {
+            throw new FailDeleteCommentException();
         }
 
+        List<CommentResponseDto> commentResponseDtos = getCommentsByPostId(commentRequestDto);
         return commentResponseDtos;
     }
 
     @Transactional
     public List<CommentResponseDto> deleteCommentsReply(CommentRequestDto commentRequestDto) {
         Comment comment = new Comment(commentRequestDto);
-        MessageCode messageCode = commentMapper.deleteCommentReply(comment) > 0 ? MessageCode.SUCCESS_DELETE_COMMENT : MessageCode.FAIL_DELETE_COMMENT; // 대댓글 삭제
-
-        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
-        if (messageCode == MessageCode.SUCCESS_DELETE_COMMENT) {
-            commentResponseDtos = this.getCommentsByPostId(commentRequestDto);
+        int responseCode = commentMapper.deleteCommentReply(comment);
+        if (responseCode == 0) {
+            throw new FailDeleteCommentException();
         }
 
+        List<CommentResponseDto> commentResponseDtos = getCommentsByPostId(commentRequestDto);
         return commentResponseDtos;
     }
 
     @Transactional
     public List<CommentResponseDto> updateCommentByCommentId(CommentRequestDto commentRequestDto) {
         Comment comment = new Comment(commentRequestDto);
-        MessageCode messageCode = commentMapper.updateCommentByCommentId(comment) > 0 ? MessageCode.SUCCESS_UPDATE_COMMENT : MessageCode.FAIL_UPDATE_COMMENT;
-
-        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
-        if (messageCode == MessageCode.SUCCESS_UPDATE_COMMENT) {
-            commentResponseDtos = this.getCommentsByPostId(commentRequestDto);
+        int responseCode = commentMapper.updateCommentByCommentId(comment);
+        if (responseCode == 0) {
+            throw new FailUpdateCommentException();
         }
+
+        List<CommentResponseDto> commentResponseDtos = getCommentsByPostId(commentRequestDto);
         return commentResponseDtos;
     }
 

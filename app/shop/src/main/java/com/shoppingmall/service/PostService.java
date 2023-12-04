@@ -1,6 +1,5 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.constant.FileType;
 import com.shoppingmall.domain.Post;
 import com.shoppingmall.domain.PostFiles;
@@ -11,6 +10,7 @@ import com.shoppingmall.dto.response.*;
 import com.shoppingmall.exception.FailSaveFileException;
 import com.shoppingmall.exception.FailSavePostException;
 import com.shoppingmall.exception.FailUpdateFilesException;
+import com.shoppingmall.exception.FailUpdatePostException;
 import com.shoppingmall.repository.CommentMapper;
 import com.shoppingmall.repository.FileMapper;
 import com.shoppingmall.repository.PostMapper;
@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class PostService {
-
     private final PostMapper postMapper;
     private final FileMapper fileMapper;
     private final FileHandlerHelper fileHandlerHelper;
@@ -52,21 +51,24 @@ public class PostService {
         List<PostResponseDto> posts = postMapper.getPosts(searchRequestDto)
                 .stream()
                 .filter(Objects::nonNull)
-                .map(post -> {
-                    PostResponseDto postResponseDto = new PostResponseDto(post);
-                    List<PostFileResponseDto> postFileResponseDtos = new ArrayList<>();
-                    for (PostFiles postFile : post.getPostFiles()) {
-                        if (postFile.getPostFileId() == null) {
-                            postResponseDto.addPostFiles(Collections.emptyList());
-                            continue;
-                        }
-                        postFileResponseDtos.add(new PostFileResponseDto(postFile));
-                        postResponseDto.addPostFiles(postFileResponseDtos);
-                    }
-                    return postResponseDto;
-                }).collect(Collectors.toList());
+                .map(PostService::addPostFiles)
+                .collect(Collectors.toList());
 
         return new PagingResponseDto<>(posts, pagination);
+    }
+
+    private static PostResponseDto addPostFiles(Post post) {
+        PostResponseDto postResponseDto = new PostResponseDto(post);
+        List<PostFileResponseDto> postFileResponseDtos = new ArrayList<>();
+        for (PostFiles postFile : post.getPostFiles()) {
+            if (postFile.getPostFileId() == null) {
+                postResponseDto.addPostFiles(Collections.emptyList());
+                continue;
+            }
+            postFileResponseDtos.add(new PostFileResponseDto(postFile));
+            postResponseDto.addPostFiles(postFileResponseDtos);
+        }
+        return postResponseDto;
     }
 
     @Transactional(readOnly = true)
@@ -101,15 +103,14 @@ public class PostService {
         Post post = new Post(postRequestDto);
         int responseCode = postMapper.savePost(post);
         if (responseCode <= 0) {
-            throw new FailSavePostException(MessageCode.FAIL_SAVE_POST);
+            throw new FailSavePostException();
         }
 
         List<FileRequestDto> fileRequestDtos;
         if (!postRequestDto.getFiles().isEmpty()) {
             fileRequestDtos = fileHandlerHelper.uploadFiles(postRequestDto.getFiles(), postRequestDto.getFileType());
-            responseCode = saveFiles(post.getPostId(), fileRequestDtos);
-            if (responseCode <= 0) {
-                throw new FailSaveFileException(MessageCode.FAIL_SAVE_FILES);
+            if (saveFiles(post.getPostId(), fileRequestDtos) == 0) {
+                throw new FailSaveFileException();
             }
         }
 
@@ -118,7 +119,7 @@ public class PostService {
 
     public int saveFiles(Long postId, List<FileRequestDto> files) {
         if (CollectionUtils.isEmpty(files) || files.get(0) == null || postId == null) {
-            return MessageCode.FAIL.getCode();
+            throw new FailSaveFileException();
         }
         for (FileRequestDto file : files) {
             if (file == null) {
@@ -130,67 +131,58 @@ public class PostService {
     }
 
     @Transactional
-    public MessageCode updatePost(PostRequestDto postRequestDto) {
-        // Todo: 방어 로직 허술, 아래 로직 수정 필요
-        Long result = postMapper.updatePostById(new Post(postRequestDto));
-
-        if (!isEmptyFiles(postRequestDto.getFiles())) {
-            try {
-                int fileUpdatedResult = updateFilesByPostId(postRequestDto.getPostId(), postRequestDto.getFiles());
-                if (fileUpdatedResult == 0) {
-                    // Fixme: 추후 MessageCode 값에 넣어서 code 값을 반환하도록 수정
-                    throw new FailUpdateFilesException(MessageCode.FAIL_UPDATE_FILES);
-                }
-            } catch (FailUpdateFilesException e) {
-                log.error("File updated: " + postRequestDto.getFiles().toString());
-            }
+    public int updatePost(PostRequestDto postRequestDto) {
+        int responseCode = postMapper.updatePostById(new Post(postRequestDto));
+        if (responseCode == 0) {
+            throw new FailUpdatePostException();
         }
 
-        return MessageCode.SUCCESS_UPDATE_POST;
+        if (!isEmptyFiles(postRequestDto.getFiles())) {
+            updateFilesByPostId(postRequestDto);
+        }
+        return responseCode;
+    }
+
+    private void updateFilesByPostId(PostRequestDto postRequestDto) {
+        try {
+            if (updateFilesByPostId(postRequestDto.getPostId(), postRequestDto.getFiles()) == 0) {
+                throw new FailUpdateFilesException();
+            }
+        } catch (FailUpdateFilesException e) {
+            log.error("File updated: " + postRequestDto.getFiles().toString());
+        }
     }
 
     private int updateFilesByPostId(Long postId, List<MultipartFile> files) {
         List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
-        fileHandlerHelper.deleteFiles(fileResponseDtos); // 서버 특정 경로의 파일 삭제
+        fileHandlerHelper.deleteFiles(fileResponseDtos);
 
-        // Todo: DB 파일 삭제, 아래 로직 수정 필요
-        int result = fileMapper.deleteFilesByPostId(postId);
-        if (result > 0) {
-            log.info("uploadFile is exists, result = {}", result);
+        int responseCode = fileMapper.deleteFilesByPostId(postId);
+        if (responseCode > 0) {
             List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files, FileType.POSTS);
-            setFileInfoPostId(postId, fileRequestDtos);
+            fileRequestDtos.forEach(fileRequestDto -> fileRequestDto.setPostId(postId));
             fileMapper.saveFiles(fileRequestDtos);
         }
-        return MessageCode.SUCCESS.getCode();
+        return responseCode;
     }
 
     private boolean isEmptyFiles(List<MultipartFile> files) {
         return (files.isEmpty());
     }
 
-    private void setFileInfoPostId(Long postId, List<FileRequestDto> fileRequestDtos) {
-        fileRequestDtos.stream()
-                .forEach(fileRequestDto -> fileRequestDto.setPostId(postId));
-    }
-
     @Transactional
-    public MessageCode deletePost(long postId) {
-        MessageCode messageCode = MessageCode.FAIL_DELETE_POST;
-        Long deletedPost = postMapper.deletePostById(postId);
+    public int deletePost(long postId) {
+        int responseCode = postMapper.deletePostById(postId);
 
-        List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
-        if (deletedPost > 0 && !CollectionUtils.isEmpty(fileResponseDtos)) {
-            fileHandlerHelper.deleteFiles(fileResponseDtos);
-            int deleteFiles = fileMapper.deleteUpdateFilesByPostId(postId);
-            if (deletedPost > 0 && deleteFiles > 0) {
-                messageCode = MessageCode.SUCCESS_DELETE_POST;
-            }
-        } else {
-            if (deletedPost > 0) {
-                messageCode = MessageCode.SUCCESS_DELETE_POST;
+        if (responseCode > 0) {
+            List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
+            if (!CollectionUtils.isEmpty(fileResponseDtos)) {
+                fileHandlerHelper.deleteFiles(fileResponseDtos);
+                responseCode = fileMapper.deleteUpdateFilesByPostId(postId);
             }
         }
-        return messageCode;
+
+        return responseCode;
     }
 
     private List<FileResponseDto> getFileResponseDtos(long postId) {

@@ -1,17 +1,12 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.MessageCode;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.shoppingmall.common.ErrorCode;
 
-// https://recordsoflife.tistory.com/501
-@Getter
-@AllArgsConstructor
-@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-public class UploadFileException extends RuntimeException {
+public class UploadFileException extends CustomException {
 
-    private final MessageCode messageCode;
+    private static final long serialVersionUID = -2116671122895194101L;
 
+    public UploadFileException() {
+        super(ErrorCode.FAIL_UPDATE_FILES);
+    }
 }

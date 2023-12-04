@@ -31,21 +31,21 @@ const postInfo = {
 
     validatePostInfo: function () {
         if (!this.isValidPostId(this.postId.value)) {
-            showMessage(messages.EMPTY_POST_ID.message);
+            showMessage(messages.NOT_FOUND_POST_ID.message);
             return false;
         }
         if (!this.isValidTitle(this.title.value)) {
-            showMessage(messages.EMPTY_POST_TITLE.message);
+            showMessage(messages.NOT_FOUND_POST_TITLE.message);
             this.title.focus();
             return false;
         }
         if (!this.isValidContent(this.content.value)) {
-            showMessage(messages.EMPTY_POST_CONTENT.message);
+            showMessage(messages.NOT_FOUND_POST_CONTENT.message);
             this.content.focus();
             return false;
         }
         if (isEmpty(this.fixedYn.value)) {
-            showMessage(messages.EMPTY_POST_FIXED_YN.message);
+            showMessage(messages.NOT_FOUND_POST_FIXED_YN.message);
             return false;
         }
         return true;
@@ -143,7 +143,7 @@ const postInfo = {
 
     downloadAttachedFile: function (element, postFileId) {
         if (isEmpty(postFileId)) {
-            showMessage(messages.EMPTY_POST_FILES.message);
+            showMessage(messages.NOT_FOUND_POST_FILES_ID.message);
             return;
         }
 
@@ -472,7 +472,7 @@ const commentInfo = {
     saveComment: function (postId) {
         const commentContent = document.getElementById('commentContent');
         if (isEmpty(commentContent.value)) {
-            showMessage(messages.EMPTY_COMMENT_CONTENT.message);
+            showMessage(messages.NOT_FOUND_COMMENT_CONTENT.message);
             focus(commentContent);
             return;
         } else if (commentContent.value.length > 300) {
@@ -482,7 +482,7 @@ const commentInfo = {
         }
 
         if (isEmpty(postId)) {
-            showMessage(messages.EMPTY_POST_ID.message);
+            showMessage(messages.NOT_FOUND_POST_ID.message);
             return;
         }
 
@@ -508,8 +508,8 @@ const commentInfo = {
                     this.renderComments(result.result);
                 } else if (result.code === messages.FAIL_SAVE_COMMENT.message) {
                     showMessage(messages.FAIL_SAVE_COMMENT.message);
-                } else if (result.code === messages.EMPTY_POST_ID.message) {
-                    showMessage(messages.EMPTY_POST_ID.message);
+                } else if (result.code === messages.NOT_FOUND_POST_ID.message) {
+                    showMessage(messages.NOT_FOUND_POST_ID.message);
                 } else {
                     showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
                 }
@@ -545,13 +545,13 @@ const commentInfo = {
         const postId = element.getAttribute('data-post-id');
         // console.log(`postId => ${postId}, commentId => ${commentId}`);
         if (isEmpty(postId)) {
-            showMessage(messages.EMPTY_POST_ID.message);
+            showMessage(messages.NOT_FOUND_POST_ID.message);
             return;
         }
 
         const commentTemplateContent = element.previousElementSibling; // 댓글 내용
         if (isEmpty(commentTemplateContent.value)) {
-            showMessage(messages.EMPTY_COMMENT_CONTENT.message);
+            showMessage(messages.NOT_FOUND_COMMENT_CONTENT.message);
             return;
         }
 
@@ -592,7 +592,7 @@ const commentInfo = {
     deleteComments: function (element, commentId) {
         const postId = element.getAttribute('data-post-id');
         if (isEmpty(postId)) {
-            showMessage(messages.EMPTY_POST_ID.message);
+            showMessage(messages.NOT_FOUND_POST_ID.message);
             return;
         }
 
@@ -630,7 +630,7 @@ const commentInfo = {
     deleteCommentsReply: function (element, commentId) {
         const postId = element.getAttribute('data-post-id');
         if (isEmpty(postId)) {
-            showMessage(messages.EMPTY_POST_ID.message);
+            showMessage(messages.NOT_FOUND_POST_ID.message);
             return;
         }
 
@@ -668,7 +668,7 @@ const commentInfo = {
     deleteCommentReply: function (element, commentId) {
         const postId = element.getAttribute('data-post-id');
         if (isEmpty(postId)) {
-            showMessage(messages.EMPTY_POST_ID.message);
+            showMessage(messages.NOT_FOUND_POST_ID.message);
             return;
         }
 
@@ -720,12 +720,12 @@ const commentInfo = {
         const commentContent = element.previousElementSibling;
         const postId = element.getAttribute('data-post-id');
         if (isEmpty(postId)) {
-            showMessage(messages.EMPTY_POST_ID.message);
+            showMessage(messages.NOT_FOUND_POST_ID.message);
             return;
         }
 
         if (isEmpty(commentContent.value)) {
-            showMessage(messages.EMPTY_COMMENT_CONTENT.message);
+            showMessage(messages.NOT_FOUND_COMMENT_CONTENT.message);
             commentContent.focus();
             return;
         }
@@ -757,8 +757,8 @@ const commentInfo = {
                     this.renderComments(result.result);
                 } else if (result.code === messages.FAIL_SAVE_COMMENT.message) {
                     showMessage(messages.FAIL_SAVE_COMMENT.message);
-                } else if (result.code === messages.EMPTY_POST_ID.message) {
-                    showMessage(messages.EMPTY_POST_ID.message);
+                } else if (result.code === messages.NOT_FOUND_POST_ID.message) {
+                    showMessage(messages.NOT_FOUND_POST_ID.message);
                 } else {
                     showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
                 }

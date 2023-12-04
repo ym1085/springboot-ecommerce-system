@@ -1,35 +1,27 @@
 package com.shoppingmall.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @Setter
 public class CommonResponse<T> {
-    private int code;
-    private String message;
+    private final int code;
+    private final String message;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) // NULL아니고 공백 아닌 경우
-    private Map<String, String> errorMessage = new HashMap<>();
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private final T result;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) // NULL아니고 공백 아닌 경우
-    private T result;
-
+    @Builder
     public CommonResponse(int code, String message) {
         this.code = code;
         this.message = message;
+        this.result = null;
     }
 
-    public CommonResponse(int code, String message, Map<String, String> errorMessage) {
-        this.code = code;
-        this.message = message;
-        this.errorMessage = errorMessage;
-    }
-
+    @Builder
     public CommonResponse(int code, String message, T result) {
         this.code = code;
         this.message = message;

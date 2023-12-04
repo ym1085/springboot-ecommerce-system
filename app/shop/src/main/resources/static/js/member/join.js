@@ -32,7 +32,7 @@ function initializedMemberInfo() {
 
 function validateUserName(userName) {
     if (isEmpty(userName.value)) {
-        showMessage(messages.EMPTY_USER_NAME.message);
+        showMessage(messages.NOT_FOUND_MEMBER_NAME.message);
         userName.focus();
         return false;
     } else if (userName.length > 6) {
@@ -56,7 +56,7 @@ function validateUserNameRegExp(userName) {
 
 function validateAccount(account) {
     if (isEmpty(account.value)) {
-        showMessage(messages.EMPTY_ACCOUNT.message);
+        showMessage(messages.NOT_FOUND_MEMBER_ACCOUNT.message);
         account.focus();
         return false;
     } else if (account.length > 30) {
@@ -103,7 +103,7 @@ function validateEqualsPasswords(password1, password2) {
 
 function validatePrefixPwd(password1) {
     if (isEmpty(password1.value)) {
-        showMessage(messages.EMPTY_PASSWORD1.message);
+        showMessage(messages.NOT_FOUND_MEMBER_PASSWORD1.message);
         password1.focus();
         return false;
     } else if (password1.length < 8) {
@@ -116,7 +116,7 @@ function validatePrefixPwd(password1) {
 
 function validateLastPwd(password2) {
     if (isEmpty(password2.value)) {
-        showMessage(messages.EMPTY_PASSWORD2.message);
+        showMessage(messages.NOT_FOUND_MEMBER_PASSWORD2.message);
         password2.focus();
         return false;
     } else if (password2.length < 8) {
@@ -139,7 +139,7 @@ function validateEmailRegExp(email) {
 
 function validateEmail(email) {
     if (isEmpty(email.value)) {
-        showMessage(messages.EMPTY_EMAIL.message);
+        showMessage(messages.NOT_FOUND_MEMBER_EMAIL.message);
         email.focus();
         return false;
     } else if (email.length > 45) {
@@ -161,11 +161,11 @@ function validateNumericPhoneNumber(phonePrefix, phoneMiddle, phoneLast) {
 
 function validatePhonePrefix(phonePrefix) {
     if (isEmpty(phonePrefix.value)) {
-        showMessage(messages.EMPTY_PHONE_PREFIX.message);
+        showMessage(messages.NOT_FOUND_MEMBER_PHONE_PREFIX.message);
         phonePrefix.focus();
         return false;
     } else if (phonePrefix.value.trim().length > 3) {
-        showMessage(messages.EMPTY_PHONE_PREFIX.message);
+        showMessage(messages.NOT_FOUND_MEMBER_PHONE_PREFIX.message);
         phonePrefix.focus();
         return false;
     }
@@ -174,7 +174,7 @@ function validatePhonePrefix(phonePrefix) {
 
 function validatePhoneMiddle(phoneMiddle) {
     if (isEmpty(phoneMiddle.value)) {
-        showMessage(messages.EMPTY_PHONE_MIDDLE.message);
+        showMessage(messages.NOT_FOUND_MEMBER_PHONE_MIDDLE.message);
         phoneMiddle.focus();
         return false;
     } else if (phoneMiddle.value.trim().length > 4) {
@@ -187,7 +187,7 @@ function validatePhoneMiddle(phoneMiddle) {
 
 function validatePhoneLast(phoneLast) {
     if (isEmpty(phoneLast.value)) {
-        showMessage(messages.EMPTY_PHONE_LAST.message);
+        showMessage(messages.NOT_FOUND_MEMBER_PHONE_LAST.message);
         phoneLast.focus();
         return false;
     } else if (phoneLast.value.trim().length > 4) {
@@ -204,7 +204,7 @@ function isNotValidGender(gender) {
 
 function validateGender(gender) {
     if (isEmpty(gender.value)) {
-        showMessage(messages.EMPTY_GENDER.message);
+        showMessage(messages.NOT_FOUND_MEMBER_GENDER.message);
         gender.focus();
         return false;
     } else if (isNotValidGender(gender.value)) {
@@ -222,7 +222,7 @@ function isNotValidBirthDateFormat(birthDate) {
 
 function validateBirthDate(birthDate) {
     if (isEmpty(birthDate.value)) {
-        showMessage(messages.EMPTY_BIRTH_DATE.message);
+        showMessage(messages.NOT_FOUND_MEMBER_BIRTHDATE.message);
         birthDate.focus();
         return false;
     } else if (isNotValidBirthDateFormat(birthDate.value)) {
@@ -359,7 +359,7 @@ function sendAuthEmail(event) {
                 hideVerifySectionLayer();
                 hideTimerSectionLayer();
                 startTimer();
-            } else if (result.code === messages.EMPTY_EMAIL.code) {
+            } else if (result.code === messages.NOT_FOUND_MEMBER_EMAIL.code) {
                 showMessage(result.message);
                 certEmail.focus();
             } else {
@@ -382,7 +382,7 @@ function verifyEmailAuthCode() {
     const certEmail = document.getElementById('email');
     const verificationCode = document.getElementById('verificationCode');
     if (isEmpty(verificationCode.value) || isNotNumericRegExp(verificationCode.value)) {
-        showMessage(messages.EMPTY_EMAIL_AUTH_CODE.message);
+        showMessage(messages.NOT_FOUND_MEMBER_EMAIL_CERT_YN.message);
         verificationCode.focus();
         return;
     }
@@ -449,7 +449,7 @@ function checkDuplAccount() {
                 showMessage(result.message);
                 accountCertYn.value = 'Y';
                 password1.focus();
-            } else if (result.code === messages.EMPTY_ACCOUNT.code) {
+            } else if (result.code === messages.NOT_FOUND_MEMBER_ACCOUNT.code) {
                 showMessage(result.message);
                 account.focus();
             } else if (result.code === messages.FAIL_DUPL_MEMBER.code) {

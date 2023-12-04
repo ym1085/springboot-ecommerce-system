@@ -1,9 +1,10 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.MessageCode;
 import com.shoppingmall.constant.Role;
 import com.shoppingmall.domain.Member;
 import com.shoppingmall.dto.request.MemberRequestDto;
+import com.shoppingmall.exception.DuplMemberAccountException;
+import com.shoppingmall.exception.FailSaveMemberException;
 import com.shoppingmall.exception.PasswordNotFoundException;
 import com.shoppingmall.repository.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -20,32 +21,37 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public MessageCode join(MemberRequestDto memberRequestDto) {
+    public int join(MemberRequestDto memberRequestDto) {
         memberRequestDto.setPhoneNumber(replacePhoneNumberHyphen(memberRequestDto.getPhoneNumber()));
         memberRequestDto.setBirthDate(replaceBirthDateHyphen(memberRequestDto.getBirthDate()));
         memberRequestDto.setPassword(encryptMemberPassword(memberRequestDto.getPassword()));
         memberRequestDto.setRole(Role.USER);
 
         Member member = new Member(memberRequestDto);
-        if (isExistsDuplMemberAccount(member) > 0) {
-            return MessageCode.FAIL_DUPL_MEMBER;
+        if (isExistsDuplMemberAccount(member)) {
+            throw new DuplMemberAccountException();
         }
 
-        return (memberMapper.join(member) > 0)
-                ? MessageCode.SUCCESS_SAVE_MEMBER
-                : MessageCode.FAIL_SAVE_MEMBER;
+        int responseCode = memberMapper.join(member);
+        if (responseCode == 0) {
+            throw new FailSaveMemberException();
+        }
+
+        return memberMapper.join(member);
     }
 
     @Transactional(readOnly = true)
-    public MessageCode checkDuplMemberAccount(MemberRequestDto memberRequestDto) {
+    public int checkDuplMemberAccount(MemberRequestDto memberRequestDto) {
         Member member = new Member(memberRequestDto);
-        return (isExistsDuplMemberAccount(member) > 0)
-                ? MessageCode.FAIL_DUPL_MEMBER
-                : MessageCode.SUCCESS_DUPL_ACCOUNT;
+        int responseCode = 0;
+        if (isExistsDuplMemberAccount(member)) {
+            responseCode = 1;
+        }
+        return responseCode;
     }
 
-    private int isExistsDuplMemberAccount(Member member) {
-        return memberMapper.checkDuplMemberAccount(member);
+    private boolean isExistsDuplMemberAccount(Member member) {
+        return memberMapper.checkDuplMemberAccount(member) > 0;
     }
 
     private String replacePhoneNumberHyphen(String phoneNumber) {
@@ -58,7 +64,7 @@ public class MemberService {
 
     private String encryptMemberPassword(String password) {
         if (StringUtils.isEmpty(password)) {
-            throw new PasswordNotFoundException(MessageCode.NOT_FOUND_MEMBER_PASSWORD);
+            throw new PasswordNotFoundException();
         }
         return passwordEncoder.encode(password);
     }
