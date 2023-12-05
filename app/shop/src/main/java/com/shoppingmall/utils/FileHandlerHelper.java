@@ -1,6 +1,5 @@
 package com.shoppingmall.utils;
 
-import com.shoppingmall.common.ErrorCode;
 import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.constant.FileType;
 import com.shoppingmall.constant.OSType;
@@ -248,25 +247,30 @@ public class FileHandlerHelper {
     }
 
     public void responseZipFromAttachments(HttpServletResponse response, List<File> files) {
+        // Todo: try with resource 소스 리팩터링 + gzip 안에 있는 파일명은 originalFileName 으로 보여주는게 좋을 것 같으니 추후 수정
         try (ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())) {
             for (File file : files) {
-                if (!file.exists() || file.isFile()) {
+                if (!file.exists() || !file.isFile()) {
                     continue;
                 }
-
-                FileSystemResource fsr = new FileSystemResource(file.getPath());
-                ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(fsr.getFilename()));
-                zipEntry.setSize(fsr.contentLength());
-                zipEntry.setTime(System.currentTimeMillis());
-
-                zos.putNextEntry(zipEntry);
-
-                StreamUtils.copy(fsr.getInputStream(), zos);
-                zos.closeEntry();
+                handleZipOutPutStreamByFile(file, zos);
             }
             zos.finish();
         } catch (IOException e) {
             log.error(e.getMessage());
+            throw new FailDownloadFilesException();
         }
+    }
+
+    private void handleZipOutPutStreamByFile(File file, ZipOutputStream zos) throws IOException {
+        FileSystemResource fsr = new FileSystemResource(file.getPath());
+        ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(fsr.getFilename()));
+        zipEntry.setSize(fsr.contentLength());
+        zipEntry.setTime(System.currentTimeMillis());
+
+        zos.putNextEntry(zipEntry);
+
+        StreamUtils.copy(fsr.getInputStream(), zos);
+        zos.closeEntry();
     }
 }
