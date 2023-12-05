@@ -13,6 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,9 +69,8 @@ public class FileRestController {
         );
     }
 
-    @GetMapping(value = "/download/compress/{postId}", produces = "application/zip")
+    @GetMapping(value = "/download/compress/{domain}/{postId}", produces = "application/zip")
     public void downloadMultiZipFile(@PathVariable("postId") Long postId, HttpServletResponse response) throws IOException {
-        // post(1) : files(N) + postId(required : true)
         List<File> files = fileService.getFilesByPostId(postId)
                 .stream()
                 .map(fileResponseDto -> new File(fileResponseDto.getFilePath()))

@@ -184,6 +184,62 @@ const postInfo = {
             })
             .catch(error => handleResponseError(error, request));
     },
+
+    createGzipFileDownloadElement: function (file, filename) {
+        const downloadFileUrl = window.URL.createObjectURL(file);
+        const downloadFileElement = document.createElement('a');
+        downloadFileElement.style.display = 'none';
+        downloadFileElement.href = downloadFileUrl;
+
+        downloadFileElement.download = filename;
+        document.body.appendChild(downloadFileElement);
+
+        downloadFileElement.click();
+        window.URL.revokeObjectURL(downloadFileUrl);
+    },
+
+    downloadAttachedFilesByCompressed: function (postId) {
+        if (isEmpty(postId)) {
+            showMessage(messages.NOT_FOUND_POST_ID.message);
+            return;
+        }
+
+        const request = queryBuilder
+            .createQueryBuilder()
+            .url('/api/v1/download/compress/{domain}/{postId}')
+            .method('GET')
+            .pathVariable({
+                domain: 'posts',
+                postId: postId,
+            })
+            .build();
+
+        const response = commonFetchTemplate
+            .sendFetchRequest(request)
+            .then(response => {
+                if (response.status === 200) {
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    const filename = contentDisposition.match(/filename="(.+)"/)[1];
+
+                    return response.blob().then(file => ({
+                        file: file,
+                        filename: filename,
+                        status: response.status,
+                    }));
+                } else {
+                    showMessage(messages.FAIL_DOWNLOAD_FILES.message);
+                }
+            })
+            .then(({ file, filename, status }) => {
+                if (status === 200) {
+                    showMessage(messages.SUCCESS_DOWNLOAD_FILES.message);
+                    this.createGzipFileDownloadElement(file, filename);
+                } else {
+                    showMessage(messages.FAIL_DOWNLOAD_FILES.message);
+                }
+            })
+            .catch(error => handleResponseError(error, request));
+    },
 };
 
 const commentInfo = {
