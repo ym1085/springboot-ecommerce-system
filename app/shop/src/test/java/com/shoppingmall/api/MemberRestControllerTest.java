@@ -38,10 +38,8 @@ class MemberRestControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("회원 가입 성공")
     void testSignUp() throws Exception {
-        //given
         MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                 .name("김영민")
                 .account("test01")
@@ -54,25 +52,21 @@ class MemberRestControllerTest {
                 .birthDate("1993-08-23")
                 .build();
 
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(1008)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 성공 하였습니다")));
+                .andExpect(jsonPath("$.code", equalTo(1100)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Successfully signed up member")));
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("이름이 null인 경우 테스트")
     void testMemberNameNull() throws Exception {
-        //given
         MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                 .name(null)
                 .account("test01")
@@ -85,26 +79,22 @@ class MemberRestControllerTest {
                 .birthDate("1993-08-23")
                 .build();
 
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.name", Matchers.containsString("이름은 필수 입력 항목 입니다")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("이름은 필수 입력 항목 입니다")));
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("이름이 한글자 미만인 경우 테스트")
     void testMemberNameLessThan1() throws Exception {
-        //given
         MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                 .name("김")
                 .account("test01")
@@ -117,26 +107,22 @@ class MemberRestControllerTest {
                 .birthDate("1993-08-23")
                 .build();
 
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.name", Matchers.containsString("두 글자 이상, 여섯 글자 이하의 이름을 입력해주세요")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("두 글자 이상, 여섯 글자 이하의 이름을 입력해주세요")));
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("이름이 여섯글자 초과인 경우 테스트")
     void testMemberNameOverThan6() throws Exception {
-        //given
         MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                 .name("산다라박이무니다")
                 .account("test02")
@@ -149,26 +135,22 @@ class MemberRestControllerTest {
                 .birthDate("1994-09-11")
                 .build();
 
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.name", Matchers.containsString("두 글자 이상, 여섯 글자 이하의 이름을 입력해주세요")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("두 글자 이상, 여섯 글자 이하의 이름을 입력해주세요")));
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("ID가 null인 경우 테스트")
     void testMemberIdNull() throws Exception {
-        //given
         MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                 .name("김주영")
                 .account(null)
@@ -181,26 +163,22 @@ class MemberRestControllerTest {
                 .birthDate("1994-09-11")
                 .build();
 
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.account", Matchers.containsString("ID는 필수 입력 항목 입니다")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("ID는 필수 입력 항목 입니다")));
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("ID가 30자 이상인 경우 테스트 - 예외 발생")
     void testMemberIdOverThan30() throws Exception {
-        //given
         MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                 .name("김주영")
                 .account("aaaaaaaaaabbbbbbbbbbdddddddddd3")
@@ -213,26 +191,22 @@ class MemberRestControllerTest {
                 .birthDate("1994-09-11")
                 .build();
 
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.account", Matchers.containsString("30자 이하의 ID만 입력 가능합니다")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("30자 이하의 ID만 입력 가능합니다")));
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("비밀번호가 null인 경우")
     void testMemberPasswordNull() throws Exception{
-        //given
         MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                 .name("김주영")
                 .account("help123")
@@ -245,19 +219,17 @@ class MemberRestControllerTest {
                 .birthDate("2000-09-11")
                 .build();
 
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.password", Matchers.containsString("비밀번호는 필수 입력 항목")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("비밀번호는 필수 입력 항목 입니다")));
     }
 
     private static Stream<Arguments> validationMemberPasswordGroup() {
@@ -319,29 +291,24 @@ class MemberRestControllerTest {
 
     @ParameterizedTest
     @MethodSource("validationMemberPasswordGroup")
-    // @WithMockUser(roles = "USER")
     @DisplayName("비밀번호 형식에 맞지 않는 경우")
     void testMemberPasswordNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.password", Matchers.containsString("영어와 특수문자를 포함한 최소 8자 이상의 비밀번호를 입력해주세요")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("영어와 특수문자를 포함한 최소 8자 이상의 비밀번호를 입력해주세요")));
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("이메일이 null인 경우 테스트")
     void testMemberEmailNull() throws Exception {
-        //given
         MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                 .name("김주영")
                 .account("help123")
@@ -354,19 +321,17 @@ class MemberRestControllerTest {
                 .birthDate("2000-09-11")
                 .build();
 
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.email", Matchers.containsString("이메일은 필수 입력 항목입니다")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("이메일은 필수 입력 항목입니다")));
     }
 
     private static Stream<Arguments> validationMemberEmailGroup() {
@@ -415,29 +380,24 @@ class MemberRestControllerTest {
 
     @ParameterizedTest
     @MethodSource("validationMemberEmailGroup")
-    // @WithMockUser(roles = "USER")
     @DisplayName("이메일 형식에 맞지 않는 경우")
     void testMemberEmailNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.email", Matchers.containsString("올바른 메일 형식이 아닙니다")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("올바른 메일 형식이 아닙니다")));
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("휴대폰 번호가 null인 경우")
     void testMemberPhoneNumberNull() throws Exception {
-        //given
         MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                 .name("김주영")
                 .account("help123")
@@ -450,19 +410,17 @@ class MemberRestControllerTest {
                 .birthDate("1878-01-22")
                 .build();
 
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.phoneNumber", Matchers.containsString("휴대폰 번호는 필수 입력 항목입니다")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("휴대폰 번호는 필수 입력 항목입니다")));
     }
 
     private static Stream<Arguments> validationMemberPhoneNumberGroup() {
@@ -511,29 +469,24 @@ class MemberRestControllerTest {
 
     @ParameterizedTest
     @MethodSource("validationMemberPhoneNumberGroup")
-    // @WithMockUser(roles = "USER")
     @DisplayName("휴대폰 형식에 맞지 않는 경우")
     void testMemberPhoneNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.phoneNumber", Matchers.containsString("올바른 휴대폰번호 형식이 아닙니다")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("올바른 휴대폰번호 형식이 아닙니다")));
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("생년월일이 null인 경우")
     void testMemberBirthDate() throws Exception {
-        //given
         MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                 .name("김주영")
                 .account("help123")
@@ -546,18 +499,16 @@ class MemberRestControllerTest {
                 .birthDate(null)
                 .build();
 
-        //when
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberRequestDto))
         );
 
-        //then
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(2006)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("회원 가입에 실패하였습니다")))
-                .andExpect(jsonPath("$.errorMessage.birthDate", Matchers.containsString("생년월일은 필수 입력 항목입니다")));
+                .andExpect(jsonPath("$.code", equalTo(9999)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("생년월일은 필수 입력 항목입니다")));
     }
 }

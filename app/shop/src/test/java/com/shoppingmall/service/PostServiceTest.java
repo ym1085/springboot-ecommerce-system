@@ -34,7 +34,6 @@ class PostServiceTest {
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("난수 생성 테스트")
     void testRandom() {
         for (int i = 0; i < 50; i++) {
@@ -45,7 +44,6 @@ class PostServiceTest {
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("테스트 데이터 생성")
     @Rollback(false)
     void insertPostData() {
@@ -64,39 +62,29 @@ class PostServiceTest {
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("전체 게시글 조회 테스트")
     void getPosts() {
-        //given
-        //when
         PagingResponseDto<PostResponseDto> pagingResponseDto = postService.getPosts(new SearchRequestDto());
         List<PostResponseDto> posts = pagingResponseDto.getData();
 
-        //then
         assertThat(posts).isNotEmpty();
         assertThat(posts).hasSizeGreaterThan(1);
     }
 
     @ParameterizedTest
     @ValueSource(longs = 2L)
-    // @WithMockUser(roles = "USER")
     @DisplayName("단일 게시글 조회 테스트")
     void getPostById(Long input) {
-        //given
-        //when
         PostResponseDto posts = postService.getPostById(input);
 
-        //then
         assertThat(posts).isNotNull();
         //assertThat(posts).isNull();
         assertThat(posts.getPostId()).isEqualTo(2);
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("게시글 등록 테스트")
     void savePost() {
-        //given
         PostRequestDto postRequestDto = new PostRequestDto();
         postRequestDto.setPostId(1L);
         postRequestDto.setMemberId(1L);
@@ -104,11 +92,9 @@ class PostServiceTest {
         postRequestDto.setContent("내용1001");
         postRequestDto.setFixedYn("N");
 
-        //when
         Long postId = postService.savePost(postRequestDto);
         PostResponseDto result = postService.getPostById(postId);
 
-        //then
         assertThat(result).isNotNull();
         assertThat(result.getPostId()).isEqualTo(postId);
         assertThat(result.getTitle()).isEqualTo("제목1001");

@@ -49,14 +49,9 @@ class FileServiceTest {
     }
 
     @Test
-    // @WithMockUser(roles = "USER")
     @DisplayName("게시글 파일 저장 - 성공")
     void testSaveFilesSuccess() {
-        //given
         Long postId = 1L;
         List<FileRequestDto> fileRequestDtos = getFileRequestDtoBuilder();
-
-        //when
-        //then
     }
 }

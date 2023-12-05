@@ -3,7 +3,6 @@ package com.shoppingmall.api;
 import com.shoppingmall.common.ApiUtils;
 import com.shoppingmall.common.CommonResponse;
 import com.shoppingmall.common.SuccessCode;
-import com.shoppingmall.config.auth.PrincipalDetails;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +51,7 @@ public class PostRestController {
 
     @PostMapping(value = "/post")
     public ResponseEntity<CommonResponse> savePost(
-            @ModelAttribute @Valid PostRequestDto postRequestDto,
+            @Valid @ModelAttribute PostRequestDto postRequestDto,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -74,9 +72,9 @@ public class PostRestController {
     public ResponseEntity<CommonResponse> updatePost(
             @PathVariable("postId") Long postId,
             @Valid @RequestBody PostRequestDto postRequestDto,
-            @AuthenticationPrincipal PrincipalDetails principalDetails, // https://www.baeldung.com/get-user-in-spring-security
-            Principal principal,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            //@AuthenticationPrincipal PrincipalDetails principalDetails, // https://www.baeldung.com/get-user-in-spring-security
+            Principal principal) {
 
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);

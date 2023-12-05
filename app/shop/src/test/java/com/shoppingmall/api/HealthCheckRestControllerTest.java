@@ -25,13 +25,11 @@ class HealthCheckRestControllerTest {
     @Test
     @DisplayName("헬스 체크 컨트롤러 검증")
     public void healthCheck() throws Exception {
-        //given
-        //when
         ResultActions result = mockMvc.perform(
                 get("/api/v1/shop/health-check")
                         .contentType(MediaType.APPLICATION_JSON)
         );
-        //then
+
         result.andExpect(status().isOk());
     }
 }
