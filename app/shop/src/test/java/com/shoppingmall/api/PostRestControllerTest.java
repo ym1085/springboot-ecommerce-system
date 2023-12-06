@@ -188,7 +188,7 @@ class PostRestControllerTest {
         result.andExpect(status().isOk())
                 .andDo(print());
 
-        assertThat(postMapper.getPostById(1L)).isEmpty();
+        assertThat(postMapper.getPostByPostId(1L)).isEmpty();
         assertThat(fileMapper.getFilesByPostId(1L)).isEmpty();
     }
 

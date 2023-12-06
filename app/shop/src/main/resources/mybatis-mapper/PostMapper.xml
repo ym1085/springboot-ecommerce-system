@@ -137,7 +137,7 @@
     </select>
 
     <!-- 단일 게시글 조회 -->
-    <select id="getPostById" parameterType="long" resultType="Post">
+    <select id="getPostByPostId" parameterType="Long" resultType="Post">
         SELECT
             P.POST_ID,
             P.TITLE,
@@ -178,7 +178,7 @@
     </insert>
 
     <!-- 게시글 수정 -->
-    <update id="updatePostById" parameterType="Post">
+    <update id="updatePost" parameterType="Post">
         UPDATE POST
         SET
             TITLE = #{title},
@@ -190,11 +190,20 @@
     </update>
 
     <!-- 게시글 삭제 -->
-    <update id="deletePostById" parameterType="Post" useGeneratedKeys="true" keyProperty="postId">
+    <update id="deletePostByPostId" parameterType="Long">
         UPDATE POST
         SET
             DEL_YN = 'Y',
             DELETE_DATE = NOW()
         WHERE POST_ID = #{postId}
+    </update>
+
+    <!-- 조회수 증가 -->
+    <update id="increasePostByPostId" parameterType="Long">
+        UPDATE POST
+        SET
+            READ_CNT = READ_CNT + 1
+        WHERE POST_ID = #{postId}
+        AND DEL_YN = 'N'
     </update>
 </mapper>
