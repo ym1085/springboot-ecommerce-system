@@ -5,7 +5,7 @@ import com.shoppingmall.domain.Comment;
 import com.shoppingmall.dto.request.CommentRequestDto;
 import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.exception.FailDeleteCommentException;
-import com.shoppingmall.repository.CommentMapper;
+import com.shoppingmall.mapper.CommentMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

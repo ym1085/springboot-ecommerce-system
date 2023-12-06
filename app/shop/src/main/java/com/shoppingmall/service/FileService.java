@@ -2,7 +2,7 @@ package com.shoppingmall.service;
 
 import com.shoppingmall.domain.PostFiles;
 import com.shoppingmall.dto.response.FileResponseDto;
-import com.shoppingmall.repository.FileMapper;
+import com.shoppingmall.mapper.FileMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
