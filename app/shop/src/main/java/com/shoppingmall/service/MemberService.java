@@ -6,7 +6,7 @@ import com.shoppingmall.dto.request.MemberRequestDto;
 import com.shoppingmall.exception.DuplMemberAccountException;
 import com.shoppingmall.exception.FailSaveMemberException;
 import com.shoppingmall.exception.PasswordNotFoundException;
-import com.shoppingmall.repository.MemberMapper;
+import com.shoppingmall.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;

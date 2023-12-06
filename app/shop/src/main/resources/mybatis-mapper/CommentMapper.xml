@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.shoppingmall.repository.CommentMapper">
+<mapper namespace="com.shoppingmall.mapper.CommentMapper">
 
     <!-- 상세 게시글 화면에 들어오는 순간 댓글 목록도 같이 나간다 -->
     <select id="getComments" parameterType="long" resultType="Comment">

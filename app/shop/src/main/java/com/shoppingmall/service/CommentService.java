@@ -6,7 +6,7 @@ import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.exception.FailDeleteCommentException;
 import com.shoppingmall.exception.FailSaveCommentException;
 import com.shoppingmall.exception.FailUpdateCommentException;
-import com.shoppingmall.repository.CommentMapper;
+import com.shoppingmall.mapper.CommentMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

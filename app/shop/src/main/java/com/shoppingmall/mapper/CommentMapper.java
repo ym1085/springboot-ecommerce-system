@@ -1,4 +1,4 @@
-package com.shoppingmall.repository;
+package com.shoppingmall.mapper;
 
 import com.shoppingmall.domain.Comment;
 import org.apache.ibatis.annotations.Mapper;
