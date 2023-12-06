@@ -55,8 +55,9 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error("handleException", e);
+        log.error("handleException, e.getMessage = {}", e.getMessage());
 
-        ErrorResponse response = ErrorResponse.create().message(e.toString());
+        ErrorResponse response = ErrorResponse.create().code(-9999).message("[ERROR] 500 Internal Server Error!! occurred Exception");
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

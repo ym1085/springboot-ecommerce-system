@@ -95,8 +95,8 @@ public class PostRestController {
     public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") Long postId) {
         int responseCode = postService.deletePost(postId);
         return ApiUtils.success(
-                SuccessCode.SUCCESS_DELETE_FILES.getCode(),
-                SuccessCode.SUCCESS_DELETE_FILES.getMessage(),
+                SuccessCode.SUCCESS_DELETE_POST.getCode(),
+                SuccessCode.SUCCESS_DELETE_POST.getMessage(),
                 responseCode == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }

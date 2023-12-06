@@ -14,6 +14,7 @@ public enum ErrorCode {
     FAIL_SAVE_COMMENT(2003, "Failed to register comment. Please try again."),
     FAIL_DELETE_COMMENT(2004, "Failed to delete comment. Please try again."),
     FAIL_UPDATE_COMMENT(2005, "Failed to update comment. Please try again."),
+    FAIL_UPDATE_POST_READ_COUNT(2006, "Failed to update post read count. Please try again."),
 
     FAIL_SAVE_MEMBER(2100, "Failed to sign up member. Please try again."),
     FAIL_CERT_EMAIL(2101, "Failed to certify email. Please try again."),

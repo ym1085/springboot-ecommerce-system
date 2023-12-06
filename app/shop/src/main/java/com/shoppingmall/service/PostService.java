@@ -7,10 +7,7 @@ import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.*;
-import com.shoppingmall.exception.FailSaveFileException;
-import com.shoppingmall.exception.FailSavePostException;
-import com.shoppingmall.exception.FailUpdateFilesException;
-import com.shoppingmall.exception.FailUpdatePostException;
+import com.shoppingmall.exception.*;
 import com.shoppingmall.repository.CommentMapper;
 import com.shoppingmall.repository.FileMapper;
 import com.shoppingmall.repository.PostMapper;
@@ -71,9 +68,16 @@ public class PostService {
         return postResponseDto;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PostResponseDto getPostById(Long postId) {
-        PostResponseDto postResponseDto = postMapper.getPostById(postId)
+        if (postId != null) {
+            int responseCode = postMapper.increasePostByPostId(postId);
+            if (responseCode == 0) {
+                throw new FailUpdatePostReadCountException();
+            }
+        }
+
+        PostResponseDto postResponseDto = postMapper.getPostByPostId(postId)
                 .map(PostResponseDto::new)
                 .orElse(new PostResponseDto());
 
@@ -132,7 +136,7 @@ public class PostService {
 
     @Transactional
     public int updatePost(PostRequestDto postRequestDto) {
-        int responseCode = postMapper.updatePostById(new Post(postRequestDto));
+        int responseCode = postMapper.updatePost(new Post(postRequestDto));
         if (responseCode == 0) {
             throw new FailUpdatePostException();
         }
@@ -171,8 +175,8 @@ public class PostService {
     }
 
     @Transactional
-    public int deletePost(long postId) {
-        int responseCode = postMapper.deletePostById(postId);
+    public int deletePost(Long postId) {
+        int responseCode = postMapper.deletePostByPostId(postId);
 
         if (responseCode > 0) {
             List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);

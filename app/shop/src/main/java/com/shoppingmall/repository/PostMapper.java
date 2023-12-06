@@ -14,11 +14,13 @@ public interface PostMapper {
 
     int count(SearchRequestDto searchRequestDto);
 
-    Optional<Post> getPostById(Long postId);
+    Optional<Post> getPostByPostId(Long postId);
 
     int savePost(Post post);
 
-    int updatePostById(Post post);
+    int updatePost(Post post);
 
-    int deletePostById(long postId);
+    int deletePostByPostId(Long postId);
+
+    int increasePostByPostId(Long postId);
 }
