@@ -67,7 +67,7 @@
     </select>
 
     <!-- 게시글 삭제 시 연관되어 있는 파일 삭제('Y') -->
-    <update id="deleteUpdateFilesByPostId" parameterType="long">
+    <update id="deleteUpdateFilesByPostId" parameterType="Long">
         UPDATE POST_FILE F
         SET
             F.DEL_YN = 'Y',

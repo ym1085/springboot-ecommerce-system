@@ -1,14 +1,13 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.ApiUtils;
-import com.shoppingmall.common.CommonResponse;
-import com.shoppingmall.common.SuccessCode;
+import com.shoppingmall.common.*;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.PostService;
+import com.shoppingmall.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -60,11 +59,13 @@ public class PostRestController {
 
         postRequestDto.setMemberId(1L);
         Long postId = postService.savePost(postRequestDto);
+        boolean success = postId > 0; // save 후 postId를 받기에 해당 케이스만 함수 호출 없이 별도 처리
+        MessageCode messageCode = success ? SuccessCode.SUCCESS_SAVE_POST : ErrorCode.FAIL_SAVE_POST;
 
         return ApiUtils.success(
-                SuccessCode.SUCCESS_SAVE_POST.getCode(),
-                SuccessCode.SUCCESS_SAVE_POST.getMessage(),
-                HttpStatus.OK
+                messageCode.getCode(),
+                messageCode.getMessage(),
+                success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
@@ -84,20 +85,26 @@ public class PostRestController {
         postRequestDto.setPostId(postId);
 
         int responseCode = postService.updatePost(postRequestDto);
+        boolean success = ResponseUtils.isSuccessResponseCode(responseCode);
+        MessageCode messageCode = success ? SuccessCode.SUCCESS_UPDATE_POST : ErrorCode.FAIL_UPDATE_POST;
+
         return ApiUtils.success(
-                SuccessCode.SUCCESS_UPDATE_POST.getCode(),
-                SuccessCode.SUCCESS_UPDATE_POST.getMessage(),
-                responseCode == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
+                messageCode.getCode(),
+                messageCode.getMessage(),
+                success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
     @DeleteMapping(value = "/post/{postId}")
     public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") Long postId) {
         int responseCode = postService.deletePost(postId);
+        boolean success = ResponseUtils.isSuccessResponseCode(responseCode);
+        MessageCode messageCode = success ? SuccessCode.SUCCESS_DELETE_POST : ErrorCode.FAIL_DELETE_POST;
+
         return ApiUtils.success(
-                SuccessCode.SUCCESS_DELETE_POST.getCode(),
-                SuccessCode.SUCCESS_DELETE_POST.getMessage(),
-                responseCode == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
+                messageCode.getCode(),
+                messageCode.getMessage(),
+                success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 }
