@@ -106,14 +106,15 @@ public class PostService {
     public Long savePost(PostRequestDto postRequestDto) {
         Post post = new Post(postRequestDto);
         int responseCode = postMapper.savePost(post);
-        if (responseCode <= 0) {
+        if (responseCode == 0) {
             throw new FailSavePostException();
         }
 
         List<FileRequestDto> fileRequestDtos;
         if (!postRequestDto.getFiles().isEmpty()) {
             fileRequestDtos = fileHandlerHelper.uploadFiles(postRequestDto.getFiles(), postRequestDto.getFileType());
-            if (saveFiles(post.getPostId(), fileRequestDtos) == 0) {
+            responseCode = saveFiles(post.getPostId(), fileRequestDtos);
+            if (responseCode == 0) {
                 throw new FailSaveFileException();
             }
         }

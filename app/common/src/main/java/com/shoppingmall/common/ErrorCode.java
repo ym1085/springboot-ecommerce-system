@@ -1,12 +1,9 @@
 package com.shoppingmall.common;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@Getter
-@RequiredArgsConstructor
-public enum ErrorCode {
+public enum ErrorCode implements MessageCode {
     // FAIL CODE
+    FAIL(0, "Fail"),
+
     INVALID_PARAMETER(9999, "Invalid Request Data"),
     FAIL_SAVE_POST(2000, "Failed to register post. Please try again."),
     FAIL_UPDATE_POST(2001, "Failed to update post. Please try again."),
@@ -60,4 +57,19 @@ public enum ErrorCode {
 
     private final int code;
     private final String message;
+
+    ErrorCode(int code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
+    @Override
+    public int getCode() {
+        return this.code;
+    }
+
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
 }

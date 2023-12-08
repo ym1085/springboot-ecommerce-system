@@ -1,12 +1,9 @@
 package com.shoppingmall.common;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@Getter
-@RequiredArgsConstructor
-public enum SuccessCode {
+public enum SuccessCode implements MessageCode {
     // SUCCESS CODE
+    SUCCESS(1, "Success"),
+
     SUCCESS_GET_POSTS(1000, "Successfully retrieved all posts."),
     SUCCESS_GET_POST(1001, "Successfully retrieved a single post."),
     SUCCESS_SAVE_POST(1002, "Successfully registered a post."),
@@ -30,4 +27,19 @@ public enum SuccessCode {
 
     private final int code;
     private final String message;
+
+    SuccessCode(int code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
+    @Override
+    public int getCode() {
+        return this.code;
+    }
+
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
 }

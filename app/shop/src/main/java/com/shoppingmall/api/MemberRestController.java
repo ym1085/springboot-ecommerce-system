@@ -1,12 +1,11 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.ApiUtils;
-import com.shoppingmall.common.CommonResponse;
-import com.shoppingmall.common.SuccessCode;
+import com.shoppingmall.common.*;
 import com.shoppingmall.dto.request.MemberRequestDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.exception.MemberAccountNotFoundException;
 import com.shoppingmall.service.MemberService;
+import com.shoppingmall.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -35,10 +34,13 @@ public class MemberRestController {
         }
 
         int responseCode = memberService.join(memberRequestDto);
+        boolean success = ResponseUtils.isSuccessResponseCode(responseCode);
+        MessageCode messageCode = success ? SuccessCode.SUCCESS_SAVE_MEMBER : ErrorCode.FAIL_SAVE_MEMBER;
+
         return ApiUtils.success(
-                SuccessCode.SUCCESS_SAVE_MEMBER.getCode(),
-                SuccessCode.SUCCESS_SAVE_MEMBER.getMessage(),
-                responseCode == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
+                messageCode.getCode(),
+                messageCode.getMessage(),
+                success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
@@ -49,10 +51,13 @@ public class MemberRestController {
         }
 
         int responseCode = memberService.checkDuplMemberAccount(MemberRequestDto.builder().account(account).build());
+        boolean success = ResponseUtils.isSuccessResponseCode(responseCode);
+        MessageCode messageCode = success ? SuccessCode.SUCCESS_DUPL_ACCOUNT : ErrorCode.FAIL_DUPL_MEMBER;
+
         return ApiUtils.success(
-                SuccessCode.SUCCESS_DUPL_ACCOUNT.getCode(),
-                SuccessCode.SUCCESS_DUPL_ACCOUNT.getMessage(),
-                responseCode == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
+                messageCode.getCode(),
+                messageCode.getMessage(),
+                success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 }
