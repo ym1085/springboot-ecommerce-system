@@ -72,7 +72,7 @@ public class PostRestController {
     @PutMapping(value = "/post/{postId}")
     public ResponseEntity<CommonResponse> updatePost(
             @PathVariable("postId") Long postId,
-            @Valid @RequestBody PostRequestDto postRequestDto,
+            @Valid @ModelAttribute PostRequestDto postRequestDto,
             BindingResult bindingResult,
             //@AuthenticationPrincipal PrincipalDetails principalDetails, // https://www.baeldung.com/get-user-in-spring-security
             Principal principal) {

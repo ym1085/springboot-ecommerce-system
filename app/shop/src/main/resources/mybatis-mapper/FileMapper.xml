@@ -101,4 +101,8 @@
         SET DOWNLOAD_CNT = DOWNLOAD_CNT + 1
         WHERE POST_FILE_ID = #{postFileId}
     </update>
+
+    <select id="countFilesByPostId" parameterType="long" resultType="int">
+        SELECT COUNT(*) AS COUNT FROM POST_FILE WHERE POST_ID = #{postFileId}
+    </select>
 </mapper>

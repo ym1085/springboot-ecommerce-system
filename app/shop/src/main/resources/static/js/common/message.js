@@ -1,5 +1,5 @@
 /**
- * showMessage => alert(messages)
+ * alert 창에서 보여줄 message 모음
  */
 const messages = {
     NOT_FOUND_MEMBER_NAME: { message: '회원명이 존재하지 않네요, 다시 시도해주세요.', code: 3100 },
@@ -54,6 +54,8 @@ const messages = {
     SUCCESS_UPDATE_FILES: { message: '파일 업데이트에 성공 하였습니다.', code: 1300 },
     SUCCESS_DELETE_FILES: { message: '파일 삭제에 성공 하였습니다.', code: 1301 },
     SUCCESS_DOWNLOAD_FILES: { message: '파일 다운로드에 성공 하였습니다.', code: 1302 },
+    SUCCESS_SAVE_FILES: { message: '파일 저장에 성공 하였습니다.', code: 1303 },
+    SUCCESS_GZIP_DOWNLOAD_FILES: { message: '전체 압축 파일 다운로드에 성공 하였습니다', code: 1304 },
     FAIL_SAVE_MEMBER: { message: '회원 가입 진행 중 오류가 발생하였습니다.', code: 2100 },
     FAIL_CERT_EMAIL: { message: '메일 인증에 실패 하였습니다.', code: 2101 },
     FAIL_DUPL_MEMBER: { message: '중복된 아이디 입니다. 다시 시도해주세요', code: 2102 },
