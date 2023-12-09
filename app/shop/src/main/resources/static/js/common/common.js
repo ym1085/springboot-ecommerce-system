@@ -27,7 +27,7 @@ function reload() {
  */
 function redirectURL(url, query) {
     if (typeof url !== 'string' || isEmpty(url)) {
-        showMessage(messages.NOT_FOUND_URL);
+        alert('URL이 존재하지 않습니다.');
         return;
     }
 

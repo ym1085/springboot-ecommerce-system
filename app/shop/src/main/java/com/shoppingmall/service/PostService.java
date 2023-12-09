@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class PostService {
+
     private final PostMapper postMapper;
     private final FileMapper fileMapper;
     private final FileHandlerHelper fileHandlerHelper;
@@ -143,36 +144,36 @@ public class PostService {
         }
 
         if (!isEmptyFiles(postRequestDto.getFiles())) {
-            updateFilesByPostId(postRequestDto);
-        }
-        return responseCode;
-    }
-
-    private void updateFilesByPostId(PostRequestDto postRequestDto) {
-        try {
-            if (updateFilesByPostId(postRequestDto.getPostId(), postRequestDto.getFiles()) == 0) {
+            responseCode = updateFilesByPostId(postRequestDto.getPostId(), postRequestDto.getFiles());
+            if (responseCode == 0) {
                 throw new FailUpdateFilesException();
             }
-        } catch (FailUpdateFilesException e) {
-            log.error("File updated: " + postRequestDto.getFiles().toString());
         }
-    }
 
-    private int updateFilesByPostId(Long postId, List<MultipartFile> files) {
-        List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
-        fileHandlerHelper.deleteFiles(fileResponseDtos);
-
-        int responseCode = fileMapper.deleteFilesByPostId(postId);
-        if (responseCode > 0) {
-            List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files, FileType.POSTS);
-            fileRequestDtos.forEach(fileRequestDto -> fileRequestDto.setPostId(postId));
-            fileMapper.saveFiles(fileRequestDtos);
-        }
         return responseCode;
     }
 
-    private boolean isEmptyFiles(List<MultipartFile> files) {
-        return (files.isEmpty());
+    /**
+     * Todo: 기존 파일을 DELETE 하고 새로운 파일을 INSERT 하는 FLOW는 수정이 필요
+     */
+    private int updateFilesByPostId(Long postId, List<MultipartFile> files) {
+        fileHandlerHelper.deleteFiles(getFileResponseDtos(postId)); // 서버 특정 경로에 존재하는 파일 삭제
+
+        int filesCount = fileMapper.countFilesByPostId(postId);
+        if (filesCount > 0) {
+            int responseCode = (fileMapper.deleteFilesByPostId(postId)); // DB의 파일 정보 삭제
+            if (responseCode > 0) {
+                log.info("success delete files from database");
+            } else {
+                log.info("fail delete files from database");
+            }
+        }
+
+        List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files, FileType.POSTS);
+        fileRequestDtos.forEach(fileRequestDto -> fileRequestDto.setPostId(postId));
+        int responseCode = fileMapper.saveFiles(fileRequestDtos);
+
+        return responseCode;
     }
 
     @Transactional
@@ -188,6 +189,10 @@ public class PostService {
         }
 
         return responseCode;
+    }
+
+    private boolean isEmptyFiles(List<MultipartFile> files) {
+        return (files.isEmpty());
     }
 
     private List<FileResponseDto> getFileResponseDtos(long postId) {

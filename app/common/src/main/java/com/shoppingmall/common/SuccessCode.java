@@ -23,6 +23,7 @@ public enum SuccessCode implements MessageCode {
     SUCCESS_DELETE_FILES(1301, "Successfully deleted files."),
     SUCCESS_DOWNLOAD_FILES(1302, "Successfully downloaded files."),
     SUCCESS_SAVE_FILES(1303, "Successfully saved files."),
+    SUCCESS_GZIP_DOWNLOAD_FILES(1304, "Successfully downloaded gzip files."),
     ;
 
     private final int code;

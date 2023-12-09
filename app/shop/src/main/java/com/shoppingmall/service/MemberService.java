@@ -43,9 +43,9 @@ public class MemberService {
     @Transactional(readOnly = true)
     public int checkDuplMemberAccount(MemberRequestDto memberRequestDto) {
         Member member = new Member(memberRequestDto);
-        int responseCode = 0;
+        int responseCode = 1;
         if (isExistsDuplMemberAccount(member)) {
-            responseCode = 1;
+            responseCode = 0;
         }
         return responseCode;
     }

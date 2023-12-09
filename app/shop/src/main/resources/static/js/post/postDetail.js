@@ -1,5 +1,3 @@
-const URL_BY_POST_ID = '/api/v1/post/{postId}';
-
 document.addEventListener('DOMContentLoaded', function () {
     postInfo.init();
 });
@@ -57,22 +55,24 @@ const postInfo = {
         }
 
         if (this.validatePostInfo()) {
+            const formData = new FormData();
+            const fileObj = document.getElementById('file');
+            for (let i = 0; i < fileObj.files.length; i++) {
+                formData.append('files', fileObj.files[i]);
+            }
+            formData.append('title', this.title.value);
+            formData.append('content', this.content.value);
+            formData.append('fixedYn', this.fixedYn.checked ? 'Y' : 'N');
+
             const request = queryBuilder
                 .createQueryBuilder()
-                .url('/api/v1/post/{postId}')
+                .baseUrl('/api/v1/post/{postId}')
                 .method('PUT')
-                .contentType('application/json')
-                .pathVariable({
-                    postId: postId,
-                })
-                .requestBody({
-                    title: this.title.value,
-                    content: this.content.value,
-                    fixedYn: this.fixedYn.checked ? 'Y' : 'N',
-                })
+                .pathVariable({ postId: postId })
+                .requestBody(formData)
                 .build();
 
-            const response = commonFetchTemplate
+            const response = fetchTemplate
                 .sendFetchRequest(request)
                 .then(response => response.json())
                 .then(result => {
@@ -105,15 +105,13 @@ const postInfo = {
 
         const request = queryBuilder
             .createQueryBuilder()
-            .url('/api/v1/post/{postId}')
+            .baseUrl('/api/v1/post/{postId}')
             .method('DELETE')
             .contentType('application/json')
-            .pathVariable({
-                postId: postId,
-            })
+            .pathVariable({ postId: postId })
             .build();
 
-        const response = commonFetchTemplate
+        const response = fetchTemplate
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
@@ -149,16 +147,13 @@ const postInfo = {
 
         const request = queryBuilder
             .createQueryBuilder()
-            .url('/api/v1/download/{domain}/{postFileId}')
+            .baseUrl('/api/v1/download/{domain}/{postFileId}')
             .method('GET')
-            .pathVariable({
-                domain: 'posts',
-                postFileId: postFileId,
-            })
+            .pathVariable({ domain: 'posts', postFileId: postFileId })
             .build();
 
         // https://developer-alle.tistory.com/435
-        const response = commonFetchTemplate
+        const response = fetchTemplate
             .sendFetchRequest(request)
             .then(response => {
                 if (response.status === 200) {
@@ -206,15 +201,12 @@ const postInfo = {
 
         const request = queryBuilder
             .createQueryBuilder()
-            .url('/api/v1/download/compress/{domain}/{postId}')
+            .baseUrl('/api/v1/download/compress/{domain}/{postId}')
             .method('GET')
-            .pathVariable({
-                domain: 'posts',
-                postId: postId,
-            })
+            .pathVariable({ domain: 'posts', postId: postId })
             .build();
 
-        const response = commonFetchTemplate
+        const response = fetchTemplate
             .sendFetchRequest(request)
             .then(response => {
                 if (response.status === 200) {
@@ -232,7 +224,7 @@ const postInfo = {
             })
             .then(({ file, filename, status }) => {
                 if (status === 200) {
-                    showMessage(messages.SUCCESS_DOWNLOAD_FILES.message);
+                    showMessage(messages.SUCCESS_GZIP_DOWNLOAD_FILES.message);
                     this.createGzipFileDownloadElement(file, filename);
                 } else {
                     showMessage(messages.FAIL_DOWNLOAD_FILES.message);
@@ -544,18 +536,16 @@ const commentInfo = {
 
         const request = queryBuilder
             .createQueryBuilder()
-            .url('/api/v1/post/{postId}/comments')
+            .baseUrl('/api/v1/post/{postId}/comments')
             .method('POST')
             .contentType('application/json')
-            .pathVariable({
-                postId: postId,
-            })
+            .pathVariable({ postId: postId })
             .requestBody({
                 content: commentContent.value,
             })
             .build();
 
-        const response = commonFetchTemplate
+        const response = fetchTemplate
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
@@ -617,19 +607,17 @@ const commentInfo = {
 
         const request = queryBuilder
             .createQueryBuilder()
-            .url('/api/v1/post/{postId}/comments')
+            .baseUrl('/api/v1/post/{postId}/comments')
             .method('PUT')
             .contentType('application/json')
-            .pathVariable({
-                postId: postId,
-            })
+            .pathVariable({ postId: postId })
             .requestBody({
                 commentId: commentId,
                 content: commentTemplateContent.value,
             })
             .build();
 
-        const response = commonFetchTemplate
+        const response = fetchTemplate
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
@@ -658,7 +646,7 @@ const commentInfo = {
 
         const request = queryBuilder
             .createQueryBuilder()
-            .url('/api/v1/post/comments')
+            .baseUrl('/api/v1/post/comments')
             .method('DELETE')
             .contentType('application/json')
             .queryString({
@@ -667,7 +655,7 @@ const commentInfo = {
             })
             .build();
 
-        const response = commonFetchTemplate
+        const response = fetchTemplate
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
@@ -696,7 +684,7 @@ const commentInfo = {
 
         const request = queryBuilder
             .createQueryBuilder()
-            .url('/api/v1/post/comments')
+            .baseUrl('/api/v1/post/comments')
             .method('DELETE')
             .contentType('application/json')
             .queryString({
@@ -705,7 +693,7 @@ const commentInfo = {
             })
             .build();
 
-        const response = commonFetchTemplate
+        const response = fetchTemplate
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
@@ -734,7 +722,7 @@ const commentInfo = {
 
         const request = queryBuilder
             .createQueryBuilder()
-            .url('/api/v1/post/comments/reply')
+            .baseUrl('/api/v1/post/comments/reply')
             .method('DELETE')
             .contentType('application/json')
             .queryString({
@@ -743,7 +731,7 @@ const commentInfo = {
             })
             .build();
 
-        const response = commonFetchTemplate
+        const response = fetchTemplate
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
@@ -792,19 +780,17 @@ const commentInfo = {
 
         const request = queryBuilder
             .createQueryBuilder()
-            .url('/api/v1/post/{postId}/comments')
+            .baseUrl('/api/v1/post/{postId}/comments')
             .method('POST')
             .contentType('application/json')
-            .pathVariable({
-                postId: postId,
-            })
+            .pathVariable({ postId: postId })
             .requestBody({
                 content: commentContent.value,
                 parentId: parentId,
             })
             .build();
 
-        const response = commonFetchTemplate
+        const response = fetchTemplate
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {

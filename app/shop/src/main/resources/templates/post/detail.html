@@ -41,23 +41,25 @@
             <label for="author">* 작성자:</label>
             <input type="text" id="author" th:value="${post.writer != null} ? ${post.writer} : ${'비고'}" readonly><br>
 
-
             <th:block th:if="${not #lists.isEmpty(post.postFiles)}">
                 <!-- 단일 파일 다운로드 -->
                 <th:block th:each="postFile : ${post.postFiles}">
-                    <label for="file">* 파일 첨부:</label>
+                    * 파일 첨부:
                     <a href="#" th:if="${postFile.fileAttached == 'Y'}" th:onclick="postInfo.downloadAttachedFile(this, [[${postFile.postFileId}]]);">
-                        <span id="attachedFile" th:text="${postFile.originFileName}"/>
-                    </a><br>
+                        <span id="attachedFile" th:text="${postFile.originFileName}"></span>
+                        <span id="fileSize" th:text="${postFile.fileSize}">kb</span>
+                        <!--<a href="#this" id="fileDelete">삭제</a>-->
+                    </a>
+                    <a href="#" id="fileDelete">삭제</a>
+                    <br>
                 </th:block>
                 <!-- 게시글 번호에 매핑 되어 있는 파일은 gzip 처리 하여 다운로드 -->
                 <button type="button" th:onclick="postInfo.downloadAttachedFilesByCompressed([[${post.postId}]]);">전체 파일 압축 다운로드</button>
+                <br><br>
             </th:block>
 
-            <th:block th:if="${#lists.isEmpty(post.postFiles)}">
-                <label for="file">* 파일 첨부:</label>
-                <input type="file" id="file" name="file"><br>
-            </th:block>
+            <label for="file">* 파일 첨부:</label>
+            <input type="file" id="file" name="file" multiple><br>
         </th:block>
     </div>
 
@@ -124,17 +126,17 @@
                 </ul>
             </div>
         </th:block>
-    </div><br>
+    </div>
 
     <!-- 댓글 등록 -->
     <div id="commentForm">
         <textarea id="commentContent" rows="3"></textarea><br>
         <button type="button" th:onclick="commentInfo.saveComment([[${post.postId}]])" class="submitCommentBtn" id="submitCommentBtn">댓글 등록</button>
-    </div><br><br>
+    </div><br>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="/js/common/common.js"></script>
     <script src="/js/common/message.js"></script>
-    <script src="/js/common/commonFetchTemplate.js"></script>
+    <script src="/js/common/fetchTemplate.js"></script>
     <script src="/js/post/postDetail.js"></script>
 </div>
 </body>

@@ -339,17 +339,15 @@ function sendAuthEmail(event) {
 
     const request = queryBuilder
         .createQueryBuilder()
-        .url(URL_VERIFY_REQUEST)
+        .baseUrl(URL_VERIFY_REQUEST)
         .method('POST')
         .contentType('application/json')
-        .requestBody({
-            email: certEmail.value,
-        })
+        .requestBody({ email: certEmail.value })
         .build();
 
     printLoadingWithMask();
 
-    const response = commonFetchTemplate
+    const response = fetchTemplate
         .sendFetchRequest(request)
         .then(response => response.json())
         .then(result => {
@@ -393,7 +391,7 @@ function verifyEmailAuthCode() {
 
     const request = queryBuilder
         .createQueryBuilder()
-        .url(URL_VERIFY_EMAIL)
+        .baseUrl(URL_VERIFY_EMAIL)
         .method('GET')
         .contentType('application/json')
         .queryString({
@@ -402,7 +400,7 @@ function verifyEmailAuthCode() {
         })
         .build();
 
-    const response = commonFetchTemplate
+    const response = fetchTemplate
         .sendFetchRequest(request)
         .then(response => response.json())
         .then(result => {
@@ -433,15 +431,13 @@ function checkDuplAccount() {
 
     const request = queryBuilder
         .createQueryBuilder()
-        .url(URL_MEMBER_EXISTS_ACCOUNT)
+        .baseUrl(URL_MEMBER_EXISTS_ACCOUNT)
         .method('GET')
         .contentType('application/json')
-        .pathVariable({
-            account: account.value,
-        })
+        .pathVariable({ account: account.value })
         .build();
 
-    const response = commonFetchTemplate
+    const response = fetchTemplate
         .sendFetchRequest(request)
         .then(response => response.json())
         .then(result => {
@@ -512,7 +508,7 @@ const main = {
     createMemberJoinBuilder: function () {
         return queryBuilder
             .createQueryBuilder()
-            .url(URL_MEMBER_JOIN)
+            .baseUrl(URL_MEMBER_JOIN)
             .method('POST')
             .contentType('application/json')
             .requestBody({
@@ -533,7 +529,7 @@ const main = {
         console.log(`start join for new member`);
         const request = this.createMemberJoinBuilder();
 
-        const response = commonFetchTemplate
+        const response = fetchTemplate
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {

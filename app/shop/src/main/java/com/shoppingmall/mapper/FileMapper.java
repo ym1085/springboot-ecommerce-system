@@ -21,4 +21,6 @@ public interface FileMapper {
     Optional<PostFiles> getFileByPostFileId(Long fileId);
 
     void increaseDownloadCntByFileId(Long fileId);
+
+    int countFilesByPostId(Long postId);
 }
