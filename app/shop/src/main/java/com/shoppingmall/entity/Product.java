@@ -1,7 +1,6 @@
 package com.shoppingmall.entity;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -19,7 +18,7 @@ public class Product {
     @Column(name = "product_price")
     private Integer productPrice;
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductFile> productFiles;
+    @OneToOne(mappedBy = "product")
+    private ProductFile productFiles;
 
 }

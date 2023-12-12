@@ -9,13 +9,13 @@ public class ProductRequestDto {
     private String productName;
     private String productDesc;
     private Integer productPrice;
-    //private String storedFileName; // 상품 이미지
+    private String storedFileName; // 상품 이미지
 
-    public ProductRequestDto(String productName, String productDesc, Integer productPrice) {
+    public ProductRequestDto(String productName, String productDesc, Integer productPrice, String storedFileName) {
         this.productName = productName;
         this.productDesc = productDesc;
         this.productPrice = productPrice;
-        //this.storedFileName = storedFileName;
+        this.storedFileName = storedFileName;
     }
 
 }

@@ -11,10 +11,10 @@ import javax.persistence.*;
 @Setter
 public class ProductFile {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_file_id")
     private Long productFileId;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "product_number", referencedColumnName = "product_id")
     private Product product;
 

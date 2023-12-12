@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT new com.shoppingmall.dto.request.ProductRequestDto(p.productName, p.productDesc, p.productPrice) " +
-            "FROM Product p")
+    @Query("SELECT new com.shoppingmall.dto.request.ProductRequestDto(p.productName, p.productDesc, p.productPrice, pf.storedFileName) " +
+            "FROM Product p JOIN p.productFiles pf")
     List<ProductRequestDto> findAllProductsWithFiles();
 }
