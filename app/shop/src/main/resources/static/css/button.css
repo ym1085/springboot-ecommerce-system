@@ -1,0 +1,41 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* 버튼 기본 스타일 ------------------------------- */
+.btns {display:inline-block; padding:0 10px; height:28px; line-height:26px; text-align:center; vertical-align:middle; border-radius:3px; border:1px solid transparent; /* white-space:nowrap; */ font-weight:500; font-family:'Noto Sans KR', Dotum, Arial, tahoma, Helvetica, sans-serif;}
+a.btns:hover, a.btns:focus, button.btns:hover, button.btns:focus, input.btns:hover, input.btns:focus {opacity:0.9;}
+a.btns, button {cursor:pointer;}
+button span {position:relative;}
+
+/* 버튼 그룹 */
+.btn_set {text-align:center; margin:20px 0; overflow:hidden;}
+.btn_set > button, .btn_set > a {border-radius:0;}
+
+.btns.primary {background:#fff; border:1px solid #b4b4b4; color:#666;}
+
+.btn_st1 {background:#d74242; color:#fff;} /* 레드 */
+.btn_st2 {background:#666; color:#fff;} /* 그레이 */
+.btn_st3 {background:#139dc8; color:#fff;} /* 블루 */
+.btn_st4 {background:#00bc8c; color:#fff;} /* 그린 */
+.btn_st5 {background:#375a7f; color:#fff;} /* 네이비 */
+
+.btn_bdr1 {background:#fff; border:1px solid #d74242; color:#d74242;} /* 레드 */
+.btn_bdr2 {background:#fff; border:1px solid #b4b4b4; color:#666;} /* 그레이 */
+.btn_bdr3 {background:#fff; border:1px solid #199bc4; color:#199bc4;} /* 블루 */
+.btn_bdr4 {background:#fff; border:1px solid #00bc8c; color:#00bc8c;} /* 그린 */
+.btn_bdr5 {background:#fff; border:1px solid #375a7f; color:#375a7f;} /* 네이비 */
+
+/* 사이즈 구분 */
+.btn_mid {height:33px; line-height:31px;}
+.btn_xs {padding:0 7px; height:20px; line-height:20px; font-size:11px;}
+
+.bt_icon {position:relative; padding-left:17px; display:inline-block;}
+.bt_excel:before {background-position:0 -58px; width:12px; height:12px; position:absolute; top:50%; left:0; margin-top:-6px;} /* 엑셀 */
+.bt_print:before {background-position:-15px -58px; width:13px; height:12px; position:absolute; top:50%; left:0; margin-top:-6px;} /* 프린트 */
+.bt_pdf:before {background-position:-31px -58px; width:13px; height:12px; position:absolute; top:50%; left:0; margin-top:-6px;} /* pdf */
+
+.btnW30 {min-width:30px;}
+.btnW40 {min-width:40px;}
+.btnW50 {min-width:50px;}
+.btnW60 {min-width:60px;}
+.btnW70 {min-width:70px;}

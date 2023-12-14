@@ -1,0 +1,128 @@
+@charset "utf-8";
+/* CSS Document */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+body, div, dl, dt, dd, ul, ol, li,
+h1, h2, h3, h4, h5, h6,
+pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {margin:0; padding:0;}
+
+* {/* box-sizing:border-box; */}
+body {font-family:'Noto Sans KR', Dotum, Arial, tahoma, Helvetica, sans-serif; -webkit-text-size-adjust:100%;}
+html, body {width:100%; height:100%; font-size:14px; color:#777; line-height:1.4; letter-spacing:-0.2px;}
+ul {list-style:none;}
+ol {margin-left:20px;}
+a {color:#333; text-decoration:none;}
+/* a:hover {-webkit-transition:all 0.5s; -moz-transition:all 0.5s; -o-transition:all 0.5s; -ms-transition:all 0.5s; transition:all 0.5s;} */
+h1, h2, h3, h4, h5, h6, address, caption {font-weight:700; color:#222;word-break: keep-all;}
+table {border-collapse:collapse; border-spacing:0;}
+
+img, fieldset {border:0;}
+img, input, button, select, textarea {vertical-align:middle; font-family:dotum;}
+button {cursor:pointer;}
+legend, caption {width:1px; height:1px; text-indent:100%; overflow:hidden; font-size:0; line-height:0;}
+/* visibility:hidden;나 display:none는 스크린리더기가 읽을수 없으므로 사용하지 않도록 한다 */
+
+address {font-style:normal; -webkit-text-size-adjust:100%;}
+
+/* etc ------------------------------- */
+.tc, .btn_center {text-align:center !important;}
+.tl, .btn_left {text-align:left !important;}
+.tr, .btn_right {text-align:right !important;}
+
+.btn_center, .btn_left, .btn_right {margin:20px 0;}
+
+.cboth {clear:both;}
+.hidden {overflow:hidden;}
+.bdnone {border:0;}
+
+.inblock {display:inline-block;}
+.dblock {display:block;}
+
+.fl {float:left;}
+.fr {float:right;}
+
+th, .fontb, strong {font-weight:500;}
+
+i {font-style:normal;}
+
+iframe {border:0;}
+
+/* margin ------------------------------- */
+.mgt_5 {margin-top:-5px;}
+.mgt5 {margin-top:5px;}
+.mgt10 {margin-top:10px;}
+.mgt15 {margin-top:15px;}
+.mgt20 {margin-top:20px;}
+.mgt30 {margin-top:30px;}
+.mgt40 {margin-top:40px;}
+.mgt50 {margin-top:50px;}
+.mgt60 {margin-top:60px;}
+.mgt70 {margin-top:70px;}
+.mgb10 {margin-bottom:10px;}
+.mgb20 {margin-bottom:20px;}
+.mgb30 {margin-bottom:30px;}
+.mgb40 {margin-bottom:40px;}
+.mgb50 {margin-bottom:50px;}
+.mgl10 {margin-left:10px;}
+.mgl20 {margin-left:20px;}
+.mgl30 {margin-left:30px;}
+.mgl40 {margin-left:40px;}
+.mgl50 {margin-left:50px;}
+.mgl80 {margin-left:80px;}
+
+.wph {max-width:120px;} /* 전화번호 */
+.year {max-width:120px;} /* 연월일 */
+.w5 {width:5% !important;}
+.w6 {width:6% !important;}
+.w7 {width:7% !important;}
+.w8 {width:8% !important;}
+.w10 {width:10% !important;}
+.w15 {width:15% !important;}
+.w20 {width:20% !important;}
+.w22 {width:22% !important;}
+.w25 {width:25% !important;}
+.w30 {width:30% !important;}
+.w32 {width:32% !important;}
+.w35 {width:35% !important;}
+.w40 {width:40% !important;}
+.w45 {width:45% !important;}
+.w48 {width:48% !important;}
+.w50 {width:50% !important;}
+.w55 {width:55% !important;}
+.w60 {width:60% !important;}
+.w65 {width:65% !important;}
+.w69 {width:69% !important;}
+.w70 {width:70% !important;}
+.w75 {width:75% !important;}
+.w76 {width:76% !important;}
+.w80 {width:80% !important;}
+.w90 {width:90% !important;}
+.w95 {width:95% !important;}
+.w100 {width:100% !important;}
+
+/* input ------------------------------- */
+/* 모바일에서 스타일 제거 */
+input[type=text], input[type="password"], input[type="button"], input[type="image"], input[type="submit"], input[type="search"], input[type="email"], input[type="url"], input[type="number"], input[type="tel"], /* select, */ textarea {-webkit-appearance:none; -moz-appearance:none; appearance:none; -webkit-border-radius:0; -moz-box-size:border-box; box-sizing:border-box;}
+button::-moz-focus-inner, input::-moz-focus-inner {border:0; padding:0;} /* button 태그 속성 reset하기 */
+/* 기본스타일 정의 */
+input[type=text], input[type="password"], input[type="search"], input[type="email"], input[type="url"], input[type="number"], input[type="tel"], input[type="date"], select, textarea {background:#fff; border:solid 1px #ddd; padding:5px; border-radius:0px; outline:none;}
+input[type="button"] {cursor:pointer; overflow:visible; white-space:nowrap; border-radius:0px;}
+textarea {width:100%; height:auto; resize:none;}
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {-webkit-appearance:none; margin:0;}
+input[type=text]:focus, input[type="password"]:focus, input[type=search]:focus, input[type=email]:focus, input[type=url]:focus, input[type=number]:focus, input[type=tel]:focus, select:focus, textarea:focus {border:1px solid #bbb; box-shadow:0px 0px 5px rgba(0,0,0,0.09);}
+
+/* 텍스트 색상 ------------------------------- */
+.txtred {color:#c00;}
+.txtblue {color:#405acc;}
+.txtskyblue {color:#1c66a5;}
+.txtgreen {color:#54ac4b;}
+.txtorange {color:#f0802e;}
+.txtwh {color:#fff;}
+.txtgray {color:#999;}
+
+/* background */
+.tdGreen{background:#e4f7ba !important;}
+.tdGr{background:#ffffde !important;}
+.tdRed{background:#fce4e4 !important;}
+.tdGray{background:#f3f3f3 !important;}
+.tdYellow{background:#fef6e9 !important;}

@@ -144,7 +144,7 @@ const postInfo = {
             showMessage(messages.NOT_FOUND_POST_FILES_ID.message);
             return;
         }
-
+        alert(`postFileId = ${postFileId}`);
         const request = queryBuilder
             .createQueryBuilder()
             .baseUrl('/api/v1/download/{domain}/{postFileId}')
@@ -232,7 +232,30 @@ const postInfo = {
             })
             .catch(error => handleResponseError(error, request));
     },
+
+    deleteFile(index) {
+        document.getElementById("delete_" + index).value = 'true';
+        document.getElementById("file_" + index).style.display = 'none';
+        this.checkAllFilesDeleted();
+    },
+
+    checkAllFilesDeleted() {
+        let isFilesDeleted = true;
+        const existFiles = document.querySelectorAll("[id^='file_']");
+        existFiles.forEach(file => {
+            if (file.style.display !== 'none') {
+                isFilesDeleted = false;
+            }
+        })
+
+        // 전체 파일 다운로드 버튼 제거
+        if (isFilesDeleted) {
+            document.getElementById("downloadAllZipFiles").style.display = 'none';
+        }
+    }
 };
+
+let selectedFiles = [];
 
 const commentInfo = {
     renderComment: function (comment, parentElement) {

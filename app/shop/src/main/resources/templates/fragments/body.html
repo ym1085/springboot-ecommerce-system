@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body th:fragment="main-body">
+    <div id="adm_wrap">
+        <!-- header -->
+        <header>
+            <div class="head">
+                <h1>토이 프로젝트</h1>
+                <div th:if="${session.loginMember != null}" class="top_menu">
+                    <div class="login_user"><strong><i class="far fa-user-circle"></i> [[ ${session.loginMember.name} ]]</strong>님 반갑습니다.</div>
+                    <div class="logout">
+                        <form action="/logout" method="post">
+                            <button type="submit"><span class="skip_info">로그아웃</span><i class="fas fa-sign-out-alt"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div id="container">
+            <div class="menu_toggle"><span></span></div>
+            <!--/* 좌측 영역 */-->
+            <div class="lcontent">
+                <!--/* 메뉴 */-->
+                <nav>
+                    <ul>
+                        <li class="has_sub"><a href="javascript: void(0);" class="on"><span>게시판 관리</span></a>
+                            <ul>
+                                <li><a href="/post" class="on">리스트형</a></li>
+                                <li><a href="javascript: alert('준비 중입니다.');">갤러리형</a></li>
+                                <li><a href="javascript: alert('준비 중입니다.');">캘린더형</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript: alert('준비 중입니다.');"><span>회원 관리</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!--/* 우측 영역 */-->
+            <div class="rcontent">
+
+                <!--/* 페이지별 컨텐츠 */-->
+                <th:block layout:fragment="content"></th:block>
+
+            </div>
+        </div> <!--/* // #container */-->
+        <footer>Copyright(c) All rights reserved.</footer>
+    </div>
+
+    <!-- common javascript -->
+    <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{/js/common/common.js}"></script>
+    <script th:src="@{/js/common/message.js}"></script>
+    <script th:src="@{/js/common/fetchTemplate.js}"></script>
+
+    <script src="https://kit.fontawesome.com/79613ae794.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+
+    <!-- custom javascript by view page -->
+    <th:block layout:fragment="script"></th:block>
+</body>
+</html>
