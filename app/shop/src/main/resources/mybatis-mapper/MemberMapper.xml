@@ -39,7 +39,7 @@
                 #{birthDate},
                 'Y',
                 #{certYn},
-                #{role},
+                #{role.code},
                 now(),
                 now(),
                 #{gender}
@@ -56,7 +56,7 @@
                     #{account}, /* registrationId + providerToken */
                     #{email},
                     #{picture},
-                    #{role},
+                    #{role.code},
                     #{registrationId},
                     #{providerToken}
                 )
@@ -64,6 +64,19 @@
         ]]>
     </insert>
 
+    <sql id="roleCase">
+        CASE ROLE
+            WHEN 'ROLE_USER' THEN 'USER'
+            WHEN 'ROLE_GUEST' THEN 'GUEST'
+            WHEN 'ROLE_ADMIN' THEN 'ADMIN'
+            ELSE ROLE
+        END AS role
+    </sql>
+
+    <!--
+        TODO: TypeHandler를 통해 자동으로 ROLE_USER -> USER로 변환이 가능하도록 수정 필요..
+         지금은 일단 이슈 해소를 위해서 CASE WHEN 절로 해결
+    -->
     <select id="getMemberByEmail" parameterType="map" resultType="Member">
         SELECT
             M.MEMBER_ID,
@@ -76,7 +89,7 @@
             M.BIRTH_DATE,
             M.USE_YN,
             M.CERT_YN,
-            M.ROLE,
+            <include refid="roleCase"/>,
             M.CREATE_DATE,
             M.UPDATE_DATE,
             M.GENDER,
@@ -100,7 +113,7 @@
             M.BIRTH_DATE,
             M.USE_YN,
             M.CERT_YN,
-            M.ROLE,
+            <include refid="roleCase"/>,
             M.CREATE_DATE,
             M.UPDATE_DATE,
             M.GENDER
@@ -116,7 +129,7 @@
             M.NAME,
             M.EMAIL,
             M.PICTURE,
-            M.ROLE,
+            <include refid="roleCase"/>,
             SM.PROVIDER_TYPE AS REGISTRATIONID
         FROM MEMBER M JOIN SOCIAL_MEMBER SM ON M.MEMBER_ID = SM.MEMBER_ID
         WHERE M.EMAIL = #{email}
@@ -149,7 +162,7 @@
             M.BIRTH_DATE,
             M.USE_YN,
             M.CERT_YN,
-            M.ROLE,
+            <include refid="roleCase"/>,
             M.CREATE_DATE,
             M.UPDATE_DATE,
             M.GENDER

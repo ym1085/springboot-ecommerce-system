@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="layout/basic">
+
+    <th:block layout:fragment="title">
+        <title>로그인 페이지</title>
+    </th:block>
+
+    <th:block layout:fragment="content">
+        <div class="col-md-6">
+            <!-- userName이 존재한다면 아래 로직 수행 -->
+            <div sec:authorize="isAuthenticated()">
+                Logged in as: <span id="user" sec:authentication="name"></span>
+                <div th:if="${name != null}" th:inline="text">
+                    [[${name}]] 님, 안녕하세요. email : [[${email}]]
+                </div>
+                <a href="/logout" class="btn btn-primary" role="button">Logout</a>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <!-- javascript에서 검증 후 서버로 넘긴다 -->
+                <form th:action="@{/member/login}" action="/member/login" method="post">
+                    <div class="form-group">
+                        <label for="username">아이디</label>
+                        <input type="text" class="form-control" id="username" name="username" required placeholder="아이디를 입력해주세요."/>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">비밀번호</label>
+                        <input type="password" class="form-control" id="password" name="password" required placeholder="비밀번호를 입력해주세요."/>
+                    </div>
+                    <button type="submit" class="btns btn_bdr1 btn_mid">로그인</button>
+                    <button type="button" class="btns btn_bdr2 btn_mid" onClick="location.href='/member/joinForm'">회원 가입</button>
+                </form>
+                <br>
+                <div class="social-login">
+                    <a href="/oauth2/authorization/google" class="btn btn-secondary login-button google-login">
+                        <button type="button" class="btns btn_bdr1 btn_mid">구글로 로그인</button></a>
+                    <a href="/oauth2/authorization/naver" class="btn btn-secondary login-button naver-login">
+                        <button type="button" class="btns btn_bdr2 btn_mid">네이버로 로그인</button></a>
+                    <a href="/oauth2/authorization/kakao" class="btn btn-secondary login-button kakao-login">
+                        <button type="button" class="btns btn_bdr3 btn_mid">카카오로 로그인</button></a>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</html>

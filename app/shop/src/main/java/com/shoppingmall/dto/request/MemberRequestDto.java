@@ -52,10 +52,23 @@ public class MemberRequestDto {
 
     private String picture;
     private Gender gender;
-    private Role role = Role.USER;
+    private Role role;
 
     @Builder
-    public MemberRequestDto(String name, String account, String password, String email, String phoneNumber, String certYn, String accountCertYn, String picture, Gender gender, String birthDate, Role role) {
+    public MemberRequestDto(
+            String name,
+            String account,
+            String password,
+            String email,
+            String phoneNumber,
+            String certYn,
+            String accountCertYn,
+            String picture,
+            Gender gender,
+            String birthDate,
+            Role role
+    ) {
+
         this.name = name;
         this.account = account;
         this.password = password;
