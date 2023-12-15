@@ -24,17 +24,17 @@ public class MemberController {
             model.addAttribute("name", sessionMember.getName());
             model.addAttribute("email", sessionMember.getEmail());
         }
-        return "member/login_form";
+        return "member/loginForm";
     }
 
     @GetMapping(value = "/member/joinForm")
     public String join(Model model) {
-        return "member/join_form";
+        return "member/joinForm";
     }
 
     @GetMapping(value = "/member/access-denied")
     public String memberAccessDenied(Model model) {
         log.debug("member access denied..");
-        return "member/access_denied";
+        return "member/accessDenied";
     }
 }

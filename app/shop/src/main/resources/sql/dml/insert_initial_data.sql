@@ -5,16 +5,16 @@ USE SHOPPINGMALL;
 -- INSERT INTO MEMBER
 INSERT INTO MEMBER (name, account, password, email, phone_number, picture, birth_date, use_yn, cert_yn, role)
 VALUES
-    ('아이유', 'user1', 'password1', 'user1@example.com', '01011111111', NULL, '1993-09-23', 'Y', 'Y', 'USER'),
-    ('장동건', 'user2', 'password2', 'user2@example.com', '01022222222', NULL, '1994-05-15', 'Y', 'Y', 'USER'),
-    ('원빈', 'user3', 'password3', 'user3@example.com', '01033333333', NULL, '1995-12-07', 'Y', 'Y', 'USER'),
-    ('현빈', 'user4', 'password4', 'user4@example.com', '01044444444', NULL, '1996-03-29', 'Y', 'Y', 'USER'),
-    ('김주혁', 'user5', 'password5', 'user5@example.com', '01055555555', NULL, '1997-08-11', 'Y', 'Y', 'USER'),
-    ('김종국', 'user6', 'password6', 'user6@example.com', '01066666666', NULL, '1998-01-03', 'Y', 'Y', 'USER'),
-    ('아이린', 'user7', 'password7', 'user7@example.com', '01077777777', NULL, '1999-11-21', 'Y', 'Y', 'USER'),
-    ('김태희', 'user8', 'password8', 'user8@example.com', '01088888888', NULL, '2000-06-14', 'Y', 'Y', 'USER'),
-    ('송혜교', 'user9', 'password9', 'user9@example.com', '01099999999', NULL, '2001-09-05', 'Y', 'Y', 'USER'),
-    ('한가인', 'user10', 'password10', 'user10@example.com', '01010101010', NULL, '2002-02-27', 'Y', 'Y', 'USER');
+    ('아이유', 'user1', 'password1', 'user1@example.com', '01011111111', NULL, '19930923', 'Y', 'Y', 'ROLE_USER'),
+    ('장동건', 'user2', 'password2', 'user2@example.com', '01022222222', NULL, '19940515', 'Y', 'Y', 'ROLE_USER'),
+    ('원빈', 'user3', 'password3', 'user3@example.com', '01033333333', NULL, '19951207', 'Y', 'Y', 'ROLE_USER'),
+    ('현빈', 'user4', 'password4', 'user4@example.com', '01044444444', NULL, '19960329', 'Y', 'Y', 'ROLE_USER'),
+    ('김주혁', 'user5', 'password5', 'user5@example.com', '01055555555', NULL, '19970811', 'Y', 'Y', 'ROLE_USER'),
+    ('김종국', 'user6', 'password6', 'user6@example.com', '01066666666', NULL, '19980103', 'Y', 'Y', 'ROLE_USER'),
+    ('아이린', 'user7', 'password7', 'user7@example.com', '01077777777', NULL, '19991121', 'Y', 'Y', 'ROLE_USER'),
+    ('김태희', 'user8', 'password8', 'user8@example.com', '01088888888', NULL, '20000614', 'Y', 'Y', 'ROLE_USER'),
+    ('송혜교', 'user9', 'password9', 'user9@example.com', '01099999999', NULL, '20010905', 'Y', 'Y', 'ROLE_USER'),
+    ('한가인', 'user10', 'password10', 'user10@example.com', '01010101010', NULL, '20020227', 'Y', 'Y', 'ROLE_USER');
 
 INSERT INTO POST_CATEGORY (category_id, category_name)
 VALUES

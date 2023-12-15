@@ -9,10 +9,10 @@ const postInfo = {
     fixedYn: null,
 
     init: function () {
-        this.postId = document.getElementById('postId');
-        this.title = document.getElementById('title');
-        this.content = document.getElementById('content');
-        this.fixedYn = document.getElementById('fixedYn');
+        this.postId = document.querySelector('#postId');
+        this.title = document.querySelector('#title');
+        this.content = document.querySelector('#content');
+        this.fixedYn = document.querySelector('#fixedYn');
     },
 
     isValidPostId: function (postId) {
@@ -32,17 +32,17 @@ const postInfo = {
             showMessage(messages.NOT_FOUND_POST_ID.message);
             return false;
         }
-        if (!this.isValidTitle(this.title.value)) {
+        if (!this.isValidTitle(this.title.innerText)) {
             showMessage(messages.NOT_FOUND_POST_TITLE.message);
             this.title.focus();
             return false;
         }
-        if (!this.isValidContent(this.content.value)) {
+        if (!this.isValidContent(this.content.innerText)) {
             showMessage(messages.NOT_FOUND_POST_CONTENT.message);
             this.content.focus();
             return false;
         }
-        if (isEmpty(this.fixedYn.value)) {
+        if (isEmpty(this.fixedYn.innerText)) {
             showMessage(messages.NOT_FOUND_POST_FIXED_YN.message);
             return false;
         }
@@ -56,13 +56,15 @@ const postInfo = {
 
         if (this.validatePostInfo()) {
             const formData = new FormData();
-            const fileObj = document.getElementById('file');
+            //TODO: 추후에 화면딴까지 만들 시간 있으면 아래 주석 해제후 파일 처리
+            //현재 UI HTML 변경하면서 서버에서 받아온 첨부파일은 빼둔 상태임, 기능은 원래 동작함
+            /*const fileObj = document.getElementById('file');
             for (let i = 0; i < fileObj.files.length; i++) {
                 formData.append('files', fileObj.files[i]);
-            }
-            formData.append('title', this.title.value);
-            formData.append('content', this.content.value);
-            formData.append('fixedYn', this.fixedYn.checked ? 'Y' : 'N');
+            }*/
+            formData.append('title', this.title.innerText);
+            formData.append('content', this.content.innerText);
+            formData.append('fixedYn', this.fixedYn.innerText === '고정글' ? 'Y' : 'N');
 
             const request = queryBuilder
                 .createQueryBuilder()

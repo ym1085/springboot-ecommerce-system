@@ -33,22 +33,22 @@
                                 <td id="fixedYn" th:text="${post.fixedYn == 'Y' ? '일반' : '공지'}"></td>
 
                                 <th scope="row">등록일</th>
-                                <td th:text="${#temporals.format( post.createDate, 'yyyy-MM-dd HH:mm' )}"></td>
+                                <td id="createDate" th:text="${#temporals.format( post.createDate, 'yyyy-MM-dd HH:mm' )}"></td>
                             </tr>
                             <tr>
                                 <th scope="row">제목</th>
                                 <td id="title" th:text="${post.title != null} ? ${post.title} : 'X'"></td>
 
                                 <th scope="row">조회수</th>
-                                <td colspan="3" th:text="${post.readCnt != null} ? ${post.readCnt} : '0'"></td>
+                                <td id="readCnt" colspan="3" th:text="${post.readCnt != null} ? ${post.readCnt} : '0'"></td>
                             </tr>
                             <tr>
                                 <th scope="row">작성자</th>
-                                <td colspan="3" th:text="${post.writer != null} ? ${post.writer} : 'X'"></td>
+                                <td id="writer" colspan="3" th:text="${post.writer != null} ? ${post.writer} : 'X'"></td>
                             </tr>
                             <tr>
                                 <th scope="row">내용</th>
-                                <td colspan="3" th:text="${post.content != null} ? ${post.content} : ''"></td>
+                                <td id="content" colspan="3" th:text="${post.content != null} ? ${post.content} : ''"></td>
                             </tr>
                             <tr>
                                 <th scope="row">첨부파일</th>

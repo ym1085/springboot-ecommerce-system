@@ -24,7 +24,7 @@ public class PrincipalDetails implements UserDetails {
     // 해당 유저의 권한을 리턴, spring security 인증 처리
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(member.getRoleKey()));
+        return Collections.singletonList(new SimpleGrantedAuthority(member.getRoleCode()));
     }
 
     @Override

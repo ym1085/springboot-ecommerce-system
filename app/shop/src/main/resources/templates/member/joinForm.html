@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	  layout:decorate="layout/basic">
+
+	<th:block layout:fragment="title">
+		<title>회원가입 페이지</title>
+	</th:block>
+
+	<th:block layout:fragment="content">
+		<div class="col-md-6">
+			<form name="memberJoinForm" id="memberJoinForm" method="post">
+				<!-- Fixme: replace certYn to emailCertYn -->
+				<input type="hidden" class="form-control" id="certYn" name="certYn" value="N"/>
+				<input type="hidden" class="form-control" id="accountCertYn" name="accountCertYn" value="N"/>
+				<div class="form-group">
+					<label for="username">이름</label>
+					<input type="text" class="form-control" id="username" name="username" required placeholder="이름을 입력해주세요."/>
+				</div>
+				<div class="form-group">
+					<label for="account">계정</label>
+					<div class="input-group">
+						<input type="text" class="form-control" id="account" name="account" required placeholder="계정을 입력해주세요."/>
+						<div class="input-group-append">
+							<button type="button" class="btn btn-outline-secondary" id="checkDuplicateId" onclick="checkDuplAccount();">아이디 중복 체크</button>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="password1">1차 비밀번호</label>
+					<input type="password" class="form-control" id="password1" name="password1" required
+						   placeholder="1차 비밀번호를 입력해주세요."/>
+				</div>
+				<div class="form-group">
+					<label for="password2">2차 비밀번호</label>
+					<input type="password" class="form-control" id="password2" name="password2" required
+						   placeholder="2차 비밀번호를 입력해주세요."/>
+				</div>
+				<div class="form-group">
+					<label for="email">이메일</label>
+					<div class="input-group">
+						<input type="email" class="form-control" id="email" name="email" required
+							   placeholder="이메일을 입력해주세요." autocomplete='off'/>
+						<div class="input-group-append">
+							<button type="button" class="btn btn-outline-secondary" id="sendVerification" onclick="sendAuthEmail();">인증 번호 발송</button>
+						</div>
+					</div>
+				</div>
+				<!-- 인증번호 입력란 -->
+				<div class="form-group" id="verifySection" style="display: none;">
+					<label for="verificationCode">인증 번호</label>
+					<div class="input-group">
+						<input type="text" class="form-control" id="verificationCode" name="verificationCode" required
+							   placeholder="인증 번호를 입력해주세요."/>
+						<div class="input-group-append">
+							<button type="button" class="btn btn-outline-secondary" id="verifyCode" onclick="verifyEmailAuthCode();">인증 확인</button>
+						</div>
+					</div>
+				</div>
+				<div id="timeLimitArea" style="display: none;">
+					<!-- 스톱워치는 색깔 바꿀일이 없어서, 인라인으로 넣어 두었습니다 -->
+					<p>제한시간 <span style="font-weight: bold; color: red;" id="timeLeft">03:00</span> 분</p>
+				</div>
+				<!--<div id="timeLeftSection" style="display: none;">
+					<p>제한시간 <span id="timeLeft">03:00</span> 분</p>
+				</div>-->
+				<!-- 20230709 휴대폰 번호 인라인으로 일단 넣어둠 -->
+				<div class="form-row" style="width: 1600px;">
+					<div class="form-group col-md-4">
+						<label for="phonePrefix">휴대폰 번호</label>
+						<div class="input-group">
+							<select class="form-control" id="phonePrefix" name="phonePrefix">
+								<option value="010">010</option>
+								<option value="011">011</option>
+								<option value="016">016</option>
+								<option value="019">019</option>
+							</select>
+							<input type="text" class="form-control" id="phoneMiddle" name="phoneMiddle" required
+								   placeholder="" onKeyup="this.value=this.value.replace(/[^-0-9]/g,'');" style="width: 30%;"/>
+							<input type="text" class="form-control" id="phoneLast" name="phoneLast" required
+								   placeholder="" onKeyup="this.value=this.value.replace(/[^-0-9]/g,'');" style="width: 30%;"/>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="gender">성별</label>
+					<select class="form-control" id="gender" name="gender">
+						<option value="M">남성</option>
+						<option value="F">여성</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="birthDate">생년월일</label>
+					<input type="date" class="form-control" id="birthDate" name="birthDate" required placeholder="생년월일을 입력해주세요."/>
+				</div>
+				<button type="button" class="btn btn-primary" id="btn-join">회원가입</button>
+				<button type="button" class="btn btn-primary" id="btn-cancel" onclick="location.href='/member/loginForm'">취소</button>
+			</form>
+		</div>
+	</th:block>
+
+	<!-- 고유 스크립트 추가 -->
+	<th:block layout:fragment="script">
+		<script th:src="@{/js/common/loading.js}"></script>
+		<script th:src="@{/js/member/join.js}"></script>
+	</th:block>
+</div>
+</html>

@@ -49,12 +49,21 @@ public class Member {
         return this;
     }
 
-    public String getRoleKey() {
-        return this.role.getKey();
+    public String getRoleCode() {
+        return this.role.getCode();
     }
 
     @Builder
-    public Member(String name, String account, String email, String picture, Role role, String registrationId, String providerToken) {
+    public Member(
+            String name,
+            String account,
+            String email,
+            String picture,
+            Role role,
+            String registrationId,
+            String providerToken
+    ) {
+
         this.name = name;
         this.account = account;
         this.email = email;
@@ -63,5 +72,4 @@ public class Member {
         this.registrationId = registrationId;
         this.providerToken = providerToken;
     }
-
 }
