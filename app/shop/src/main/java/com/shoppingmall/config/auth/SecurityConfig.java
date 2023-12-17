@@ -1,10 +1,9 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.constant.Role;
 import com.shoppingmall.handler.CustomLogInFailerHandler;
 import com.shoppingmall.handler.CustomLogInSuccessHandler;
-import com.shoppingmall.handler.OAuth2LoginFailureHandler;
-import com.shoppingmall.handler.OAuth2LoginSuccessHandler;
+import com.shoppingmall.handler.PrincipalOAuth2LoginFailureHandler;
+import com.shoppingmall.handler.PrincipalOAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,18 +14,23 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+// 구글 로그인 완료 후 후처리 필요
+// 1. 코드받기(인증), 2. 엑세스토큰(권한)
+// 3. 사용자 프로필 정보를 가져오고 4-1. 그 정보를 토대로 회원가입을 자동으로 진행시키기도 함
+// 4-2. 쇼핑몰 아닌 경우 (이메일, 전화번호, 이름, 아이디)
+// 4-3. 쇼핑몰 같이 부가 정보 같이 저장 해야하는 경우 회원가입 2단계 진행 -> (집주소), 백화점몰 -> (VIP등급, 일반등급)
+
 @Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableWebSecurity // spring security filter -> spring filter chain 에 등록됨
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // @Secured 어노테이션 활성화, @PreAuthorize 어노테이션 활성화
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final PrincipalOAuth2UserService principalOAuth2UserService;
+    private final PrincipalOAuth2LoginSuccessHandler principalOAuth2LoginSuccessHandler;
+    private final PrincipalOAuth2LoginFailureHandler principalOAuth2LoginFailureHandler;
 
-    private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomLogInSuccessHandler customLogInSuccessHandler;
     private final CustomLogInFailerHandler customLogInFailerHandler;
-
-    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,17 +39,19 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/admin/**").hasRole(Role.ADMIN.name())
-                        .antMatchers("/").hasAnyRole(Role.ADMIN.name(), Role.USER.name(), Role.GUEST.name())
+                        .antMatchers("/payment/**").authenticated()
+                        .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
+                        .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+                        .antMatchers("/post/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGENT') or hasRole('ROLE_USER')")
                         .anyRequest().permitAll()
-                .and()
+                .and() // 인증(authentication) 되지 않은 403 요청의 경우 Login page로 redirect 302
                     .formLogin()
                         .loginPage("/member/loginForm")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .loginProcessingUrl("/member/login")
-                        .successHandler(customLogInSuccessHandler)
-                        .failureHandler(customLogInFailerHandler)
+                        .loginProcessingUrl("/member/login") // -> /member/login URL 주소가 호출되면 시큐리티가 낚아채서 대신 로그인 진행
+                        .successHandler(customLogInSuccessHandler) // -> success login
+                        .failureHandler(customLogInFailerHandler) // -> fail login
                 .and()
                     .logout()
                         .logoutSuccessUrl("/")
@@ -54,14 +60,15 @@ public class SecurityConfig {
                         //.addLogoutHandler(logoutHandler())
                         //.logoutSuccessHandler(logoutSuccessHandler())
                 .and()
-                    .sessionManagement()  // Todo: Add other session managements options
+                    .sessionManagement()
                         .invalidSessionUrl("/member/loginForm")
                 .and()
                     .oauth2Login()
-                        .successHandler(oAuth2LoginSuccessHandler)
-                        .failureHandler(oAuth2LoginFailureHandler)
+                        .loginPage("/member/loginForm")
+                        .successHandler(principalOAuth2LoginSuccessHandler)
+                        .failureHandler(principalOAuth2LoginFailureHandler)
                         .userInfoEndpoint()
-                        .userService(customOAuth2UserService);
+                        .userService(principalOAuth2UserService);
 
         return http.build();
     }

@@ -8,6 +8,7 @@ public enum Role implements CodeEnum {
     USER("ROLE_USER", "일반 사용자"),
     GUEST("ROLE_GUEST", "손님"),
     ADMIN("ROLE_ADMIN", "관리자"),
+    MANAGER("ROLE_MANAGER", "매니저"),
     ;
 
     private final String code;
