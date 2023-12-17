@@ -34,7 +34,6 @@ public class MemberController {
 
     @GetMapping(value = "/member/access-denied")
     public String memberAccessDenied(Model model) {
-        log.debug("member access denied..");
         return "member/accessDenied";
     }
 }

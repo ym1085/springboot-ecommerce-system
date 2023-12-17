@@ -20,7 +20,7 @@ CREATE TABLE MEMBER
     birth_date   VARCHAR(12),
     use_yn       CHAR      DEFAULT 'N',
     cert_yn      CHAR      DEFAULT 'N',
-    role         VARCHAR(10) NOT NULL,
+    role         VARCHAR(20) NOT NULL,
     create_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     gender       VARCHAR(10) COMMENT '성별'

@@ -19,14 +19,13 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     private final MemberMapper memberMapper;
 
-    // Security Session > Authentication > UserDetails
+    // 001. Security Session > Authentication > UserDetails
+    // 002. Security Session > Authentication(UserDetails)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("LoginInfo - username = {}", username);
-        Member member = memberMapper.getMemberByAccount(username).orElse(new Member());
-        if (member != null) {
-            return new PrincipalDetails(member);
-        }
-        return null;
+        Member member = memberMapper.getMemberByAccount(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        return new PrincipalDetails(member);
     }
 }

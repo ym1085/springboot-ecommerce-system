@@ -69,6 +69,7 @@
             WHEN 'ROLE_USER' THEN 'USER'
             WHEN 'ROLE_GUEST' THEN 'GUEST'
             WHEN 'ROLE_ADMIN' THEN 'ADMIN'
+            WHEN 'ROLE_MANAGER' THEN 'MANAGER'
             ELSE ROLE
         END AS role
     </sql>
