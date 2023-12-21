@@ -1,18 +1,24 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.handler.CustomLogInFailerHandler;
-import com.shoppingmall.handler.CustomLogInSuccessHandler;
+import com.shoppingmall.config.jwt.JwtAuthenticationFilter;
+import com.shoppingmall.config.jwt.JwtAuthorizationFilter;
+import com.shoppingmall.config.jwt.JwtTokenProvider;
 import com.shoppingmall.handler.PrincipalOAuth2LoginFailureHandler;
 import com.shoppingmall.handler.PrincipalOAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.CorsFilter;
 
 // 구글 로그인 완료 후 후처리 필요
 // 1. 코드받기(인증), 2. 엑세스토큰(권한)
@@ -29,39 +35,58 @@ public class SecurityConfig {
     private final PrincipalOAuth2LoginSuccessHandler principalOAuth2LoginSuccessHandler;
     private final PrincipalOAuth2LoginFailureHandler principalOAuth2LoginFailureHandler;
 
-    private final CustomLogInSuccessHandler customLogInSuccessHandler;
-    private final CustomLogInFailerHandler customLogInFailerHandler;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final PrincipalDetailsService principalDetailsService;
+    private final CorsFilter corsFilter;
+
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtTokenProvider);
+        filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
+        return filter;
+    }
+
+    @Bean
+    public JwtAuthorizationFilter jwtAuthorizationFilter() {
+        return new JwtAuthorizationFilter(jwtTokenProvider, principalDetailsService);
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
+                    .addFilter(corsFilter)
+                    .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class)
+                    .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                     .authorizeRequests()
-                        .antMatchers("/payment/**").authenticated()
                         .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                         .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
                         .antMatchers("/post/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGENT') or hasRole('ROLE_USER')")
+                        .antMatchers("/payment/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGENT') or hasRole('ROLE_USER')")
                         .anyRequest().permitAll()
-                .and() // 인증(authentication) 되지 않은 403 요청의 경우 Login page로 redirect 302
-                    .formLogin()
-                        .loginPage("/member/loginForm")
-                        .usernameParameter("username")
-                        .passwordParameter("password")
-                        .loginProcessingUrl("/member/login") // -> /member/login URL 주소가 호출되면 시큐리티가 낚아채서 대신 로그인 진행
-                        .successHandler(customLogInSuccessHandler) // -> success login
-                        .failureHandler(customLogInFailerHandler) // -> fail login
                 .and()
                     .logout()
-                        .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true) // 로그아웃 이후에 모든 세션 삭제
-                        .deleteCookies("JSESSIONID", "remember-me")
-                        //.addLogoutHandler(logoutHandler())
-                        //.logoutSuccessHandler(logoutSuccessHandler())
+                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true)
                 .and()
                     .sessionManagement()
-                        .invalidSessionUrl("/member/loginForm")
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .oauth2Login()
                         .loginPage("/member/loginForm")
@@ -71,10 +96,5 @@ public class SecurityConfig {
                         .userService(principalOAuth2UserService);
 
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
