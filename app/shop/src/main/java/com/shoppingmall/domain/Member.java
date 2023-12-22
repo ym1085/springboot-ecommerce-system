@@ -2,7 +2,6 @@ package com.shoppingmall.domain;
 
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
-import com.shoppingmall.dto.request.MemberRequestDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -28,19 +27,6 @@ public class Member {
     private String registrationId;
     private String providerToken;
 
-    public Member(MemberRequestDto memberRequestDto) {
-        this.name = memberRequestDto.getName();
-        this.account = memberRequestDto.getAccount();
-        this.password = memberRequestDto.getPassword();
-        this.email = memberRequestDto.getEmail();
-        this.phoneNumber = memberRequestDto.getPhoneNumber();
-        this.picture = memberRequestDto.getPicture();
-        this.birthDate = memberRequestDto.getBirthDate();
-        this.certYn = memberRequestDto.getCertYn();
-        this.role = memberRequestDto.getRole();
-        this.gender = memberRequestDto.getGender();
-    }
-
     // 클라이언트가 소셜 로그인를 시도하는 사용자가 제공되는 정보(data)에 변경이 있으면
     // 해당 데이터를 받아서 DB에 실제 업데이트 하기 전 값 셋팅을 위해 사용
     public Member updateRenewalMember(String name, String picture) {
@@ -55,20 +41,35 @@ public class Member {
 
     @Builder
     public Member(
+            Long memberId,
             String name,
             String account,
+            String password,
             String email,
+            String phoneNumber,
             String picture,
+            String birthDate,
+            String certYn,
             Role role,
+            LocalDateTime createDate,
+            LocalDateTime updateDate,
+            Gender gender,
             String registrationId,
             String providerToken
     ) {
-
+        this.memberId = memberId;
         this.name = name;
         this.account = account;
+        this.password = password;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.picture = picture;
+        this.birthDate = birthDate;
+        this.certYn = certYn;
         this.role = role;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+        this.gender = gender;
         this.registrationId = registrationId;
         this.providerToken = providerToken;
     }

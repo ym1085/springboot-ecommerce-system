@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class CommentService {
 
     private final CommentMapper commentMapper;
 
-    @Transactional(readOnly = true)
     public List<CommentResponseDto> getCommentsByPostId(Long postId) {
         return this.getCommentsByPostId(postId);
     }

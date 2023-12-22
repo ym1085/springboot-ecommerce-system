@@ -80,14 +80,6 @@ class PostRestControllerTest {
     @Test
     @DisplayName("게시글 등록 API")
     void savePost() throws Exception {
-        /*PostRequestDto postRequestDto = PostRequestDto.builder()
-                .postId(1L)
-                .memberId(1L)
-                .title("제목1")
-                .content("내용1")
-                .fixedYn("N")
-                .build();*/
-
         ResultActions result = mockMvc.perform(
                 post("/api/v1/post")
                         .param("title", "게시글1")
@@ -103,54 +95,54 @@ class PostRestControllerTest {
     @Test
     @DisplayName("게시글 수정 API - 제목 공백인 경우 예외 발생")
     void updatePostTitleIsNull() throws Exception {
-        PostRequestDto postRequestDto = createPostRequestDto("", "내용1", "N", 1L);
-
         ResultActions result = mockMvc.perform(
                 put("/api/v1/post/{postId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(postRequestDto))
+                        .param("title", "")
+                        .param("content", "내용1")
+                        .param("fixedYn", "N")
+                        .param("memberId", "1")
         );
 
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(9999)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 요청 데이터")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("제목은 반드시 입력되어야 합니다")));
     }
 
     @Test
     @DisplayName("게시글 수정 API - 내용 공백인 경우 예외 발생")
     void updatePostContentIsNull() throws Exception {
-        PostRequestDto postRequestDto = createPostRequestDto("제목1", "", "N", 1L);
-
         ResultActions result = mockMvc.perform(
                 put("/api/v1/post/{postId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(postRequestDto))
+                        .param("title", "제목1")
+                        .param("content", "")
+                        .param("fixedYn", "N")
+                        .param("memberId", "1")
         );
 
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(9999)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 요청 데이터")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("내용은 반드시 입력되어야 합니다")));
     }
 
     @Test
     @DisplayName("게시글 수정 API - 제목이 20을 초과하는 경우 예외 발생")
     void updatePostTitleOverThan20() throws Exception {
-        PostRequestDto postRequestDto = createPostRequestDto("제목1제목1제목1제목1제목1제목1제목1", "내용1", "N", 1L);
-
         ResultActions result = mockMvc.perform(
                 put("/api/v1/post/{postId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(postRequestDto))
+                        .param("title", "제목1제목1제목1제목1제목1제목1제목1제목제목제목")
+                        .param("content", "내용1")
+                        .param("fixedYn", "N")
+                        .param("memberId", "1")
         );
 
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(9999)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 요청 데이터")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("제목은 20자를 초과할 수 없습니다")));
     }
 
@@ -162,18 +154,18 @@ class PostRestControllerTest {
             sb.append("A");
         }
 
-        PostRequestDto postRequestDto = createPostRequestDto("제목1", sb.toString(), "N", 1L);
-
         ResultActions result = mockMvc.perform(
                 put("/api/v1/post/{postId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(postRequestDto))
+                        .param("title", "제목1")
+                        .param("content", sb.toString())
+                        .param("fixedYn", "N")
+                        .param("memberId", "1")
         );
 
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(9999)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid Request Data")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 요청 데이터")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("내용은 1000자를 초과할 수 없습니다")));
     }
 

@@ -56,3 +56,7 @@ os:
 
 email:
   title: "쇼핑몰 인증 번호 입니다."
+
+jwt:
+  secret:
+    key: 4oCYc3ByaW5nYm9vdC1zaG9wcGluZy1tYWxsLWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXTigJkK

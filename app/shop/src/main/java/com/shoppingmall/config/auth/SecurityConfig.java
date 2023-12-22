@@ -1,15 +1,14 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.config.jwt.JwtAuthenticationFilter;
-import com.shoppingmall.config.jwt.JwtAuthorizationFilter;
+import com.shoppingmall.config.jwt.JwtAccessDeniedHandler;
+import com.shoppingmall.config.jwt.JwtAuthenticationEntryPoint;
+import com.shoppingmall.config.jwt.JwtSecurityConfig;
 import com.shoppingmall.config.jwt.JwtTokenProvider;
 import com.shoppingmall.handler.PrincipalOAuth2LoginFailureHandler;
 import com.shoppingmall.handler.PrincipalOAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,7 +16,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
 // 구글 로그인 완료 후 후처리 필요
@@ -35,46 +33,34 @@ public class SecurityConfig {
     private final PrincipalOAuth2LoginSuccessHandler principalOAuth2LoginSuccessHandler;
     private final PrincipalOAuth2LoginFailureHandler principalOAuth2LoginFailureHandler;
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationConfiguration authenticationConfiguration;
-    private final PrincipalDetailsService principalDetailsService;
     private final CorsFilter corsFilter;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtTokenProvider);
-        filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
-        return filter;
-    }
-
-    @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtTokenProvider, principalDetailsService);
-    }
-
+    //todo: 로그인 성공 시 특정 화면으로 이동시켜야 함
+    //todo: jwt refresh token 어디에 저장할지 고민해야 함 (DB?, Redis?)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .formLogin().disable()
-                .httpBasic().disable()
-                .csrf().disable()
-                .headers().frameOptions().disable()
+                .exceptionHandling()
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .accessDeniedHandler(jwtAccessDeniedHandler)
+                .and()
+                    .csrf().disable()
+                    .formLogin().disable()
+                    .httpBasic().disable()
+                    .headers().frameOptions().disable()
                 .and()
                     .addFilter(corsFilter)
-                    .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class)
-                    .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                     .authorizeRequests()
+                        .antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
+                        .antMatchers("/member/loginForm", "/member/joinForm").permitAll()
                         .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                         .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
                         .antMatchers("/post/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGENT') or hasRole('ROLE_USER')")
@@ -86,7 +72,9 @@ public class SecurityConfig {
                     .invalidateHttpSession(true)
                 .and()
                     .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT Token not use session
+                .and()
+                    .apply(new JwtSecurityConfig(jwtTokenProvider))
                 .and()
                     .oauth2Login()
                         .loginPage("/member/loginForm")

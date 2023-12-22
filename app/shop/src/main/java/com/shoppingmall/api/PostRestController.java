@@ -26,7 +26,7 @@ public class PostRestController {
 
     private final PostService postService;
 
-    @GetMapping(value = "/post")
+    @GetMapping("/post")
     public ResponseEntity<CommonResponse> getPosts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
         return ApiUtils.success(
@@ -37,7 +37,7 @@ public class PostRestController {
         );
     }
 
-    @GetMapping(value = "/post/{postId}")
+    @GetMapping("/post/{postId}")
     public ResponseEntity<CommonResponse> getPostById(@PathVariable("postId") Long postId) {
         PostResponseDto post = postService.getPostById(postId);
         return ApiUtils.success(
@@ -48,7 +48,7 @@ public class PostRestController {
         );
     }
 
-    @PostMapping(value = "/post")
+    @PostMapping("/post")
     public ResponseEntity<CommonResponse> savePost(
             @Valid @ModelAttribute PostRequestDto postRequestDto,
             BindingResult bindingResult) {
@@ -69,7 +69,7 @@ public class PostRestController {
         );
     }
 
-    @PutMapping(value = "/post/{postId}")
+    @PutMapping("/post/{postId}")
     public ResponseEntity<CommonResponse> updatePost(
             @PathVariable("postId") Long postId,
             @Valid @ModelAttribute PostRequestDto postRequestDto,
@@ -95,7 +95,7 @@ public class PostRestController {
         );
     }
 
-    @DeleteMapping(value = "/post/{postId}")
+    @DeleteMapping("/post/{postId}")
     public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") Long postId) {
         int responseCode = postService.deletePost(postId);
         boolean success = ResponseUtils.isSuccessResponseCode(responseCode);

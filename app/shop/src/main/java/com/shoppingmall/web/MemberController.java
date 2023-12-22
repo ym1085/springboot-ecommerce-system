@@ -17,8 +17,8 @@ public class MemberController {
 
     private final HttpSession session;
 
-    @GetMapping(value = "/member/loginForm")
-    public String login(Model model, Authentication authentication) {
+    @GetMapping("/member/loginForm")
+    public String loginForm(Model model, Authentication authentication) {
         SessionMember sessionMember = (SessionMember) session.getAttribute("LOGIN_SESSION_USER");
         if (sessionMember != null) {
             model.addAttribute("name", sessionMember.getName());
@@ -27,13 +27,13 @@ public class MemberController {
         return "member/loginForm";
     }
 
-    @GetMapping(value = "/member/joinForm")
-    public String join(Model model) {
+    @GetMapping("/member/joinForm")
+    public String joinForm(Model model) {
         return "member/joinForm";
     }
 
-    @GetMapping(value = "/member/access-denied")
-    public String memberAccessDenied(Model model) {
+    @GetMapping("/member/access-denied")
+    public String accessDenied(Model model) {
         return "member/accessDenied";
     }
 }
