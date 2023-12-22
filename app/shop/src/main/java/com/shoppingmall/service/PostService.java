@@ -28,15 +28,14 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class PostService {
-
     private final PostMapper postMapper;
     private final FileMapper fileMapper;
     private final FileHandlerHelper fileHandlerHelper;
     private final CommentMapper commentMapper;
 
-    @Transactional(readOnly = true)
     public PagingResponseDto<PostResponseDto> getPosts(SearchRequestDto searchRequestDto) {
         int totalRecordCount = postMapper.count(searchRequestDto);
         if (totalRecordCount < 1) {
@@ -69,7 +68,6 @@ public class PostService {
         return postResponseDto;
     }
 
-    @Transactional
     public PostResponseDto getPostById(Long postId) {
         if (postId != null) {
             int responseCode = postMapper.increasePostByPostId(postId);

@@ -2,6 +2,7 @@ package com.shoppingmall.dto.request;
 
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
+import com.shoppingmall.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,8 +28,7 @@ public class MemberRequestDto {
     private String account;
 
     @NotBlank(message = "비밀번호는 필수 입력 항목 입니다. 다시 시도해주세요.")
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$",
-            message = "영어와 특수문자를 포함한 최소 8자 이상의 비밀번호를 입력해주세요.") // 검증 : https://regexr.com/
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$", message = "영어와 특수문자를 포함한 최소 8자 이상의 비밀번호를 입력해주세요.")
     private String password;
 
     @NotBlank(message = "이메일은 필수 입력 항목입니다. 다시 시도해주세요.")
@@ -68,7 +68,6 @@ public class MemberRequestDto {
             String birthDate,
             Role role
     ) {
-
         this.name = name;
         this.account = account;
         this.password = password;
@@ -80,5 +79,19 @@ public class MemberRequestDto {
         this.gender = gender;
         this.birthDate = birthDate;
         this.role = role;
+    }
+
+    public Member toEntity() {
+        return Member.builder()
+                .name(name)
+                .account(account)
+                .password(password)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .certYn(certYn)
+                .birthDate(birthDate)
+                .picture(picture)
+                .role(Role.USER)
+                .build();
     }
 }

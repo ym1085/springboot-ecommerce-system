@@ -19,7 +19,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping(value = "/post")
+    @GetMapping("/post")
     public String getPosts(@ModelAttribute SearchRequestDto searchRequestDto, Model model) {
         PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
         model.addAttribute("posts", posts);
@@ -27,14 +27,14 @@ public class PostController {
         return "post/list";
     }
 
-    @GetMapping(value = "/post/{postId}")
+    @GetMapping("/post/{postId}")
     public String getPostById(@PathVariable("postId") Long postId, @ModelAttribute SearchRequestDto searchRequestDto, Model model) {
         PostResponseDto post = postService.getPostById(postId);
         model.addAttribute("post", post);
         return "post/detail";
     }
 
-    @GetMapping(value = "/post/save")
+    @GetMapping("/post/save")
     public String save() {
         return "post/save";
     }

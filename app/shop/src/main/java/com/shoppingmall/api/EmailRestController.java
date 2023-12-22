@@ -19,7 +19,7 @@ public class EmailRestController {
 
     private final EmailService emailService;
 
-    @PostMapping(value = "/email/verify-request")
+    @PostMapping("/email/verify-request")
     public ResponseEntity<CommonResponse> sendMessage(
             @RequestBody EmailRequestDto emailRequestDto) {
 
@@ -32,7 +32,7 @@ public class EmailRestController {
         return ApiUtils.success(SuccessCode.SUCCESS_SEND_EMAIL.getCode(), SuccessCode.SUCCESS_SEND_EMAIL.getMessage(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/email/verify")
+    @GetMapping("/email/verify")
     public ResponseEntity<CommonResponse> verifyEmail(
             @RequestParam("email") String email,
             @RequestParam("code") String authCode) {

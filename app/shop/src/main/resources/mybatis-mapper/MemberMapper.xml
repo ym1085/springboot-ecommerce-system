@@ -173,7 +173,7 @@
         AND M.CERT_YN = 'Y'
     </select>
     
-    <select id="checkDuplMemberAccount" parameterType="Member" resultType="int">
+    <select id="checkDuplMemberAccount" parameterType="string" resultType="int">
         SELECT COUNT(*) AS CNT FROM MEMBER M WHERE M.ACCOUNT = #{account}
     </select>
 
