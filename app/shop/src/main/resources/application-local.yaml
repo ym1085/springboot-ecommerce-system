@@ -30,6 +30,9 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  redis:
+    host: localhost
+    port: 6379
 
 logging:
   level:
@@ -37,7 +40,7 @@ logging:
     com.shoppingmall: DEBUG
 
 mybatis:
-  type-aliases-package: com.shoppingmall.domain, com.shoppingmall.dto.request
+  type-aliases-package: com.shoppingmall.vo, com.shoppingmall.dto.request
   mapper-locations: mybatis-mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true

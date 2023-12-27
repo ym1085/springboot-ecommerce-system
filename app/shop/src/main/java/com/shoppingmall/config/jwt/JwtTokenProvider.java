@@ -1,6 +1,6 @@
 package com.shoppingmall.config.jwt;
 
-import com.shoppingmall.config.jwt.dto.request.JwtToken;
+import com.shoppingmall.dto.request.JwtTokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,10 @@ public class JwtTokenProvider {
     public static final String BEARER_PREFIX = "Bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // ms|sec|minutes => access token 유효 시간은 => 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // refresh token 유효 시간은 => 7일
-    //private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60; // 1분으로 시간 변경 후 refresh token 셋팅 후 테스트 => io.jsonwebtoken.ExpiredJwtException: JWT expired at 2023-12-22T14:35:22Z 발생
+
+    private static final String TYPE_ACCESS = "access";
+    private static final String TYPE_REFRESH = "refresh";
+    private static final String CLAIM_TYPE_NAME = "type";
 
     @Value("${jwt.secret.key}")
     private String secretKey; // Base64 encoded Secret Key (application.properties)
@@ -52,35 +55,49 @@ public class JwtTokenProvider {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    // Access + Refresh Token 생성 후 JwtToken DTO 생성하여 반환
-    public JwtToken generateToken(Authentication authentication) {
-        String accessToken = createJwtAccessToken(authentication, getJwtAccessTokenExpireDate());
-        String refreshToken = createJwtRefreshToken(authentication, getJwtRefreshTokenExpireDate());
+    public JwtTokenDto generateToken(Authentication authentication) {
+        return this.generateToken(authentication.getName(), authentication.getAuthorities());
+    }
 
-        return JwtToken.builder()
+    // Access + Refresh Token 생성 후 JwtToken 반환
+    public JwtTokenDto generateToken(String name, Collection<? extends GrantedAuthority> inputAuthorities) {
+        String authorities = extractedMemberAuthorites(inputAuthorities);
+
+        String accessToken = createJwtAccessToken(name, authorities, getJwtAccessTokenExpireDate());
+        String refreshToken = createJwtRefreshToken(name, authorities, getJwtRefreshTokenExpireDate());
+
+        return JwtTokenDto.builder()
                 .grantType(BEARER_PREFIX)
                 .accessToken(accessToken)
+                .accessTokenExpirationTime(ACCESS_TOKEN_EXPIRE_TIME)
                 .refreshToken(refreshToken)
+                .refreshTokenExpirationTime(REFRESH_TOKEN_EXPIRE_TIME)
                 .build();
     }
 
-    // JWT Access Token 생성
-    private String createJwtAccessToken(Authentication authentication, Date accessTokenExpiration) {
-        String authorities = authentication.getAuthorities().stream() // 사용자 권한 목록 추출
-                .map(grantedAuthority -> grantedAuthority.getAuthority())
+    private String extractedMemberAuthorites(Collection<? extends GrantedAuthority> inputAuthorities) {
+        return inputAuthorities.stream()
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+    }
 
+    // JWT Access Token 생성
+    private String createJwtAccessToken(String name, String authorities, Date accessTokenExpiration) {
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(name)
                 .claim(AUTHORIZATION_KEY, authorities)
+                .claim(CLAIM_TYPE_NAME, TYPE_ACCESS)
+                .setIssuedAt(new Date())
                 .setExpiration(accessTokenExpiration)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
     // JWT Refresh Token 생성
-    private String createJwtRefreshToken(Authentication authentication, Date refreshTokenExpiration) {
+    private String createJwtRefreshToken(String name, String authorities, Date refreshTokenExpiration) {
         return Jwts.builder()
+                .claim(CLAIM_TYPE_NAME, TYPE_REFRESH)
+                .setIssuedAt(new Date())
                 .setExpiration(refreshTokenExpiration)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();

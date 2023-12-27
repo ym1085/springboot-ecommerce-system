@@ -1,6 +1,6 @@
 package com.shoppingmall.mapper;
 
-import com.shoppingmall.domain.Member;
+import com.shoppingmall.vo.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -1,6 +1,6 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.domain.Member;
+import com.shoppingmall.vo.Member;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

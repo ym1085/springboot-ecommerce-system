@@ -1,8 +1,8 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.constant.FileType;
-import com.shoppingmall.domain.Post;
-import com.shoppingmall.domain.PostFiles;
+import com.shoppingmall.vo.Post;
+import com.shoppingmall.vo.PostFiles;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class PostService {
+
     private final PostMapper postMapper;
     private final FileMapper fileMapper;
     private final FileHandlerHelper fileHandlerHelper;

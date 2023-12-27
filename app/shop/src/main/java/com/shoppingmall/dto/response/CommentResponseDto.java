@@ -1,6 +1,6 @@
 package com.shoppingmall.dto.response;
 
-import com.shoppingmall.domain.Comment;
+import com.shoppingmall.vo.Comment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

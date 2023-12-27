@@ -1,4 +1,4 @@
-package com.shoppingmall.domain;
+package com.shoppingmall.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

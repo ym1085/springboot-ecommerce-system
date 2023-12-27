@@ -178,3 +178,12 @@ CREATE TABLE CART
     FOREIGN KEY (member_id) REFERENCES MEMBER (member_id),
     FOREIGN KEY (product_id) REFERENCES PRODUCT (product_id)
 );
+
+-- Create then refresh token table
+create table REFRESH_TOKEN
+(
+    refresh_token_id INT AUTO_INCREMENT PRIMARY KEY,
+    memberId INT NOT NULL,
+    refresh_token VARCHAR(300) NOT NULL
+)
+    comment 'JWT REFRESH_TOKEN 관련 테이블';
