@@ -1,6 +1,6 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.domain.PostFiles;
+import com.shoppingmall.vo.PostFiles;
 import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.mapper.FileMapper;
 import lombok.RequiredArgsConstructor;

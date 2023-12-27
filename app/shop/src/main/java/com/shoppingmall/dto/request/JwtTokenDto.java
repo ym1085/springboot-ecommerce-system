@@ -1,16 +1,16 @@
-package com.shoppingmall.config.jwt.dto.request;
+package com.shoppingmall.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Builder
 @Getter
-@Setter
 @AllArgsConstructor
-public class JwtToken {
+public class JwtTokenDto {
     private String grantType;
     private String accessToken;
+    private Long accessTokenExpirationTime;
     private String refreshToken;
+    private Long refreshTokenExpirationTime;
 }

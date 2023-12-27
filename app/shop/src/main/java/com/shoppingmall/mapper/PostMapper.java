@@ -1,6 +1,6 @@
 package com.shoppingmall.mapper;
 
-import com.shoppingmall.domain.Post;
+import com.shoppingmall.vo.Post;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 

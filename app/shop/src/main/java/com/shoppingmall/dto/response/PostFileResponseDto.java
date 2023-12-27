@@ -1,7 +1,7 @@
 package com.shoppingmall.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.shoppingmall.domain.PostFiles;
+import com.shoppingmall.vo.PostFiles;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,6 +1,6 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.domain.Member;
+import com.shoppingmall.vo.Member;
 import com.shoppingmall.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

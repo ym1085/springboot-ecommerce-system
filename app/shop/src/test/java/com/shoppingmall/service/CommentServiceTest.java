@@ -1,7 +1,7 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.ShopApplication;
-import com.shoppingmall.domain.Comment;
+import com.shoppingmall.vo.Comment;
 import com.shoppingmall.dto.request.CommentRequestDto;
 import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.exception.FailDeleteCommentException;

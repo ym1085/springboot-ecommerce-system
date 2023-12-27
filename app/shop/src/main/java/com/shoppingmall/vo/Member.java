@@ -1,4 +1,4 @@
-package com.shoppingmall.domain;
+package com.shoppingmall.vo;
 
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;

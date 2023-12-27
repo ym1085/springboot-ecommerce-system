@@ -1,6 +1,6 @@
 package com.shoppingmall.mapper;
 
-import com.shoppingmall.domain.Comment;
+import com.shoppingmall.vo.Comment;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

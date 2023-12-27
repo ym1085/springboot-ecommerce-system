@@ -1,6 +1,6 @@
 package com.shoppingmall.config.auth.attribute;
 
-import com.shoppingmall.domain.Member;
+import com.shoppingmall.vo.Member;
 import lombok.Getter;
 
 import java.io.Serializable;

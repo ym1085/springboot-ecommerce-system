@@ -43,8 +43,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    //todo: 로그인 성공 시 특정 화면으로 이동시켜야 함
-    //todo: jwt refresh token 어디에 저장할지 고민해야 함 (DB?, Redis?)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -60,7 +58,8 @@ public class SecurityConfig {
                     .addFilter(corsFilter)
                     .authorizeRequests()
                         .antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
-                        .antMatchers("/member/loginForm", "/member/joinForm").permitAll()
+                        .antMatchers("/member/loginForm").permitAll()
+                        .antMatchers("/member/joinForm").permitAll()
                         .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                         .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
                         .antMatchers("/post/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGENT') or hasRole('ROLE_USER')")
@@ -72,7 +71,7 @@ public class SecurityConfig {
                     .invalidateHttpSession(true)
                 .and()
                     .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT Token not use session
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT는 HttpSession 사용 안함
                 .and()
                     .apply(new JwtSecurityConfig(jwtTokenProvider))
                 .and()

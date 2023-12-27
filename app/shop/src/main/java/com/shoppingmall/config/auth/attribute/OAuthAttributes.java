@@ -2,7 +2,7 @@ package com.shoppingmall.config.auth.attribute;
 
 import com.shoppingmall.constant.Role;
 import com.shoppingmall.constant.SocialType;
-import com.shoppingmall.domain.Member;
+import com.shoppingmall.vo.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

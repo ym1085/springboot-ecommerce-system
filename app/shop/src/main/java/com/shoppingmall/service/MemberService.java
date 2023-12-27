@@ -1,14 +1,20 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.config.jwt.JwtTokenProvider;
-import com.shoppingmall.config.jwt.dto.request.JwtToken;
-import com.shoppingmall.domain.Member;
+import com.shoppingmall.dto.request.JwtTokenDto;
+import com.shoppingmall.dto.request.LoginRequestDto;
 import com.shoppingmall.dto.request.MemberRequestDto;
+import com.shoppingmall.dto.request.RefreshTokenDto;
+import com.shoppingmall.dto.response.MemberResponseDto;
 import com.shoppingmall.exception.DuplMemberAccountException;
 import com.shoppingmall.exception.FailSaveMemberException;
 import com.shoppingmall.exception.PasswordNotFoundException;
+import com.shoppingmall.exception.PasswordNotMatchedException;
 import com.shoppingmall.mapper.MemberMapper;
+import com.shoppingmall.mapper.RefreshTokenMapper;
+import com.shoppingmall.vo.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -17,14 +23,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class MemberService {
+
     private final MemberMapper memberMapper;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenMapper refreshTokenMapper;
+    private final RedisService redisService;
 
     @Transactional
     public int join(MemberRequestDto memberRequestDto) {
@@ -43,25 +53,45 @@ public class MemberService {
         return responseCode;
     }
 
-    public JwtToken login(String username, String password) {
-        // username, passowrd 기반 Authentication 객체 생성
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-
-        // authenticate 함수 통해 Member 에 대한 검증 진행
-        // 위 함수 실행될 때 실제 loadUserByUsername 함수가 실행됨
+    @Transactional
+    public JwtTokenDto login(LoginRequestDto loginRequestDto) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
         Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        // 인증 정보 기반 JWT 토큰 생성
-        JwtToken jwtToken = jwtTokenProvider.generateToken(authenticate);
-        return jwtToken;
+        MemberResponseDto memberResponseDto = verifyMatchedMemberPassword(loginRequestDto);
+        JwtTokenDto jwtTokenDto = jwtTokenProvider.generateToken(authenticate);
+
+        redisService.setValue(authenticate.getName(), jwtTokenDto.getRefreshToken());
+        return jwtTokenDto;
+    }
+
+    public MemberResponseDto verifyMatchedMemberPassword(LoginRequestDto loginRequestDto) {
+        MemberResponseDto memberResponseDto = memberMapper.getMemberByAccount(loginRequestDto.getUsername())
+                .map(MemberResponseDto::new)
+                .orElse(new MemberResponseDto());
+
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), memberResponseDto.getPassword())) {
+            throw new PasswordNotMatchedException();
+        }
+        return memberResponseDto;
+    }
+
+    public JwtTokenDto reissue(RefreshTokenDto refreshTokenDto) {
+        Authentication authentication = jwtTokenProvider.getAuthentication(refreshTokenDto.getAccessToken());
+        redisService.checkRefreshToken(authentication.getName(), refreshTokenDto.getRefreshToken()); // key: account, value: refresh token
+
+        JwtTokenDto jwtTokenDto = jwtTokenProvider.generateToken(authentication);
+        return jwtTokenDto;
     }
 
     public int checkDuplMemberAccount(String account) {
-        int responseCode = 1;
-        if (memberMapper.checkDuplMemberAccount(account) > 0) {
-            responseCode = 0;
-        }
-        return responseCode;
+        return memberMapper.checkDuplMemberAccount(account) > 0 ? 0 : 1;
+    }
+
+    public MemberResponseDto getMemberById(Long memberId) {
+        return memberMapper.getMemberById(memberId)
+                .map(MemberResponseDto::new)
+                .orElse(new MemberResponseDto());
     }
 
     private String encodePassword(String password) {

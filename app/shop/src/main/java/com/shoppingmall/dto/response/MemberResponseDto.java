@@ -2,7 +2,7 @@ package com.shoppingmall.dto.response;
 
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
-import com.shoppingmall.domain.Member;
+import com.shoppingmall.vo.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

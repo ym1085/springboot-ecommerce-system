@@ -1,6 +1,6 @@
 package com.shoppingmall.mapper;
 
-import com.shoppingmall.domain.PostFiles;
+import com.shoppingmall.vo.PostFiles;
 import com.shoppingmall.dto.request.FileRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 

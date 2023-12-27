@@ -1,4 +1,4 @@
-package com.shoppingmall.config.jwt.dto.request;
+package com.shoppingmall.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 @Setter
 @NoArgsConstructor
 public class LoginRequestDto {
-    @NotBlank(message = "ID는 필수 입력 항목 입니다. 다시 시도해주세요.")
+    @NotBlank(message = "ID는 필수 입력  항목 입니다. 다시 시도해주세요.")
     private String username;
 
     @NotBlank(message = "비밀번호는 필수 입력 항목 입니다. 다시 시도해주세요.")

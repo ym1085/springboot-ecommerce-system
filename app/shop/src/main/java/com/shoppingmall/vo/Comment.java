@@ -1,4 +1,4 @@
-package com.shoppingmall.domain;
+package com.shoppingmall.vo;
 
 import com.shoppingmall.dto.request.CommentRequestDto;
 import lombok.Getter;

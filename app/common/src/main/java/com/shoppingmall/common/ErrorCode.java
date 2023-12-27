@@ -1,5 +1,6 @@
 package com.shoppingmall.common;
 
+// Fixme: ErrorCode 뜯어 고쳐야함
 public enum ErrorCode implements MessageCode {
     // 실패 코드
     FAIL(0, "실패"),
@@ -22,6 +23,8 @@ public enum ErrorCode implements MessageCode {
     FAIL_DELETE_FILES(2201, "파일 삭제에 실패했습니다."),
     FAIL_DOWNLOAD_FILES(2202, "파일 다운로드에 실패했습니다."),
     FAIL_SAVE_FILES(2203, "파일 저장에 실패했습니다."),
+
+    FAIL_DELETE_REFRESH_TOKEN(2300, "JWT Refresh Token 삭제 실패."),
 
     // 유효성 검사 코드
     NOT_FOUND_POST_ID(3000, "게시물 ID가 존재하지 않습니다. 다시 시도해주세요."),
@@ -47,6 +50,7 @@ public enum ErrorCode implements MessageCode {
     INVALID_MEMBER_PHONE(3113, "유효하지 않은 전화번호 형식입니다. 다시 시도해주세요."),
     INVALID_MEMBER_EMAIL_CERT_YN(3114, "사용자 인증에 실패했습니다. 다시 시도해주세요."),
     INVALID_MEMBER_DUPL_ACCOUNT_CERT_YN(3115, "사용자 인증에 실패했습니다. 다시 시도해주세요."),
+    NOT_MATCHED_MEMBER_PASSWORD(3116, "비밀번호가 일치하지 않습니다. 다시 시도해주세요"),
 
     NOT_FOUND_COMMENT_CONTENT(3200, "댓글 내용을 입력해야 합니다. 다시 시도해주세요."),
     INVALID_COMMENT_CONTENT(3201, "댓글 내용은 50자를 초과할 수 없습니다. 다시 시도해주세요."),
