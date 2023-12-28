@@ -1,7 +1,10 @@
 package com.shoppingmall.dto.request;
 
 import com.shoppingmall.constant.FileType;
-import lombok.*;
+import com.shoppingmall.vo.Post;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
@@ -31,5 +34,16 @@ public class PostRequestDto {
     private FileType fileType = FileType.POSTS;
 
     private int categoryId;
+
+    public Post toEntity() {
+        return Post.builder()
+                .postId(postId)
+                .memberId(memberId)
+                .title(title)
+                .content(content)
+                .fixedYn(fixedYn)
+                .categoryId(categoryId)
+                .build();
+    }
 
 }

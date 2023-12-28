@@ -1,11 +1,11 @@
 package com.shoppingmall.vo;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Data
 @NoArgsConstructor
 public class PostFiles {
     private Long postFileId;

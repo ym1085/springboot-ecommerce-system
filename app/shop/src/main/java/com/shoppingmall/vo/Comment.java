@@ -1,16 +1,12 @@
 package com.shoppingmall.vo;
 
-import com.shoppingmall.dto.request.CommentRequestDto;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@ToString
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class Comment {
     private Long commentId;
@@ -23,11 +19,17 @@ public class Comment {
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
 
-    public Comment(CommentRequestDto commentRequestDto) {
-        this.commentId = commentRequestDto.getCommentId();
-        this.parentId = commentRequestDto.getParentId();
-        this.postId = commentRequestDto.getPostId();
-        this.content = commentRequestDto.getContent();
-        this.memberId = commentRequestDto.getMemberId();
+    @Builder
+    public Comment(Long commentId, Long parentId, Long postId, String content, Long memberId,
+                   String delYn, String path, LocalDateTime createDate, LocalDateTime updateDate) {
+        this.commentId = commentId;
+        this.parentId = parentId;
+        this.postId = postId;
+        this.content = content;
+        this.memberId = memberId;
+        this.delYn = delYn;
+        this.path = path;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
     }
 }

@@ -6,9 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@ToString
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class Member {
     private Long memberId;
@@ -40,22 +38,9 @@ public class Member {
     }
 
     @Builder
-    public Member(
-            Long memberId,
-            String name,
-            String account,
-            String password,
-            String email,
-            String phoneNumber,
-            String picture,
-            String birthDate,
-            String certYn,
-            Role role,
-            LocalDateTime createDate,
-            LocalDateTime updateDate,
-            Gender gender,
-            String registrationId,
-            String providerToken
+    public Member(Long memberId, String name, String account, String password, String email,
+            String phoneNumber, String picture, String birthDate, String certYn, Role role,
+            LocalDateTime createDate, LocalDateTime updateDate, Gender gender, String registrationId, String providerToken
     ) {
         this.memberId = memberId;
         this.name = name;

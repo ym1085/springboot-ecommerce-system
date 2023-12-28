@@ -102,7 +102,7 @@ public class PostService {
 
     @Transactional
     public Long savePost(PostRequestDto postRequestDto) {
-        Post post = new Post(postRequestDto);
+        Post post = postRequestDto.toEntity();
         int responseCode = postMapper.savePost(post);
         if (responseCode == 0) {
             throw new FailSavePostException();
@@ -135,7 +135,7 @@ public class PostService {
 
     @Transactional
     public int updatePost(PostRequestDto postRequestDto) {
-        int responseCode = postMapper.updatePost(new Post(postRequestDto));
+        int responseCode = postMapper.updatePost(postRequestDto.toEntity());
         if (responseCode == 0) {
             throw new FailUpdatePostException();
         }
