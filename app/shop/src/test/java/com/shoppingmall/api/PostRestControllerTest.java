@@ -183,13 +183,4 @@ class PostRestControllerTest {
         assertThat(postMapper.getPostByPostId(1L)).isEmpty();
         assertThat(fileMapper.getFilesByPostId(1L)).isEmpty();
     }
-
-    private static PostRequestDto createPostRequestDto(String title, String content, String fixedYn, Long memberId) {
-        return PostRequestDto.builder()
-                .title(title)
-                .content(content)
-                .fixedYn(fixedYn)
-                .memberId(memberId)
-                .build();
-    }
 }

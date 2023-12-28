@@ -3,13 +3,14 @@ package com.shoppingmall.dto.response;
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
 import com.shoppingmall.vo.Member;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Builder
 public class MemberResponseDto {
     private Long memberId;
     private String name;
@@ -25,19 +26,21 @@ public class MemberResponseDto {
     private LocalDateTime updateDate;
     private Gender gender;
 
-    public MemberResponseDto(Member member) {
-        this.memberId = member.getMemberId();
-        this.name = member.getName();
-        this.account = member.getAccount();
-        this.password = member.getPassword();
-        this.email = member.getEmail();
-        this.phoneNumber = member.getPhoneNumber();
-        this.picture = member.getPicture();
-        this.birthDate = member.getBirthDate();
-        this.certYn = member.getCertYn();
-        this.role = member.getRole();
-        this.createDate = member.getCreateDate();
-        this.updateDate = member.getUpdateDate();
-        this.gender = member.getGender();
+    public static MemberResponseDto toDto(Member member) {
+        return MemberResponseDto.builder()
+                .memberId(member.getMemberId())
+                .name(member.getName())
+                .account(member.getAccount())
+                .password(member.getPassword())
+                .email(member.getEmail())
+                .phoneNumber(member.getPhoneNumber())
+                .picture(member.getPicture())
+                .birthDate(member.getBirthDate())
+                .certYn(member.getCertYn())
+                .role(member.getRole())
+                .createDate(member.getCreateDate())
+                .updateDate(member.getUpdateDate())
+                .gender(member.getGender())
+                .build();
     }
 }

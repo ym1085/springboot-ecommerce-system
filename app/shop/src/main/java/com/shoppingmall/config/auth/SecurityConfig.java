@@ -1,9 +1,9 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.config.jwt.JwtAccessDeniedHandler;
-import com.shoppingmall.config.jwt.JwtAuthenticationEntryPoint;
-import com.shoppingmall.config.jwt.JwtSecurityConfig;
-import com.shoppingmall.config.jwt.JwtTokenProvider;
+import com.shoppingmall.config.auth.jwt.JwtAccessDeniedHandler;
+import com.shoppingmall.config.auth.jwt.JwtAuthenticationEntryPoint;
+import com.shoppingmall.config.auth.jwt.JwtSecurityConfig;
+import com.shoppingmall.config.auth.jwt.JwtTokenProvider;
 import com.shoppingmall.handler.PrincipalOAuth2LoginFailureHandler;
 import com.shoppingmall.handler.PrincipalOAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;

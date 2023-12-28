@@ -1,10 +1,7 @@
 package com.shoppingmall.dto.request;
 
 import com.shoppingmall.constant.FileType;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
@@ -12,16 +9,11 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author      :   ymkim
- * @since       :   2023. 05. 20
- * @description :   게시글 조회, 수정, 삭제에 사용되는 DTO
- */
-
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter // setter 지우자..
 public class PostRequestDto {
+
     private Long postId;
     private Long memberId;
 
@@ -37,17 +29,7 @@ public class PostRequestDto {
 
     private List<MultipartFile> files = new ArrayList<>();
     private FileType fileType = FileType.POSTS;
-    private String fileAttached = "N";
 
     private int categoryId;
 
-    @Builder
-    public PostRequestDto(Long postId, Long memberId, String title, String content, String fixedYn, int categoryId) {
-        this.postId = postId;
-        this.memberId = memberId;
-        this.title = title;
-        this.content = content;
-        this.fixedYn = fixedYn;
-        this.categoryId = categoryId;
-    }
 }

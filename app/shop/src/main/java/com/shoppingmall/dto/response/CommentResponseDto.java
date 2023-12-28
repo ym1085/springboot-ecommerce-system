@@ -1,13 +1,17 @@
 package com.shoppingmall.dto.response;
 
 import com.shoppingmall.vo.Comment;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Builder
 public class CommentResponseDto {
     private Long commentId;
     private Long parentId;
@@ -19,15 +23,17 @@ public class CommentResponseDto {
     private LocalDateTime updateDate;
     private String path;
 
-    public CommentResponseDto(Comment comment) {
-        this.commentId = comment.getCommentId();
-        this.parentId = comment.getParentId();
-        this.postId = comment.getPostId();
-        this.content = comment.getContent();
-        this.memberId = comment.getMemberId();
-        this.delYn = comment.getDelYn();
-        this.createDate = comment.getCreateDate();
-        this.updateDate = comment.getUpdateDate();
-        this.path = comment.getPath(); // 대댓글 depth ( 1-2 ) -> 1번 최상위 부모 댓글에 2번 댓글이 하위 댓글로 달림
+    public static CommentResponseDto toDto(Comment comment) {
+        return CommentResponseDto.builder()
+                .commentId(comment.getCommentId())
+                .parentId(comment.getParentId())
+                .postId(comment.getPostId())
+                .content(comment.getContent())
+                .memberId(comment.getMemberId())
+                .delYn(comment.getDelYn())
+                .createDate(comment.getCreateDate())
+                .updateDate(comment.getUpdateDate())
+                .path(comment.getPath())
+                .build();
     }
 }

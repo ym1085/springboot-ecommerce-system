@@ -1,6 +1,6 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.config.jwt.JwtTokenProvider;
+import com.shoppingmall.config.auth.jwt.JwtTokenProvider;
 import com.shoppingmall.dto.request.JwtTokenDto;
 import com.shoppingmall.dto.request.LoginRequestDto;
 import com.shoppingmall.dto.request.MemberRequestDto;
@@ -67,7 +67,7 @@ public class MemberService {
 
     public MemberResponseDto verifyMatchedMemberPassword(LoginRequestDto loginRequestDto) {
         MemberResponseDto memberResponseDto = memberMapper.getMemberByAccount(loginRequestDto.getUsername())
-                .map(MemberResponseDto::new)
+                .map(MemberResponseDto::toDto)
                 .orElse(new MemberResponseDto());
 
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), memberResponseDto.getPassword())) {
@@ -90,7 +90,7 @@ public class MemberService {
 
     public MemberResponseDto getMemberById(Long memberId) {
         return memberMapper.getMemberById(memberId)
-                .map(MemberResponseDto::new)
+                .map(MemberResponseDto::toDto)
                 .orElse(new MemberResponseDto());
     }
 

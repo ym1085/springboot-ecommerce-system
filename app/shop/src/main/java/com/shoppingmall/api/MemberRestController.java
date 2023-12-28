@@ -1,7 +1,7 @@
 package com.shoppingmall.api;
 
 import com.shoppingmall.common.*;
-import com.shoppingmall.config.jwt.JwtTokenProvider;
+import com.shoppingmall.config.auth.jwt.JwtTokenProvider;
 import com.shoppingmall.dto.request.JwtTokenDto;
 import com.shoppingmall.dto.request.LoginRequestDto;
 import com.shoppingmall.dto.request.MemberRequestDto;

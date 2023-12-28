@@ -28,8 +28,6 @@ public class Post {
     private String delYn;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime deleteDate;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

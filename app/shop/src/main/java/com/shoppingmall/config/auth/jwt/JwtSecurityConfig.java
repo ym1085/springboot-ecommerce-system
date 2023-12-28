@@ -1,4 +1,4 @@
-package com.shoppingmall.config.jwt;
+package com.shoppingmall.config.auth.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;

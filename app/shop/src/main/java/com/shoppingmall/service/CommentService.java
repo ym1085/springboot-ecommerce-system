@@ -100,7 +100,7 @@ public class CommentService {
         return commentMapper.getComments(commentRequestDto.getPostId())
                 .stream()
                 .filter(Objects::nonNull)
-                .map(CommentResponseDto::new)
+                .map(CommentResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 }

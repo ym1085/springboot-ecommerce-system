@@ -1,4 +1,4 @@
-package com.shoppingmall.config.jwt;
+package com.shoppingmall.config.auth.jwt;
 
 import com.shoppingmall.dto.request.JwtTokenDto;
 import io.jsonwebtoken.*;

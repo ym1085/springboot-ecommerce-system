@@ -1,16 +1,16 @@
 package com.shoppingmall.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.vo.Post;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Builder
 public class PostResponseDto {
     private Long postId;
     private String title;
@@ -23,26 +23,26 @@ public class PostResponseDto {
     private String delYn;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime deleteDate;
 
     private List<CommentResponseDto> comments = new ArrayList<>();
     private List<PostFileResponseDto> postFiles = new ArrayList<>();
 
-    public PostResponseDto(Post post) {
-        this.postId = post.getPostId();
-        this.title = post.getTitle();
-        this.content = post.getContent();
-        this.categoryId = post.getCategoryId();
-        this.categoryName = post.getCategoryName();
-        this.writer = post.getWriter();
-        this.readCnt = post.getReadCnt();
-        this.fixedYn = post.getFixedYn();
-        this.delYn = post.getDelYn();
-        this.createDate = post.getCreateDate();
-        this.updateDate = post.getUpdateDate();
-        this.deleteDate = post.getDeleteDate();
+    public static PostResponseDto toDto(Post post) {
+        return PostResponseDto.builder()
+                .postId(post.getPostId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .categoryId(post.getCategoryId())
+                .categoryName(post.getCategoryName())
+                .writer(post.getWriter())
+                .readCnt(post.getReadCnt())
+                .fixedYn(post.getFixedYn())
+                .delYn(post.getDelYn())
+                .createDate(post.getCreateDate())
+                .updateDate(post.getUpdateDate())
+                .deleteDate(post.getDeleteDate())
+                .build();
     }
 
     public void addComments(List<CommentResponseDto> commentResponseDto) {

@@ -3,6 +3,7 @@ package com.shoppingmall.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingmall.ShopApplication;
 import com.shoppingmall.constant.Gender;
+import com.shoppingmall.constant.Role;
 import com.shoppingmall.dto.request.MemberRequestDto;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -50,6 +51,7 @@ class MemberRestControllerTest {
                 .accountCertYn("Y")
                 .gender(Gender.M)
                 .birthDate("1993-08-23")
+                .role(Role.USER)
                 .build();
 
         ResultActions result  = mockMvc.perform(

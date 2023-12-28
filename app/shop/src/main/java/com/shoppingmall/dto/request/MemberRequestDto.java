@@ -3,20 +3,22 @@ package com.shoppingmall.dto.request;
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
 import com.shoppingmall.vo.Member;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Builder
 public class MemberRequestDto {
+
     private Long memberId;
 
     @NotBlank(message = "이름은 필수 입력 항목 입니다. 다시 시도해주세요.")
@@ -54,35 +56,9 @@ public class MemberRequestDto {
     private Gender gender;
     private Role role;
 
-    @Builder
-    public MemberRequestDto(
-            String name,
-            String account,
-            String password,
-            String email,
-            String phoneNumber,
-            String certYn,
-            String accountCertYn,
-            String picture,
-            Gender gender,
-            String birthDate,
-            Role role
-    ) {
-        this.name = name;
-        this.account = account;
-        this.password = password;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.accountCertYn = accountCertYn;
-        this.certYn = certYn;
-        this.picture = picture;
-        this.gender = gender;
-        this.birthDate = birthDate;
-        this.role = role;
-    }
-
     public Member toEntity() {
         return Member.builder()
+                .memberId(memberId)
                 .name(name)
                 .account(account)
                 .password(password)
@@ -91,7 +67,9 @@ public class MemberRequestDto {
                 .certYn(certYn)
                 .birthDate(birthDate)
                 .picture(picture)
-                .role(Role.USER)
+                .gender(gender)
+                .role(role)
                 .build();
     }
+
 }
