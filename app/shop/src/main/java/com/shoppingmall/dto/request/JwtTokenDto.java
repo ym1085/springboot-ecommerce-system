@@ -3,14 +3,18 @@ package com.shoppingmall.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Builder
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class JwtTokenDto {
+
     private String grantType;
     private String accessToken;
-    private Long accessTokenExpirationTime;
     private String refreshToken;
+    private Long accessTokenExpirationTime;
     private Long refreshTokenExpirationTime;
+
 }

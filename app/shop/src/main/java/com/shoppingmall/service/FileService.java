@@ -18,14 +18,15 @@ public class FileService {
     private final FileMapper fileMapper;
 
     public List<FileResponseDto> getFilesByPostId(Long postId) {
-        return fileMapper.getFilesByPostId(postId).stream()
-                .map(file -> new FileResponseDto(file))
+        return fileMapper.getFilesByPostId(postId)
+                .stream()
+                .map(FileResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
     public FileResponseDto getFileByPostFileId(Long postFileId) {
         PostFiles postFiles = fileMapper.getFileByPostFileId(postFileId).orElseGet(PostFiles::new);
-        return new FileResponseDto(postFiles);
+        return FileResponseDto.toDto(postFiles);
     }
 
     @Transactional

@@ -30,12 +30,13 @@ class CommentServiceTest {
     @Test
     @DisplayName("댓글 및 대대글 저장 테스트")
     void testSaveComment() {
-        Comment comment = new Comment(CommentRequestDto.builder()
+        Comment comment = CommentRequestDto.builder()
                 .parentId(14L)
                 .postId(20L)
                 .content("댓글 테스트")
                 .memberId(1L)
-                .build());
+                .build()
+                .toEntity();
 
         int result = commentMapper.saveComment(comment);
 
@@ -60,12 +61,13 @@ class CommentServiceTest {
     @Test
     @DisplayName("댓글 삭제 테스트(부모, 자식 댓글 전부 삭제)")
     void testDeleteParentAndChildComments() {
-        Comment comment = new Comment(CommentRequestDto.builder()
+        Comment comment = CommentRequestDto.builder()
                 .commentId(6L) // 댓글 ID
                 .parentId(6L) // 부모 댓글 ID
                 .postId(20L)
                 .memberId(1L)
-                .build());
+                .build()
+                .toEntity();
 
         int result = commentMapper.deleteComment(comment);
 
@@ -76,11 +78,12 @@ class CommentServiceTest {
     @Test
     @DisplayName("대댓글 삭제 테스트")
     void testDeleteChildComments() {
-        Comment comment = new Comment(CommentRequestDto.builder()
+        Comment comment = CommentRequestDto.builder()
                 .commentId(7L) // 대댓글 삭제하는 경우 parentId -> commentId에 셋팅 후 서버에 넘겨서 삭제할 예정
                 .postId(20L)
                 .memberId(1L)
-                .build());
+                .build()
+                .toEntity();
 
         int result = commentMapper.deleteCommentReply(comment);
 
@@ -105,10 +108,11 @@ class CommentServiceTest {
     @Test
     @DisplayName("댓글 내용 수정 테스트")
     void testUpdateCommentById() {
-        Comment comment = new Comment(CommentRequestDto.builder()
+        Comment comment = CommentRequestDto.builder()
                 .commentId(6L)
                 .content("댓글 내용 수정 테스트")
-                .build());
+                .build()
+                .toEntity();
 
         int result = commentMapper.updateCommentByCommentId(comment);
 

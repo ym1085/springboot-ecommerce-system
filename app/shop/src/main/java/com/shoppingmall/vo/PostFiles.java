@@ -1,16 +1,11 @@
 package com.shoppingmall.vo;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@ToString
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class PostFiles {
     private Long postFileId;
@@ -23,7 +18,6 @@ public class PostFiles {
     private int downloadCnt;
     private String delYn;
     private LocalDateTime createDate;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime deleteDate;
     private String fileAttached;
 }

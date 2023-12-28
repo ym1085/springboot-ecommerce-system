@@ -38,7 +38,7 @@ public class CommentService {
             }
         }
 
-        Comment comment = new Comment(commentRequestDto);
+        Comment comment = new Comment();
         int responseCode = commentMapper.saveComment(comment);
         if (responseCode == 0) {
             throw new FailSaveCommentException();
@@ -62,8 +62,7 @@ public class CommentService {
      */
     @Transactional
     public List<CommentResponseDto> deleteComments(CommentRequestDto commentRequestDto) {
-        Comment comment = new Comment(commentRequestDto);
-        int responseCode = commentMapper.deleteComment(comment);
+        int responseCode = commentMapper.deleteComment(commentRequestDto.toEntity());
         if (responseCode == 0) {
             throw new FailDeleteCommentException();
         }
@@ -74,8 +73,7 @@ public class CommentService {
 
     @Transactional
     public List<CommentResponseDto> deleteCommentsReply(CommentRequestDto commentRequestDto) {
-        Comment comment = new Comment(commentRequestDto);
-        int responseCode = commentMapper.deleteCommentReply(comment);
+        int responseCode = commentMapper.deleteCommentReply(commentRequestDto.toEntity());
         if (responseCode == 0) {
             throw new FailDeleteCommentException();
         }
@@ -86,8 +84,7 @@ public class CommentService {
 
     @Transactional
     public List<CommentResponseDto> updateCommentByCommentId(CommentRequestDto commentRequestDto) {
-        Comment comment = new Comment(commentRequestDto);
-        int responseCode = commentMapper.updateCommentByCommentId(comment);
+        int responseCode = commentMapper.updateCommentByCommentId(commentRequestDto.toEntity());
         if (responseCode == 0) {
             throw new FailUpdateCommentException();
         }
@@ -100,7 +97,7 @@ public class CommentService {
         return commentMapper.getComments(commentRequestDto.getPostId())
                 .stream()
                 .filter(Objects::nonNull)
-                .map(CommentResponseDto::new)
+                .map(CommentResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 }

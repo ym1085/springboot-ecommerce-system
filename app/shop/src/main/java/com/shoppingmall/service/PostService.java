@@ -56,14 +56,14 @@ public class PostService {
     }
 
     private static PostResponseDto addPostFiles(Post post) {
-        PostResponseDto postResponseDto = new PostResponseDto(post);
+        PostResponseDto postResponseDto = PostResponseDto.toDto(post);
         List<PostFileResponseDto> postFileResponseDtos = new ArrayList<>();
         for (PostFiles postFile : post.getPostFiles()) {
             if (postFile.getPostFileId() == null) {
                 postResponseDto.addPostFiles(Collections.emptyList());
                 continue;
             }
-            postFileResponseDtos.add(new PostFileResponseDto(postFile));
+            postFileResponseDtos.add(PostFileResponseDto.toDto(postFile));
             postResponseDto.addPostFiles(postFileResponseDtos);
         }
         return postResponseDto;
@@ -78,7 +78,7 @@ public class PostService {
         }
 
         PostResponseDto postResponseDto = postMapper.getPostByPostId(postId)
-                .map(PostResponseDto::new)
+                .map(PostResponseDto::toDto)
                 .orElse(new PostResponseDto());
 
         postResponseDto.addComments(getCommentsByPostId(postId));
@@ -89,22 +89,20 @@ public class PostService {
     private List<CommentResponseDto> getCommentsByPostId(Long postId) {
         return commentMapper.getComments(postId)
                 .stream()
-                .filter(Objects::nonNull)
-                .map(CommentResponseDto::new)
+                .map(CommentResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
     private List<PostFileResponseDto> getFilesByPostId(Long postId) {
         return fileMapper.getFilesByPostId(postId)
                 .stream()
-                .filter(Objects::nonNull)
-                .map(PostFileResponseDto::new)
+                .map(PostFileResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public Long savePost(PostRequestDto postRequestDto) {
-        Post post = new Post(postRequestDto);
+        Post post = postRequestDto.toEntity();
         int responseCode = postMapper.savePost(post);
         if (responseCode == 0) {
             throw new FailSavePostException();
@@ -137,7 +135,7 @@ public class PostService {
 
     @Transactional
     public int updatePost(PostRequestDto postRequestDto) {
-        int responseCode = postMapper.updatePost(new Post(postRequestDto));
+        int responseCode = postMapper.updatePost(postRequestDto.toEntity());
         if (responseCode == 0) {
             throw new FailUpdatePostException();
         }
@@ -197,7 +195,7 @@ public class PostService {
     private List<FileResponseDto> getFileResponseDtos(long postId) {
         return fileMapper.getFilesByPostId(postId)
                 .stream()
-                .map(FileResponseDto::new)
+                .map(FileResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 }

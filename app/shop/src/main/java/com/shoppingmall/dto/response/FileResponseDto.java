@@ -1,14 +1,17 @@
 package com.shoppingmall.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.vo.PostFiles;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Builder
 public class FileResponseDto {
     private Long postFileId;
     private Long postId;
@@ -20,22 +23,22 @@ public class FileResponseDto {
     private int downloadCnt;
     private String delYn;
     private LocalDateTime createDate;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime deleteDate;
     private String fileAttached;
 
-    public FileResponseDto(PostFiles postFiles) {
-        this.postFileId = postFiles.getPostFileId();
-        this.postId = postFiles.getPostId();
-        this.originFileName = postFiles.getOriginFileName();
-        this.storedFileName = postFiles.getStoredFileName();
-        this.filePath = postFiles.getFilePath();
-        this.fileSize = postFiles.getFileSize();
-        this.fileType = postFiles.getFileType();
-        this.downloadCnt = postFiles.getDownloadCnt();
-        this.delYn = postFiles.getDelYn();
-        this.createDate = postFiles.getCreateDate();
-        this.deleteDate = postFiles.getDeleteDate();
-        this.fileAttached = postFiles.getFileAttached();
+    public static FileResponseDto toDto(PostFiles postFiles) {
+        return FileResponseDto.builder()
+                .postFileId(postFiles.getPostFileId())
+                .postId(postFiles.getPostId())
+                .originFileName(postFiles.getOriginFileName())
+                .storedFileName(postFiles.getStoredFileName())
+                .fileSize(postFiles.getFileSize())
+                .fileType(postFiles.getFileType())
+                .downloadCnt(postFiles.getDownloadCnt())
+                .delYn(postFiles.getDelYn())
+                .createDate(postFiles.getCreateDate())
+                .deleteDate(postFiles.getDeleteDate())
+                .fileAttached(postFiles.getFileAttached())
+                .build();
     }
 }
