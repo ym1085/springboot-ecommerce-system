@@ -34,7 +34,7 @@ public class EmailRestController {
 
     @GetMapping("/email/verify")
     public ResponseEntity<CommonResponse> verifyEmail(
-            @RequestParam("email") String email,
+            @RequestParam(value = "email", required = false) String email,
             @RequestParam("code") String authCode) {
 
         if (!EmailService.emailAuthKey.equals(authCode)) {

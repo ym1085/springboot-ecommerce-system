@@ -1,6 +1,7 @@
 package com.shoppingmall.config.auth.jwt;
 
 import com.shoppingmall.dto.request.JwtTokenDto;
+import com.shoppingmall.service.RedisUtils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,7 @@ public class JwtTokenProvider {
     private static final String TYPE_ACCESS = "access";
     private static final String TYPE_REFRESH = "refresh";
     private static final String CLAIM_TYPE_NAME = "type";
+    private final RedisUtils redisUtils;
 
     @Value("${jwt.secret.key}")
     private String secretKey; // Base64 encoded Secret Key (application.properties)
@@ -145,19 +147,23 @@ public class JwtTokenProvider {
     // 토큰 정보 검증
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            log.info("validateToken 검증 = {}", token);
+            if (redisUtils.hasKeyBlackList(token)) {
+                log.error("Redis 블랙 리스트에 존재하는 token으로 해당 토큰은 재확인이 필요합니다, token = {}", token);
+                return false; // 사용자가 로그아웃을 했거나, 탈취된 refresh token으로 봐야함
+            }
             return true;
         } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
+            log.error("잘못된 JWT 서명입니다.", e);
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
+            log.error("만료된 JWT 토큰입니다.", e);
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
+            log.error("지원되지 않는 형식의 JWT 토큰입니다.", e);
         } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty.", e);
+            log.error("JWT 토큰이 잘못되었습니다(PARAMETER)", e);
+        } catch (Exception e) {
+            log.error("JWT 토큰을 파싱 하는 과정 중 서버 오류가 발생하였습니다!", e);
         }
         return false;
     }
@@ -165,9 +171,23 @@ public class JwtTokenProvider {
     // 토큰 기반 사용자 정보 추출
     public Claims getUserInfoFromToken(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
+    }
+
+    // JWT 토큰(accessToken) 남은 유효시간을 얻어오는 함수
+    public Long getExpirationFromToken(String accessToken) {
+        // accessToken 남은 유효시간
+        Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().getExpiration();
+
+        // accessToken 남은 유효시간 - 현재 시간
+        Long now = new Date().getTime();
+        return (expiration.getTime() - now);
     }
 }

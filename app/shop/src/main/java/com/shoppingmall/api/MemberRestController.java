@@ -1,7 +1,6 @@
 package com.shoppingmall.api;
 
 import com.shoppingmall.common.*;
-import com.shoppingmall.config.auth.jwt.JwtTokenProvider;
 import com.shoppingmall.dto.request.JwtTokenDto;
 import com.shoppingmall.dto.request.LoginRequestDto;
 import com.shoppingmall.dto.request.MemberRequestDto;
@@ -9,7 +8,6 @@ import com.shoppingmall.dto.request.RefreshTokenDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.exception.MemberAccountNotFoundException;
 import com.shoppingmall.service.MemberService;
-import com.shoppingmall.service.RefreshTokenService;
 import com.shoppingmall.utils.ResponseUtils;
 import com.shoppingmall.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +29,6 @@ import java.util.Map;
 public class MemberRestController {
 
     private final MemberService memberService;
-    private final RefreshTokenService refreshTokenService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/member/join")
     public ResponseEntity<CommonResponse> join(
@@ -52,12 +48,6 @@ public class MemberRestController {
                 messageCode.getMessage(),
                 success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
-    }
-
-    @PostMapping("/member/login/authentication")
-    public ResponseEntity<?> authenticate(@RequestHeader Map<String, String> requestHeader) {
-        log.info("requestHeader = {}", requestHeader.toString());
-        return new ResponseEntity<>(SecurityUtils.getCurrentMemberId(), HttpStatus.OK);
     }
 
     @PostMapping("/member/login")
@@ -80,7 +70,7 @@ public class MemberRestController {
      * 삭제의 경우 추후 redis로 변경 필요
      * @param refreshTokenDto 로그아웃 시에 삭제 해야하는 refresh token
      */
-    @DeleteMapping("/member/logout")
+    @PostMapping("/member/logout")
     public ResponseEntity<CommonResponse> logout(
             @RequestBody @Valid RefreshTokenDto refreshTokenDto,
             BindingResult bindingResult) {
@@ -89,14 +79,14 @@ public class MemberRestController {
             throw new InvalidParameterException(bindingResult);
         }
 
-        int responseCode = refreshTokenService.deleteRefreshToken(refreshTokenDto.getRefreshToken());// delete refresh Token from database
+        int responseCode = memberService.logout(refreshTokenDto);
         boolean success = ResponseUtils.isSuccessResponseCode(responseCode);
-        MessageCode messageCode = success ? SuccessCode.SUCCESS_DELETE_REFRESH_TOKEN : ErrorCode.FAIL_DELETE_REFRESH_TOKEN;
+        MessageCode messageCode = success ? SuccessCode.SUCCESS_LOGOUT_MEMBER : ErrorCode.FAIL_LOGOUT_MEMBER;
 
         return ApiUtils.success(
-            messageCode.getCode(),
-            messageCode.getMessage(),
-            success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
+                messageCode.getCode(),
+                messageCode.getMessage(),
+                success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
@@ -130,6 +120,12 @@ public class MemberRestController {
                 messageCode.getMessage(),
                 success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
         );
+    }
+
+    @PostMapping("/member/login/authentication")
+    public ResponseEntity<?> authenticate(@RequestHeader Map<String, String> requestHeader) {
+        log.info("requestHeader = {}", requestHeader.toString());
+        return ResponseEntity.ok(SecurityUtils.getCurrentMemberId());
     }
 }
 
