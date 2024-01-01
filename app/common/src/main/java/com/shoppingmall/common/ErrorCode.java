@@ -24,7 +24,7 @@ public enum ErrorCode implements MessageCode {
     FAIL_DOWNLOAD_FILES(2202, "파일 다운로드에 실패했습니다."),
     FAIL_SAVE_FILES(2203, "파일 저장에 실패했습니다."),
 
-    FAIL_DELETE_REFRESH_TOKEN(2300, "JWT Refresh Token 삭제 실패."),
+    FAIL_LOGOUT_MEMBER(2300, "로그아웃에 실패하였습니다."),
 
     // 유효성 검사 코드
     NOT_FOUND_POST_ID(3000, "게시물 ID가 존재하지 않습니다. 다시 시도해주세요."),

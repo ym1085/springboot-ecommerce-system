@@ -25,7 +25,7 @@ public enum SuccessCode implements MessageCode {
     SUCCESS_SAVE_FILES(1303, "파일을 성공적으로 저장했습니다."),
     SUCCESS_GZIP_DOWNLOAD_FILES(1304, "gzip 파일을 성공적으로 다운로드했습니다."),
 
-    SUCCESS_DELETE_REFRESH_TOKEN(1400, "JWT Refresh Token 삭제 성공.")
+    SUCCESS_LOGOUT_MEMBER(1400, "로그아웃에 성공하였습니다.")
     ;
 
     private final int code;
