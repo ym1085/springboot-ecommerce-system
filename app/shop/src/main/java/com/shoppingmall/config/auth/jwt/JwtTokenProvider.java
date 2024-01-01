@@ -1,7 +1,7 @@
 package com.shoppingmall.config.auth.jwt;
 
 import com.shoppingmall.dto.request.JwtTokenDto;
-import com.shoppingmall.service.RedisUtils;
+import com.shoppingmall.utils.RedisUtils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;

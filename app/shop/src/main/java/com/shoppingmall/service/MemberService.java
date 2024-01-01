@@ -13,6 +13,7 @@ import com.shoppingmall.exception.PasswordNotFoundException;
 import com.shoppingmall.exception.PasswordNotMatchedException;
 import com.shoppingmall.mapper.MemberMapper;
 import com.shoppingmall.mapper.RefreshTokenMapper;
+import com.shoppingmall.utils.RedisUtils;
 import com.shoppingmall.vo.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

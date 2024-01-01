@@ -1,4 +1,4 @@
-package com.shoppingmall.service;
+package com.shoppingmall.utils;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.RequiredArgsConstructor;
