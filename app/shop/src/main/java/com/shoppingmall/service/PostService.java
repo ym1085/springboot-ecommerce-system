@@ -69,6 +69,7 @@ public class PostService {
         return postResponseDto;
     }
 
+    @Transactional
     public PostResponseDto getPostById(Long postId) {
         if (postId != null) {
             int responseCode = postMapper.increasePostByPostId(postId);

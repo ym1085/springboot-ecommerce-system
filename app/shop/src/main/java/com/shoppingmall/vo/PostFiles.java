@@ -1,5 +1,6 @@
 package com.shoppingmall.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ public class PostFiles {
     private int downloadCnt;
     private String delYn;
     private LocalDateTime createDate;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private LocalDateTime deleteDate;
     private String fileAttached;
 }

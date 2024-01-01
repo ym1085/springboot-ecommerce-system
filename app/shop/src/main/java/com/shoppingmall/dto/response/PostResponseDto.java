@@ -1,5 +1,6 @@
 package com.shoppingmall.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.vo.Post;
 import lombok.*;
 
@@ -23,9 +24,12 @@ public class PostResponseDto {
     private String delYn;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
-    private LocalDateTime deleteDate;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private LocalDateTime deleteDate;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<CommentResponseDto> comments = new ArrayList<>();
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<PostFileResponseDto> postFiles = new ArrayList<>();
 
     public static PostResponseDto toDto(Post post) {

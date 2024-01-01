@@ -1,5 +1,6 @@
 package com.shoppingmall.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.vo.PostFiles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class FileResponseDto {
     private int downloadCnt;
     private String delYn;
     private LocalDateTime createDate;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private LocalDateTime deleteDate;
     private String fileAttached;
 
