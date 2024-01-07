@@ -20,7 +20,7 @@ import java.util.Map;
 // Security Session > Authentication > UserDetails[PrincipalDetails] 가 들어가게 구성됨
 
 @Data
-public class PrincipalDetails implements UserDetails, OAuth2User {
+public class PrincipalUserDetails implements UserDetails, OAuth2User {
 
     private Member member; //콤포지션
 
@@ -28,11 +28,11 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private String nameAttributeKey;
 
-    public PrincipalDetails(Member member) {
+    public PrincipalUserDetails(Member member) {
         this.member = member;
     }
 
-    public PrincipalDetails(Member member, Map<String, Object> attributes, String nameAttributeKey) {
+    public PrincipalUserDetails(Member member, Map<String, Object> attributes, String nameAttributeKey) {
         this.member = member;
         this.attributes = attributes;
         this.nameAttributeKey= nameAttributeKey;

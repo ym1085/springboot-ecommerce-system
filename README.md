@@ -21,15 +21,11 @@
 
 - [dbdiagram.io](https://dbdiagram.io/d/20231015_TOY_PROJECT_DB_DIAGRAM-652b82a9ffbf5169f0b329e7)
 
-## 🎢 03. 구현 기능
-
-> ✏️ [요구사항 정의서](https://docs.google.com/spreadsheets/d/1Wppy4RiBwldQL77RcXoLq9OkdGnVFCzIv5TQO75fZl8/edit?usp=sharing)
-
-## 📜 04. API Docs
+## 📜 03. API Docs
 
 > ✏️ [swagger Document](http://localhost:8080/swagger-ui/index.html)
 
-## 🚀 05. 프로젝트 실행 방법
+## 🚀 04. 프로젝트 실행 방법
 
 ### [classpath:/resources/application.yaml 파일 수정](./app/shop/src/main/resources/application-sample.yaml)
 

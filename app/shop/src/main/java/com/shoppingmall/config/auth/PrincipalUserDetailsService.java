@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class PrincipalDetailsService implements UserDetailsService {
+public class PrincipalUserDetailsService implements UserDetailsService {
 
     private final MemberMapper memberMapper;
 
@@ -24,8 +24,7 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberMapper.getMemberByAccount(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-
-        return new PrincipalDetails(member);
+                .orElseThrow(() -> new UsernameNotFoundException("로그인에 사용할 유저 계정(account)가 존재하지 않습니다, username = " + username));
+        return new PrincipalUserDetails(member);
     }
 }

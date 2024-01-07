@@ -14,10 +14,17 @@ import java.io.IOException;
 @Component
 public class CustomLogInFailerHandler implements AuthenticationFailureHandler {
 
+    /**
+     * [일반] 로그인 실패 시 다시 한번 로그인 화면으로 이동
+     * @param request the request during which the authentication attempt occurred.
+     * @param response the response.
+     * @param exception the exception which was thrown to reject the authentication
+     * request.
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.info("General members failed to sign in at login.");
-
-        response.sendRedirect("/member/access-denied");
+        response.sendRedirect("/member/loginForm");
     }
 }
