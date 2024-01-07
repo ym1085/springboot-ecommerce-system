@@ -6,10 +6,11 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3206/shoppingmall?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password: 1234
+    hikari:
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/shoppingmall?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      username: root
+      password: 1234
   jpa:
     properties:
       hibernate:
@@ -38,15 +39,15 @@ logging:
   level:
     com.shoppingmall: INFO
 
-mybatis:
-  type-aliases-package: com.shoppingmall.vo, com.shoppingmall.dto.request
-  mapper-locations: mybatis-mapper/**/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    aggressive-lazy-loading: false
-    lazy-loading-enabled: true
-    lazy-load-trigger-methods: ''
-  type-handlers-package: com.shoppingmall.handler
+#mybatis:
+#  type-aliases-package: com.shoppingmall.vo, com.shoppingmall.dto.request
+#  mapper-locations: mybatis-mapper/**/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    aggressive-lazy-loading: false
+#    lazy-loading-enabled: true
+#    lazy-load-trigger-methods: ''
+#  type-handlers-package: com.shoppingmall.handler
 
 os:
   window:

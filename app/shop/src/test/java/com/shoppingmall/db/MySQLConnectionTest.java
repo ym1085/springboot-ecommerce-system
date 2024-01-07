@@ -10,21 +10,21 @@ import org.springframework.test.context.ActiveProfiles;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-@ActiveProfiles("dev")
-//@TestPropertySource("classpath:application-${spring.profiles.active}.yaml")
+@ActiveProfiles("local")
+//@TestPropertySource("classpath:application-local.yaml")
 @SpringBootTest(classes = ShopApplication.class)
 public class MySQLConnectionTest {
 
-    @Value("${spring.datasource.driver-class-name}")
+    @Value("${spring.datasource.hikari.driver-class-name}")
     private String driverName;
 
-    @Value("${spring.datasource.url}")
-    private String url;
+    @Value("${spring.datasource.hikari.jdbc-url}")
+    private String jdbcUrl;
 
-    @Value("${spring.datasource.username}")
+    @Value("${spring.datasource.hikari.username}")
     private String userName;
 
-    @Value("${spring.datasource.password}")
+    @Value("${spring.datasource.hikari.password}")
     private String password;
 
     @Test
@@ -33,7 +33,7 @@ public class MySQLConnectionTest {
         Class<?> clazz = Class.forName(driverName);
         System.out.println("clazz.getName => " + clazz.getName());
 
-        try(Connection conn = DriverManager.getConnection(url, userName, password)){
+        try(Connection conn = DriverManager.getConnection(jdbcUrl, userName, password)){
             System.out.println(conn); // 콘솔창에서 연결정보를 출력하여 확인한다.
         } catch (Exception e) {
             System.out.println("cannot connect to mysql server, e => " + e.getMessage());

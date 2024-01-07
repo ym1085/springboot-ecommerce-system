@@ -2,16 +2,23 @@ package com.shoppingmall.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingmall.ShopApplication;
-import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.mapper.FileMapper;
 import com.shoppingmall.mapper.PostMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +47,17 @@ class PostRestControllerTest {
 
     @Autowired
     private FileMapper fileMapper;
+
+    @BeforeEach
+    public void setup() {
+        String username = "admin";
+        String password = "Funin0302!@#$%$";
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        UserDetails principal = new User(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
+        Authentication auth = new UsernamePasswordAuthenticationToken(principal, "password", principal.getAuthorities());
+        securityContext.setAuthentication(auth);
+        SecurityContextHolder.setContext(securityContext);
+    }
 
     @Test
     @DisplayName("전체 게시글 조회 API")

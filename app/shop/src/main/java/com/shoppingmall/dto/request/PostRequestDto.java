@@ -1,7 +1,7 @@
 package com.shoppingmall.dto.request;
 
 import com.shoppingmall.constant.FileType;
-import com.shoppingmall.vo.Post;
+import com.shoppingmall.vo.PostVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,8 +35,8 @@ public class PostRequestDto {
 
     private int categoryId;
 
-    public Post toEntity() {
-        return Post.builder()
+    public PostVO toEntity() {
+        return PostVO.builder()
                 .postId(postId)
                 .memberId(memberId)
                 .title(title)

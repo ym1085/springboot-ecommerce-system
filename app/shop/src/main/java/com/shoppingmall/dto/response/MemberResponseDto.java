@@ -2,7 +2,7 @@ package com.shoppingmall.dto.response;
 
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
-import com.shoppingmall.vo.Member;
+import com.shoppingmall.vo.MemberVO;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ public class MemberResponseDto {
     private LocalDateTime updateDate;
     private Gender gender;
 
-    public static MemberResponseDto toDto(Member member) {
+    public static MemberResponseDto toDto(MemberVO member) {
         return MemberResponseDto.builder()
                 .memberId(member.getMemberId())
                 .name(member.getName())
