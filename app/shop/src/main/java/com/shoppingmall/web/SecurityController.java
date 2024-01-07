@@ -1,6 +1,6 @@
 package com.shoppingmall.web;
 
-import com.shoppingmall.config.auth.PrincipalDetails;
+import com.shoppingmall.config.auth.PrincipalUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,8 +22,8 @@ public class SecurityController {
             @AuthenticationPrincipal UserDetails userDetails) { // DI(authentication)
 
         log.info("requestURI = /test/login");
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        log.info("principalDetails = {}", principalDetails.getMember());
+        PrincipalUserDetails principalUserDetails = (PrincipalUserDetails) authentication.getPrincipal();
+        log.info("principalDetails = {}", principalUserDetails.getMember());
         log.info("userDetails = {}", userDetails.getUsername());
 
         return "세션 정보 확인";
@@ -48,8 +48,8 @@ public class SecurityController {
     }
 
     @GetMapping("/user")
-    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info("principalDetails = {}", principalDetails.getAttributes());
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalUserDetails principalUserDetails) {
+        log.info("principalDetails = {}", principalUserDetails.getAttributes());
         return "user";
     }
 

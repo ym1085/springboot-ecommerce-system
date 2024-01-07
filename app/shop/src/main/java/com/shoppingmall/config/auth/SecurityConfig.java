@@ -1,9 +1,7 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.config.auth.jwt.JwtAccessDeniedHandler;
-import com.shoppingmall.config.auth.jwt.JwtAuthenticationEntryPoint;
-import com.shoppingmall.config.auth.jwt.JwtSecurityConfig;
-import com.shoppingmall.config.auth.jwt.JwtTokenProvider;
+import com.shoppingmall.handler.CustomLogInFailerHandler;
+import com.shoppingmall.handler.CustomLogInSuccessHandler;
 import com.shoppingmall.handler.PrincipalOAuth2LoginFailureHandler;
 import com.shoppingmall.handler.PrincipalOAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.filter.CorsFilter;
 
 // 구글 로그인 완료 후 후처리 필요
 // 1. 코드받기(인증), 2. 엑세스토큰(권한)
@@ -33,10 +29,9 @@ public class SecurityConfig {
     private final PrincipalOAuth2LoginSuccessHandler principalOAuth2LoginSuccessHandler;
     private final PrincipalOAuth2LoginFailureHandler principalOAuth2LoginFailureHandler;
 
-    private final CorsFilter corsFilter;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final PrincipalUserDetailsService principalUserDetailsService;
+    private final CustomLogInSuccessHandler customLogInSuccessHandler;
+    private final CustomLogInFailerHandler customLogInFailerHandler;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -46,35 +41,39 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .exceptionHandling()
-                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                    .accessDeniedHandler(jwtAccessDeniedHandler)
+                .csrf().disable()
+                .headers().frameOptions().disable()
                 .and()
-                    .csrf().disable()
-                    .formLogin().disable()
-                    .httpBasic().disable()
-                    .headers().frameOptions().disable()
-                .and()
-                    .addFilter(corsFilter)
                     .authorizeRequests()
-                        .antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
+                        .antMatchers("/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
                         .antMatchers("/member/loginForm").permitAll()
                         .antMatchers("/member/joinForm").permitAll()
-                        .antMatchers("/api/v1/member/reissue").permitAll()
                         .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                         .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
                         .antMatchers("/post/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGENT') or hasRole('ROLE_USER')")
                         .antMatchers("/payment/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGENT') or hasRole('ROLE_USER')")
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
+                .and()
+                    .formLogin()
+                    .loginPage("/member/loginForm")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .loginProcessingUrl("/member/login")
+                    .successHandler(customLogInSuccessHandler)
+                    .failureHandler(customLogInFailerHandler)
                 .and()
                     .logout()
-                    .logoutSuccessUrl("/")
-                    .invalidateHttpSession(true)
+                    .logoutSuccessUrl("/member/loginForm")
+                    .invalidateHttpSession(true) // 로그아웃 이후에 모든 세션 삭제
+                    .deleteCookies("JSESSIONID", "remember-me") // 로그아웃 이후에 모든 쿠키 삭제
+                .and()
+                    .rememberMe()
+                    .rememberMeParameter("remember-me")
+                    .tokenValiditySeconds(3600)
+                    .userDetailsService(principalUserDetailsService)
                 .and()
                     .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT는 HttpSession 사용 안함
-                .and()
-                    .apply(new JwtSecurityConfig(jwtTokenProvider))
+                    .invalidSessionUrl("/member/loginForm")
                 .and()
                     .oauth2Login()
                         .loginPage("/member/loginForm")

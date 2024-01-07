@@ -14,10 +14,17 @@ import java.io.IOException;
 @Component
 public class PrincipalOAuth2LoginFailureHandler implements AuthenticationFailureHandler {
 
+    /**
+     * [소셜] 로그인 성공시 메인 화면으로 이동
+     * @param request the request during which the authentication attempt occurred.
+     * @param response the response.
+     * @param exception the exception which was thrown to reject the authentication
+     * request.
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.info("OAuth 2.0 sign-in failed. Server-side review is required.");
-
-        response.sendRedirect("/member/access-denied");
+        response.sendRedirect("/member/loginForm");
     }
 }
