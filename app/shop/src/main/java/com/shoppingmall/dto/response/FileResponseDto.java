@@ -1,7 +1,7 @@
 package com.shoppingmall.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.shoppingmall.vo.PostFiles;
+import com.shoppingmall.vo.PostFilesVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +28,7 @@ public class FileResponseDto {
     private LocalDateTime deleteDate;
     private String fileAttached;
 
-    public static FileResponseDto toDto(PostFiles postFiles) {
+    public static FileResponseDto toDto(PostFilesVO postFiles) {
         return FileResponseDto.builder()
                 .postFileId(postFiles.getPostFileId())
                 .postId(postFiles.getPostId())

@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .antMatchers("/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
                         .antMatchers("/member/loginForm").permitAll()
                         .antMatchers("/member/joinForm").permitAll()
+                        .antMatchers("/api/v1/**").permitAll() // todo: replace this api pattern
                         .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                         .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
                         .antMatchers("/post/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGENT') or hasRole('ROLE_USER')")

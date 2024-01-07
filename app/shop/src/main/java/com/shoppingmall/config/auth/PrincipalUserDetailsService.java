@@ -1,6 +1,6 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.vo.Member;
+import com.shoppingmall.vo.MemberVO;
 import com.shoppingmall.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class PrincipalUserDetailsService implements UserDetailsService {
     // 002. Security Session > Authentication(UserDetails)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberMapper.getMemberByAccount(username)
+        MemberVO member = memberMapper.getMemberByAccount(username)
                 .orElseThrow(() -> new UsernameNotFoundException("로그인에 사용할 유저 계정(account)가 존재하지 않습니다, username = " + username));
         return new PrincipalUserDetails(member);
     }

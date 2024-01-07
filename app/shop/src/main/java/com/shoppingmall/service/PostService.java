@@ -1,8 +1,8 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.constant.FileType;
-import com.shoppingmall.vo.Post;
-import com.shoppingmall.vo.PostFiles;
+import com.shoppingmall.vo.PostVO;
+import com.shoppingmall.vo.PostFilesVO;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
@@ -55,10 +55,10 @@ public class PostService {
         return new PagingResponseDto<>(posts, pagination);
     }
 
-    private static PostResponseDto addPostFiles(Post post) {
+    private static PostResponseDto addPostFiles(PostVO post) {
         PostResponseDto postResponseDto = PostResponseDto.toDto(post);
         List<PostFileResponseDto> postFileResponseDtos = new ArrayList<>();
-        for (PostFiles postFile : post.getPostFiles()) {
+        for (PostFilesVO postFile : post.getPostFiles()) {
             if (postFile.getPostFileId() == null) {
                 postResponseDto.addPostFiles(Collections.emptyList());
                 continue;
@@ -103,7 +103,7 @@ public class PostService {
 
     @Transactional
     public Long savePost(PostRequestDto postRequestDto) {
-        Post post = postRequestDto.toEntity();
+        PostVO post = postRequestDto.toEntity();
         int responseCode = postMapper.savePost(post);
         if (responseCode == 0) {
             throw new FailSavePostException();

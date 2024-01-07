@@ -1,6 +1,6 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.vo.Member;
+import com.shoppingmall.vo.MemberVO;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,17 +22,17 @@ import java.util.Map;
 @Data
 public class PrincipalUserDetails implements UserDetails, OAuth2User {
 
-    private Member member; //콤포지션
+    private MemberVO member; //콤포지션
 
     private Map<String, Object> attributes;
 
     private String nameAttributeKey;
 
-    public PrincipalUserDetails(Member member) {
+    public PrincipalUserDetails(MemberVO member) {
         this.member = member;
     }
 
-    public PrincipalUserDetails(Member member, Map<String, Object> attributes, String nameAttributeKey) {
+    public PrincipalUserDetails(MemberVO member, Map<String, Object> attributes, String nameAttributeKey) {
         this.member = member;
         this.attributes = attributes;
         this.nameAttributeKey= nameAttributeKey;

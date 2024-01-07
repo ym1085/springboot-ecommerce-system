@@ -1,6 +1,6 @@
 package com.shoppingmall.config.auth.attribute;
 
-import com.shoppingmall.vo.Member;
+import com.shoppingmall.vo.MemberVO;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -16,7 +16,7 @@ public class SessionMember implements Serializable {
     private String email;
     private String picture;
 
-    public SessionMember(Member memberResponseDto) {
+    public SessionMember(MemberVO memberResponseDto) {
         this.name = memberResponseDto.getName();
         this.email = memberResponseDto.getEmail();
         this.picture = memberResponseDto.getPicture();

@@ -5,12 +5,20 @@ import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -28,6 +36,17 @@ class PostServiceTest {
 
     @Autowired
     PostService postService;
+
+    @BeforeEach
+    public void setup() {
+        String username = "admin";
+        String password = "Funin0302!@#$%$";
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        UserDetails principal = new User(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
+        Authentication auth = new UsernamePasswordAuthenticationToken(principal, "password", principal.getAuthorities());
+        securityContext.setAuthentication(auth);
+        SecurityContextHolder.setContext(securityContext);
+    }
 
     private static int getRandom() {
         return new Random().nextInt(10) + 1;

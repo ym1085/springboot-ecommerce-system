@@ -1,6 +1,6 @@
 package com.shoppingmall.dto.request;
 
-import com.shoppingmall.vo.Comment;
+import com.shoppingmall.vo.CommentVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,8 +18,8 @@ public class CommentRequestDto {
     private Long commentId;
     private String content;
 
-    public Comment toEntity() {
-        return Comment.builder()
+    public CommentVO toEntity() {
+        return CommentVO.builder()
                 .postId(postId)
                 .memberId(memberId)
                 .parentId(parentId)

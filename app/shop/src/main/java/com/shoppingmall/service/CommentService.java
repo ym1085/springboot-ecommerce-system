@@ -1,6 +1,6 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.vo.Comment;
+import com.shoppingmall.vo.CommentVO;
 import com.shoppingmall.dto.request.CommentRequestDto;
 import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.exception.FailDeleteCommentException;
@@ -38,7 +38,7 @@ public class CommentService {
             }
         }
 
-        Comment comment = new Comment();
+        CommentVO comment = new CommentVO();
         int responseCode = commentMapper.saveComment(comment);
         if (responseCode == 0) {
             throw new FailSaveCommentException();

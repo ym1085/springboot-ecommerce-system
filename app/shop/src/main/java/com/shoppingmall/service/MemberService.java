@@ -1,12 +1,13 @@
 package com.shoppingmall.service;
 
+import com.shoppingmall.domain.repository.MemberRepository;
 import com.shoppingmall.dto.request.MemberRequestDto;
 import com.shoppingmall.exception.DuplMemberAccountException;
 import com.shoppingmall.exception.FailSaveMemberException;
 import com.shoppingmall.exception.PasswordNotFoundException;
 import com.shoppingmall.mapper.MemberMapper;
 import com.shoppingmall.utils.RedisUtils;
-import com.shoppingmall.vo.Member;
+import com.shoppingmall.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,11 +24,12 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberMapper memberMapper;
     private final RedisUtils redisUtils;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public int join(MemberRequestDto memberRequestDto) {
         memberRequestDto.setPassword(encodePassword(memberRequestDto.getPassword()));
-        Member member = memberRequestDto.toEntity();
+        MemberVO member = memberRequestDto.toEntity();
 
         if (memberMapper.checkDuplMemberAccount(member.getAccount()) > 0) {
             throw new DuplMemberAccountException();

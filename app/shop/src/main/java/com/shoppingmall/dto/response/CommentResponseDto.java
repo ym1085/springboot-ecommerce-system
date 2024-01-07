@@ -1,6 +1,6 @@
 package com.shoppingmall.dto.response;
 
-import com.shoppingmall.vo.Comment;
+import com.shoppingmall.vo.CommentVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class CommentResponseDto {
     private LocalDateTime updateDate;
     private String path;
 
-    public static CommentResponseDto toDto(Comment comment) {
+    public static CommentResponseDto toDto(CommentVO comment) {
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
                 .parentId(comment.getParentId())

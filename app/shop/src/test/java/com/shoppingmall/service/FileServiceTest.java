@@ -2,10 +2,18 @@ package com.shoppingmall.service;
 
 import com.shoppingmall.ShopApplication;
 import com.shoppingmall.dto.request.FileRequestDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -18,6 +26,17 @@ class FileServiceTest {
 
     @Autowired
     private FileService fileService;
+
+    @BeforeEach
+    public void setup() {
+        String username = "admin";
+        String password = "Funin0302!@#$%$";
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        UserDetails principal = new User(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
+        Authentication auth = new UsernamePasswordAuthenticationToken(principal, "password", principal.getAuthorities());
+        securityContext.setAuthentication(auth);
+        SecurityContextHolder.setContext(securityContext);
+    }
 
     private static List<FileRequestDto> getFileRequestDtoBuilder() {
         return Arrays.asList(

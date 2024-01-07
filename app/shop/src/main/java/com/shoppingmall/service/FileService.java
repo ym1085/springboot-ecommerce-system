@@ -1,6 +1,6 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.vo.PostFiles;
+import com.shoppingmall.vo.PostFilesVO;
 import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.mapper.FileMapper;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class FileService {
     }
 
     public FileResponseDto getFileByPostFileId(Long postFileId) {
-        PostFiles postFiles = fileMapper.getFileByPostFileId(postFileId).orElseGet(PostFiles::new);
+        PostFilesVO postFiles = fileMapper.getFileByPostFileId(postFileId).orElseGet(PostFilesVO::new);
         return FileResponseDto.toDto(postFiles);
     }
 

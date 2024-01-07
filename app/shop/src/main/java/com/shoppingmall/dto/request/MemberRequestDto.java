@@ -2,7 +2,7 @@ package com.shoppingmall.dto.request;
 
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
-import com.shoppingmall.vo.Member;
+import com.shoppingmall.vo.MemberVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -56,8 +56,8 @@ public class MemberRequestDto {
     private Gender gender;
     private Role role;
 
-    public Member toEntity() {
-        return Member.builder()
+    public MemberVO toEntity() {
+        return MemberVO.builder()
                 .memberId(memberId)
                 .name(name)
                 .account(account)

@@ -1,6 +1,6 @@
 package com.shoppingmall.mapper;
 
-import com.shoppingmall.vo.Post;
+import com.shoppingmall.vo.PostVO;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,15 +10,15 @@ import java.util.Optional;
 @Mapper
 public interface PostMapper {
 
-    List<Post> getPosts(SearchRequestDto searchRequestDto);
+    List<PostVO> getPosts(SearchRequestDto searchRequestDto);
 
     int count(SearchRequestDto searchRequestDto);
 
-    Optional<Post> getPostByPostId(Long postId);
+    Optional<PostVO> getPostByPostId(Long postId);
 
-    int savePost(Post post);
+    int savePost(PostVO post);
 
-    int updatePost(Post post);
+    int updatePost(PostVO post);
 
     int deletePostByPostId(Long postId);
 
