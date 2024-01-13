@@ -4,7 +4,7 @@
 
 <mapper namespace="com.shoppingmall.mapper.MemberMapper">
     
-    <insert id="join" parameterType="Member">
+    <insert id="join" parameterType="MemberVO">
         INSERT INTO MEMBER
             (
                 NAME
@@ -47,7 +47,7 @@
     </insert>
 
     <!-- 소셜 로그인 : Google, Naver, Kakao.. -->
-    <insert id="joinWithSocialLogin" parameterType="Member" statementType="CALLABLE">
+    <insert id="joinWithSocialLogin" parameterType="MemberVO" statementType="CALLABLE">
         <![CDATA[
         {
             CALL SP_INSERT_MEMBER
@@ -78,7 +78,7 @@
         TODO: TypeHandler를 통해 자동으로 ROLE_USER -> USER로 변환이 가능하도록 수정 필요..
          지금은 일단 이슈 해소를 위해서 CASE WHEN 절로 해결
     -->
-    <select id="getMemberByEmail" parameterType="map" resultType="Member">
+    <select id="getMemberByEmail" parameterType="map" resultType="MemberVO">
         SELECT
             M.MEMBER_ID,
             M.NAME,
@@ -102,7 +102,7 @@
         AND M.CERT_YN = 'Y'
     </select>
 
-    <select id="getMemberById" parameterType="long" resultType="Member">
+    <select id="getMemberById" parameterType="long" resultType="MemberVO">
         SELECT
             M.MEMBER_ID,
             M.NAME,
@@ -125,7 +125,7 @@
     </select>
 
     <!-- 소셜 로그인 후 session에 저장 할 회원 조회 -->
-    <select id="getMemberByEmailWithSocialLogin" parameterType="string" resultType="Member">
+    <select id="getMemberByEmailWithSocialLogin" parameterType="string" resultType="MemberVO">
         SELECT
             M.NAME,
             M.EMAIL,
@@ -140,7 +140,7 @@
     </select>
 
     <!-- 소셜 로그인 사용자의 이메일, 대표 이미지가 변경 된 경우 DB 데이터 변경 -->
-    <update id="updateMemberByEmailAndPicture" parameterType="Member">
+    <update id="updateMemberByEmailAndPicture" parameterType="MemberVO">
         UPDATE MEMBER M
             INNER JOIN SOCIAL_MEMBER SM ON M.MEMBER_ID = SM.MEMBER_ID
         SET M.EMAIL = #{email},
@@ -151,7 +151,7 @@
         AND M.CERT_YN = 'Y';
     </update>
 
-    <select id="getMemberByAccount" parameterType="string" resultType="Member">
+    <select id="getMemberByAccount" parameterType="string" resultType="MemberVO">
         SELECT
             M.MEMBER_ID,
             M.NAME,
@@ -173,8 +173,10 @@
         AND M.CERT_YN = 'Y'
     </select>
     
-    <select id="checkDuplMemberAccount" parameterType="string" resultType="int">
-        SELECT COUNT(*) AS CNT FROM MEMBER M WHERE M.ACCOUNT = #{account}
+    <select id="checkDuplicateMemberAccount" parameterType="string" resultType="int">
+        SELECT COUNT(*) AS CNT
+        FROM MEMBER M
+        WHERE M.ACCOUNT = #{account}
     </select>
 
 </mapper>

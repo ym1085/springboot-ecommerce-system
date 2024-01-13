@@ -23,5 +23,5 @@ public interface MemberMapper {
 
     Optional<MemberVO> getMemberByAccount(String username);
 
-    int checkDuplMemberAccount(String account);
+    int checkDuplicateMemberAccount(String account);
 }

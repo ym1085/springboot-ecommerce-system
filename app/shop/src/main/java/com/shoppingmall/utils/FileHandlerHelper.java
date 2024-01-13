@@ -6,7 +6,6 @@ import com.shoppingmall.constant.OSType;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.exception.FailDownloadFilesException;
-import com.shoppingmall.exception.UploadFileException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -122,8 +121,7 @@ public class FileHandlerHelper {
         } catch (IllegalStateException e) {
             log.error("[IllegalStateException] error occurred, e = {}", e.getMessage());
         } catch (Exception e) {
-            log.error("[Exception] error occurred, e = {}", e.getMessage());
-            throw new UploadFileException();
+            log.error("[Exception] exception occurred, e = {}", e.getMessage());
         }
     }
 

@@ -1,6 +1,6 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.ErrorCode;
+import com.shoppingmall.common.error.ErrorCode;
 import lombok.Getter;
 
 @Getter

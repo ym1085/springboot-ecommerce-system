@@ -165,7 +165,7 @@ function validatePhonePrefix(phonePrefix) {
         phonePrefix.focus();
         return false;
     } else if (phonePrefix.value.trim().length > 3) {
-        showMessage(messages.NOT_FOUND_MEMBER_PHONE_PREFIX.message);
+        showMessage(messages.OVER_LENGTH_PHONE_PREFIX.message);
         phonePrefix.focus();
         return false;
     }
@@ -351,15 +351,12 @@ function sendAuthEmail(event) {
         .sendFetchRequest(request)
         .then(response => response.json())
         .then(result => {
-            if (result.code === messages.SUCCESS_SEND_EMAIL.code) {
+            if (result.code === messages.STATUS.OK) {
                 showMessage(result.message);
                 closeLoadingWithMask();
                 hideVerifySectionLayer();
                 hideTimerSectionLayer();
                 startTimer();
-            } else if (result.code === messages.NOT_FOUND_MEMBER_EMAIL.code) {
-                showMessage(result.message);
-                certEmail.focus();
             } else {
                 showMessage(result.message);
                 certEmail.focus();
@@ -404,11 +401,11 @@ function verifyEmailAuthCode() {
         .sendFetchRequest(request)
         .then(response => response.json())
         .then(result => {
-            if (result.code === messages.SUCCESS_CERT_EMAIL.code) {
-                showMessage(messages.SUCCESS_CERT_EMAIL.message);
+            if (result.code === messages.STATUS.OK) {
+                showMessage(result.message);
                 changeCertYnStatusLayer();
             } else {
-                showMessage(messages.FAIL_CERT_EMAIL.message);
+                showMessage(result.message);
                 certEmail.focus();
             }
         })
@@ -432,7 +429,7 @@ function checkDuplAccount() {
     const request = queryBuilder
         .createQueryBuilder()
         .baseUrl(URL_MEMBER_EXISTS_ACCOUNT)
-        .method('GET')
+        .method('POST')
         .contentType('application/json')
         .pathVariable({ account: account.value })
         .build();
@@ -441,17 +438,10 @@ function checkDuplAccount() {
         .sendFetchRequest(request)
         .then(response => response.json())
         .then(result => {
-            if (result.code === messages.SUCCESS_DUPL_ACCOUNT.code) {
+            if (result.code === messages.STATUS.OK) {
                 showMessage(result.message);
                 accountCertYn.value = 'Y';
                 password1.focus();
-            } else if (result.code === messages.NOT_FOUND_MEMBER_ACCOUNT.code) {
-                showMessage(result.message);
-                account.focus();
-            } else if (result.code === messages.FAIL_DUPL_MEMBER.code) {
-                showMessage(result.message);
-                accountCertYn.value = 'N';
-                account.focus();
             } else {
                 showMessage(result.message);
                 accountCertYn.value = 'N';
@@ -533,14 +523,9 @@ const main = {
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
-                if (result.code === messages.SUCCESS_SAVE_MEMBER.code) {
+                if (result.code === messages.STATUS.OK) {
                     showMessage(result.message);
                     redirectURL('/');
-                } else if (result.code === messages.FAIL_DUPL_MEMBER.code) {
-                    showMessage(result.message);
-                    memberJoinInfo.account.focus();
-                } else if (result.code === messages.FAIL_SAVE_MEMBER.code) {
-                    showMessage(result.message);
                 } else {
                     showMessage(result.message);
                 }

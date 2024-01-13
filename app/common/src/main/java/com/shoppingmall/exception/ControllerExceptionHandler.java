@@ -1,7 +1,7 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.ErrorCode;
-import com.shoppingmall.common.ErrorResponse;
+import com.shoppingmall.common.error.ErrorCode;
+import com.shoppingmall.common.error.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,9 +21,13 @@ public class ControllerExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("handleHttpRequestMethodNotSupportedException", e);
 
-        ErrorResponse response = ErrorResponse.create().message(e.getMessage());
+        ErrorResponse response = ErrorResponse
+                .create()
+                .message(e.getMessage());
 
-        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+        return ResponseEntity
+                .status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(response);
     }
 
     // Bad request invalid parameter exception handler
@@ -33,9 +37,14 @@ public class ControllerExceptionHandler {
 
         ErrorCode errorCode = e.getErrorCode();
 
-        ErrorResponse response = ErrorResponse.create().code(errorCode.getCode()).message(e.toString()).errors(e.getErrors());
+        ErrorResponse response = ErrorResponse.create()
+                .code(errorCode.getHttpStatus().value())
+                .message(e.toString())
+                .errors(e.getErrors());
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(response);
     }
 
     // When a class that inherits from customException throws an exception, it will catch it and return an ErrorResponse.
@@ -45,10 +54,13 @@ public class ControllerExceptionHandler {
 
         ErrorCode errorCode = e.getErrorCode();
 
-        ErrorResponse response = ErrorResponse.create().code(errorCode.getCode()).message(e.toString());
+        ErrorResponse response = ErrorResponse.create()
+                .code(errorCode.getHttpStatus().value())
+                .message(e.toString());
 
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        // return new ResponseEntity<>(response, HttpStatus.resolve(errorCode.getStatus()));
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
     }
 
     // Handles all exceptions and returns them in the form of an ErrorResponse.
@@ -57,8 +69,12 @@ public class ControllerExceptionHandler {
         log.error("handleException", e);
         log.error("handleException, e.getMessage = {}", e.getMessage());
 
-        ErrorResponse response = ErrorResponse.create().code(-9999).message("[ERROR] 500 Internal Server Error!! occurred Exception");
+        ErrorResponse response = ErrorResponse.create()
+                .code(-9999)
+                .message("[ERROR] 500 Internal Server Error! occurred Exception");
 
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
     }
 }

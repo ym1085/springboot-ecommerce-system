@@ -1,15 +1,14 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.ApiUtils;
-import com.shoppingmall.common.CommonResponse;
-import com.shoppingmall.common.SuccessCode;
+import com.shoppingmall.common.response.ApiUtils;
+import com.shoppingmall.common.response.CommonResponse;
+import com.shoppingmall.common.success.PostSuccessCode;
 import com.shoppingmall.dto.request.CommentRequestDto;
 import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +38,10 @@ public class CommentRestController {
         commentRequestDto.setPostId(postId);
 
         List<CommentResponseDto> comments = commentService.saveComment(commentRequestDto);
-        return ApiUtils.success(SuccessCode.SUCCESS_SAVE_COMMENT.getCode(), SuccessCode.SUCCESS_SAVE_COMMENT.getMessage(), comments, HttpStatus.OK);
+        return ApiUtils.success(
+                PostSuccessCode.SUCCESS_SAVE_COMMENT.getHttpStatus(),
+                PostSuccessCode.SUCCESS_SAVE_COMMENT.getMessage(), comments
+        );
     }
 
     @PutMapping("/post/{postId}/comments")
@@ -55,7 +57,11 @@ public class CommentRestController {
         commentRequestDto.setPostId(postId);
 
         List<CommentResponseDto> comments = commentService.updateCommentByCommentId(commentRequestDto);
-        return ApiUtils.success(SuccessCode.SUCCESS_UPDATE_COMMENT.getCode(), SuccessCode.SUCCESS_UPDATE_COMMENT.getMessage(), comments, HttpStatus.OK);
+        return ApiUtils.success(
+                PostSuccessCode.SUCCESS_UPDATE_COMMENT.getHttpStatus(),
+                PostSuccessCode.SUCCESS_UPDATE_COMMENT.getMessage(),
+                comments
+        );
     }
 
     @DeleteMapping("/post/comments")
@@ -64,7 +70,11 @@ public class CommentRestController {
 
         List<CommentResponseDto> comments = commentService.deleteComments(commentRequestDto);
 
-        return ApiUtils.success(SuccessCode.SUCCESS_DELETE_COMMENT.getCode(), SuccessCode.SUCCESS_DELETE_COMMENT.getMessage(), comments, HttpStatus.OK);
+        return ApiUtils.success(
+                PostSuccessCode.SUCCESS_DELETE_COMMENT.getHttpStatus(),
+                PostSuccessCode.SUCCESS_DELETE_COMMENT.getMessage(),
+                comments
+        );
     }
 
     @DeleteMapping("/post/comments/reply")
@@ -73,6 +83,9 @@ public class CommentRestController {
 
         List<CommentResponseDto> comments = commentService.deleteCommentsReply(commentRequestDto);
 
-        return ApiUtils.success(SuccessCode.SUCCESS_DELETE_COMMENT.getCode(), SuccessCode.SUCCESS_DELETE_COMMENT.getMessage(), comments, HttpStatus.OK);
+        return ApiUtils.success(
+                PostSuccessCode.SUCCESS_DELETE_COMMENT.getHttpStatus(),
+                PostSuccessCode.SUCCESS_DELETE_COMMENT.getMessage(),
+                comments);
     }
 }

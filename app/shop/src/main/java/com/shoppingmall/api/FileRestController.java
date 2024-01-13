@@ -1,13 +1,10 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.ApiUtils;
-import com.shoppingmall.common.ErrorCode;
 import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.service.FileService;
 import com.shoppingmall.utils.FileHandlerHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -40,19 +37,8 @@ public class FileRestController {
             @PathVariable("postFileId") Long postFileId,
             @PathVariable("domain") String domain) {
         FileResponseDto files = fileService.getFileByPostFileId(postFileId);
-        if (files.getStoredFileName().isBlank()) {
-            return ApiUtils.fail(ErrorCode.NOT_FOUND_POST_FILES.getCode(), ErrorCode.NOT_FOUND_POST_FILES.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        if (StringUtils.isBlank(files.getFilePath())) {
-            return ApiUtils.fail(ErrorCode.NOT_FOUND_POST_FILES_PATH.getCode(), ErrorCode.NOT_FOUND_POST_FILES_PATH.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
         String serverUploadPath = fileHandlerHelper.getUploadPath();
-        if (StringUtils.isBlank(serverUploadPath)) {
-            return ApiUtils.fail(ErrorCode.NOT_FOUND_POST_FILES.getCode(), ErrorCode.NOT_FOUND_POST_FILES.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
         String fileUploadPath = fileHandlerHelper.extractFileDateTimeByFilePath(files.getFilePath());
         File file = fileHandlerHelper.getDownloadFile(serverUploadPath, domain, fileUploadPath, files.getStoredFileName());
 
@@ -61,11 +47,10 @@ public class FileRestController {
         HttpHeaders httpHeaders = fileHandlerHelper.getHttpHeadersByDownloadFile(files, resource, inputStream);
 
         fileService.increaseDownloadCntByFileId(postFileId);
-        return new ResponseEntity<>(
-                new InputStreamResource(inputStream),
-                httpHeaders,
-                HttpStatus.OK
-        );
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .headers(httpHeaders)
+                .body(new InputStreamResource(inputStream));
     }
 
     @GetMapping(value ="/download/compress/{domain}/{postId}", produces = "application/zip")

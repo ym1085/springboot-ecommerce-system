@@ -1,16 +1,14 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.*;
+import com.shoppingmall.common.response.ApiUtils;
+import com.shoppingmall.common.response.CommonResponse;
+import com.shoppingmall.common.success.MemberSuccessCode;
 import com.shoppingmall.dto.request.MemberRequestDto;
 import com.shoppingmall.exception.InvalidParameterException;
-import com.shoppingmall.exception.MemberAccountNotFoundException;
 import com.shoppingmall.service.MemberService;
-import com.shoppingmall.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,30 +32,27 @@ public class MemberRestController {
         }
 
         int responseCode = memberService.join(memberRequestDto);
-        boolean success = ResponseUtils.isSuccessResponseCode(responseCode);
-        MessageCode messageCode = success ? SuccessCode.SUCCESS_SAVE_MEMBER : ErrorCode.FAIL_SAVE_MEMBER;
 
         return ApiUtils.success(
-                messageCode.getCode(),
-                messageCode.getMessage(),
-                success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
+                MemberSuccessCode.SUCCESS_JOIN_MEMBER.getHttpStatus(),
+                MemberSuccessCode.SUCCESS_JOIN_MEMBER.getMessage()
         );
     }
 
-    @GetMapping("/member/exists/{account}")
-    public ResponseEntity<CommonResponse> checkDuplMemberAccount(@PathVariable("account") String account) {
-        if (StringUtils.hasText(account)) {
-            throw new MemberAccountNotFoundException();
+    @PostMapping("/member/exists")
+    public ResponseEntity<CommonResponse> checkDuplicateMemberAccount(
+            @RequestBody @Valid MemberRequestDto memberRequestDto,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            throw new InvalidParameterException(bindingResult);
         }
 
-        int responseCode = memberService.validateDuplicateMemberAccount(account);
-        boolean success = ResponseUtils.isSuccessResponseCode(responseCode);
-        MessageCode messageCode = success ? SuccessCode.SUCCESS_DUPL_ACCOUNT : ErrorCode.FAIL_DUPL_MEMBER;
+        memberService.validateDuplicateMemberAccount(memberRequestDto.getAccount());
 
         return ApiUtils.success(
-                messageCode.getCode(),
-                messageCode.getMessage(),
-                success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
+                MemberSuccessCode.NONE_DUPLICATE_MEMBER.getHttpStatus(),
+                MemberSuccessCode.NONE_DUPLICATE_MEMBER.getMessage()
         );
     }
 }

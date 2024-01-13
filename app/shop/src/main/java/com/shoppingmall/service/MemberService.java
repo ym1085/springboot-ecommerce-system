@@ -1,8 +1,7 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.domain.repository.MemberRepository;
 import com.shoppingmall.dto.request.MemberRequestDto;
-import com.shoppingmall.exception.DuplMemberAccountException;
+import com.shoppingmall.exception.DuplicateMemberAccountException;
 import com.shoppingmall.exception.FailSaveMemberException;
 import com.shoppingmall.exception.PasswordNotFoundException;
 import com.shoppingmall.mapper.MemberMapper;
@@ -24,15 +23,14 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberMapper memberMapper;
     private final RedisUtils redisUtils;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public int join(MemberRequestDto memberRequestDto) {
         memberRequestDto.setPassword(encodePassword(memberRequestDto.getPassword()));
         MemberVO member = memberRequestDto.toEntity();
 
-        if (memberMapper.checkDuplMemberAccount(member.getAccount()) > 0) {
-            throw new DuplMemberAccountException();
+        if (memberMapper.checkDuplicateMemberAccount(member.getAccount()) > 0) {
+            throw new DuplicateMemberAccountException();
         }
 
         int responseCode = memberMapper.join(member);
@@ -43,8 +41,10 @@ public class MemberService {
         return responseCode;
     }
 
-    public int validateDuplicateMemberAccount(String account) {
-        return memberMapper.checkDuplMemberAccount(account) > 0 ? 0 : 1;
+    public void validateDuplicateMemberAccount(String account) {
+        if (memberMapper.checkDuplicateMemberAccount(account) > 0) {
+            throw new DuplicateMemberAccountException();
+        }
     }
 
     private String encodePassword(String password) {

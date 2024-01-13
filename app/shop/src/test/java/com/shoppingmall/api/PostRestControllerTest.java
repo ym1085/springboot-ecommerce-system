@@ -123,8 +123,8 @@ class PostRestControllerTest {
 
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(9999)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 요청 데이터")))
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("제목은 반드시 입력되어야 합니다")));
     }
 
@@ -141,8 +141,8 @@ class PostRestControllerTest {
 
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(9999)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 요청 데이터")))
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("내용은 반드시 입력되어야 합니다")));
     }
 
@@ -159,8 +159,8 @@ class PostRestControllerTest {
 
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(9999)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 요청 데이터")))
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("제목은 20자를 초과할 수 없습니다")));
     }
 
@@ -182,8 +182,8 @@ class PostRestControllerTest {
 
         result.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.code", equalTo(9999)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 요청 데이터")))
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("내용은 1000자를 초과할 수 없습니다")));
     }
 

@@ -1,18 +1,16 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.ErrorCode;
+import com.shoppingmall.common.error.CommonErrorCode;
+import lombok.Getter;
 import org.springframework.validation.Errors;
 
+@Getter
 public class InvalidParameterException extends CustomException {
 
     private final Errors errors;
 
     public InvalidParameterException(Errors errors) {
-        super(ErrorCode.INVALID_PARAMETER);
+        super(CommonErrorCode.INVALID_PARAMETER);
         this.errors = errors;
-    }
-
-    public Errors getErrors() {
-        return errors;
     }
 }
