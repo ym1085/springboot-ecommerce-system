@@ -50,7 +50,6 @@ public class EmailService {
         try {
             emailSender.send(emailForm);
         } catch (RuntimeException e) {
-            log.info("EmailServiceImpl.sendEmail exception occur to = {}, title = {}, text = {}", to, title, text);
             log.error("e = {}", e.getMessage());
         }
     }

@@ -47,7 +47,7 @@
     </update>
 
     <!-- 파일 조회 -->
-    <select id="getFilesByPostId" parameterType="long" resultType="PostFiles">
+    <select id="getFilesByPostId" parameterType="long" resultType="PostFilesVO">
         SELECT
             POST_FILE_ID
             , POST_ID
@@ -76,7 +76,7 @@
     </update>
 
     <!-- 단건 파일 조회 -->
-    <select id="getFileByPostFileId" parameterType="long" resultType="PostFiles">
+    <select id="getFileByPostFileId" parameterType="long" resultType="PostFilesVO">
         SELECT
             POST_FILE_ID
             , POST_ID

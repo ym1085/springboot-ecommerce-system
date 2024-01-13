@@ -18,7 +18,7 @@ spring:
         format_sql: true
         default_batch_fetch_size: 1000
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   thymeleaf:
     cache: false
@@ -40,15 +40,15 @@ logging:
     org.springframework.web: DEBUG
     com.shoppingmall: DEBUG
 
-#mybatis:
-#  type-aliases-package: com.shoppingmall.vo, com.shoppingmall.dto.request
-#  mapper-locations: mybatis-mapper/**/*.xml
-#  configuration:
-#    map-underscore-to-camel-case: true
-#    aggressive-lazy-loading: false
-#    lazy-loading-enabled: true
-#    lazy-load-trigger-methods: ''
-#  type-handlers-package: com.shoppingmall.handler
+mybatis:
+  type-aliases-package: com.shoppingmall.vo, com.shoppingmall.dto.request
+  mapper-locations: mybatis-mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    aggressive-lazy-loading: false
+    lazy-loading-enabled: true
+    lazy-load-trigger-methods: ''
+  type-handlers-package: com.shoppingmall.handler
 
 os:
   window:

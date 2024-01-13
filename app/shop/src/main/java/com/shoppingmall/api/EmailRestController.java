@@ -1,14 +1,16 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.*;
+import com.shoppingmall.common.response.ApiUtils;
+import com.shoppingmall.common.response.CommonResponse;
+import com.shoppingmall.common.success.MemberSuccessCode;
 import com.shoppingmall.dto.request.EmailRequestDto;
-import com.shoppingmall.exception.EmailNotFoundException;
+import com.shoppingmall.exception.FailAuthenticationMemberEmailException;
+import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -21,26 +23,32 @@ public class EmailRestController {
 
     @PostMapping("/email/verify-request")
     public ResponseEntity<CommonResponse> sendMessage(
-            @RequestBody EmailRequestDto emailRequestDto) {
+            @RequestBody EmailRequestDto emailRequestDto,
+            BindingResult bindingResult) {
 
-        if (StringUtils.isBlank(emailRequestDto.getEmail())) {
-            throw new EmailNotFoundException();
+        if (bindingResult.hasErrors()) {
+            throw new InvalidParameterException(bindingResult);
         }
 
         emailService.sendAuthCodeToMemberEmail(emailRequestDto.getEmail());
 
-        return ApiUtils.success(SuccessCode.SUCCESS_SEND_EMAIL.getCode(), SuccessCode.SUCCESS_SEND_EMAIL.getMessage(), HttpStatus.OK);
+        return ApiUtils.success(
+                MemberSuccessCode.SUCCESS_SEND_AUTH_EMAIL.getHttpStatus(),
+                MemberSuccessCode.SUCCESS_SEND_AUTH_EMAIL.getMessage()
+        );
     }
 
     @GetMapping("/email/verify")
     public ResponseEntity<CommonResponse> verifyEmail(
-            @RequestParam(value = "email", required = false) String email,
             @RequestParam("code") String authCode) {
 
         if (!EmailService.emailAuthKey.equals(authCode)) {
-            return ApiUtils.fail(ErrorCode.FAIL_CERT_EMAIL.getCode(), ErrorCode.FAIL_CERT_EMAIL.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new FailAuthenticationMemberEmailException();
         }
 
-        return ApiUtils.success(SuccessCode.SUCCESS_CERT_EMAIL.getCode(), SuccessCode.SUCCESS_CERT_EMAIL.getMessage(), HttpStatus.OK);
+        return ApiUtils.success(
+                MemberSuccessCode.SUCCESS_VERIFY_AUTH_EMAIL.getHttpStatus(),
+                MemberSuccessCode.SUCCESS_VERIFY_AUTH_EMAIL.getMessage()
+        );
     }
 }

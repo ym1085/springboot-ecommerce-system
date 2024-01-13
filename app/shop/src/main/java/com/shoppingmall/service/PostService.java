@@ -74,7 +74,7 @@ public class PostService {
         if (postId != null) {
             int responseCode = postMapper.increasePostByPostId(postId);
             if (responseCode == 0) {
-                throw new FailUpdatePostReadCountException();
+                throw new RuntimeException();
             }
         }
 
@@ -123,14 +123,16 @@ public class PostService {
 
     public int saveFiles(Long postId, List<FileRequestDto> files) {
         if (CollectionUtils.isEmpty(files) || files.get(0) == null || postId == null) {
-            throw new FailSaveFileException();
+            return 0;
         }
+
         for (FileRequestDto file : files) {
             if (file == null) {
                 continue;
             }
             file.setPostId(postId);
         }
+
         return fileMapper.saveFiles(files);
     }
 
@@ -138,7 +140,7 @@ public class PostService {
     public int updatePost(PostRequestDto postRequestDto) {
         int responseCode = postMapper.updatePost(postRequestDto.toEntity());
         if (responseCode == 0) {
-            throw new FailUpdatePostException();
+            throw new RuntimeException();
         }
 
         if (!isEmptyFiles(postRequestDto.getFiles())) {

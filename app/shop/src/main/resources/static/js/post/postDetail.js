@@ -78,13 +78,11 @@ const postInfo = {
                 .sendFetchRequest(request)
                 .then(response => response.json())
                 .then(result => {
-                    if (result.code === messages.SUCCESS_UPDATE_POST.code) {
+                    if (result.code === messages.STATUS.OK) {
                         showMessage(result.message);
                         redirectURL('/post');
-                    } else if (result.code === messages.FAIL_UPDATE_POST.code) {
-                        showMessage(result.message);
                     } else {
-                        showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                        showMessage(result.message);
                     }
                 })
                 .catch(error => handleResponseError(error, request));
@@ -117,13 +115,11 @@ const postInfo = {
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
-                if (result.code === messages.SUCCESS_DELETE_POST.code) {
+                if (result.code === messages.STATUS.OK) {
                     showMessage(result.message);
                     redirectURL('/post');
-                } else if (result.code === messages.FAIL_DELETE_POST.code) {
-                    showMessage(result.message);
                 } else {
-                    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                    showMessage(result.message);
                 }
             })
             .catch(error => handleResponseError(error, request));
@@ -574,15 +570,11 @@ const commentInfo = {
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
-                if (result.code === messages.SUCCESS_SAVE_COMMENT.code) {
-                    showMessage(messages.SUCCESS_SAVE_COMMENT.message);
+                if (result.code === messages.STATUS.OK) {
+                    showMessage(result.message);
                     this.renderComments(result.result);
-                } else if (result.code === messages.FAIL_SAVE_COMMENT.message) {
-                    showMessage(messages.FAIL_SAVE_COMMENT.message);
-                } else if (result.code === messages.NOT_FOUND_POST_ID.message) {
-                    showMessage(messages.NOT_FOUND_POST_ID.message);
                 } else {
-                    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                    showMessage(result.message);
                 }
             })
             .catch(error => handleResponseError(error, request));
@@ -646,13 +638,11 @@ const commentInfo = {
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
-                if (result.code === messages.SUCCESS_UPDATE_COMMENT.code) {
-                    showMessage(messages.SUCCESS_UPDATE_COMMENT.message);
+                if (result.code === messages.STATUS.OK) {
+                    showMessage(result.message);
                     this.renderComments(result.result);
-                } else if (result.code === messages.FAIL_UPDATE_COMMENT.message) {
-                    showMessage(messages.FAIL_UPDATE_COMMENT.message);
                 } else {
-                    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                    showMessage(result.message);
                 }
             })
             .catch(error => handleResponseError(error, request));
@@ -684,13 +674,11 @@ const commentInfo = {
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
-                if (result.code === messages.SUCCESS_DELETE_COMMENT.code) {
-                    showMessage(messages.SUCCESS_DELETE_COMMENT.message);
+                if (result.code === messages.STATUS.OK) {
+                    showMessage(result.message);
                     this.renderComments(result.result);
-                } else if (result.code === messages.FAIL_DELETE_COMMENT.message) {
-                    showMessage(messages.FAIL_DELETE_COMMENT.message);
                 } else {
-                    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                    showMessage(result.message);
                 }
             })
             .catch(error => handleResponseError(error, request));
@@ -722,13 +710,11 @@ const commentInfo = {
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
-                if (result.code === messages.SUCCESS_DELETE_COMMENT.code) {
-                    showMessage(messages.SUCCESS_DELETE_COMMENT.message);
+                if (result.code === messages.STATUS.OK) {
+                    showMessage(result.message);
                     this.renderComments(result.result);
-                } else if (result.code === messages.FAIL_DELETE_COMMENT.message) {
-                    showMessage(messages.FAIL_DELETE_COMMENT.message);
                 } else {
-                    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                    showMessage(result.message);
                 }
             })
             .catch(error => handleResponseError(error, request));
@@ -760,13 +746,11 @@ const commentInfo = {
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
-                if (result.code === messages.SUCCESS_DELETE_COMMENT.code) {
-                    showMessage(messages.SUCCESS_DELETE_COMMENT.message);
+                if (result.code === messages.STATUS.OK) {
+                    showMessage(result.message);
                     this.renderComments(result.result);
-                } else if (result.code === messages.FAIL_DELETE_COMMENT.message) {
-                    showMessage(messages.FAIL_DELETE_COMMENT.message);
                 } else {
-                    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                    showMessage(result.message);
                 }
             })
             .catch(error => handleResponseError(error, request));
@@ -819,15 +803,11 @@ const commentInfo = {
             .sendFetchRequest(request)
             .then(response => response.json())
             .then(result => {
-                if (result.code === messages.SUCCESS_SAVE_COMMENT.code) {
-                    showMessage(messages.SUCCESS_SAVE_COMMENT.message);
+                if (result.code === messages.STATUS.OK) {
+                    showMessage(result.message);
                     this.renderComments(result.result);
-                } else if (result.code === messages.FAIL_SAVE_COMMENT.message) {
-                    showMessage(messages.FAIL_SAVE_COMMENT.message);
-                } else if (result.code === messages.NOT_FOUND_POST_ID.message) {
-                    showMessage(messages.NOT_FOUND_POST_ID.message);
                 } else {
-                    showMessage(messages.COMMON_SERVER_ERROR_MSG.message);
+                    showMessage(result.message);
                 }
             })
             .catch(error => handleResponseError(error, request));

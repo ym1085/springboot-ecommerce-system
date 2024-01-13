@@ -8,7 +8,7 @@ import javax.validation.constraints.Pattern;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequestDto {
+public class MemberLoginRequestDto {
 
     @NotBlank(message = "ID는 필수 입력  항목 입니다. 다시 시도해주세요.")
     private String username;

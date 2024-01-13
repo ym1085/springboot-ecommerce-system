@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shoppingmall.mapper.ProductMapper">
+
+    <resultMap id="ProductResultMap" type="ProductVO">
+        <id property="productId" column="product_id" />
+        <result property="categoryId" column="category_id" />
+        <result property="categoryName" column="categoryName" />
+        <result property="productName" column="product_name" />
+        <result property="productPrice" column="product_price" />
+        <result property="productStock" column="product_stock" />
+        <result property="productDesc" column="product_desc" />
+        <result property="productHits" column="product_hits" />
+        <result property="itemSellStatus" column="item_sell_status" />
+        <result property="createDate" column="create_date" />
+        <result property="updateDate" column="update_date" />
+
+        <!-- 상품(1) : 상품 파일(1) -->
+        <association property="productFiles" resultMap="ProductFilesResultMap" />
+    </resultMap>
+
+    <resultMap id="ProductFilesResultMap" type="ProductFilesVO">
+        <id property="productFileId" column="product_file_id" />
+        <result property="productNumber" column="product_number" />
+        <result property="originFileName" column="origin_file_name" />
+        <result property="storedFileName" column="stored_file_name" />
+        <result property="storedThumbnail" column="stored_thumb_nail" />
+        <result property="delegateThumbnail" column="delegate_thumb_nail" />
+        <result property="fileSize" column="file_size" />
+        <result property="createDate" column="create_date" />
+        <result property="delYn" column="del_yn" />
+        <result property="productId" column="product_id" />
+    </resultMap>
+
+    <select id="getProducts" resultMap="ProductResultMap">
+        SELECT
+            product.product_id,
+            product.category_id,
+            (SELECT
+                 product_category.category_name
+             FROM PRODUCT_CATEGORY product_category
+             where product_category.category_id = product.category_id) AS categoryName,
+            product.product_name,
+            product.product_price,
+            product.product_stock,
+            product.product_desc,
+            product.product_hits,
+            product.item_sell_status,
+            product.create_date,
+            product.update_date
+        FROM PRODUCT product
+                 INNER JOIN PRODUCT_CATEGORY product_category
+                            ON PRODUCT.category_id = product_category.category_id
+                 LEFT JOIN PRODUCT_FILE product_file
+                           ON product.product_id = product_file.product_id
+        ORDER BY create_date DESC
+        LIMIT 20;
+    </select>
+
+    <select id="getProductByProductId" parameterType="long" resultMap="ProductResultMap">
+        SELECT
+            product.product_id,
+            product.category_id,
+            (SELECT
+                 product_category.category_name
+             FROM PRODUCT_CATEGORY product_category
+             where product_category.category_id = product.category_id) AS categoryName,
+            product.product_name,
+            product.product_price,
+            product.product_stock,
+            product.product_desc,
+            product.product_hits,
+            product.item_sell_status,
+            product.create_date,
+            product.update_date
+        FROM PRODUCT product
+                 INNER JOIN PRODUCT_CATEGORY product_category
+                            ON PRODUCT.category_id = product_category.category_id
+                 LEFT JOIN PRODUCT_FILE product_file
+                           ON product.product_id = product_file.product_id
+        WHERE product.product_id = #{productId}
+    </select>
+
+</mapper>

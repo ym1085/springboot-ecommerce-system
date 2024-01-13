@@ -38,9 +38,22 @@ public class MemberVO {
     }
 
     @Builder
-    public MemberVO(Long memberId, String name, String account, String password, String email,
-                    String phoneNumber, String picture, String birthDate, String certYn, Role role,
-                    LocalDateTime createDate, LocalDateTime updateDate, Gender gender, String registrationId, String providerToken
+    public MemberVO(
+            Long memberId,
+            String name,
+            String account,
+            String password,
+            String email,
+            String phoneNumber,
+            String picture,
+            String birthDate,
+            String certYn,
+            Role role,
+            LocalDateTime createDate,
+            LocalDateTime updateDate,
+            Gender gender,
+            String registrationId,
+            String providerToken
     ) {
         this.memberId = memberId;
         this.name = name;

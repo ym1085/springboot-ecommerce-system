@@ -1,8 +1,8 @@
 package com.shoppingmall.service;
 
+import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.vo.CommentVO;
 import com.shoppingmall.dto.request.CommentRequestDto;
-import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.exception.FailDeleteCommentException;
 import com.shoppingmall.exception.FailSaveCommentException;
 import com.shoppingmall.exception.FailUpdateCommentException;

@@ -1,4 +1,4 @@
-package com.shoppingmall.common;
+package com.shoppingmall.common.error;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,13 +17,13 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ErrorResponse {
-    private LocalDateTime timestamp = LocalDateTime.now();
     private int code;
     private String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("errors")
     private List<CustomFieldError> customFieldErrors = new ArrayList<>();
+    private LocalDateTime timestamp = LocalDateTime.now();
 
     public static ErrorResponse create() {
         return new ErrorResponse();
@@ -59,7 +59,7 @@ public class ErrorResponse {
     @RequiredArgsConstructor
     public static class CustomFieldError {
         private final String field;
-        private final Object value;
+        private final Object data;
         private final String reason;
     }
 }
