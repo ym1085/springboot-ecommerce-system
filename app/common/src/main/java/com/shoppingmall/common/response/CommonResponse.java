@@ -3,10 +3,8 @@ package com.shoppingmall.common.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
 public class CommonResponse<T> {
     private final int code;

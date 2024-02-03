@@ -2,7 +2,7 @@ package com.shoppingmall.api;
 
 import com.shoppingmall.common.response.ApiUtils;
 import com.shoppingmall.common.response.CommonResponse;
-import com.shoppingmall.common.success.CommonSuccessCode;
+import com.shoppingmall.common.response.SuccessCode;
 import com.shoppingmall.dto.response.ProductDetailResponseDto;
 import com.shoppingmall.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +27,8 @@ public class ProductRestController {
     public ResponseEntity<CommonResponse> getProducts() {
         List<ProductDetailResponseDto> products = productService.getProducts();
         return ApiUtils.success(
-                CommonSuccessCode.SUCCESS_CODE.getHttpStatus(),
-                CommonSuccessCode.SUCCESS_CODE.getMessage(),
+                SuccessCode.OK.getHttpStatus(),
+                SuccessCode.OK.getMessage(),
                 products
         );
     }
@@ -37,8 +37,8 @@ public class ProductRestController {
     public ResponseEntity<CommonResponse> getProductByProductId(@PathVariable("productId") Long productId) {
         ProductDetailResponseDto productItemResponseDto = productService.getProductByProductId(productId);
         return ApiUtils.success(
-                CommonSuccessCode.SUCCESS_CODE.getHttpStatus(),
-                CommonSuccessCode.SUCCESS_CODE.getMessage(),
+                SuccessCode.OK.getHttpStatus(),
+                SuccessCode.OK.getMessage(),
                 productItemResponseDto
         );
     }

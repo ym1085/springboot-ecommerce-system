@@ -2,8 +2,7 @@ package com.shoppingmall.api;
 
 import com.shoppingmall.common.response.ApiUtils;
 import com.shoppingmall.common.response.CommonResponse;
-import com.shoppingmall.common.success.CommonSuccessCode;
-import com.shoppingmall.common.success.PostSuccessCode;
+import com.shoppingmall.common.response.SuccessCode;
 import com.shoppingmall.dto.request.PostRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
@@ -31,8 +30,8 @@ public class PostRestController {
     public ResponseEntity<CommonResponse> getPosts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
         return ApiUtils.success(
-                CommonSuccessCode.SUCCESS_CODE.getHttpStatus(),
-                CommonSuccessCode.SUCCESS_CODE.getMessage(),
+                SuccessCode.OK.getHttpStatus(),
+                SuccessCode.OK.getMessage(),
                 posts
         );
     }
@@ -41,8 +40,8 @@ public class PostRestController {
     public ResponseEntity<CommonResponse> getPostById(@PathVariable("postId") Long postId) {
         PostResponseDto post = postService.getPostById(postId);
         return ApiUtils.success(
-                CommonSuccessCode.SUCCESS_CODE.getHttpStatus(),
-                CommonSuccessCode.SUCCESS_CODE.getMessage(),
+                SuccessCode.OK.getHttpStatus(),
+                SuccessCode.OK.getMessage(),
                 post
         );
     }
@@ -57,11 +56,11 @@ public class PostRestController {
         }
 
         postRequestDto.setMemberId(1L);
-        Long postId = postService.savePost(postRequestDto);
+        postService.savePost(postRequestDto);
 
         return ApiUtils.success(
-                PostSuccessCode.SUCCESS_SAVE_POST.getHttpStatus(),
-                PostSuccessCode.SUCCESS_SAVE_POST.getMessage()
+                SuccessCode.SUCCESS_SAVE_POST.getHttpStatus(),
+                SuccessCode.SUCCESS_SAVE_POST.getMessage()
         );
     }
 
@@ -80,21 +79,21 @@ public class PostRestController {
         postRequestDto.setMemberId(1L);
         postRequestDto.setPostId(postId);
 
-        int responseCode = postService.updatePost(postRequestDto);
+        postService.updatePost(postRequestDto);
 
         return ApiUtils.success(
-                PostSuccessCode.SUCCESS_UPDATE_POST.getHttpStatus(),
-                PostSuccessCode.SUCCESS_UPDATE_POST.getMessage()
+                SuccessCode.SUCCESS_UPDATE_POST.getHttpStatus(),
+                SuccessCode.SUCCESS_UPDATE_POST.getMessage()
         );
     }
 
     @DeleteMapping("/post/{postId}")
     public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") Long postId) {
-        int responseCode = postService.deletePost(postId);
+        postService.deletePost(postId);
 
         return ApiUtils.success(
-                PostSuccessCode.SUCCESS_DELETE_POST.getHttpStatus(),
-                PostSuccessCode.SUCCESS_DELETE_POST.getMessage()
+                SuccessCode.SUCCESS_DELETE_POST.getHttpStatus(),
+                SuccessCode.SUCCESS_DELETE_POST.getMessage()
         );
     }
 }

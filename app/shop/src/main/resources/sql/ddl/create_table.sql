@@ -112,32 +112,42 @@ CREATE TABLE PRODUCT_CATEGORY
     category_name VARCHAR(50) NOT NULL COMMENT '상품 카테고리명'
 );
 
--- Create the PRODUCT_FILE table
-CREATE TABLE PRODUCT_FILE
+-- Create the PRODUCT table
+create table PRODUCT
 (
-    product_file_id     INT AUTO_INCREMENT PRIMARY KEY,
-    product_number      INT          NOT NULL COMMENT '상품 ID',
-    origin_file_name    VARCHAR(300) NOT NULL COMMENT '원본 파일 이름',
-    stored_file_name    VARCHAR(300) NOT NULL COMMENT '서버에 저장될 파일 이름',
-    stored_thumb_nail   VARCHAR(300) NOT NULL COMMENT '썸네일 이미지',
-    delegate_thumb_nail VARCHAR(1)   NOT NULL COMMENT '대표썸네일 여부',
-    file_size           INT          NOT NULL COMMENT '파일 크기',
-    create_date         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
-    del_yn              CHAR         NOT NULL DEFAULT 'N' COMMENT '파일삭제여부'
+    product_id       int auto_increment
+        primary key,
+    category_id      int                         not null comment '카테고리 코드',
+    product_name     varchar(50)                 not null comment '상품명',
+    product_price    int default 0               not null comment '상품 가격',
+    product_stock    int default 0               not null comment '상품 가격',
+    product_desc     text                        not null comment '상품 설명',
+    product_hits     int default 0               not null comment '상품 조회수',
+    create_date      timestamp                   not null comment '상품 등록일',
+    item_sell_status varchar(10) charset utf8mb3 null,
+    update_date      timestamp                   not null comment '상',
+    constraint product_ibfk_1
+        foreign key (category_id) references shoppingmall.PRODUCT_CATEGORY (category_id)
 );
 
--- Create the PRODUCT table
-CREATE TABLE PRODUCT
+create index category_id
+    on shoppingmall.PRODUCT (category_id);
+
+-- Create ths PRODUCT_FILE table
+create table PRODUCT_FILE
 (
-    product_id          INT AUTO_INCREMENT PRIMARY KEY,
-    category_id         INT       NOT NULL COMMENT '카테고리 코드',
-    product_name        VARCHAR(50)   NOT NULL COMMENT '상품명',
-    product_price       INT       NOT NULL DEFAULT 0 COMMENT '상품 가격',
-    product_stock       INT       NOT NULL DEFAULT 0 COMMENT '상품 가격',
-    product_desc        TEXT   NOT NULL COMMENT '상품 설명',
-    product_create_date TIMESTAMP NOT NULL COMMENT '상품 등록일',
-    product_hits        INT       NOT NULL DEFAULT 0 COMMENT '상품 조회수',
-    FOREIGN KEY (category_id) REFERENCES PRODUCT_CATEGORY (category_id)
+    product_file_id     int auto_increment
+        primary key,
+    product_id          int                                 null comment '상품 ID',
+    origin_file_name    varchar(300)                        not null comment '원본 파일 이름',
+    stored_file_name    varchar(300)                        not null comment '서버에 저장될 파일 이름',
+    stored_thumb_nail   varchar(300)                        not null comment '썸네일 이미지',
+    delegate_thumb_nail varchar(1)                          not null comment '대표썸네일 여부',
+    file_size           int                                 not null comment '파일 크기',
+    create_date         timestamp default CURRENT_TIMESTAMP null comment '생성일',
+    del_yn              char      default 'N'               not null comment '파일삭제여부',
+    constraint PRODUCT_FILE_PRODUCT_product_id_fk
+        foreign key (product_id) references shoppingmall.PRODUCT (product_id)
 );
 
 -- Create the ORDER table

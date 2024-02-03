@@ -124,7 +124,7 @@ class PostRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("제목은 반드시 입력되어야 합니다")));
     }
 
@@ -142,7 +142,7 @@ class PostRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("내용은 반드시 입력되어야 합니다")));
     }
 
@@ -160,7 +160,7 @@ class PostRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("제목은 20자를 초과할 수 없습니다")));
     }
 
@@ -183,7 +183,7 @@ class PostRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("내용은 1000자를 초과할 수 없습니다")));
     }
 

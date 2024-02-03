@@ -82,7 +82,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(200)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Success join member")));
+                .andExpect(jsonPath("$.message", Matchers.containsString("회원가입에 성공")));
     }
 
     @Test
@@ -109,7 +109,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("이름은 필수 입력 항목 입니다")));
     }
 
@@ -137,7 +137,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("두 글자 이상, 여섯 글자 이하의 이름을 입력해주세요")));
     }
 
@@ -165,7 +165,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("두 글자 이상, 여섯 글자 이하의 이름을 입력해주세요")));
     }
 
@@ -193,7 +193,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("ID는 필수 입력 항목 입니다")));
     }
 
@@ -221,7 +221,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("30자 이하의 ID만 입력 가능합니다")));
     }
 
@@ -249,7 +249,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("비밀번호는 필수 입력 항목 입니다")));
     }
 
@@ -323,7 +323,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("영어와 특수문자를 포함한 최소 8자 이상의 비밀번호를 입력해주세요")));
     }
 
@@ -351,7 +351,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("이메일은 필수 입력 항목입니다")));
     }
 
@@ -412,7 +412,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("올바른 메일 형식이 아닙니다")));
     }
 
@@ -440,7 +440,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("휴대폰 번호는 필수 입력 항목입니다")));
     }
 
@@ -501,7 +501,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("올바른 휴대폰번호 형식이 아닙니다")));
     }
 
@@ -529,7 +529,7 @@ class MemberRestControllerTest {
         result.andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.message", Matchers.containsString("Invalid parameter included")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("유효하지 않은 파라미터가 포함")))
                 .andExpect(jsonPath("$.errors.[0].reason", Matchers.containsString("생년월일은 필수 입력 항목입니다")));
     }
 }

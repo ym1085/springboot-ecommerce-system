@@ -1,10 +1,10 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.error.PostErrorCode;
+import com.shoppingmall.common.response.ErrorCode;
 
 public class FailDownloadFilesException extends CustomException {
 
     public FailDownloadFilesException() {
-        super(PostErrorCode.FAIL_DOWNLOAD_FILES);
+        super(ErrorCode.FAIL_DOWNLOAD_FILES);
     }
 }

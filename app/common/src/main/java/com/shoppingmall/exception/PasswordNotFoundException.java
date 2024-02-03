@@ -1,10 +1,10 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.error.MemberErrorCode;
+import com.shoppingmall.common.response.ErrorCode;
 
 public class PasswordNotFoundException extends CustomException {
 
     public PasswordNotFoundException() {
-        super(MemberErrorCode.NOT_FOUND_MEMBER_PWD);
+        super(ErrorCode.NOT_FOUND_MEMBER_PWD);
     }
 }

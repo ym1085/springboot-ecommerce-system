@@ -1,7 +1,7 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.error.ErrorCode;
-import com.shoppingmall.common.error.ErrorResponse;
+import com.shoppingmall.common.response.ErrorCode;
+import com.shoppingmall.common.response.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

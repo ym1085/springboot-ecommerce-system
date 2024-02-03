@@ -1,10 +1,10 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.error.MemberErrorCode;
+import com.shoppingmall.common.response.ErrorCode;
 
 public class FailAuthenticationMemberEmailException extends CustomException {
 
     public FailAuthenticationMemberEmailException() {
-        super(MemberErrorCode.FAIL_AUTHENTICATION_MEMBER_EMAIL);
+        super(ErrorCode.FAIL_AUTHENTICATION_MEMBER_EMAIL);
     }
 }

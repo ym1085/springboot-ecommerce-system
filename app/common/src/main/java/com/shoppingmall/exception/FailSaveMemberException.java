@@ -1,10 +1,10 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.error.MemberErrorCode;
+import com.shoppingmall.common.response.ErrorCode;
 
 public class FailSaveMemberException extends CustomException {
 
     public FailSaveMemberException() {
-        super(MemberErrorCode.FAIL_SAVE_MEMBER);
+        super(ErrorCode.FAIL_SAVE_MEMBER);
     }
 }
