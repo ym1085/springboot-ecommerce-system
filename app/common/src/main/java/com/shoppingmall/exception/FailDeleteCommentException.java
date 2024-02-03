@@ -1,10 +1,10 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.error.PostErrorCode;
+import com.shoppingmall.common.response.ErrorCode;
 
 public class FailDeleteCommentException extends CustomException {
 
     public FailDeleteCommentException() {
-        super(PostErrorCode.FAIL_DELETE_COMMENT);
+        super(ErrorCode.FAIL_DELETE_COMMENT);
     }
 }

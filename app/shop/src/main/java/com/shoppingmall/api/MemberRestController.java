@@ -2,7 +2,7 @@ package com.shoppingmall.api;
 
 import com.shoppingmall.common.response.ApiUtils;
 import com.shoppingmall.common.response.CommonResponse;
-import com.shoppingmall.common.success.MemberSuccessCode;
+import com.shoppingmall.common.response.SuccessCode;
 import com.shoppingmall.dto.request.MemberRequestDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.MemberService;
@@ -31,11 +31,11 @@ public class MemberRestController {
             throw new InvalidParameterException(bindingResult);
         }
 
-        int responseCode = memberService.join(memberRequestDto);
+        memberService.join(memberRequestDto);
 
         return ApiUtils.success(
-                MemberSuccessCode.SUCCESS_JOIN_MEMBER.getHttpStatus(),
-                MemberSuccessCode.SUCCESS_JOIN_MEMBER.getMessage()
+                SuccessCode.SUCCESS_JOIN_MEMBER.getHttpStatus(),
+                SuccessCode.SUCCESS_JOIN_MEMBER.getMessage()
         );
     }
 
@@ -51,8 +51,8 @@ public class MemberRestController {
         memberService.validateDuplicateMemberAccount(memberRequestDto.getAccount());
 
         return ApiUtils.success(
-                MemberSuccessCode.NONE_DUPLICATE_MEMBER.getHttpStatus(),
-                MemberSuccessCode.NONE_DUPLICATE_MEMBER.getMessage()
+                SuccessCode.NONE_DUPLICATE_MEMBER.getHttpStatus(),
+                SuccessCode.NONE_DUPLICATE_MEMBER.getMessage()
         );
     }
 }

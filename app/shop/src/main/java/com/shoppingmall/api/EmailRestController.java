@@ -2,7 +2,7 @@ package com.shoppingmall.api;
 
 import com.shoppingmall.common.response.ApiUtils;
 import com.shoppingmall.common.response.CommonResponse;
-import com.shoppingmall.common.success.MemberSuccessCode;
+import com.shoppingmall.common.response.SuccessCode;
 import com.shoppingmall.dto.request.EmailRequestDto;
 import com.shoppingmall.exception.FailAuthenticationMemberEmailException;
 import com.shoppingmall.exception.InvalidParameterException;
@@ -33,8 +33,8 @@ public class EmailRestController {
         emailService.sendAuthCodeToMemberEmail(emailRequestDto.getEmail());
 
         return ApiUtils.success(
-                MemberSuccessCode.SUCCESS_SEND_AUTH_EMAIL.getHttpStatus(),
-                MemberSuccessCode.SUCCESS_SEND_AUTH_EMAIL.getMessage()
+                SuccessCode.SUCCESS_SEND_AUTH_EMAIL.getHttpStatus(),
+                SuccessCode.SUCCESS_SEND_AUTH_EMAIL.getMessage()
         );
     }
 
@@ -47,8 +47,8 @@ public class EmailRestController {
         }
 
         return ApiUtils.success(
-                MemberSuccessCode.SUCCESS_VERIFY_AUTH_EMAIL.getHttpStatus(),
-                MemberSuccessCode.SUCCESS_VERIFY_AUTH_EMAIL.getMessage()
+                SuccessCode.SUCCESS_VERIFY_AUTH_EMAIL.getHttpStatus(),
+                SuccessCode.SUCCESS_VERIFY_AUTH_EMAIL.getMessage()
         );
     }
 }

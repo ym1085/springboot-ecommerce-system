@@ -1,10 +1,10 @@
 package com.shoppingmall.exception;
 
-import com.shoppingmall.common.error.PostErrorCode;
+import com.shoppingmall.common.response.ErrorCode;
 
 public class FailUpdateCommentException extends CustomException {
 
     public FailUpdateCommentException() {
-        super(PostErrorCode.FAIL_UPDATE_COMMENT);
+        super(ErrorCode.FAIL_UPDATE_COMMENT);
     }
 }
