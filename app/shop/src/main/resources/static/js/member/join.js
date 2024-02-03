@@ -2,7 +2,7 @@ let memberJoinInfo = {};
 
 const URL_VERIFY_REQUEST = '/api/v1/email/verify-request'; // 인증 코드 전송
 const URL_VERIFY_EMAIL = '/api/v1/email/verify'; // 인증
-const URL_MEMBER_EXISTS_ACCOUNT = '/api/v1/member/exists/{account}'; // 아이디 중복
+const URL_MEMBER_EXISTS_ACCOUNT = '/api/v1/member/exists'; // 아이디 중복
 const URL_MEMBER_JOIN = '/api/v1/member/join'; // 회원 가입
 
 /**
@@ -431,7 +431,7 @@ function checkDuplAccount() {
         .baseUrl(URL_MEMBER_EXISTS_ACCOUNT)
         .method('POST')
         .contentType('application/json')
-        .pathVariable({ account: account.value })
+        .requestBody({ account: account.value })
         .build();
 
     const response = fetchTemplate
