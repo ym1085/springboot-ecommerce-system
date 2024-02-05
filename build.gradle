@@ -39,7 +39,7 @@ subprojects {
 		implementation 'mysql:mysql-connector-java'
 		implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-		runtimeOnly 'mysql:mysql-connector-j' // use database mysql to dev profile
+		runtimeOnly 'mysql:mysql-connector-java' // use database mysql to dev profile
 		runtimeOnly 'com.h2database:h2' // use inmemory database to write test code
 
 		compileOnly 'org.projectlombok:lombok'
