@@ -8,7 +8,6 @@
 | Java            | 11    | o    |
 | Spring Boot     | 2.7.1 | o    |
 | Spring Security | 2.7.2 | o    |
-| Spring Data JPA | 2.7.2 | x    |
 | MyBatis         | 3.0.1 | o    |
 | MySQL           | 8.0.28 | o    |
 | Swagger         | 3.0.0 | o    |
