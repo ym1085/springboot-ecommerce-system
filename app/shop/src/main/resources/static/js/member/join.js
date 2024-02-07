@@ -417,6 +417,7 @@ function verifyEmailAuthCode() {
 }
 
 function checkDuplAccount() {
+    alert(`1`);
     const account = document.getElementById('account');
     const accountCertYn = document.getElementById('accountCertYn');
     const password1 = document.getElementById('password1');
@@ -425,6 +426,7 @@ function checkDuplAccount() {
     } else if (!validateAccountRegExp(account)) {
         return;
     }
+    alert(`2`);
 
     const request = queryBuilder
         .createQueryBuilder()
@@ -433,6 +435,8 @@ function checkDuplAccount() {
         .contentType('application/json')
         .requestBody({ account: account.value })
         .build();
+
+    alert(`3`);
 
     const response = fetchTemplate
         .sendFetchRequest(request)
@@ -447,6 +451,8 @@ function checkDuplAccount() {
                 accountCertYn.value = 'N';
                 account.focus();
             }
+        }).catch(error => {
+            console.error(`아이디 중복 검사에 실패하였습니다. error => ${error}`);
         });
 }
 

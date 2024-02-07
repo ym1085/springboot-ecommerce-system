@@ -102,11 +102,7 @@ const fetchTemplate = {
         const url = this.constructURL(request.baseUrl, request.pathVariable, request.queryString);
         const options = this.createHttpRequestOptions(request);
         try {
-            const response = await fetch(url, options);
-            if (!response.ok) {
-                throw new Error(`API Fetch 통신 후 서버 오류 발생! Status: ${response.status}`);
-            }
-            return await response;
+            return await fetch(url, options);
         } catch (error) {
             console.error(`${error.message}`);
         }

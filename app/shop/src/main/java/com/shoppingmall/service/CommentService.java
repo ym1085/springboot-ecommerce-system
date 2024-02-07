@@ -1,12 +1,14 @@
 package com.shoppingmall.service;
 
+import com.shoppingmall.dto.request.CommentDeleteRequestDto;
+import com.shoppingmall.dto.request.CommentSaveRequestDto;
+import com.shoppingmall.dto.request.CommentUpdateRequestDto;
 import com.shoppingmall.dto.response.CommentResponseDto;
-import com.shoppingmall.vo.CommentVO;
-import com.shoppingmall.dto.request.CommentRequestDto;
 import com.shoppingmall.exception.FailDeleteCommentException;
 import com.shoppingmall.exception.FailSaveCommentException;
 import com.shoppingmall.exception.FailUpdateCommentException;
 import com.shoppingmall.mapper.CommentMapper;
+import com.shoppingmall.vo.CommentVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,15 +26,11 @@ public class CommentService {
 
     private final CommentMapper commentMapper;
 
-    public List<CommentResponseDto> getCommentsByPostId(Long postId) {
-        return this.getCommentsByPostId(postId);
-    }
-
     @Transactional
-    public List<CommentResponseDto> saveComment(CommentRequestDto commentRequestDto) {
+    public List<CommentResponseDto> saveComment(CommentSaveRequestDto commentSaveRequestDto) {
         // 대댓글 등록 전 부모 댓글 존재 유무 판단, 일반 댓글은 해당 없음
-        if (commentRequestDto.getParentId() != null) {
-            if (isNotExistsCommentByCommentId(commentRequestDto.getParentId())) {
+        if (commentSaveRequestDto.getParentId() != null) {
+            if (isNotExistsCommentByCommentId(commentSaveRequestDto.getParentId())) {
                 return Collections.emptyList();
             }
         }
@@ -44,8 +41,7 @@ public class CommentService {
             throw new FailSaveCommentException();
         }
 
-        List<CommentResponseDto> commentResponseDtos = getCommentsByPostId(commentRequestDto);
-        return commentResponseDtos;
+        return getCommentsByPostId(commentSaveRequestDto.getPostId());
     }
 
     private boolean isNotExistsCommentByCommentId(Long parentId) {
@@ -61,42 +57,42 @@ public class CommentService {
      * 중복 로직 수정은 고민 해봅시다
      */
     @Transactional
-    public List<CommentResponseDto> deleteComments(CommentRequestDto commentRequestDto) {
-        int responseCode = commentMapper.deleteComment(commentRequestDto.toEntity());
+    public List<CommentResponseDto> deleteComments(CommentDeleteRequestDto commentDeleteRequestDto) {
+        int responseCode = commentMapper.deleteComment(commentDeleteRequestDto.toEntity());
         if (responseCode == 0) {
             throw new FailDeleteCommentException();
         }
 
-        List<CommentResponseDto> commentResponseDtos = getCommentsByPostId(commentRequestDto);
-        return commentResponseDtos;
+        return getCommentsByPostId(commentDeleteRequestDto.getPostId());
     }
 
     @Transactional
-    public List<CommentResponseDto> deleteCommentsReply(CommentRequestDto commentRequestDto) {
-        int responseCode = commentMapper.deleteCommentReply(commentRequestDto.toEntity());
+    public List<CommentResponseDto> deleteCommentsReply(CommentDeleteRequestDto commentDeleteRequestDto) {
+        int responseCode = commentMapper.deleteCommentReply(commentDeleteRequestDto.toEntity());
         if (responseCode == 0) {
             throw new FailDeleteCommentException();
         }
 
-        List<CommentResponseDto> commentResponseDtos = getCommentsByPostId(commentRequestDto);
-        return commentResponseDtos;
+        return getCommentsByPostId(commentDeleteRequestDto.getPostId());
     }
 
     @Transactional
-    public List<CommentResponseDto> updateCommentByCommentId(CommentRequestDto commentRequestDto) {
-        int responseCode = commentMapper.updateCommentByCommentId(commentRequestDto.toEntity());
+    public List<CommentResponseDto> updateCommentByCommentId(CommentUpdateRequestDto commentUpdateRequestDto) {
+        int responseCode = commentMapper.updateCommentByCommentId(commentUpdateRequestDto.toEntity());
         if (responseCode == 0) {
             throw new FailUpdateCommentException();
         }
 
-        List<CommentResponseDto> commentResponseDtos = getCommentsByPostId(commentRequestDto);
-        return commentResponseDtos;
+        return getCommentsByPostId(commentUpdateRequestDto.getPostId());
     }
 
-    private List<CommentResponseDto> getCommentsByPostId(CommentRequestDto commentRequestDto) {
-        return commentMapper.getComments(commentRequestDto.getPostId())
+    private List<CommentResponseDto> getCommentsByPostId(Long postId) {
+        if (postId == null) {
+            return Collections.emptyList();
+        }
+
+        return commentMapper.getComments(postId)
                 .stream()
-                .filter(Objects::nonNull)
                 .map(CommentResponseDto::toDto)
                 .collect(Collectors.toList());
     }

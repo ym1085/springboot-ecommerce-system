@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingmall.ShopApplication;
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
-import com.shoppingmall.dto.request.MemberRequestDto;
+import com.shoppingmall.dto.request.MemberSaveRequestDto;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,7 +60,7 @@ class MemberRestControllerTest {
     @Test
     @DisplayName("회원 가입 성공")
     void testSignUp() throws Exception {
-        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto = MemberSaveRequestDto.builder()
                 .name("김영민")
                 .account("test01")
                 .password("yyyyjjj*1")
@@ -88,7 +88,7 @@ class MemberRestControllerTest {
     @Test
     @DisplayName("이름이 null인 경우 테스트")
     void testMemberNameNull() throws Exception {
-        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto = MemberSaveRequestDto.builder()
                 .name(null)
                 .account("test01")
                 .password("yyyyjjj*1")
@@ -116,7 +116,7 @@ class MemberRestControllerTest {
     @Test
     @DisplayName("이름이 한글자 미만인 경우 테스트")
     void testMemberNameLessThan1() throws Exception {
-        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto = MemberSaveRequestDto.builder()
                 .name("김")
                 .account("test01")
                 .password("yyyyjjj*1")
@@ -144,7 +144,7 @@ class MemberRestControllerTest {
     @Test
     @DisplayName("이름이 여섯글자 초과인 경우 테스트")
     void testMemberNameOverThan6() throws Exception {
-        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto = MemberSaveRequestDto.builder()
                 .name("산다라박이무니다")
                 .account("test02")
                 .password("1234ssss***")
@@ -172,7 +172,7 @@ class MemberRestControllerTest {
     @Test
     @DisplayName("ID가 null인 경우 테스트")
     void testMemberIdNull() throws Exception {
-        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto = MemberSaveRequestDto.builder()
                 .name("김주영")
                 .account(null)
                 .password("1234ssss***")
@@ -200,7 +200,7 @@ class MemberRestControllerTest {
     @Test
     @DisplayName("ID가 30자 이상인 경우 테스트 - 예외 발생")
     void testMemberIdOverThan30() throws Exception {
-        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto = MemberSaveRequestDto.builder()
                 .name("김주영")
                 .account("aaaaaaaaaabbbbbbbbbbdddddddddd3")
                 .password("1234ssss***")
@@ -228,7 +228,7 @@ class MemberRestControllerTest {
     @Test
     @DisplayName("비밀번호가 null인 경우")
     void testMemberPasswordNull() throws Exception{
-        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto = MemberSaveRequestDto.builder()
                 .name("김주영")
                 .account("help123")
                 .password(null)
@@ -254,7 +254,7 @@ class MemberRestControllerTest {
     }
 
     private static Stream<Arguments> validationMemberPasswordGroup() {
-        MemberRequestDto memberRequestDto1 = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto1 = MemberSaveRequestDto.builder()
                 .name("김주영")
                 .account("user01")
                 .password("sjsjsjsjs") // 문자만 있는 경우
@@ -266,7 +266,7 @@ class MemberRestControllerTest {
                 .birthDate("2002-01-11")
                 .build();
 
-        MemberRequestDto memberRequestDto2 = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto2 = MemberSaveRequestDto.builder()
                 .name("김하늘")
                 .account("user02")
                 .password("23213213213") // 숫자만 있는 경우
@@ -278,7 +278,7 @@ class MemberRestControllerTest {
                 .birthDate("1950-04-23")
                 .build();
 
-        MemberRequestDto memberRequestDto3 = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto3 = MemberSaveRequestDto.builder()
                 .name("노홍철")
                 .account("user03")
                 .password("*&^%$#@!") // 특수문자만 있는 경우
@@ -290,7 +290,7 @@ class MemberRestControllerTest {
                 .birthDate("1988-08-29")
                 .build();
 
-        MemberRequestDto memberRequestDto4 = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto4 = MemberSaveRequestDto.builder()
                 .name("강호동")
                 .account("user04")
                 .password("1234567") // 8글자 미만인 경우
@@ -313,7 +313,7 @@ class MemberRestControllerTest {
     @ParameterizedTest
     @MethodSource("validationMemberPasswordGroup")
     @DisplayName("비밀번호 형식에 맞지 않는 경우")
-    void testMemberPasswordNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
+    void testMemberPasswordNotMatchedPattern(MemberSaveRequestDto memberRequestDto) throws Exception{
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -330,7 +330,7 @@ class MemberRestControllerTest {
     @Test
     @DisplayName("이메일이 null인 경우 테스트")
     void testMemberEmailNull() throws Exception {
-        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto = MemberSaveRequestDto.builder()
                 .name("김주영")
                 .account("help123")
                 .password("*yjyjyjyj277227")
@@ -356,7 +356,7 @@ class MemberRestControllerTest {
     }
 
     private static Stream<Arguments> validationMemberEmailGroup() {
-        MemberRequestDto memberRequestDto1 = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto1 = MemberSaveRequestDto.builder()
                 .name("김주영")
                 .account("user01")
                 .password("*yjym2222345")
@@ -368,7 +368,7 @@ class MemberRestControllerTest {
                 .birthDate("2002-01-11")
                 .build();
 
-        MemberRequestDto memberRequestDto2 = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto2 = MemberSaveRequestDto.builder()
                 .name("김하늘")
                 .account("user02")
                 .password("*yjym2222345")
@@ -380,7 +380,7 @@ class MemberRestControllerTest {
                 .birthDate("1950-04-23")
                 .build();
 
-        MemberRequestDto memberRequestDto3 = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto3 = MemberSaveRequestDto.builder()
                 .name("노홍철")
                 .account("user03")
                 .password("*yjym2222345")
@@ -402,7 +402,7 @@ class MemberRestControllerTest {
     @ParameterizedTest
     @MethodSource("validationMemberEmailGroup")
     @DisplayName("이메일 형식에 맞지 않는 경우")
-    void testMemberEmailNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
+    void testMemberEmailNotMatchedPattern(MemberSaveRequestDto memberRequestDto) throws Exception{
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -419,7 +419,7 @@ class MemberRestControllerTest {
     @Test
     @DisplayName("휴대폰 번호가 null인 경우")
     void testMemberPhoneNumberNull() throws Exception {
-        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto = MemberSaveRequestDto.builder()
                 .name("김주영")
                 .account("help123")
                 .password("*yjyjyjyj277227")
@@ -445,7 +445,7 @@ class MemberRestControllerTest {
     }
 
     private static Stream<Arguments> validationMemberPhoneNumberGroup() {
-        MemberRequestDto memberRequestDto1 = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto1 = MemberSaveRequestDto.builder()
                 .name("김주영")
                 .account("user01")
                 .password("*yjym2222345")
@@ -457,7 +457,7 @@ class MemberRestControllerTest {
                 .birthDate("2002-01-11")
                 .build();
 
-        MemberRequestDto memberRequestDto2 = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto2 = MemberSaveRequestDto.builder()
                 .name("김하늘")
                 .account("user02")
                 .password("*yjym2222345")
@@ -469,7 +469,7 @@ class MemberRestControllerTest {
                 .birthDate("1950-04-23")
                 .build();
 
-        MemberRequestDto memberRequestDto3 = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto3 = MemberSaveRequestDto.builder()
                 .name("노홍철")
                 .account("user03")
                 .password("*yjym2222345")
@@ -491,7 +491,7 @@ class MemberRestControllerTest {
     @ParameterizedTest
     @MethodSource("validationMemberPhoneNumberGroup")
     @DisplayName("휴대폰 형식에 맞지 않는 경우")
-    void testMemberPhoneNotMatchedPattern(MemberRequestDto memberRequestDto) throws Exception{
+    void testMemberPhoneNotMatchedPattern(MemberSaveRequestDto memberRequestDto) throws Exception{
         ResultActions result  = mockMvc.perform(
                 post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -508,7 +508,7 @@ class MemberRestControllerTest {
     @Test
     @DisplayName("생년월일이 null인 경우")
     void testMemberBirthDate() throws Exception {
-        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+        MemberSaveRequestDto memberRequestDto = MemberSaveRequestDto.builder()
                 .name("김주영")
                 .account("help123")
                 .password("*yjyjyjyj277227")
