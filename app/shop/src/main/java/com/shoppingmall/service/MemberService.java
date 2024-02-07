@@ -1,6 +1,6 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.dto.request.MemberRequestDto;
+import com.shoppingmall.dto.request.MemberSaveRequestDto;
 import com.shoppingmall.exception.DuplicateMemberAccountException;
 import com.shoppingmall.exception.FailSaveMemberException;
 import com.shoppingmall.exception.PasswordNotFoundException;
@@ -25,7 +25,7 @@ public class MemberService {
     private final RedisUtils redisUtils;
 
     @Transactional
-    public int join(MemberRequestDto memberRequestDto) {
+    public int join(MemberSaveRequestDto memberRequestDto) {
         memberRequestDto.setPassword(encodePassword(memberRequestDto.getPassword()));
         MemberVO member = memberRequestDto.toEntity();
 

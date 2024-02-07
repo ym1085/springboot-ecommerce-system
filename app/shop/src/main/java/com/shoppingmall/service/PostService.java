@@ -1,18 +1,21 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.constant.FileType;
-import com.shoppingmall.vo.PostVO;
-import com.shoppingmall.vo.PostFilesVO;
 import com.shoppingmall.dto.request.FileRequestDto;
-import com.shoppingmall.dto.request.PostRequestDto;
+import com.shoppingmall.dto.request.PostSaveRequestDto;
+import com.shoppingmall.dto.request.PostUpdateRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.*;
-import com.shoppingmall.exception.*;
+import com.shoppingmall.exception.FailSaveFileException;
+import com.shoppingmall.exception.FailSavePostException;
+import com.shoppingmall.exception.FailUpdateFilesException;
 import com.shoppingmall.mapper.CommentMapper;
 import com.shoppingmall.mapper.FileMapper;
 import com.shoppingmall.mapper.PostMapper;
 import com.shoppingmall.utils.FileHandlerHelper;
 import com.shoppingmall.utils.PaginationUtils;
+import com.shoppingmall.vo.PostFilesVO;
+import com.shoppingmall.vo.PostVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -102,16 +105,16 @@ public class PostService {
     }
 
     @Transactional
-    public Long savePost(PostRequestDto postRequestDto) {
-        PostVO post = postRequestDto.toEntity();
+    public Long savePost(PostSaveRequestDto postSaveRequestDto) {
+        PostVO post = postSaveRequestDto.toEntity();
         int responseCode = postMapper.savePost(post);
         if (responseCode == 0) {
             throw new FailSavePostException();
         }
 
-        List<FileRequestDto> fileRequestDtos;
-        if (!postRequestDto.getFiles().isEmpty()) {
-            fileRequestDtos = fileHandlerHelper.uploadFiles(postRequestDto.getFiles(), postRequestDto.getFileType());
+        List<FileRequestDto> fileRequestDtos = new ArrayList<>();
+        if (!postSaveRequestDto.getFiles().isEmpty()) {
+            fileRequestDtos = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getFileType());
             responseCode = saveFiles(post.getPostId(), fileRequestDtos);
             if (responseCode == 0) {
                 throw new FailSaveFileException();
@@ -137,14 +140,14 @@ public class PostService {
     }
 
     @Transactional
-    public int updatePost(PostRequestDto postRequestDto) {
-        int responseCode = postMapper.updatePost(postRequestDto.toEntity());
+    public int updatePost(PostUpdateRequestDto postUpdateRequestDto) {
+        int responseCode = postMapper.updatePost(postUpdateRequestDto.toEntity());
         if (responseCode == 0) {
             throw new RuntimeException();
         }
 
-        if (!isEmptyFiles(postRequestDto.getFiles())) {
-            responseCode = updateFilesByPostId(postRequestDto.getPostId(), postRequestDto.getFiles());
+        if (!isEmptyFiles(postUpdateRequestDto.getFiles())) {
+            responseCode = updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles());
             if (responseCode == 0) {
                 throw new FailUpdateFilesException();
             }
@@ -161,7 +164,7 @@ public class PostService {
 
         int filesCount = fileMapper.countFilesByPostId(postId);
         if (filesCount > 0) {
-            int responseCode = (fileMapper.deleteFilesByPostId(postId)); // DB의 파일 정보 삭제
+            int responseCode = fileMapper.deleteFilesByPostId(postId); // DB의 파일 정보 삭제
             if (responseCode > 0) {
                 log.info("success delete files from database");
             } else {

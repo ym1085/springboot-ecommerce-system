@@ -3,7 +3,8 @@ package com.shoppingmall.api;
 import com.shoppingmall.common.response.ApiUtils;
 import com.shoppingmall.common.response.CommonResponse;
 import com.shoppingmall.common.response.SuccessCode;
-import com.shoppingmall.dto.request.PostRequestDto;
+import com.shoppingmall.dto.request.PostSaveRequestDto;
+import com.shoppingmall.dto.request.PostUpdateRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
@@ -48,15 +49,15 @@ public class PostRestController {
 
     @PostMapping("/post")
     public ResponseEntity<CommonResponse> savePost(
-            @Valid @ModelAttribute PostRequestDto postRequestDto,
+            @Valid @ModelAttribute PostSaveRequestDto postSaveRequestDto,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
         }
 
-        postRequestDto.setMemberId(1L);
-        postService.savePost(postRequestDto);
+        postSaveRequestDto.setMemberId(1L);
+        postService.savePost(postSaveRequestDto);
 
         return ApiUtils.success(
                 SuccessCode.SUCCESS_SAVE_POST.getHttpStatus(),
@@ -67,7 +68,7 @@ public class PostRestController {
     @PutMapping("/post/{postId}")
     public ResponseEntity<CommonResponse> updatePost(
             @PathVariable("postId") Long postId,
-            @Valid @ModelAttribute PostRequestDto postRequestDto,
+            @Valid @ModelAttribute PostUpdateRequestDto postUpdateRequestDto,
             BindingResult bindingResult,
             //@AuthenticationPrincipal PrincipalDetails principalDetails, // https://www.baeldung.com/get-user-in-spring-security
             Principal principal) {
@@ -75,11 +76,10 @@ public class PostRestController {
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
         }
+        postUpdateRequestDto.setMemberId(1L);
+        postUpdateRequestDto.setPostId(postId);
 
-        postRequestDto.setMemberId(1L);
-        postRequestDto.setPostId(postId);
-
-        postService.updatePost(postRequestDto);
+        postService.updatePost(postUpdateRequestDto);
 
         return ApiUtils.success(
                 SuccessCode.SUCCESS_UPDATE_POST.getHttpStatus(),

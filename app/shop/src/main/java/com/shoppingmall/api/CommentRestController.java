@@ -3,7 +3,9 @@ package com.shoppingmall.api;
 import com.shoppingmall.common.response.ApiUtils;
 import com.shoppingmall.common.response.CommonResponse;
 import com.shoppingmall.common.response.SuccessCode;
-import com.shoppingmall.dto.request.CommentRequestDto;
+import com.shoppingmall.dto.request.CommentDeleteRequestDto;
+import com.shoppingmall.dto.request.CommentSaveRequestDto;
+import com.shoppingmall.dto.request.CommentUpdateRequestDto;
 import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.CommentService;
@@ -26,7 +28,7 @@ public class CommentRestController {
 
     @PostMapping("/post/{postId}/comments")
     public ResponseEntity<CommonResponse> saveComment(
-            @Valid @RequestBody CommentRequestDto commentRequestDto,
+            @Valid @RequestBody CommentSaveRequestDto commentSaveRequestDto,
             @PathVariable("postId") Long postId,
             BindingResult bindingResult) {
 
@@ -34,19 +36,20 @@ public class CommentRestController {
             throw new InvalidParameterException(bindingResult);
         }
 
-        commentRequestDto.setMemberId(1L);
-        commentRequestDto.setPostId(postId);
+        commentSaveRequestDto.setMemberId(1L);
+        commentSaveRequestDto.setPostId(postId);
 
-        List<CommentResponseDto> comments = commentService.saveComment(commentRequestDto);
+        List<CommentResponseDto> comments = commentService.saveComment(commentSaveRequestDto);
         return ApiUtils.success(
                 SuccessCode.SUCCESS_SAVE_COMMENT.getHttpStatus(),
-                SuccessCode.SUCCESS_SAVE_COMMENT.getMessage(), comments
+                SuccessCode.SUCCESS_SAVE_COMMENT.getMessage(),
+                comments
         );
     }
 
     @PutMapping("/post/{postId}/comments")
     public ResponseEntity<CommonResponse> updateCommentByCommentId(
-            @Valid @RequestBody CommentRequestDto commentRequestDto,
+            @Valid @RequestBody CommentUpdateRequestDto commentUpdateRequestDto,
             @PathVariable("postId") Long postId,
             BindingResult bindingResult) {
 
@@ -54,9 +57,9 @@ public class CommentRestController {
             throw new InvalidParameterException(bindingResult);
         }
 
-        commentRequestDto.setPostId(postId);
+        commentUpdateRequestDto.setPostId(postId);
 
-        List<CommentResponseDto> comments = commentService.updateCommentByCommentId(commentRequestDto);
+        List<CommentResponseDto> comments = commentService.updateCommentByCommentId(commentUpdateRequestDto);
         return ApiUtils.success(
                 SuccessCode.SUCCESS_UPDATE_COMMENT.getHttpStatus(),
                 SuccessCode.SUCCESS_UPDATE_COMMENT.getMessage(),
@@ -66,9 +69,9 @@ public class CommentRestController {
 
     @DeleteMapping("/post/comments")
     public ResponseEntity<CommonResponse> deleteComments(
-            @ModelAttribute CommentRequestDto commentRequestDto) {
+            @ModelAttribute CommentDeleteRequestDto commentDeleteRequestDto) {
 
-        List<CommentResponseDto> comments = commentService.deleteComments(commentRequestDto);
+        List<CommentResponseDto> comments = commentService.deleteComments(commentDeleteRequestDto);
 
         return ApiUtils.success(
                 SuccessCode.SUCCESS_DELETE_COMMENT.getHttpStatus(),
@@ -79,9 +82,9 @@ public class CommentRestController {
 
     @DeleteMapping("/post/comments/reply")
     public ResponseEntity<CommonResponse> deleteCommentsReply(
-            @ModelAttribute CommentRequestDto commentRequestDto) {
+            @ModelAttribute CommentDeleteRequestDto commentDeleteRequestDto) {
 
-        List<CommentResponseDto> comments = commentService.deleteCommentsReply(commentRequestDto);
+        List<CommentResponseDto> comments = commentService.deleteCommentsReply(commentDeleteRequestDto);
 
         return ApiUtils.success(
                 SuccessCode.SUCCESS_DELETE_COMMENT.getHttpStatus(),

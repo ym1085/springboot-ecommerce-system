@@ -3,12 +3,13 @@ package com.shoppingmall.api;
 import com.shoppingmall.common.response.ApiUtils;
 import com.shoppingmall.common.response.CommonResponse;
 import com.shoppingmall.common.response.SuccessCode;
-import com.shoppingmall.dto.request.MemberRequestDto;
+import com.shoppingmall.dto.request.MemberSaveRequestDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class MemberRestController {
 
     @PostMapping("/member/join")
     public ResponseEntity<CommonResponse> join(
-            @RequestBody @Valid MemberRequestDto memberRequestDto,
+            @RequestBody @Valid MemberSaveRequestDto memberRequestDto,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -41,14 +42,13 @@ public class MemberRestController {
 
     @PostMapping("/member/exists")
     public ResponseEntity<CommonResponse> checkDuplicateMemberAccount(
-            @RequestBody @Valid MemberRequestDto memberRequestDto,
-            BindingResult bindingResult) {
+            @RequestBody MemberSaveRequestDto memberSaveRequestDto) {
 
-        if (bindingResult.hasErrors()) {
-            throw new InvalidParameterException(bindingResult);
+        if (!StringUtils.hasText(memberSaveRequestDto.getAccount())) {
+            throw new IllegalArgumentException();
         }
 
-        memberService.validateDuplicateMemberAccount(memberRequestDto.getAccount());
+        memberService.validateDuplicateMemberAccount(memberSaveRequestDto.getAccount());
 
         return ApiUtils.success(
                 SuccessCode.NONE_DUPLICATE_MEMBER.getHttpStatus(),

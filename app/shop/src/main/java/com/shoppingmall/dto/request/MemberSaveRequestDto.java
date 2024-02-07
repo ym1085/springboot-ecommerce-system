@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberRequestDto {
+public class MemberSaveRequestDto {
 
     private Long memberId;
 
@@ -71,5 +71,4 @@ public class MemberRequestDto {
                 .role(role)
                 .build();
     }
-
 }

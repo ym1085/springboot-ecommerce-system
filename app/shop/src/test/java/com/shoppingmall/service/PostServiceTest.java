@@ -1,7 +1,7 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.ShopApplication;
-import com.shoppingmall.dto.request.PostRequestDto;
+import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
@@ -69,7 +69,7 @@ class PostServiceTest {
         List<PostResponseDto> posts = postService.getPosts(new SearchRequestDto()).getData();
         if (CollectionUtils.isEmpty(posts)) {
             for (int i = 1; i <= 1000; i++) {
-                PostRequestDto postSaveRequestDto = new PostRequestDto();
+                PostSaveRequestDto postSaveRequestDto = new PostSaveRequestDto();
                 postSaveRequestDto.setTitle("제목" + i);
                 postSaveRequestDto.setContent("내용" + i);
                 postSaveRequestDto.setMemberId((long) getRandom());
@@ -104,7 +104,7 @@ class PostServiceTest {
     @Test
     @DisplayName("게시글 등록 테스트")
     void savePost() {
-        PostRequestDto postRequestDto = new PostRequestDto();
+        PostSaveRequestDto postRequestDto = new PostSaveRequestDto();
         postRequestDto.setPostId(1L);
         postRequestDto.setMemberId(1L);
         postRequestDto.setTitle("제목1001");
