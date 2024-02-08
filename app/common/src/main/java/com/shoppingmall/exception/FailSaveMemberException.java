@@ -4,7 +4,7 @@ import com.shoppingmall.common.response.ErrorCode;
 
 public class FailSaveMemberException extends CustomException {
 
-    public FailSaveMemberException() {
-        super(ErrorCode.FAIL_SAVE_MEMBER);
+    public FailSaveMemberException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

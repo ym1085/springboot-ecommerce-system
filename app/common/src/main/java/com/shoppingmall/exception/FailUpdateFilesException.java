@@ -4,7 +4,7 @@ import com.shoppingmall.common.response.ErrorCode;
 
 public class FailUpdateFilesException extends CustomException {
 
-    public FailUpdateFilesException() {
-        super(ErrorCode.FAIL_UPLOAD_FILES);
+    public FailUpdateFilesException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

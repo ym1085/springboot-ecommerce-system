@@ -1,5 +1,6 @@
 package com.shoppingmall.utils;
 
+import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.constant.FileType;
 import com.shoppingmall.constant.OSType;
@@ -226,8 +227,8 @@ public class FileHandlerHelper {
         try {
             return resource.getInputStream();
         } catch (IOException e) {
-            log.error(e.getMessage());
-            throw new FailDownloadFilesException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_DOWNLOAD_FILES.getMessage());
+            throw new FailDownloadFilesException(ErrorCode.FAIL_DOWNLOAD_FILES);
         }
     }
 
@@ -238,8 +239,8 @@ public class FileHandlerHelper {
             httpHeaders.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.contentLength()));
             httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE.toString());
         } catch (IOException e) {
-            log.error(e.getMessage());
-            throw new FailDownloadFilesException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_DOWNLOAD_FILES.getMessage());
+            throw new FailDownloadFilesException(ErrorCode.FAIL_DOWNLOAD_FILES);
         }
         return httpHeaders;
     }
@@ -255,8 +256,8 @@ public class FileHandlerHelper {
             }
             zos.finish();
         } catch (IOException e) {
-            log.error(e.getMessage());
-            throw new FailDownloadFilesException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_DOWNLOAD_FILES.getMessage());
+            throw new FailDownloadFilesException(ErrorCode.FAIL_DOWNLOAD_FILES);
         }
     }
 

@@ -4,7 +4,7 @@ import com.shoppingmall.common.response.ErrorCode;
 
 public class FailDeleteCommentException extends CustomException {
 
-    public FailDeleteCommentException() {
-        super(ErrorCode.FAIL_DELETE_COMMENT);
+    public FailDeleteCommentException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }
