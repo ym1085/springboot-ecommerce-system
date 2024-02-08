@@ -26,11 +26,11 @@
 
 ## 🚀 04. 프로젝트 실행 방법
 
-### [classpath:/resources/application.yaml 파일 수정](./app/shop/src/main/resources/application-sample.yaml)
+### [/resources/application.yaml](./app/shop/src/main/resources/application-sample.yaml)
 
 > 구글 이메일 전송 기능이 존재하기에 구글 앱 비밀번호 생성 후 application.yaml 파일에 입력
 
-### [classpath:/resources/application-oauth.yaml](./app/shop/src/main/resources/application-oauth-sample.yaml)
+### [/resources/application-oauth.yaml](./app/shop/src/main/resources/application-oauth-sample.yaml)
 
 > 소셜 로그인을 위해서 각 플랫폼별로 제공해주는 클라이언트 ID, Secret을 기재 필요  
 > application-oauth-sample.yaml 설정 후 파일 이름 변경 -> application-oauth.yaml
