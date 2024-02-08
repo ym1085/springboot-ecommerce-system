@@ -10,19 +10,18 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-//@ControllerAdvice
 @RestControllerAdvice
 public class ControllerExceptionHandler {
-
     private final Logger log = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
-    // Method not supported exception handler
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        log.error("handleHttpRequestMethodNotSupportedException", e);
+        log.trace("Stack Trace Log = {}", e.toString());
+        log.error("Method Not Supported = {}", e.getMessage());
 
         ErrorResponse response = ErrorResponse
                 .create()
+                .code(ErrorCode.METHOD_NOT_ALLOWED.getHttpStatus().value())
                 .message(e.getMessage());
 
         return ResponseEntity
@@ -30,16 +29,17 @@ public class ControllerExceptionHandler {
                 .body(response);
     }
 
-    // Bad request invalid parameter exception handler
     @ExceptionHandler(InvalidParameterException.class)
     protected ResponseEntity<ErrorResponse> handleInvalidParameterException(InvalidParameterException e) {
-        log.error("handleInvalidParameterException", e);
+        log.trace("Stack Trace Log = {}", e.toString());
+        log.error("Invalid Parameter = {}", e.getMessage());
 
         ErrorCode errorCode = e.getErrorCode();
 
-        ErrorResponse response = ErrorResponse.create()
+        ErrorResponse response = ErrorResponse
+                .create()
                 .code(errorCode.getHttpStatus().value())
-                .message(e.toString())
+                .message(errorCode.getMessage())
                 .errors(e.getErrors());
 
         return ResponseEntity
@@ -47,31 +47,32 @@ public class ControllerExceptionHandler {
                 .body(response);
     }
 
-    // When a class that inherits from customException throws an exception, it will catch it and return an ErrorResponse.
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
-        log.error("handleAllException", e);
+        log.trace("Stack Trace Log = {}", e.toString());
+        log.error("Custom Exception = {}", e.getMessage());
 
         ErrorCode errorCode = e.getErrorCode();
 
-        ErrorResponse response = ErrorResponse.create()
+        ErrorResponse response = ErrorResponse
+                .create()
                 .code(errorCode.getHttpStatus().value())
-                .message(e.toString());
+                .message(errorCode.getMessage());
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(response);
     }
 
-    // Handles all exceptions and returns them in the form of an ErrorResponse.
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("handleException", e);
-        log.error("handleException, e.getMessage = {}", e.getMessage());
+        log.trace("Stack Trace Log = {}", e.toString());
+        log.error("Unexpected Error = {}", e.getMessage());
 
-        ErrorResponse response = ErrorResponse.create()
-                .code(-9999)
-                .message("[ERROR] 500 Internal Server Error! occurred Exception");
+        ErrorResponse response = ErrorResponse
+                .create()
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message("내부 서버 오류입니다. 나중에 다시 시도해주세요.");
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)

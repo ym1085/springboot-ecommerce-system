@@ -1,5 +1,6 @@
 package com.shoppingmall.service;
 
+import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.constant.FileType;
 import com.shoppingmall.dto.request.FileRequestDto;
 import com.shoppingmall.dto.request.PostSaveRequestDto;
@@ -109,7 +110,8 @@ public class PostService {
         PostVO post = postSaveRequestDto.toEntity();
         int responseCode = postMapper.savePost(post);
         if (responseCode == 0) {
-            throw new FailSavePostException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_POST.getMessage());
+            throw new FailSavePostException(ErrorCode.FAIL_SAVE_POST);
         }
 
         List<FileRequestDto> fileRequestDtos = new ArrayList<>();
@@ -117,7 +119,8 @@ public class PostService {
             fileRequestDtos = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getFileType());
             responseCode = saveFiles(post.getPostId(), fileRequestDtos);
             if (responseCode == 0) {
-                throw new FailSaveFileException();
+                log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_FILES);
+                throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
             }
         }
 
@@ -149,7 +152,8 @@ public class PostService {
         if (!isEmptyFiles(postUpdateRequestDto.getFiles())) {
             responseCode = updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles());
             if (responseCode == 0) {
-                throw new FailUpdateFilesException();
+                log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_UPLOAD_FILES.getMessage());
+                throw new FailUpdateFilesException(ErrorCode.FAIL_UPLOAD_FILES);
             }
         }
 

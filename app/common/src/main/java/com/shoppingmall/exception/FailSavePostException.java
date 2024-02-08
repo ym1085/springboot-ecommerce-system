@@ -4,7 +4,7 @@ import com.shoppingmall.common.response.ErrorCode;
 
 public class FailSavePostException extends CustomException {
 
-    public FailSavePostException() {
-        super(ErrorCode.FAIL_SAVE_POST);
+    public FailSavePostException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

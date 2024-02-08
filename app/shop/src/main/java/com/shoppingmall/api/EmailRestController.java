@@ -2,6 +2,7 @@ package com.shoppingmall.api;
 
 import com.shoppingmall.common.response.ApiUtils;
 import com.shoppingmall.common.response.CommonResponse;
+import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.common.response.SuccessCode;
 import com.shoppingmall.dto.request.EmailRequestDto;
 import com.shoppingmall.exception.FailAuthenticationMemberEmailException;
@@ -43,7 +44,8 @@ public class EmailRestController {
             @RequestParam("code") String authCode) {
 
         if (!EmailService.emailAuthKey.equals(authCode)) {
-            throw new FailAuthenticationMemberEmailException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_AUTHENTICATION_MEMBER_EMAIL.getMessage());
+            throw new FailAuthenticationMemberEmailException(ErrorCode.FAIL_AUTHENTICATION_MEMBER_EMAIL);
         }
 
         return ApiUtils.success(

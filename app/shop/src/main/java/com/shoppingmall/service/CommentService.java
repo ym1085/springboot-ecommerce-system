@@ -1,5 +1,6 @@
 package com.shoppingmall.service;
 
+import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.dto.request.CommentDeleteRequestDto;
 import com.shoppingmall.dto.request.CommentSaveRequestDto;
 import com.shoppingmall.dto.request.CommentUpdateRequestDto;
@@ -38,7 +39,8 @@ public class CommentService {
         CommentVO comment = new CommentVO();
         int responseCode = commentMapper.saveComment(comment);
         if (responseCode == 0) {
-            throw new FailSaveCommentException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_COMMENT.getMessage());
+            throw new FailSaveCommentException(ErrorCode.FAIL_SAVE_COMMENT);
         }
 
         return getCommentsByPostId(commentSaveRequestDto.getPostId());
@@ -60,7 +62,8 @@ public class CommentService {
     public List<CommentResponseDto> deleteComments(CommentDeleteRequestDto commentDeleteRequestDto) {
         int responseCode = commentMapper.deleteComment(commentDeleteRequestDto.toEntity());
         if (responseCode == 0) {
-            throw new FailDeleteCommentException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_DELETE_COMMENT.getMessage());
+            throw new FailDeleteCommentException(ErrorCode.FAIL_DELETE_COMMENT);
         }
 
         return getCommentsByPostId(commentDeleteRequestDto.getPostId());
@@ -70,7 +73,8 @@ public class CommentService {
     public List<CommentResponseDto> deleteCommentsReply(CommentDeleteRequestDto commentDeleteRequestDto) {
         int responseCode = commentMapper.deleteCommentReply(commentDeleteRequestDto.toEntity());
         if (responseCode == 0) {
-            throw new FailDeleteCommentException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_DELETE_COMMENT.getMessage());
+            throw new FailDeleteCommentException(ErrorCode.FAIL_DELETE_COMMENT);
         }
 
         return getCommentsByPostId(commentDeleteRequestDto.getPostId());
@@ -80,7 +84,8 @@ public class CommentService {
     public List<CommentResponseDto> updateCommentByCommentId(CommentUpdateRequestDto commentUpdateRequestDto) {
         int responseCode = commentMapper.updateCommentByCommentId(commentUpdateRequestDto.toEntity());
         if (responseCode == 0) {
-            throw new FailUpdateCommentException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_UPDATE_COMMENT.getMessage());
+            throw new FailUpdateCommentException(ErrorCode.FAIL_UPDATE_COMMENT);
         }
 
         return getCommentsByPostId(commentUpdateRequestDto.getPostId());

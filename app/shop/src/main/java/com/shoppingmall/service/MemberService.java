@@ -1,5 +1,6 @@
 package com.shoppingmall.service;
 
+import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.dto.request.MemberSaveRequestDto;
 import com.shoppingmall.exception.DuplicateMemberAccountException;
 import com.shoppingmall.exception.FailSaveMemberException;
@@ -30,12 +31,14 @@ public class MemberService {
         MemberVO member = memberRequestDto.toEntity();
 
         if (memberMapper.checkDuplicateMemberAccount(member.getAccount()) > 0) {
-            throw new DuplicateMemberAccountException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DUPLICATE_MEMBER_ACCOUNT.getMessage());
+            throw new DuplicateMemberAccountException(ErrorCode.DUPLICATE_MEMBER_ACCOUNT);
         }
 
         int responseCode = memberMapper.join(member);
         if (responseCode == 0) {
-            throw new FailSaveMemberException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_MEMBER.getMessage());
+            throw new FailSaveMemberException(ErrorCode.FAIL_SAVE_MEMBER);
         }
 
         return responseCode;
@@ -43,13 +46,15 @@ public class MemberService {
 
     public void validateDuplicateMemberAccount(String account) {
         if (memberMapper.checkDuplicateMemberAccount(account) > 0) {
-            throw new DuplicateMemberAccountException();
+            log.warn("[Occurred Exception] Error Message = {}", ErrorCode.DUPLICATE_MEMBER_ACCOUNT.getMessage());
+            throw new DuplicateMemberAccountException(ErrorCode.DUPLICATE_MEMBER_ACCOUNT);
         }
     }
 
     private String encodePassword(String password) {
         if (!StringUtils.hasText(password)) {
-            throw new PasswordNotFoundException();
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.NOT_FOUND_MEMBER_PWD.getMessage());
+            throw new PasswordNotFoundException(ErrorCode.NOT_FOUND_MEMBER_PWD);
         }
         return passwordEncoder.encode(password);
     }
