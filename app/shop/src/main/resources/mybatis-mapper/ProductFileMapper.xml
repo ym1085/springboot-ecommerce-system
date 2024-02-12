@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shoppingmall.mapper.ProductFileMapper">
+
+    <insert id="saveFiles" parameterType="list">
+        INSERT INTO PRODUCT_FILE (
+            product_file_id,
+            product_id,
+            origin_file_name,
+            stored_file_name,
+            file_path,
+            file_size,
+            file_type,
+            create_date,
+            delete_date,
+            del_yn,
+            file_attached,
+            downlod_cnt
+        ) VALUES
+        <foreach item="file" collection="list" separator=",">
+            (
+                #{file.productFileId}
+                , #{file.productId}
+                , #{file.originFileName}
+                , #{file.storedFileName}
+                , #{file.filePath}
+                , #{file.fileSize}
+                , #{file.fileType}
+                , NOW()
+                , NULL
+                , 'N'
+                , #{file.fileAttached}
+                , 0
+            )
+        </foreach>
+    </insert>
+
+</mapper>

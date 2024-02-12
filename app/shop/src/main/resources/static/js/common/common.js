@@ -9,6 +9,18 @@
  * 2023-08-13       youngmin           최초 생성
  **/
 
+function movePageWithPageNo(pageNo) {
+    const searchForm = document.getElementById('searchForm');
+    const queryString = {
+        pageNo: pageNo ? pageNo : 1,
+        recordSizePerPage: 10,
+        pageSize: 10,
+        searchType: searchForm.searchType.value,
+        searchKeyword: searchForm.searchKeyword.value,
+    };
+    location.href = location.pathname + '?' + new URLSearchParams(queryString).toString();
+}
+
 function focus(element) {
     element.focus();
 }

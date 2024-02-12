@@ -1,24 +1,24 @@
 package com.shoppingmall.mapper;
 
-import com.shoppingmall.vo.PostFilesVO;
-import com.shoppingmall.dto.request.FileRequestDto;
+import com.shoppingmall.dto.request.BaseFileSaveRequestDto;
+import com.shoppingmall.vo.PostFiles;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Optional;
 
 @Mapper
-public interface FileMapper {
+public interface PostFileMapper {
 
-    int saveFiles(List<FileRequestDto> files);
+    int saveFiles(List<BaseFileSaveRequestDto> files);
 
     int deleteFilesByPostId(Long postId);
 
-    List<PostFilesVO> getFilesByPostId(Long postId);
+    List<PostFiles> getFilesByPostId(Long postId);
 
     int deleteUpdateFilesByPostId(Long postId);
 
-    Optional<PostFilesVO> getFileByPostFileId(Long fileId);
+    Optional<PostFiles> getFileByPostFileId(Long fileId);
 
     void increaseDownloadCntByFileId(Long fileId);
 

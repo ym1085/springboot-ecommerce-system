@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class ProductFilesVO {
+public class ProductFiles {
     private Long productFileId;
-    private String originFileName;
-    private String storedFileName;
+    private String originFileName; // 원본 파일명
+    private String storedFileName; // 이미지 파일명
     private String storedThumbNail;
     private String delegateThumbNail;
     private int fileSize;
@@ -20,7 +20,7 @@ public class ProductFilesVO {
     private int productId;
 
     @Builder
-    public ProductFilesVO(
+    public ProductFiles(
             Long productFileId,
             String originFileName,
             String storedFileName,

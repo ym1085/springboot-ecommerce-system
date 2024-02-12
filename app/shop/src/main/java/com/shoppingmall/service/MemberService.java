@@ -7,7 +7,7 @@ import com.shoppingmall.exception.FailSaveMemberException;
 import com.shoppingmall.exception.PasswordNotFoundException;
 import com.shoppingmall.mapper.MemberMapper;
 import com.shoppingmall.utils.RedisUtils;
-import com.shoppingmall.vo.MemberVO;
+import com.shoppingmall.vo.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +28,7 @@ public class MemberService {
     @Transactional
     public int join(MemberSaveRequestDto memberRequestDto) {
         memberRequestDto.setPassword(encodePassword(memberRequestDto.getPassword()));
-        MemberVO member = memberRequestDto.toEntity();
+        Member member = memberRequestDto.toEntity();
 
         if (memberMapper.checkDuplicateMemberAccount(member.getAccount()) > 0) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.DUPLICATE_MEMBER_ACCOUNT.getMessage());

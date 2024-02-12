@@ -1,7 +1,7 @@
 package com.shoppingmall.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.shoppingmall.vo.PostVO;
+import com.shoppingmall.vo.Post;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -32,7 +32,7 @@ public class PostResponseDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<PostFileResponseDto> postFiles = new ArrayList<>();
 
-    public static PostResponseDto toDto(PostVO post) {
+    public static PostResponseDto toDto(Post post) {
         return PostResponseDto.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())

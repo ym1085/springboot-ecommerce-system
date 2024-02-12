@@ -52,7 +52,7 @@
         아래 부분은 조금 고민 Map or VO에 그냥 필드 넣어서 처리가 가능하긴 한데 resultMap으로 하는게 좋을 듯?
         그래도 1 : N 처리를 위해 resultMap을 사용해서 일단 처리하고 추후 테이블이 복잡해지면 VO를 분리할 것
      -->
-    <resultMap id="PostResultMap" type="PostVO">
+    <resultMap id="PostResultMap" type="Post">
         <id property="postId" column="POST_ID" />
         <result property="memberId" column="MEMBER_ID" />
         <result property="title" column="TITLE" />
@@ -71,7 +71,7 @@
         <collection property="postFiles" resultMap="PostFilesResultMap" />
     </resultMap>
 
-    <resultMap id="PostFilesResultMap" type="PostFilesVO">
+    <resultMap id="PostFilesResultMap" type="PostFiles">
         <id property="postFileId" column="POST_FILE_ID" />
         <result property="postId" column="POST_ID" />
         <result property="originFileName" column="ORIGIN_FILE_NAME" />
@@ -91,7 +91,7 @@
         Mybatis에서 쿼리의 parameterType이 클래스의 객체인 경우, XML Mapper의 #{parameter}
         는 맴버 변수의 getter에 해당. 쉽게 말해 getter를 통해 파라미터 바인딩 수행.
     -->
-    <select id="getPosts" parameterType="com.shoppingmall.dto.request.SearchRequestDto" resultMap="PostResultMap">
+    <select id="getPosts" parameterType="SearchRequestDto" resultMap="PostResultMap">
         SELECT
             P.POST_ID,
             P.TITLE,
@@ -128,7 +128,7 @@
     </select>
 
     <!-- 게시글 수 카운팅 -->
-    <select id="count" parameterType="com.shoppingmall.dto.request.SearchRequestDto" resultType="int">
+    <select id="count" parameterType="SearchRequestDto" resultType="int">
         SELECT COUNT(*)
         FROM POST P
         WHERE
@@ -137,7 +137,7 @@
     </select>
 
     <!-- 단일 게시글 조회 -->
-    <select id="getPostByPostId" parameterType="Long" resultType="PostVO">
+    <select id="getPostByPostId" parameterType="Long" resultType="Post">
         SELECT
             P.POST_ID,
             P.TITLE,
@@ -158,7 +158,7 @@
     </select>
 
     <!-- 게시글 등록 -->
-    <insert id="savePost" parameterType="PostVO" useGeneratedKeys="true" keyProperty="postId">
+    <insert id="savePost" parameterType="Post" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO POST (MEMBER_ID, TITLE, CONTENT, FIXED_YN, CATEGORY_ID)
         VALUE
             (
@@ -178,7 +178,7 @@
     </insert>
 
     <!-- 게시글 수정 -->
-    <update id="updatePost" parameterType="PostVO">
+    <update id="updatePost" parameterType="Post">
         UPDATE POST
         SET
             TITLE = #{title},

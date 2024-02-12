@@ -51,8 +51,9 @@ public class SecurityConfig {
                         .antMatchers("/api/v1/**").permitAll() // todo: replace this api pattern
                         .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                         .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
-                        .antMatchers("/post/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGENT') or hasRole('ROLE_USER')")
-                        .antMatchers("/payment/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGENT') or hasRole('ROLE_USER')")
+                        .antMatchers("/post/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER') or hasRole('ROLE_GUEST')")
+                        .antMatchers("/payment/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER') or hasRole('ROLE_GUEST')")
+                        .antMatchers("/").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER') or hasRole('ROLE_GUEST')")
                         .anyRequest().authenticated()
                 .and()
                     .formLogin()

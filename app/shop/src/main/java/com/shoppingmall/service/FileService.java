@@ -1,8 +1,8 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.vo.PostFilesVO;
+import com.shoppingmall.vo.PostFiles;
 import com.shoppingmall.dto.response.FileResponseDto;
-import com.shoppingmall.mapper.FileMapper;
+import com.shoppingmall.mapper.PostFileMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,22 +15,22 @@ import java.util.stream.Collectors;
 @Service
 public class FileService {
 
-    private final FileMapper fileMapper;
+    private final PostFileMapper postFileMapper;
 
     public List<FileResponseDto> getFilesByPostId(Long postId) {
-        return fileMapper.getFilesByPostId(postId)
+        return postFileMapper.getFilesByPostId(postId)
                 .stream()
                 .map(FileResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
     public FileResponseDto getFileByPostFileId(Long postFileId) {
-        PostFilesVO postFiles = fileMapper.getFileByPostFileId(postFileId).orElseGet(PostFilesVO::new);
+        PostFiles postFiles = postFileMapper.getFileByPostFileId(postFileId).orElseGet(PostFiles::new);
         return FileResponseDto.toDto(postFiles);
     }
 
     @Transactional
     public void increaseDownloadCntByFileId(Long fileId) {
-        fileMapper.increaseDownloadCntByFileId(fileId);
+        postFileMapper.increaseDownloadCntByFileId(fileId);
     }
 }

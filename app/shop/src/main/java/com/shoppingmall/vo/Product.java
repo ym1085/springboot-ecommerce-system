@@ -2,6 +2,7 @@ package com.shoppingmall.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.constant.ItemSellStatus;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,9 +10,9 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class ProductVO {
+public class Product {
     private Long productId;
-    private int categoryId;
+    private Long categoryId;
     private String categoryName;
     private String productName;
     private int productPrice;
@@ -21,14 +22,16 @@ public class ProductVO {
     private ItemSellStatus itemSellStatus;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+    private String delYn;
 
     // 1(Product) : 1(ProductFile)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private ProductFilesVO productFiles;
+    private ProductFiles productFiles;
 
-    public ProductVO(
+    @Builder
+    public Product(
             Long productId,
-            int categoryId,
+            Long categoryId,
             String categoryName,
             String productName,
             int productPrice,
@@ -38,7 +41,8 @@ public class ProductVO {
             ItemSellStatus itemSellStatus,
             LocalDateTime createDate,
             LocalDateTime updateDate,
-            ProductFilesVO productFiles
+            ProductFiles productFiles,
+            String delYn
     ) {
         this.productId = productId;
         this.categoryId = categoryId;
@@ -52,5 +56,6 @@ public class ProductVO {
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.productFiles = productFiles;
+        this.delYn = delYn;
     }
 }

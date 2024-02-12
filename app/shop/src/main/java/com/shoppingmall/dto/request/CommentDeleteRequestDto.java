@@ -1,6 +1,6 @@
 package com.shoppingmall.dto.request;
 
-import com.shoppingmall.vo.CommentVO;
+import com.shoppingmall.vo.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +14,8 @@ public class CommentDeleteRequestDto {
     private Long postId;
     private Long commentId;
 
-    public CommentVO toEntity() {
-        return CommentVO.builder()
+    public Comment toEntity() {
+        return Comment.builder()
                 .postId(postId)
                 .commentId(commentId)
                 .build();

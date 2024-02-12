@@ -1,7 +1,7 @@
 package com.shoppingmall.dto.request;
 
 import com.shoppingmall.constant.FileType;
-import com.shoppingmall.vo.PostVO;
+import com.shoppingmall.vo.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,8 +33,8 @@ public class PostSaveRequestDto {
     private List<MultipartFile> files = new ArrayList<>();
     private FileType fileType = FileType.POSTS;
 
-    public PostVO toEntity() {
-        return PostVO.builder()
+    public Post toEntity() {
+        return Post.builder()
                 .postId(postId)
                 .memberId(memberId)
                 .title(title)

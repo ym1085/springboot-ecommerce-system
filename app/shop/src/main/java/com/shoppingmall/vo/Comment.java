@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class CommentVO {
+public class Comment {
     private Long commentId;
     private Long parentId;
     private Long postId;
@@ -20,8 +20,8 @@ public class CommentVO {
     private LocalDateTime updateDate;
 
     @Builder
-    public CommentVO(Long commentId, Long parentId, Long postId, String content, Long memberId,
-                     String delYn, String path, LocalDateTime createDate, LocalDateTime updateDate) {
+    public Comment(Long commentId, Long parentId, Long postId, String content, Long memberId,
+                   String delYn, String path, LocalDateTime createDate, LocalDateTime updateDate) {
         this.commentId = commentId;
         this.parentId = parentId;
         this.postId = postId;

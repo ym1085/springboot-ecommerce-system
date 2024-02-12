@@ -2,6 +2,7 @@ package com.shoppingmall.constant;
 
 public enum FileType {
     POSTS("posts"),
+    PRODUCTS("products"),
     SHOP("shop"),
     ;
 

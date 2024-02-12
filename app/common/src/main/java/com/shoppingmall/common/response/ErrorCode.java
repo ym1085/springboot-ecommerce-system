@@ -32,6 +32,9 @@ public enum ErrorCode {
     FAIL_SAVE_FILES(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다. 다시 시도해주세요."),
     FAIL_DOWNLOAD_FILES(HttpStatus.INTERNAL_SERVER_ERROR, "파일 다운로드에 실패했습니다. 다시 시도해주세요."),
     FAIL_UPLOAD_FILES(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업데이트에 실패했습니다. 다시 시도해주세요."),
+
+    // [PRODUCT]
+    FAIL_SAVE_PRODUCT(HttpStatus.INTERNAL_SERVER_ERROR, "상품 등록에 실패했습니다. 다시 시도해주세요."),
     ;
 
     private final HttpStatus httpStatus;

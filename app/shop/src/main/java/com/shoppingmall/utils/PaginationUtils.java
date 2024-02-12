@@ -31,7 +31,7 @@ public class PaginationUtils {
      * pagination       :   페이지네이션 정보
      */
     public void calculation(SearchRequestDto searchRequestDto) {
-        setTotalPageCount(searchRequestDto);
+        setTotalPageCount(searchRequestDto); // [1], [2], [3], [4], .... 설정
 
         if (searchRequestDto.getPageNo() > this.totalPageCount) {
             searchRequestDto.setPageNo(this.totalPageCount);
@@ -44,11 +44,11 @@ public class PaginationUtils {
             this.endPage = this.totalPageCount;
         }
 
-        setLimitStart(searchRequestDto);
+        setLimitStart(searchRequestDto); // LIMIT 시작 위치 계산
 
-        checkExistsPrevPage();
+        checkExistsPrevPage(); // 이전 페이지 존재 여부 확인
 
-        checkExistsNextPage(searchRequestDto);
+        checkExistsNextPage(searchRequestDto); // 다음 페이지 존재 여부 확인
     }
 
     // 전체 페이지 수 계산 -> ((전체 데이터 갯수 - 1) / 페이징 당 출력할 게시글 개수)) + 1
@@ -57,32 +57,47 @@ public class PaginationUtils {
         this.totalPageCount = ((this.totalRecordCount - 1) / searchRequestDto.getRecordSizePerPage()) + 1;
     }
 
-    // 시작 페이지 셋팅
+    // 시작 페이지 번호 셋팅
+    // ...... 1페이지
+    // ((1 - 1) / 10) * 10 + 1) => 1
+    // ((2 - 1) / 10) * 10 + 1) => 1
+    // ((3 - 1) / 10) * 10 + 1) => 1
+    // ((4 - 1) / 10) * 10 + 1) => 1
+    // ((10 - 1) / 10) * 10 + 1) => 1
+    // ...... 2페이지
+    // ((11 - 1) / 10) * 10 + 1) => 11
     public void setStartPage(SearchRequestDto searchRequestDto) {
-        // ((4 - 1) / 10) * 10 + 1)
-        // ((11 - 1) / 10) * 10 + 1)
         this.startPage = ((searchRequestDto.getPageNo() - 1) / searchRequestDto.getPageSize()) * searchRequestDto.getPageSize() + 1;
     }
 
-    // 끝 페이지 셋팅
+    // 끝 페이지 번호 셋팅
+    // ...... 1페이지
+    // (1 + 10) - 1) => 10
+    // (2 + 10) - 1) => 11
+    // (3 + 10) - 1) => 12
+    // (4 + 10) - 1) => 13
+    // (10 + 10) - 1) => 19
+    // ...... 2페이지
+    // (11 + 10) - 1) => 20
     public void setEndPage(SearchRequestDto searchRequestDto) {
         this.endPage = (this.startPage + searchRequestDto.getPageSize()) - 1;
     }
 
     // LIMIT 시작 위치 계산
+    // (1 - 1) * 10) => 0(offset)
+    // (2 - 1) * 10) => 10(offset)
+    // (3 - 1) * 10) => 20(offset)
+    // (4 - 1) * 10) => 0
     public void setLimitStart(SearchRequestDto searchRequestDto) {
-        // 1 - 1 = 0 * 10 => 0
-        // 2 - 1 = 1 * 10 => 10
-        // 3 - 1 = 2 * 10 => 20
         this.limitStart = (searchRequestDto.getPageNo() - 1) * searchRequestDto.getRecordSizePerPage();
     }
 
-    // 이전 페이지 존재 여부
+    // 이전 페이지 존재 여부 확인
     public void checkExistsPrevPage() {
         this.existsPrevPage = this.startPage != 1;
     }
 
-    // 다음 페이지 존재 여부
+    // 다음 페이지 존재 여부 확인
     public void checkExistsNextPage(SearchRequestDto searchRequestDto) {
         this.existsNextPage = (this.endPage * searchRequestDto.getRecordSizePerPage()) < this.totalRecordCount;
     }

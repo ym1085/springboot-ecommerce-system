@@ -1,6 +1,6 @@
 package com.shoppingmall.mapper;
 
-import com.shoppingmall.vo.MemberVO;
+import com.shoppingmall.vo.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -9,19 +9,19 @@ import java.util.Optional;
 @Mapper
 public interface MemberMapper {
 
-    int join(MemberVO member);
+    int join(Member member);
 
-    void joinWithSocialLogin(MemberVO member);
+    void joinWithSocialLogin(Member member);
 
-    Optional<MemberVO> getMemberByEmail(@Param("email") String email, @Param("registrationId") String registrationId);
+    Optional<Member> getMemberByEmail(@Param("email") String email, @Param("registrationId") String registrationId);
 
-    Optional<MemberVO> getMemberById(Long memberId);
+    Optional<Member> getMemberById(Long memberId);
 
-    Optional<MemberVO> getMemberByEmailWithSocialLogin(String email, String registrationId);
+    Optional<Member> getMemberByEmailWithSocialLogin(String email, String registrationId);
 
-    void updateMemberByEmailAndPicture(MemberVO member);
+    void updateMemberByEmailAndPicture(Member member);
 
-    Optional<MemberVO> getMemberByAccount(String username);
+    Optional<Member> getMemberByAccount(String username);
 
     int checkDuplicateMemberAccount(String account);
 }

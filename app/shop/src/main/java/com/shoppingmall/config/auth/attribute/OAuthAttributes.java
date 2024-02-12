@@ -2,7 +2,7 @@ package com.shoppingmall.config.auth.attribute;
 
 import com.shoppingmall.constant.Role;
 import com.shoppingmall.constant.SocialType;
-import com.shoppingmall.vo.MemberVO;
+import com.shoppingmall.vo.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -101,8 +101,8 @@ public class OAuthAttributes {
     }
 
     /* 유저 소셜 로그인 진행 -> 신규/기존 유저 구분 -> 회원 정보 DB 저장/업데이트 진행할 때 사용 */
-    public MemberVO toEntity() {
-        return MemberVO.builder()
+    public Member toEntity() {
+        return Member.builder()
                 .name(name)
                 .account(account)
                 .email(email)

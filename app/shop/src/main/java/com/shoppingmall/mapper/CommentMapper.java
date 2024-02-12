@@ -1,6 +1,6 @@
 package com.shoppingmall.mapper;
 
-import com.shoppingmall.vo.CommentVO;
+import com.shoppingmall.vo.Comment;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -9,17 +9,17 @@ import java.util.List;
 public interface CommentMapper {
 
     /* 계층형 댓글 리스트 조회 */
-    List<CommentVO> getComments(Long postId);
+    List<Comment> getComments(Long postId);
 
     int getCommentCountByCommentId(Long commentId);
 
-    int saveComment(CommentVO comment);
+    int saveComment(Comment comment);
 
-    int deleteComment(CommentVO comment);
+    int deleteComment(Comment comment);
 
-    int deleteCommentReply(CommentVO comment);
+    int deleteCommentReply(Comment comment);
 
     int getCommentReplyCountByCommentId(Long commentId);
 
-    int updateCommentByCommentId(CommentVO comment);
+    int updateCommentByCommentId(Comment comment);
 }

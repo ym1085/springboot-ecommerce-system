@@ -5,7 +5,7 @@
 <mapper namespace="com.shoppingmall.mapper.CommentMapper">
 
     <!-- 상세 게시글 화면에 들어오는 순간 댓글 목록도 같이 나간다 -->
-    <select id="getComments" parameterType="long" resultType="CommentVO">
+    <select id="getComments" parameterType="long" resultType="Comment">
         WITH RECURSIVE CTE AS (
             SELECT
                 PARENT.COMMENT_ID,
@@ -71,7 +71,7 @@
 
         (*) null을 넣는 이유는 재귀 쿼리 참고하시면 될 것 같습니다.
     -->
-    <insert id="saveComment" parameterType="CommentVO">
+    <insert id="saveComment" parameterType="Comment">
         <!--<selectKey keyProperty="commentId" order="AFTER" resultType="int" >
             SELECT COMMENT_ID.nextval FROM DUAL
         </selectKey>-->
@@ -104,7 +104,7 @@
     </insert>
 
     <!-- 부모 댓글 삭제 시 하위 대댓글도 전부 'N' 삭제 처리 -->
-    <update id="deleteComment" parameterType="CommentVO">
+    <update id="deleteComment" parameterType="Comment">
         UPDATE COMMENT
         SET DEL_YN = 'Y'
         WHERE COMMENT_ID IN (
@@ -119,7 +119,7 @@
     </update>
 
     <!-- 하위 대댓글 삭제 시 사용 -->
-    <update id="deleteCommentReply" parameterType="CommentVO">
+    <update id="deleteCommentReply" parameterType="Comment">
         UPDATE COMMENT
         SET DEL_YN = 'Y'
         WHERE COMMENT_ID = #{commentId}
@@ -140,7 +140,7 @@
     </select>
 
     <!-- 댓글 수정, 댓글은 1:1 로만 수정이 가능 -->
-    <update id="updateCommentByCommentId" parameterType="CommentVO">
+    <update id="updateCommentByCommentId" parameterType="Comment">
         UPDATE COMMENT
         SET CONTENT = #{content}
         WHERE COMMENT_ID = #{commentId}

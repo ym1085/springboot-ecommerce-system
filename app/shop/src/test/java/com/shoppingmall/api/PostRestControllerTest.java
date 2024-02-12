@@ -2,7 +2,7 @@ package com.shoppingmall.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingmall.ShopApplication;
-import com.shoppingmall.mapper.FileMapper;
+import com.shoppingmall.mapper.PostFileMapper;
 import com.shoppingmall.mapper.PostMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +46,7 @@ class PostRestControllerTest {
     private PostMapper postMapper;
 
     @Autowired
-    private FileMapper fileMapper;
+    private PostFileMapper postFileMapper;
 
     @BeforeEach
     public void setup() {
@@ -199,6 +199,6 @@ class PostRestControllerTest {
                 .andDo(print());
 
         assertThat(postMapper.getPostByPostId(1L)).isEmpty();
-        assertThat(fileMapper.getFilesByPostId(1L)).isEmpty();
+        assertThat(postFileMapper.getFilesByPostId(1L)).isEmpty();
     }
 }
