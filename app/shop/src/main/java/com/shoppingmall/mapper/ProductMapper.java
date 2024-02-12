@@ -1,6 +1,7 @@
 package com.shoppingmall.mapper;
 
-import com.shoppingmall.vo.ProductVO;
+import com.shoppingmall.dto.request.SearchRequestDto;
+import com.shoppingmall.vo.Product;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -9,7 +10,11 @@ import java.util.Optional;
 @Mapper
 public interface ProductMapper {
 
-    List<ProductVO> getProducts();
+    List<Product> getProducts(SearchRequestDto searchRequestDto);
 
-    Optional<ProductVO> getProductByProductId(Long productId);
+    Optional<Product> getProductByProductId(Long productId);
+
+    int count(SearchRequestDto searchRequestDto);
+
+    int saveProduct(Product product);
 }

@@ -4,9 +4,12 @@ import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.constant.FileType;
 import com.shoppingmall.constant.OSType;
-import com.shoppingmall.dto.request.FileRequestDto;
+import com.shoppingmall.dto.request.BaseFileSaveRequestDto;
+import com.shoppingmall.dto.request.PostFileSaveRequestDto;
+import com.shoppingmall.dto.request.ProductFileSaveRequestDto;
 import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.exception.FailDownloadFilesException;
+import com.shoppingmall.exception.FailSaveFileException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,63 +74,92 @@ public class FileHandlerHelper {
         this.resourceLoader = resourceLoader;
     }
 
-    public List<FileRequestDto> uploadFiles(List<MultipartFile> multipartFiles, FileType fileType) {
-        List<FileRequestDto> files = new ArrayList<>();
+    /**
+     * Linux Server 특정 경로(외부 경로)에 도메인에 따라서(POSTS, PRODUCT) 파일 업로드 진행
+     * @param multipartFiles 업로드 하고자 하는 파일 목록 (리스트)
+     * @param fileType 파일 경로 지정 시 사용되는 이름 ()
+     * @return
+     */
+    public List<BaseFileSaveRequestDto> uploadFiles(List<MultipartFile> multipartFiles, FileType fileType) {
+        List<BaseFileSaveRequestDto> postFileSaveRequestDtos = new ArrayList<>();
         for (MultipartFile file : multipartFiles) {
             if (file.isEmpty()) {
                 continue;
             }
-            FileRequestDto fileRequestDto = uploadFileToServer(file, fileType); // client 측 파일을 서버 특정 경로에 Upload
-            files.add(fileRequestDto);
+            BaseFileSaveRequestDto baseFileSaveRequestDto = transferTo(file, fileType);
+            postFileSaveRequestDtos.add(baseFileSaveRequestDto);
         }
-        return files;
+        return postFileSaveRequestDtos;
     }
 
-    private FileRequestDto uploadFileToServer(MultipartFile multipartFile, FileType fileType) {
+    private BaseFileSaveRequestDto transferTo(MultipartFile multipartFile, FileType fileType) {
+        BaseFileSaveRequestDto baseFileSaveRequestDto = null;
         if (multipartFile.isEmpty()) {
             return null;
         }
 
-        String originalFilename = multipartFile.getOriginalFilename();
-        String ext = getFileExtensionByOriginalFileName(originalFilename);
-        if (!validateFileExtension(ext)) {
-            return null;
-        }
-
-        String storedFileName = generateStoredFileName(originalFilename);
-        String today = getCurrentLocalDateTime();
-
-        String fileUploadPath = getFileUploadPathTotransfer(fileType, today, storedFileName); // file upload path on physical server
-        File uploadFile = new File(fileUploadPath);
-
-        transferTo(multipartFile, fileUploadPath, uploadFile); // upload file to server
-
-        return FileRequestDto.builder()
-                .originFileName(multipartFile.getOriginalFilename())
-                .storedFileName(storedFileName)
-                .filePath(fileUploadPath)
-                .fileSize(multipartFile.getSize())
-                .fileType(ext)
-                .fileAttached("Y")
-                .build();
-    }
-
-    private void transferTo(MultipartFile multipartFile, String fileUploadPath, File uploadFile) {
         try {
-            log.info("start transfer file to server, fileUploadPath = {}", fileUploadPath);
-            multipartFile.transferTo(uploadFile);
-            log.info("finish transfer file to server, fileUploadPath = {}", fileUploadPath);
+            String originalFilename = multipartFile.getOriginalFilename();
+            long fileSize = multipartFile.getSize();
+
+            String ext = getFileExtension(originalFilename);
+            if (!validateFileExtension(ext)) {
+                return null;
+            }
+
+            String storedFileName = createStoredFileName(originalFilename);
+            String today = getCurrentDateTime();
+
+            String fileUploadPath = createFileUploadDirAndGetPath(fileType, today, storedFileName);
+            File uploadFile = new File(fileUploadPath);
+
+            multipartFile.transferTo(uploadFile); // upload file to server host dir
+            baseFileSaveRequestDto = buildFileSaveRequestDto(fileType, originalFilename, storedFileName, fileUploadPath, fileSize, ext);
         } catch (IOException e) {
             log.error("[IOException] error occurred, e = {}", e.getMessage());
+            throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
         } catch (IllegalStateException e) {
             log.error("[IllegalStateException] error occurred, e = {}", e.getMessage());
+            throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
+        } catch (FailSaveFileException e) {
+            log.error("[FailSaveFileException] error occurred, e = {}", e.getMessage());
+            throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
         } catch (Exception e) {
             log.error("[Exception] exception occurred, e = {}", e.getMessage());
+            throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
+        }
+        return baseFileSaveRequestDto;
+    }
+
+    private BaseFileSaveRequestDto buildFileSaveRequestDto(FileType fileType, String originalFilename, String storedFileName, String fileUploadPath, long fileSize, String ext) {
+        switch (fileType) {
+            case POSTS:
+                return PostFileSaveRequestDto
+                        .builder()
+                        .originFileName(originalFilename)
+                        .storedFileName(storedFileName)
+                        .filePath(fileUploadPath)
+                        .fileSize(fileSize)
+                        .fileType(ext)
+                        .fileAttached("Y")
+                        .build();
+            case PRODUCTS:
+                return ProductFileSaveRequestDto
+                        .builder()
+                        .originFileName(originalFilename)
+                        .storedFileName(storedFileName)
+                        .filePath(fileUploadPath)
+                        .fileSize(fileSize)
+                        .fileType(ext)
+                        .fileAttached("Y")
+                        .build();
+            default:
+                throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
         }
     }
 
-    public String generateStoredFileName(String originalFilename) {
-        return generateUUID() + "." + getFileExtensionByOriginalFileName(originalFilename);
+    public String createStoredFileName(String originalFilename) {
+        return generateUUID() + "." + getFileExtension(originalFilename);
     }
 
     public String generateUUID() {
@@ -137,20 +169,21 @@ public class FileHandlerHelper {
     /**
      * 디렉토리 경로 yyyy-MM-dd 형태로 생성하기 위해 사용
      */
-    private String getCurrentLocalDateTime() {
+    private String getCurrentDateTime() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     /**
      * 특정 경로에 dir 없으면 해당 경로 dir 생성 후 파일 업로드 경로 생성하여 반환
+     * FIXME: 아래 함수 수정해주세요.. depth가 너무 많음
      */
-    private String getFileUploadPathTotransfer(FileType fileType, String today, String storedFileName) {
+    private String createFileUploadDirAndGetPath(FileType fileType, String today, String storedFileName) {
         return (fileType == FileType.POSTS)
                 ? getPhysicalExternalFileUploadPath(FileType.POSTS.getFileTypeName(), today) + File.separator + storedFileName
                 : getPhysicalExternalFileUploadPath(FileType.SHOP.getFileTypeName(), today) + File.separator + storedFileName;
     }
 
-    private String getFileExtensionByOriginalFileName(String originalFilename) {
+    private String getFileExtension(String originalFilename) {
         return StringUtils.getFilenameExtension(originalFilename);
     }
 

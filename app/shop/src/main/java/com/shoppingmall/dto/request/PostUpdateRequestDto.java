@@ -1,6 +1,6 @@
 package com.shoppingmall.dto.request;
 
-import com.shoppingmall.vo.PostVO;
+import com.shoppingmall.vo.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,8 +31,8 @@ public class PostUpdateRequestDto {
 
     private List<MultipartFile> files = new ArrayList<>();
 
-    public PostVO toEntity() {
-        return PostVO.builder()
+    public Post toEntity() {
+        return Post.builder()
                 .postId(postId)
                 .memberId(memberId)
                 .title(title)

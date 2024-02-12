@@ -42,10 +42,10 @@ public class SecurityController {
         return "OAuth2 세션 정보 확인";
     }
 
-    @GetMapping({"/", ""})
+    /*@GetMapping({"/", ""})
     public @ResponseBody String index() {
         return "index";
-    }
+    }*/
 
     @GetMapping("/user")
     public @ResponseBody String user(@AuthenticationPrincipal PrincipalUserDetails principalUserDetails) {

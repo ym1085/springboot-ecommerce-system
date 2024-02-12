@@ -2,8 +2,8 @@ package com.shoppingmall.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.constant.ItemSellStatus;
-import com.shoppingmall.vo.ProductFilesVO;
-import com.shoppingmall.vo.ProductVO;
+import com.shoppingmall.vo.ProductFiles;
+import com.shoppingmall.vo.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ProductDetailResponseDto {
     private Long productId;
-    private int categoryId;
+    private Long categoryId;
     private String categoryName;
     private String productName;
     private int productPrice;
@@ -27,11 +27,12 @@ public class ProductDetailResponseDto {
     private ItemSellStatus itemSellStatus;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+    private String delYn;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private ProductFilesVO productFiles;
+    private ProductFiles productFiles;
 
-    public static ProductDetailResponseDto toDto(ProductVO product) {
+    public static ProductDetailResponseDto toDto(Product product) {
         return ProductDetailResponseDto.builder()
                 .productId(product.getProductId())
                 .categoryId(product.getCategoryId())
@@ -44,6 +45,8 @@ public class ProductDetailResponseDto {
                 .itemSellStatus(product.getItemSellStatus())
                 .createDate(product.getCreateDate())
                 .updateDate(product.getUpdateDate())
+                .productFiles(product.getProductFiles())
+                .delYn(product.getDelYn())
                 .build();
     }
 }

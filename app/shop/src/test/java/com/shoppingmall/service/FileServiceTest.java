@@ -1,7 +1,7 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.ShopApplication;
-import com.shoppingmall.dto.request.FileRequestDto;
+import com.shoppingmall.dto.request.PostFileSaveRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,9 +38,9 @@ class FileServiceTest {
         SecurityContextHolder.setContext(securityContext);
     }
 
-    private static List<FileRequestDto> getFileRequestDtoBuilder() {
+    private static List<PostFileSaveRequestDto> getFileRequestDtoBuilder() {
         return Arrays.asList(
-                FileRequestDto.builder()
+                PostFileSaveRequestDto.builder()
                         .originFileName("file1.jpg")
                         .storedFileName(UUID.randomUUID().toString() + ".jpg")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpg")
@@ -48,7 +48,7 @@ class FileServiceTest {
                         .fileType("jpg")
                         .fileAttached("Y")
                         .build(),
-                FileRequestDto.builder()
+                PostFileSaveRequestDto.builder()
                         .originFileName("file2.jpg")
                         .storedFileName(UUID.randomUUID().toString() + ".png")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".png")
@@ -56,7 +56,7 @@ class FileServiceTest {
                         .fileType("png")
                         .fileAttached("Y")
                         .build(),
-                FileRequestDto.builder()
+                PostFileSaveRequestDto.builder()
                         .originFileName("file2.jpg")
                         .storedFileName(UUID.randomUUID().toString() + ".jpeg")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpeg")
@@ -71,6 +71,6 @@ class FileServiceTest {
     @DisplayName("게시글 파일 저장 - 성공")
     void testSaveFilesSuccess() {
         Long postId = 1L;
-        List<FileRequestDto> fileRequestDtos = getFileRequestDtoBuilder();
+        List<PostFileSaveRequestDto> postFileSaveRequestDtos = getFileRequestDtoBuilder();
     }
 }

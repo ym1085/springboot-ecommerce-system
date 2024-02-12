@@ -9,7 +9,7 @@ import com.shoppingmall.exception.FailDeleteCommentException;
 import com.shoppingmall.exception.FailSaveCommentException;
 import com.shoppingmall.exception.FailUpdateCommentException;
 import com.shoppingmall.mapper.CommentMapper;
-import com.shoppingmall.vo.CommentVO;
+import com.shoppingmall.vo.Comment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class CommentService {
             }
         }
 
-        CommentVO comment = new CommentVO();
+        Comment comment = new Comment();
         int responseCode = commentMapper.saveComment(comment);
         if (responseCode == 0) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_COMMENT.getMessage());

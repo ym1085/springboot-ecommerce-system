@@ -2,7 +2,7 @@ package com.shoppingmall.config.auth;
 
 import com.shoppingmall.config.auth.attribute.OAuthAttributes;
 import com.shoppingmall.config.auth.attribute.SessionMember;
-import com.shoppingmall.vo.MemberVO;
+import com.shoppingmall.vo.Member;
 import com.shoppingmall.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +51,7 @@ public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserR
         String providerToken = userRequest.getAccessToken().getTokenValue();
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttribute, oAuth2User.getAttributes(), providerToken);
 
-        MemberVO member = saveOrUpdate(attributes);
+        Member member = saveOrUpdate(attributes);
         SessionMember sessionMember = new SessionMember(member);
         session.setAttribute(SESSION_NAME, sessionMember);
 
@@ -72,8 +72,8 @@ public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserR
     /**
      * save member information at social login
      */
-    private MemberVO saveOrUpdate(OAuthAttributes attributes) {
-        MemberVO findMember = memberMapper.getMemberByEmail(attributes.getEmail(), attributes.getRegistrationId()).orElse(new MemberVO());
+    private Member saveOrUpdate(OAuthAttributes attributes) {
+        Member findMember = memberMapper.getMemberByEmail(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
         if (findMember.getEmail() != null
                 && attributes.getEmail().equalsIgnoreCase(findMember.getEmail())
                 && attributes.getRegistrationId().equalsIgnoreCase(findMember.getRegistrationId())) {
@@ -82,15 +82,15 @@ public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserR
                 findMember.updateRenewalMember(attributes.getName(), attributes.getPicture());
                 memberMapper.updateMemberByEmailAndPicture(findMember);
             }
-            return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail(), attributes.getRegistrationId()).orElse(new MemberVO());
+            return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
         } else {
-            MemberVO savedMember = attributes.toEntity();
+            Member savedMember = attributes.toEntity();
             memberMapper.joinWithSocialLogin(savedMember);
-            return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail(), attributes.getRegistrationId()).orElse(new MemberVO());
+            return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
         }
     }
 
-    private boolean isUpdateNameAndPictureCondition(MemberVO findMember, OAuthAttributes attributes) {
+    private boolean isUpdateNameAndPictureCondition(Member findMember, OAuthAttributes attributes) {
         boolean flag = true;
         if (findMember.getPicture().equalsIgnoreCase(attributes.getPicture()) && findMember.getName().equalsIgnoreCase(attributes.getName())) {
             flag = false;

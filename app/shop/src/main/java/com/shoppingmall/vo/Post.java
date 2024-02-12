@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class PostVO {
+public class Post {
     private Long postId;
     private Long memberId;
     private String title;
@@ -28,15 +28,15 @@ public class PostVO {
     private LocalDateTime deleteDate;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    List<PostFilesVO> postFiles = new ArrayList<>();
+    List<PostFiles> postFiles = new ArrayList<>();
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    List<CommentVO> comments = new ArrayList<>();
+    List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public PostVO(Long postId, Long memberId, String title, String content, int categoryId,
-                  String categoryName, String writer, int readCnt, String fixedYn, String delYn,
-                  LocalDateTime createDate, LocalDateTime updateDate, LocalDateTime deleteDate,
-                  List<PostFilesVO> postFiles, List<CommentVO> comments) {
+    public Post(Long postId, Long memberId, String title, String content, int categoryId,
+                String categoryName, String writer, int readCnt, String fixedYn, String delYn,
+                LocalDateTime createDate, LocalDateTime updateDate, LocalDateTime deleteDate,
+                List<PostFiles> postFiles, List<Comment> comments) {
         this.postId = postId;
         this.memberId = memberId;
         this.title = title;

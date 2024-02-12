@@ -2,21 +2,18 @@ package com.shoppingmall.service;
 
 import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.constant.FileType;
-import com.shoppingmall.dto.request.FileRequestDto;
-import com.shoppingmall.dto.request.PostSaveRequestDto;
-import com.shoppingmall.dto.request.PostUpdateRequestDto;
-import com.shoppingmall.dto.request.SearchRequestDto;
+import com.shoppingmall.dto.request.*;
 import com.shoppingmall.dto.response.*;
 import com.shoppingmall.exception.FailSaveFileException;
 import com.shoppingmall.exception.FailSavePostException;
 import com.shoppingmall.exception.FailUpdateFilesException;
 import com.shoppingmall.mapper.CommentMapper;
-import com.shoppingmall.mapper.FileMapper;
+import com.shoppingmall.mapper.PostFileMapper;
 import com.shoppingmall.mapper.PostMapper;
 import com.shoppingmall.utils.FileHandlerHelper;
 import com.shoppingmall.utils.PaginationUtils;
-import com.shoppingmall.vo.PostFilesVO;
-import com.shoppingmall.vo.PostVO;
+import com.shoppingmall.vo.PostFiles;
+import com.shoppingmall.vo.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,7 +34,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostMapper postMapper;
-    private final FileMapper fileMapper;
+    private final PostFileMapper postFileMapper;
     private final FileHandlerHelper fileHandlerHelper;
     private final CommentMapper commentMapper;
 
@@ -59,10 +56,10 @@ public class PostService {
         return new PagingResponseDto<>(posts, pagination);
     }
 
-    private static PostResponseDto addPostFiles(PostVO post) {
+    private static PostResponseDto addPostFiles(Post post) {
         PostResponseDto postResponseDto = PostResponseDto.toDto(post);
         List<PostFileResponseDto> postFileResponseDtos = new ArrayList<>();
-        for (PostFilesVO postFile : post.getPostFiles()) {
+        for (PostFiles postFile : post.getPostFiles()) {
             if (postFile.getPostFileId() == null) {
                 postResponseDto.addPostFiles(Collections.emptyList());
                 continue;
@@ -99,7 +96,7 @@ public class PostService {
     }
 
     private List<PostFileResponseDto> getFilesByPostId(Long postId) {
-        return fileMapper.getFilesByPostId(postId)
+        return postFileMapper.getFilesByPostId(postId)
                 .stream()
                 .map(PostFileResponseDto::toDto)
                 .collect(Collectors.toList());
@@ -107,39 +104,37 @@ public class PostService {
 
     @Transactional
     public Long savePost(PostSaveRequestDto postSaveRequestDto) {
-        PostVO post = postSaveRequestDto.toEntity();
+        Post post = postSaveRequestDto.toEntity();
         int responseCode = postMapper.savePost(post);
         if (responseCode == 0) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_POST.getMessage());
             throw new FailSavePostException(ErrorCode.FAIL_SAVE_POST);
         }
 
-        List<FileRequestDto> fileRequestDtos = new ArrayList<>();
         if (!postSaveRequestDto.getFiles().isEmpty()) {
-            fileRequestDtos = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getFileType());
-            responseCode = saveFiles(post.getPostId(), fileRequestDtos);
+            List<BaseFileSaveRequestDto> baseFileSaveRequestDto = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getFileType());
+            responseCode = saveFiles(post.getPostId(), baseFileSaveRequestDto);
             if (responseCode == 0) {
                 log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_FILES);
                 throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
             }
         }
-
         return post.getPostId();
     }
 
-    public int saveFiles(Long postId, List<FileRequestDto> files) {
+    public int saveFiles(Long postId, List<BaseFileSaveRequestDto> files) {
         if (CollectionUtils.isEmpty(files) || files.get(0) == null || postId == null) {
             return 0;
         }
 
-        for (FileRequestDto file : files) {
+        for (BaseFileSaveRequestDto file : files) {
             if (file == null) {
                 continue;
             }
-            file.setPostId(postId);
+            file.setId(postId);
         }
 
-        return fileMapper.saveFiles(files);
+        return postFileMapper.saveFiles(files);
     }
 
     @Transactional
@@ -166,9 +161,9 @@ public class PostService {
     private int updateFilesByPostId(Long postId, List<MultipartFile> files) {
         fileHandlerHelper.deleteFiles(getFileResponseDtos(postId)); // 서버 특정 경로에 존재하는 파일 삭제
 
-        int filesCount = fileMapper.countFilesByPostId(postId);
+        int filesCount = postFileMapper.countFilesByPostId(postId);
         if (filesCount > 0) {
-            int responseCode = fileMapper.deleteFilesByPostId(postId); // DB의 파일 정보 삭제
+            int responseCode = postFileMapper.deleteFilesByPostId(postId); // DB의 파일 정보 삭제
             if (responseCode > 0) {
                 log.info("success delete files from database");
             } else {
@@ -176,11 +171,9 @@ public class PostService {
             }
         }
 
-        List<FileRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files, FileType.POSTS);
-        fileRequestDtos.forEach(fileRequestDto -> fileRequestDto.setPostId(postId));
-        int responseCode = fileMapper.saveFiles(fileRequestDtos);
-
-        return responseCode;
+        List<BaseFileSaveRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files, FileType.POSTS);
+        fileRequestDtos.forEach(fileRequestDto -> fileRequestDto.setId(postId));
+        return postFileMapper.saveFiles(fileRequestDtos);
     }
 
     @Transactional
@@ -191,7 +184,7 @@ public class PostService {
             List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
             if (!CollectionUtils.isEmpty(fileResponseDtos)) {
                 fileHandlerHelper.deleteFiles(fileResponseDtos);
-                responseCode = fileMapper.deleteUpdateFilesByPostId(postId);
+                responseCode = postFileMapper.deleteUpdateFilesByPostId(postId);
             }
         }
 
@@ -203,7 +196,7 @@ public class PostService {
     }
 
     private List<FileResponseDto> getFileResponseDtos(long postId) {
-        return fileMapper.getFilesByPostId(postId)
+        return postFileMapper.getFilesByPostId(postId)
                 .stream()
                 .map(FileResponseDto::toDto)
                 .collect(Collectors.toList());

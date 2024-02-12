@@ -4,7 +4,7 @@
 
 <mapper namespace="com.shoppingmall.mapper.ProductMapper">
 
-    <resultMap id="ProductResultMap" type="ProductVO">
+    <resultMap id="ProductResultMap" type="Product">
         <id property="productId" column="product_id" />
         <result property="categoryId" column="category_id" />
         <result property="categoryName" column="categoryName" />
@@ -21,7 +21,7 @@
         <association property="productFiles" resultMap="ProductFilesResultMap" />
     </resultMap>
 
-    <resultMap id="ProductFilesResultMap" type="ProductFilesVO">
+    <resultMap id="ProductFilesResultMap" type="ProductFiles">
         <id property="productFileId" column="product_file_id" />
         <result property="productNumber" column="product_number" />
         <result property="originFileName" column="origin_file_name" />
@@ -34,7 +34,7 @@
         <result property="productId" column="product_id" />
     </resultMap>
 
-    <select id="getProducts" resultMap="ProductResultMap">
+    <select id="getProducts" parameterType="SearchRequestDto" resultMap="ProductResultMap">
         SELECT
             product.product_id,
             product.category_id,
@@ -56,7 +56,15 @@
                  LEFT JOIN PRODUCT_FILE product_file
                            ON product.product_id = product_file.product_id
         ORDER BY create_date DESC
-        LIMIT 20;
+        /*LIMIT 20;*/
+        LIMIT #{pagination.limitStart}, #{recordSizePerPage}
+    </select>
+
+    <!-- 상품 수 카운팅 -->
+    <select id="count" parameterType="SearchRequestDto" resultType="int">
+        SELECT COUNT(*)
+        FROM PRODUCT P
+        WHERE P.DEL_YN != 'Y'
     </select>
 
     <select id="getProductByProductId" parameterType="long" resultMap="ProductResultMap">
@@ -82,5 +90,9 @@
                            ON product.product_id = product_file.product_id
         WHERE product.product_id = #{productId}
     </select>
+
+    <insert id="saveProducts" parameterType="Product">
+        /* TODO: 상품 등록 진행 */
+    </insert>
 
 </mapper>

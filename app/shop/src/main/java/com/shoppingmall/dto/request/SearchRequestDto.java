@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SearchRequestDto {
-
     private int pageNo;                     // 현재 페이지 번호
     private int recordSizePerPage;          // 페이징 당 출력할 게시글 개수
     private int pageSize;                   // 화면 하단에 출력할 페이지 사이즈 ---> 5로 지정 -> 1 ~ 5까지, 10로 지정 -> 1 ~ 10 페이지 정보
@@ -26,5 +25,4 @@ public class SearchRequestDto {
     public int getOffset() {
         return (this.pageNo - 1) * recordSizePerPage;
     }
-
 }

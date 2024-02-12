@@ -29,7 +29,7 @@ function setURLQueryString() {
     });
 }
 
-function movePageWithPageNo(pageNo) {
+/*function movePageWithPageNo(pageNo) {
     const searchForm = document.getElementById('searchForm');
     const queryString = {
         pageNo: pageNo ? pageNo : 1,
@@ -39,7 +39,7 @@ function movePageWithPageNo(pageNo) {
         searchKeyword: searchForm.searchKeyword.value,
     };
     location.href = location.pathname + '?' + new URLSearchParams(queryString).toString();
-}
+}*/
 
 function showDetailPost(postId) {
     const queryString = new URLSearchParams(location.search);

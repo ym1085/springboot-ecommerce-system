@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class PostFilesVO {
+public class PostFiles {
     private Long postFileId;
     private Long postId;
     private String originFileName;
