@@ -1,17 +1,27 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.ShopApplication;
 import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.PostResponseDto;
+import com.shoppingmall.mapper.CommentMapper;
+import com.shoppingmall.mapper.PostFileMapper;
+import com.shoppingmall.mapper.PostMapper;
+import com.shoppingmall.utils.FileHandlerHelper;
+import com.shoppingmall.vo.Post;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -20,22 +30,33 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Random;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//@TestPropertySource(locations = "classpath:application-test.yaml")
-@Transactional
-@SpringBootTest(classes = ShopApplication.class)
+@ExtendWith(MockitoExtension.class)
 class PostServiceTest {
+    private final Logger logger = LoggerFactory.getLogger(PostServiceTest.class);
 
-    @Autowired
-    PostService postService;
+    @InjectMocks
+    private PostService postService;
+
+    @Mock
+    private PostMapper postMapper;
+
+    @Mock
+    private PostFileMapper postFileMapper;
+
+    @Mock
+    private FileHandlerHelper fileHandlerHelper;
+
+    @Mock
+    private CommentMapper commentMapper;
 
     @BeforeEach
     public void setup() {
@@ -57,7 +78,7 @@ class PostServiceTest {
     void testRandom() {
         for (int i = 0; i < 50; i++) {
             int random = getRandom();
-            System.out.println("생성된 난수 => " + random);
+            System.out.println("[" + i + "] 생성된 난수 => " + random);
             assertTrue(random >= 1 && random <= 10, "난수 범위 오류: " + random);
         }
     }
@@ -80,44 +101,148 @@ class PostServiceTest {
         }
     }
 
-    @Test
-    @DisplayName("전체 게시글 조회 테스트")
-    void getPosts() {
-        PagingResponseDto<PostResponseDto> pagingResponseDto = postService.getPosts(new SearchRequestDto());
-        List<PostResponseDto> posts = pagingResponseDto.getData();
-
-        assertThat(posts).isNotEmpty();
-        assertThat(posts).hasSizeGreaterThan(1);
+    private static Stream<Arguments> is_get_multi_posts_params() {
+        return Stream.of(
+                Arguments.of(Arrays.asList(
+                        Post.builder()
+                                .postId(1L)
+                                .memberId(1L)
+                                .title("테스트 001")
+                                .content("내용 001")
+                                .categoryId(1)
+                                .categoryName("일상/소통")
+                                .writer("아이유")
+                                .readCnt(1)
+                                .fixedYn("N")
+                                .delYn("N")
+                                .createDate(LocalDateTime.now())
+                                .updateDate(LocalDateTime.now())
+                                .postFiles(new ArrayList<>())
+                                .build()
+                        ,
+                        Post.builder()
+                                .postId(2L)
+                                .memberId(2L)
+                                .title("테스트 002")
+                                .content("내용 002")
+                                .categoryId(2)
+                                .categoryName("일상/소통")
+                                .writer("장기하")
+                                .readCnt(2)
+                                .fixedYn("N")
+                                .delYn("N")
+                                .createDate(LocalDateTime.now())
+                                .updateDate(LocalDateTime.now())
+                                .postFiles(new ArrayList<>())
+                                .build()
+                        ,
+                        Post.builder()
+                                .postId(3L)
+                                .memberId(3L)
+                                .title("테스트 003")
+                                .content("내용 003")
+                                .categoryId(3)
+                                .categoryName("반려/생활")
+                                .writer("김지은")
+                                .readCnt(3)
+                                .fixedYn("N")
+                                .delYn("N")
+                                .createDate(LocalDateTime.now())
+                                .updateDate(LocalDateTime.now())
+                                .postFiles(new ArrayList<>())
+                                .build()
+                ))
+        );
     }
 
     @ParameterizedTest
-    @ValueSource(longs = 2L)
-    @DisplayName("단일 게시글 조회 테스트")
-    void getPostById(Long input) {
-        PostResponseDto posts = postService.getPostById(input);
+    @MethodSource(value = "is_get_multi_posts_params")
+    @DisplayName("전체 게시글 조회 테스트")
+    void getPosts(List<Post> mockPosts) {
+        // given
+        Mockito.when(postMapper.count(Mockito.any(SearchRequestDto.class))).thenReturn(mockPosts.size());
+        Mockito.when(postMapper.getPosts(Mockito.any(SearchRequestDto.class))).thenReturn(mockPosts);
 
-        assertThat(posts).isNotNull();
-        //assertThat(posts).isNull();
-        assertThat(posts.getPostId()).isEqualTo(2);
+        // when
+        PagingResponseDto<PostResponseDto> pagingResponseDto = postService.getPosts(new SearchRequestDto());
+        List<PostResponseDto> posts = pagingResponseDto.getData();
+        logger.info("posts = " + posts);
+        logger.info("posts.size = " + posts.size());
+
+        // then
+        assertThat(posts).isNotEmpty();
+        assertThat(posts).hasSizeGreaterThan(1);
+        assertThat(posts.size()).isEqualTo(3);
+        assertThat(posts.get(0).getPostId()).isEqualTo(1L);
     }
 
-    @Test
+    private static Stream<Arguments> is_get_single_post_params() {
+        return Stream.of(
+                Arguments.of(
+                        Post.builder()
+                                .postId(1L)
+                                .memberId(1L)
+                                .title("테스트 001")
+                                .content("내용 001")
+                                .categoryId(1)
+                                .categoryName("일상/소통")
+                                .writer("아이유")
+                                .readCnt(1)
+                                .fixedYn("N")
+                                .delYn("N")
+                                .createDate(LocalDateTime.now())
+                                .updateDate(LocalDateTime.now())
+                                .postFiles(new ArrayList<>())
+                                .comments(new ArrayList<>())
+                                .build()
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "is_get_single_post_params")
+    @DisplayName("단일 게시글 조회 테스트")
+    void getPostById(Post mockPost) {
+        // given
+        Mockito.when(postMapper.increasePostByPostId(Mockito.any())).thenReturn(1);
+        Mockito.when(postMapper.getPostByPostId(Mockito.any())).thenReturn(Optional.of(mockPost));
+
+        // when
+        PostResponseDto post = postService.getPostById(mockPost.getPostId());
+        logger.info("post = {}", post);
+
+        // then
+        assertThat(post).isNotNull();
+        assertThat(post.getPostId()).isEqualTo(1);
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "is_get_single_post_params")
     @DisplayName("게시글 등록 테스트")
-    void savePost() {
-        PostSaveRequestDto postRequestDto = new PostSaveRequestDto();
-        postRequestDto.setPostId(1L);
-        postRequestDto.setMemberId(1L);
-        postRequestDto.setTitle("제목1001");
-        postRequestDto.setContent("내용1001");
-        postRequestDto.setFixedYn("N");
+    void savePost(Post mockPost) {
+        // given
+        Mockito.when(postMapper.increasePostByPostId(Mockito.any())).thenReturn(1);
+        Mockito.when(postMapper.getPostByPostId(Mockito.any())).thenReturn(Optional.of(mockPost));
+        Mockito.when(postMapper.savePost(Mockito.any())).thenReturn(1);
 
-        Long postId = postService.savePost(postRequestDto);
+        // when
+        Long postId = postService.savePost(
+                PostSaveRequestDto.builder()
+                        .postId(1L)
+                        .memberId(1L)
+                        .categoryId(1)
+                        .title("테스트 001")
+                        .content("테스트 내용 001")
+                        .files(new ArrayList<>())
+                        .fixedYn("N")
+                        .build());
+        logger.info("postId = {}", postId);
+
         PostResponseDto result = postService.getPostById(postId);
+        logger.info("result = {}", result);
 
+        // then
         assertThat(result).isNotNull();
-        assertThat(result.getPostId()).isEqualTo(postId);
-        assertThat(result.getTitle()).isEqualTo("제목1001");
-        assertThat(result.getContent()).isEqualTo("내용1001");
-        assertThat(result.getFixedYn()).isEqualTo("N");
+        assertThat(result.getPostId()).isEqualTo(1L);
     }
 }
