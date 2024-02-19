@@ -3,6 +3,7 @@ package com.shoppingmall.dto.request;
 import com.shoppingmall.constant.FileType;
 import com.shoppingmall.vo.Post;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PostSaveRequestDto {
 
     private Long postId;

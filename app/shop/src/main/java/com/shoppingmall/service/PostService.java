@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -59,8 +60,14 @@ public class PostService {
     private static PostResponseDto addPostFiles(Post post) {
         PostResponseDto postResponseDto = PostResponseDto.toDto(post);
         List<PostFileResponseDto> postFileResponseDtos = new ArrayList<>();
+
+        // 파일이 사이즈가 0인 경우에 대한 방어로직
+        if (post.getPostFiles() == null || post.getPostFiles().isEmpty()) {
+            return postResponseDto;
+        }
+
         for (PostFiles postFile : post.getPostFiles()) {
-            if (postFile.getPostFileId() == null) {
+            if (postFile.getPostFileId() == null || !StringUtils.hasText(postFile.getOriginFileName())) {
                 postResponseDto.addPostFiles(Collections.emptyList());
                 continue;
             }
