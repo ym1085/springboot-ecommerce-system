@@ -26,7 +26,11 @@
                     </thead>
                     <tbody id="list">
                         <tr th:if="${products.data != null and not #lists.isEmpty(products.data)}" th:each="product : ${products.data}">
-                            <!--<td><img th:src="@{${product.imageUrl}}" alt="상품 이미지" style="width:100px; height:auto;"/></td>-->
+                            <td>
+                                <!--<img th:src="@{${product.productFiles.filePath}}" alt="상품 이미지" style="width:100px; height:auto;"/>-->
+                                <!-- CDN, AWS S3, Linux mount path.. 사용 가능하긴 한데 -->
+                                <img th:src="@{/upload} + ${product.productFiles.filePath}" alt="상품 이미지" style="width:100px; height:auto;"/>
+                            </td>
                             <td th:text="${product.productName}"></td>
                             <td th:text="${product.productDesc}"></td>
                             <td th:text="${product.productPrice}"></td>
@@ -62,10 +66,6 @@
                     </p>
                 </div>
 
-                <!--/* 게시글 저장 페이징 이동 버튼 */-->
-                <!--<p class="btn_set tr">
-                    <a th:href="@{/post/}" class="btns btn_st3 btn_mid">글쓰기</a>
-                </p>-->
                 <br>
                 <div class="search_box">
                     <form id="searchForm" onsubmit="return false;" autocomplete="off">

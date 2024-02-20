@@ -10,35 +10,44 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ProductFiles {
     private Long productFileId;
-    private String originFileName; // 원본 파일명
-    private String storedFileName; // 이미지 파일명
-    private String storedThumbNail;
-    private String delegateThumbNail;
+    private Long productId;
+    private String originFileName;
+    private String storedFileName;
+    private String filePath;
     private int fileSize;
+    private String fileType;
     private LocalDateTime createDate;
+    private LocalDateTime deleteDate;
     private String delYn;
-    private int productId;
+    private String fileAttached;
+    private int downloadCnt;
 
     @Builder
     public ProductFiles(
             Long productFileId,
+            Long productId,
             String originFileName,
             String storedFileName,
-            String storedThumbNail,
-            String delegateThumbNail,
+            String filePath,
             int fileSize,
+            String fileType,
             LocalDateTime createDate,
+            LocalDateTime deleteDate,
             String delYn,
-            int productId
+            String fileAttached,
+            int downloadCnt
     ) {
         this.productFileId = productFileId;
+        this.productId = productId;
         this.originFileName = originFileName;
         this.storedFileName = storedFileName;
-        this.storedThumbNail = storedThumbNail;
-        this.delegateThumbNail = delegateThumbNail;
+        this.filePath = filePath;
         this.fileSize = fileSize;
+        this.fileType = fileType;
         this.createDate = createDate;
+        this.deleteDate = deleteDate;
         this.delYn = delYn;
-        this.productId = productId;
+        this.fileAttached = fileAttached;
+        this.downloadCnt = downloadCnt;
     }
 }

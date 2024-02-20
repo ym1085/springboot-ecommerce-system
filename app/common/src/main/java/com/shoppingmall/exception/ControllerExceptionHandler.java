@@ -16,7 +16,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        log.trace("Stack Trace Log = {}", e.toString());
+        log.trace("Stack Trace Log = {}", e);
         log.error("Method Not Supported = {}", e.getMessage());
 
         ErrorResponse response = ErrorResponse
@@ -31,7 +31,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(InvalidParameterException.class)
     protected ResponseEntity<ErrorResponse> handleInvalidParameterException(InvalidParameterException e) {
-        log.trace("Stack Trace Log = {}", e.toString());
+        log.trace("Stack Trace Log = {}", e);
         log.error("Invalid Parameter = {}", e.getMessage());
 
         ErrorCode errorCode = e.getErrorCode();
@@ -49,7 +49,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
-        log.trace("Stack Trace Log = {}", e.toString());
+        log.trace("Stack Trace Log = {}", e);
         log.error("Custom Exception = {}", e.getMessage());
 
         ErrorCode errorCode = e.getErrorCode();
@@ -66,7 +66,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.trace("Stack Trace Log = {}", e.toString());
+        log.trace("Stack Trace Log = {}", e);
         log.error("Unexpected Error = {}", e.getMessage());
 
         ErrorResponse response = ErrorResponse

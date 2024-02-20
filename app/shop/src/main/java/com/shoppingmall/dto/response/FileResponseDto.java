@@ -34,6 +34,7 @@ public class FileResponseDto {
                 .postId(postFiles.getPostId())
                 .originFileName(postFiles.getOriginFileName())
                 .storedFileName(postFiles.getStoredFileName())
+                .filePath(postFiles.getFilePath())
                 .fileSize(postFiles.getFileSize())
                 .fileType(postFiles.getFileType())
                 .downloadCnt(postFiles.getDownloadCnt())

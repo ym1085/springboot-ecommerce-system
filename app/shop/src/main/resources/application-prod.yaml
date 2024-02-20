@@ -11,6 +11,7 @@ spring:
       jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/shoppingmall?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       username: root
       password: 1234
+      connection-timeout: 20000 # 20s
   jpa:
     properties:
       hibernate:
@@ -18,7 +19,7 @@ spring:
         format_sql: true
         default_batch_fetch_size: 1000
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     database-platform: org.hibernate.dialect.MySQL8Dialect
   thymeleaf:
     cache: true
@@ -49,13 +50,8 @@ mybatis:
     lazy-load-trigger-methods: ''
   type-handlers-package: com.shoppingmall.handler
 
-os:
-  window:
-    upload-path: C:/shoppingmall/upload/
-  mac:
-    upload-path: /Users/youngminkim/projects/shoppingmall/upload/
-  linux:
-    upload-path: /var/www/shoppingmall/upload/
+file:
+  upload-dir: /var/www/shoppingmall/upload/
 
 email:
   title: "쇼핑몰 인증 번호 입니다."
