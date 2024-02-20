@@ -6,7 +6,6 @@
 
     <insert id="saveFiles" parameterType="list">
         INSERT INTO PRODUCT_FILE (
-            product_file_id,
             product_id,
             origin_file_name,
             stored_file_name,
@@ -21,8 +20,7 @@
         ) VALUES
         <foreach item="file" collection="list" separator=",">
             (
-                #{file.productFileId}
-                , #{file.productId}
+                #{file.productId}
                 , #{file.originFileName}
                 , #{file.storedFileName}
                 , #{file.filePath}

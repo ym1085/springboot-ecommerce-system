@@ -18,13 +18,13 @@ import java.util.List;
 @NoArgsConstructor
 public class ProductSaveRequestDto {
 
+    private Long productId;
     private Long categoryId;
     private String productName;
     private Integer productPrice;
     private Integer productStock;
     private String productDesc;
     private ItemSellStatus itemSellStatus = ItemSellStatus.SELL;
-    private String delYn;
 
     private List<MultipartFile> files = new ArrayList<>();
     private FileType fileType = FileType.PRODUCTS;
@@ -37,7 +37,6 @@ public class ProductSaveRequestDto {
                 .productStock(productStock)
                 .productDesc(productDesc)
                 .itemSellStatus(itemSellStatus)
-                .delYn(delYn)
                 .build();
     }
 }

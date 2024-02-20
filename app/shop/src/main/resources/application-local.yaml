@@ -5,12 +5,15 @@ spring:
   config:
     activate:
       on-profile: local
+
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/shoppingmall?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       username: root
       password: 1234
+      connection-timeout: 20000 # 20s
+
   jpa:
     show-sql: true # https://dbelle.tistory.com/93
     properties:
@@ -21,17 +24,21 @@ spring:
     hibernate:
       ddl-auto: create
     database-platform: org.hibernate.dialect.MySQL8Dialect
+
   thymeleaf:
     cache: false
+
   servlet:
     multipart:
       max-file-size: 20MB
       max-request-size: 100MB
       #enable: true
       #location: /Users/YoungminKim
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
   redis:
     host: localhost
     port: 6379
@@ -51,13 +58,16 @@ mybatis:
     lazy-load-trigger-methods: ''
   type-handlers-package: com.shoppingmall.handler
 
-os:
-  window:
-    upload-path: C:/shoppingmall/upload/
-  mac:
-    upload-path: /Users/youngminkim/projects/shoppingmall/upload/
-  linux:
-    upload-path: /var/www/shoppingmall/upload/
+file:
+  upload-dir: /Users/youngminkim/projects/shoppingmall/upload/
+
+#os:
+#  window:
+#    upload-path: C:/shoppingmall/upload/
+#  mac:
+#    upload-path: /Users/youngminkim/projects/shoppingmall/upload/
+#  linux:
+#    upload-path: /var/www/shoppingmall/upload/
 
 email:
   title: "쇼핑몰 인증 번호 입니다."

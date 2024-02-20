@@ -42,6 +42,8 @@ public class ProductService {
         PaginationUtils pagination = new PaginationUtils(totalRecordCount, searchRequestDto); // 50, xxx
         searchRequestDto.setPagination(pagination);
 
+        List<Product> products1 = productMapper.getProducts(searchRequestDto);
+
         List<ProductDetailResponseDto> products = productMapper.getProducts(searchRequestDto)
                 .stream()
                 .map(ProductDetailResponseDto::toDto)
@@ -59,10 +61,17 @@ public class ProductService {
     @Transactional
     public Long saveProducts(ProductSaveRequestDto productRequestDto) {
         Product product = productRequestDto.toEntity();
-        int responseCode = productMapper.saveProduct(product);
+        int responseCode = productMapper.saveProducts(product);
         if (responseCode == 0) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_PRODUCT.getMessage());
             throw new FailSaveProductException(ErrorCode.FAIL_SAVE_PRODUCT);
+        }
+
+        try {
+        } catch (RuntimeException ex) {
+            //TODO: 2024. 02. 21(수) 01:21:00 게시판, 상품 저장 시 트랜잭션과 무관하게 상품 업로드 된 경우 삭제 하는 부분 진행중, FileResponse
+            //TODO: FileResponseDto postFile, productFile에 따라서 분리해야 할 것 같음
+            throw ex;
         }
 
         if (!productRequestDto.getFiles().isEmpty()) {
@@ -90,4 +99,11 @@ public class ProductService {
 
         return productFileMapper.saveFiles(files);
     }
+
+    /*private List<FileResponseDto> getFileResponseDtos(long productId) {
+        return productFileMapper.getFilesByPostId(productId)
+                .stream()
+                .map(FileResponseDto::toDto)
+                .collect(Collectors.toList());
+    }*/
 }

@@ -3,7 +3,6 @@ package com.shoppingmall.utils;
 import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.constant.FileType;
-import com.shoppingmall.constant.OSType;
 import com.shoppingmall.dto.request.BaseFileSaveRequestDto;
 import com.shoppingmall.dto.request.PostFileSaveRequestDto;
 import com.shoppingmall.dto.request.ProductFileSaveRequestDto;
@@ -23,12 +22,10 @@ import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -45,28 +42,8 @@ import java.util.zip.ZipOutputStream;
 @Component
 public class FileHandlerHelper {
 
-    @Value("${os.window.upload-path}")
-    private String uploadPathByWindow;
-
-    @Value("${os.mac.upload-path}")
-    private String uploadPathByMac;
-
-    @Value("${os.linux.upload-path}")
-    private String uploadPathByLinux;
-
+    @Value("${file.upload-dir}")
     private String uploadPath;
-
-    @PostConstruct
-    public void init() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        if (osName.contains(OSType.WINDOW.getOsName())) {
-            this.uploadPath = Paths.get(uploadPathByWindow).toString();
-        } else if (osName.contains(OSType.MAC.getOsName())) {
-            this.uploadPath = Paths.get(uploadPathByMac).toString();
-        } else if (osName.contains(OSType.LINUX.getOsName())) {
-            this.uploadPath = Paths.get(uploadPathByLinux).toString();
-        }
-    }
 
     private final ResourceLoader resourceLoader;
 
@@ -81,15 +58,15 @@ public class FileHandlerHelper {
      * @return
      */
     public List<BaseFileSaveRequestDto> uploadFiles(List<MultipartFile> multipartFiles, FileType fileType) {
-        List<BaseFileSaveRequestDto> postFileSaveRequestDtos = new ArrayList<>();
+        List<BaseFileSaveRequestDto> baseFileSaveRequestDtos = new ArrayList<>();
         for (MultipartFile file : multipartFiles) {
             if (file.isEmpty()) {
                 continue;
             }
             BaseFileSaveRequestDto baseFileSaveRequestDto = transferTo(file, fileType);
-            postFileSaveRequestDtos.add(baseFileSaveRequestDto);
+            baseFileSaveRequestDtos.add(baseFileSaveRequestDto);
         }
-        return postFileSaveRequestDtos;
+        return baseFileSaveRequestDtos;
     }
 
     private BaseFileSaveRequestDto transferTo(MultipartFile multipartFile, FileType fileType) {
@@ -207,22 +184,31 @@ public class FileHandlerHelper {
         return FileExtension.isAcceptFileExtension(ext);
     }
 
-    public void deleteFiles(List<FileResponseDto> fileResponseDtos) {
-        for (int i = 0; i < fileResponseDtos.size(); i++) {
-            File deletedFile = new File(fileResponseDtos.get(i).getFilePath());
-            if (isExistsFile(deletedFile) && isDeletedFile(deletedFile)) { // 파일 존재하고 파일 삭제된 경우
-                log.info("success to delete file[{}] = {}", i, deletedFile.getPath());
+    public boolean deleteFiles(List<FileResponseDto> fileResponseDtos) {
+        boolean isDeleteSuccess = false;
+        for (FileResponseDto fileResponseDto : fileResponseDtos) {
+            File deleteFile = new File(fileResponseDto.getFilePath());
+            if (!isExistsFile(deleteFile)) { // 파일 경로가 존재하지 않으면 Loop 탈출 후 재 반복
+                break;
+            }
+
+            isDeleteSuccess = deleteFile(deleteFile);
+
+            if (isDeleteSuccess) {
+                log.info("파일 삭제에 성공하였습니다. fileName = {}", deleteFile.getName());
             } else {
-                log.info("fail to delete file = {}", deletedFile.getPath());
+                log.info("파일 삭제에 실패하였습니다.");
             }
         }
+
+        return isDeleteSuccess;
     }
 
     private boolean isExistsFile(File file) {
         return file.exists();
     }
 
-    private boolean isDeletedFile(File file) {
+    private boolean deleteFile(File file) {
         return file.delete();
     }
 

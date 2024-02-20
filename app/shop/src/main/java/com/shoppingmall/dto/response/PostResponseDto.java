@@ -30,7 +30,7 @@ public class PostResponseDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<CommentResponseDto> comments = new ArrayList<>();
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<PostFileResponseDto> postFiles = new ArrayList<>();
+    private List<FileResponseDto> postFiles = new ArrayList<>();
 
     public static PostResponseDto toDto(Post post) {
         return PostResponseDto.builder()
@@ -53,7 +53,7 @@ public class PostResponseDto {
         this.comments = commentResponseDto;
     }
 
-    public void addPostFiles(List<PostFileResponseDto> postFileResponseDto) {
-        this.postFiles = postFileResponseDto;
+    public void addPostFiles(List<FileResponseDto> fileResponseDtos) {
+        this.postFiles = fileResponseDtos;
     }
 }

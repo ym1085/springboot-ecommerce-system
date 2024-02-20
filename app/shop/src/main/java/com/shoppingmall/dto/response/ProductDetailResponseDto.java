@@ -29,7 +29,7 @@ public class ProductDetailResponseDto {
     private LocalDateTime updateDate;
     private String delYn;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private ProductFiles productFiles;
 
     public static ProductDetailResponseDto toDto(Product product) {
@@ -45,8 +45,8 @@ public class ProductDetailResponseDto {
                 .itemSellStatus(product.getItemSellStatus())
                 .createDate(product.getCreateDate())
                 .updateDate(product.getUpdateDate())
-                .productFiles(product.getProductFiles())
                 .delYn(product.getDelYn())
+                .productFiles(product.getProductFiles())
                 .build();
     }
 }
