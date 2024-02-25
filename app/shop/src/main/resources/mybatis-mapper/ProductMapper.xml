@@ -29,7 +29,7 @@
         <result property="storedFileName" column="stored_file_name" />
         <result property="filePath" column="file_path" />
         <result property="fileSize" column="file_size" />
-        <result property="fileType" column="file_type" />
+        <result property="fileExp" column="file_exp" />
         <result property="createDate" column="create_date" />
         <result property="deleteDate" column="delete_date" />
         <result property="delYn" column="del_yn" />
@@ -59,7 +59,7 @@
             IFNULL(product_file.stored_file_name, '') AS stored_file_name,
             IFNULL(product_file.file_path, '') AS file_path,
             IFNULL(product_file.file_size, 0) AS file_size,
-            IFNULL(product_file.file_type, '') AS file_type,
+            IFNULL(product_file.file_exp, '') AS file_exp,
             IFNULL(product_file.create_date, '1900-01-01') AS file_create_date, -- 기본값 예시: 최소 날짜
             IFNULL(product_file.delete_date, '1900-01-01') AS file_delete_date, -- 기본값 예시: 최소 날짜
             IFNULL(product_file.del_yn, 'N') AS del_yn,
@@ -101,7 +101,7 @@
             IFNULL(product_file.stored_file_name, '') AS stored_file_name,
             IFNULL(product_file.file_path, '') AS file_path,
             IFNULL(product_file.file_size, 0) AS file_size,
-            IFNULL(product_file.file_type, '') AS file_type,
+            IFNULL(product_file.file_exp, '') AS file_exp,
             IFNULL(product_file.create_date, '1900-01-01') AS file_create_date, -- 기본값 예시: 최소 날짜
             IFNULL(product_file.delete_date, '1900-01-01') AS file_delete_date, -- 기본값 예시: 최소 날짜
             IFNULL(product_file.del_yn, 'N') AS del_yn,

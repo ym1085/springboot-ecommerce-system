@@ -29,7 +29,8 @@
                             <td>
                                 <!--<img th:src="@{${product.productFiles.filePath}}" alt="상품 이미지" style="width:100px; height:auto;"/>-->
                                 <!-- CDN, AWS S3, Linux mount path.. 사용 가능하긴 한데 -->
-                                <img th:src="@{/upload} + ${product.productFiles.filePath}" alt="상품 이미지" style="width:100px; height:auto;"/>
+                                <img th:style="'width:50px; height:50px;'" th:src="${product.productFiles.filePath != null and product.productFiles.filePath != ''} ? @{/upload} + ${product.productFiles.filePath} : @{/img/default.png}" alt="상품 이미지" style="width:100px; height:auto;"/>
+                                <!--<img th:src="@{/upload} + ${product.productFiles.filePath}" alt="상품 이미지" style="width:100px; height:auto;"/>-->
                             </td>
                             <td th:text="${product.productName}"></td>
                             <td th:text="${product.productDesc}"></td>

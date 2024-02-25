@@ -85,7 +85,7 @@ CREATE TABLE POST_FILE
     stored_file_name VARCHAR(300) NOT NULL COMMENT '서버에 저장될 파일 이름',
     file_path        VARCHAR(300) NOT NULL COMMENT '파일 경로',
     file_size        INT          NOT NULL COMMENT '파일 크기',
-    file_type        VARCHAR(50)  NOT NULL COMMENT '파일 타입',
+    file_exp        VARCHAR(50)  NOT NULL COMMENT '파일 타입',
     download_cnt     INT          NOT NULL DEFAULT 0 COMMENT '다운로드 횟수',
     del_Yn           CHAR         NOT NULL DEFAULT 'N' COMMENT '파일 삭제 여부',
     create_date      TIMESTAMP             DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',

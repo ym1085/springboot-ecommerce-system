@@ -29,7 +29,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
@@ -85,7 +84,6 @@ class PostServiceTest {
 
     @Test
     @DisplayName("테스트 데이터 생성")
-    @Rollback(false)
     void insertPostData() {
         List<PostResponseDto> posts = postService.getPosts(new SearchRequestDto()).getData();
         if (CollectionUtils.isEmpty(posts)) {
@@ -96,7 +94,8 @@ class PostServiceTest {
                 postSaveRequestDto.setMemberId((long) getRandom());
                 postSaveRequestDto.setFixedYn("N");
                 postSaveRequestDto.setCategoryId(getRandom());
-                postService.savePost(postSaveRequestDto);
+                postMapper.savePost(postSaveRequestDto.toEntity());
+//                postService.savePost(postSaveRequestDto);
             }
         }
     }

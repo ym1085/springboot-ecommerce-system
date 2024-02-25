@@ -13,7 +13,7 @@
 nav > ul > li.has_sub > a::after, .menu_toggle > span,
 .chkbox input:checked+i::before,
 .file_list > div > button > span::before, .file_upload label i::after,
-.paging .page_bt::after, .es, .wr_cm_txt span::before, .cm_list > div .cm_answer::before, .rating_star, .rating_star_per {content:''; background-image:url(../images/icons.png); background-repeat:no-repeat;}
+.paging .page_bt::after, .es, .wr_cm_txt span::before, .cm_list > div .cm_answer::before, .rating_star, .rating_star_per {content:''; background-image:url(../img/icons.png); background-repeat:no-repeat;}
 
 header * {box-sizing:border-box;}
 header {position:relative; z-index:1;}

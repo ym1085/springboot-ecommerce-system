@@ -1,22 +1,15 @@
 package com.shoppingmall.dto.request;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class ProductFileSaveRequestDto implements BaseFileSaveRequestDto {
-
+@SuperBuilder
+public class ProductFileSaveRequestDto extends FileSaveRequestDto {
     private Long productFileId;
     private Long productId;
-    private String originFileName;
-    private String storedFileName;
-    private String filePath;
-    private long fileSize;
-    private String fileType;
-    private String fileAttached;
 
     /**
      * 파일 저장의 경우 상품 등록이 완료 된 이후에 진행 한다.
@@ -26,5 +19,15 @@ public class ProductFileSaveRequestDto implements BaseFileSaveRequestDto {
     @Override
     public void setId(Long id) {
         this.productId = id;
+    }
+
+    @Override
+    public Long getFileId() {
+        return this.productFileId;
+    }
+
+    @Override
+    public Long getId() {
+        return this.productId;
     }
 }

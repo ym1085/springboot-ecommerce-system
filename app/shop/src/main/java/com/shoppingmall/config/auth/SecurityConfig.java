@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
+                        .antMatchers("/css/**","/img/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
                         .antMatchers("/member/loginForm").permitAll()
                         .antMatchers("/member/joinForm").permitAll()
                         .antMatchers("/api/v1/**").permitAll() // todo: replace this api pattern

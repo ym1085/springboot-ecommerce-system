@@ -15,7 +15,7 @@ public class ProductFiles {
     private String storedFileName;
     private String filePath;
     private int fileSize;
-    private String fileType;
+    private String fileExp;
     private LocalDateTime createDate;
     private LocalDateTime deleteDate;
     private String delYn;
@@ -30,7 +30,7 @@ public class ProductFiles {
             String storedFileName,
             String filePath,
             int fileSize,
-            String fileType,
+            String fileExp,
             LocalDateTime createDate,
             LocalDateTime deleteDate,
             String delYn,
@@ -43,7 +43,7 @@ public class ProductFiles {
         this.storedFileName = storedFileName;
         this.filePath = filePath;
         this.fileSize = fileSize;
-        this.fileType = fileType;
+        this.fileExp = fileExp;
         this.createDate = createDate;
         this.deleteDate = deleteDate;
         this.delYn = delYn;

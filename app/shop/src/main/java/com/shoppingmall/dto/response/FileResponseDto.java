@@ -1,26 +1,21 @@
 package com.shoppingmall.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.shoppingmall.vo.PostFiles;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-@Builder
-public class FileResponseDto {
-    private Long postFileId;
-    private Long postId;
+@SuperBuilder
+public abstract class FileResponseDto {
     private String originFileName;
     private String storedFileName;
     private String filePath;
     private int fileSize;
-    private String fileType;
+    private String fileExp;
     private int downloadCnt;
     private String delYn;
     private LocalDateTime createDate;
@@ -28,20 +23,6 @@ public class FileResponseDto {
     private LocalDateTime deleteDate;
     private String fileAttached;
 
-    public static FileResponseDto toDto(PostFiles postFiles) {
-        return FileResponseDto.builder()
-                .postFileId(postFiles.getPostFileId())
-                .postId(postFiles.getPostId())
-                .originFileName(postFiles.getOriginFileName())
-                .storedFileName(postFiles.getStoredFileName())
-                .filePath(postFiles.getFilePath())
-                .fileSize(postFiles.getFileSize())
-                .fileType(postFiles.getFileType())
-                .downloadCnt(postFiles.getDownloadCnt())
-                .delYn(postFiles.getDelYn())
-                .createDate(postFiles.getCreateDate())
-                .deleteDate(postFiles.getDeleteDate())
-                .fileAttached(postFiles.getFileAttached())
-                .build();
-    }
+    public abstract Long getFileId();
+    public abstract Long getId();
 }

@@ -1,11 +1,13 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.common.response.ErrorCode;
-import com.shoppingmall.dto.request.BaseFileSaveRequestDto;
+import com.shoppingmall.dto.request.FileSaveRequestDto;
 import com.shoppingmall.dto.request.ProductSaveRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
+import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.ProductDetailResponseDto;
+import com.shoppingmall.dto.response.ProductFileResponseDto;
 import com.shoppingmall.exception.FailSaveFileException;
 import com.shoppingmall.exception.FailSaveProductException;
 import com.shoppingmall.mapper.ProductFileMapper;
@@ -68,14 +70,16 @@ public class ProductService {
         }
 
         try {
-        } catch (RuntimeException ex) {
-            //TODO: 2024. 02. 21(수) 01:21:00 게시판, 상품 저장 시 트랜잭션과 무관하게 상품 업로드 된 경우 삭제 하는 부분 진행중, FileResponse
-            //TODO: FileResponseDto postFile, productFile에 따라서 분리해야 할 것 같음
-            throw ex;
+        } catch (RuntimeException e) {
+            // 예외 발생 시 서버의 특정 경로에 업로드 된 파일을 삭제해야 하기에, 추가
+            // 파일 업로드 성공 ----> 파일 정보 DB 저장(ERROR!! 발생) ----> Transaction Rollback ----> 이미 업로드한 파일은 지워줘야 함
+            List<FileResponseDto> fileResponseDtos = getFileResponseDtos(productRequestDto.getProductId());
+            fileHandlerHelper.deleteFiles(fileResponseDtos);
+            throw e; // 현재 트랜잭션 롤백
         }
 
         if (!productRequestDto.getFiles().isEmpty()) {
-            List<BaseFileSaveRequestDto> baseFileSaveRequestDtos = fileHandlerHelper.uploadFiles(productRequestDto.getFiles(), productRequestDto.getFileType());
+            List<FileSaveRequestDto> baseFileSaveRequestDtos = fileHandlerHelper.uploadFiles(productRequestDto.getFiles(), productRequestDto.getDirPathType());
             responseCode = saveFiles(product.getProductId(), baseFileSaveRequestDtos);
             if (responseCode == 0) {
                 log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_FILES);
@@ -85,12 +89,12 @@ public class ProductService {
         return product.getProductId();
     }
 
-    public int saveFiles(Long productId, List<BaseFileSaveRequestDto> files) {
+    public int saveFiles(Long productId, List<FileSaveRequestDto> files) {
         if (CollectionUtils.isEmpty(files) || files.get(0) == null || productId == null) {
             return 0;
         }
 
-        for (BaseFileSaveRequestDto file : files) {
+        for (FileSaveRequestDto file : files) {
             if (file == null) {
                 continue;
             }
@@ -100,10 +104,10 @@ public class ProductService {
         return productFileMapper.saveFiles(files);
     }
 
-    /*private List<FileResponseDto> getFileResponseDtos(long productId) {
-        return productFileMapper.getFilesByPostId(productId)
+    private List<FileResponseDto> getFileResponseDtos(long productId) {
+        return productFileMapper.getFilesByProductId(productId)
                 .stream()
-                .map(FileResponseDto::toDto)
+                .map(ProductFileResponseDto::toDto)
                 .collect(Collectors.toList());
-    }*/
+    }
 }

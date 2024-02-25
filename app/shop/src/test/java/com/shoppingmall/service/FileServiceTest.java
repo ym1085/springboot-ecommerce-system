@@ -52,7 +52,7 @@ class FileServiceTest {
                         .storedFileName(UUID.randomUUID().toString() + ".jpg")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpg")
                         .fileSize(1024L)
-                        .fileType("jpg")
+                        .fileExp("jpg")
                         .fileAttached("Y")
                         .build(),
 
@@ -61,7 +61,7 @@ class FileServiceTest {
                         .storedFileName(UUID.randomUUID().toString() + ".png")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".png")
                         .fileSize(1024L)
-                        .fileType("png")
+                        .fileExp("png")
                         .fileAttached("Y")
                         .build(),
 
@@ -70,7 +70,7 @@ class FileServiceTest {
                         .storedFileName(UUID.randomUUID().toString() + ".jpeg")
                         .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpeg")
                         .fileSize(1024L)
-                        .fileType("jpeg")
+                        .fileExp("jpeg")
                         .fileAttached("Y")
                         .build()
         );
@@ -91,7 +91,7 @@ class FileServiceTest {
                                 .storedFileName(UUID.randomUUID().toString() + ".jpg")
                                 .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpg")
                                 .fileSize(1024L)
-                                .fileType("jpg")
+                                .fileExp("jpg")
                                 .fileAttached("Y")
                                 .build(),
 
@@ -100,7 +100,7 @@ class FileServiceTest {
                                 .storedFileName(UUID.randomUUID().toString() + ".png")
                                 .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".png")
                                 .fileSize(1024L)
-                                .fileType("png")
+                                .fileExp("png")
                                 .fileAttached("Y")
                                 .build(),
 
@@ -109,7 +109,7 @@ class FileServiceTest {
                                 .storedFileName(UUID.randomUUID().toString() + ".jpeg")
                                 .filePath("/Users/ymkim/" + UUID.randomUUID().toString() + ".jpeg")
                                 .fileSize(1024L)
-                                .fileType("jpeg")
+                                .fileExp("jpeg")
                                 .fileAttached("Y")
                                 .build()
                         )
