@@ -13,7 +13,7 @@
             , STORED_FILE_NAME
             , FILE_PATH
             , FILE_SIZE
-            , FILE_TYPE
+            , file_exp
             , DOWNLOAD_CNT
             , DEL_YN
             , CREATE_DATE
@@ -28,7 +28,7 @@
                 , #{file.storedFileName}
                 , #{file.filePath}
                 , #{file.fileSize}
-                , #{file.fileType}
+                , #{file.fileExp}
                 , 0
                 , 'N'
                 , NOW()
@@ -55,7 +55,7 @@
             , STORED_FILE_NAME
             , FILE_PATH
             , FILE_SIZE
-            , FILE_TYPE
+            , FILE_EXP
             , DOWNLOAD_CNT
             , DEL_YN
             , CREATE_DATE
@@ -84,7 +84,7 @@
             , STORED_FILE_NAME
             , FILE_PATH
             , FILE_SIZE
-            , FILE_TYPE
+            , FILE_EXP
             , DOWNLOAD_CNT
             , DEL_YN
             , CREATE_DATE

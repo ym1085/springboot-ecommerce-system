@@ -6,17 +6,17 @@
 
     <insert id="saveFiles" parameterType="list">
         INSERT INTO PRODUCT_FILE (
-            product_id,
-            origin_file_name,
-            stored_file_name,
-            file_path,
-            file_size,
-            file_type,
-            create_date,
-            delete_date,
-            del_yn,
-            file_attached,
-            downlod_cnt
+            PRODUCT_ID,
+            ORIGIN_FILE_NAME,
+            STORED_FILE_NAME,
+            FILE_PATH,
+            FILE_SIZE,
+            FILE_EXP,
+            CREATE_DATE,
+            DELETE_DATE,
+            DEL_YN,
+            FILE_ATTACHED,
+            DOWNLOD_CNT
         ) VALUES
         <foreach item="file" collection="list" separator=",">
             (
@@ -25,7 +25,7 @@
                 , #{file.storedFileName}
                 , #{file.filePath}
                 , #{file.fileSize}
-                , #{file.fileType}
+                , #{file.fileExp}
                 , NOW()
                 , NULL
                 , 'N'

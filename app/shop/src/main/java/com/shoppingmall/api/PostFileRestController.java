@@ -1,6 +1,6 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.dto.response.FileResponseDto;
+import com.shoppingmall.dto.response.PostFileResponseDto;
 import com.shoppingmall.service.FileService;
 import com.shoppingmall.utils.FileHandlerHelper;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1")
 @RestController
-public class FileRestController {
+public class PostFileRestController {
 
     private final FileService fileService;
     private final FileHandlerHelper fileHandlerHelper;
@@ -36,7 +36,7 @@ public class FileRestController {
     public ResponseEntity downloadPostFile(
             @PathVariable("postFileId") Long postFileId,
             @PathVariable("domain") String domain) {
-        FileResponseDto files = fileService.getFileByPostFileId(postFileId);
+        PostFileResponseDto files = fileService.getFileByPostFileId(postFileId);
 
         String serverUploadPath = fileHandlerHelper.getUploadPath();
         String fileUploadPath = fileHandlerHelper.extractFileDateTimeByFilePath(files.getFilePath());

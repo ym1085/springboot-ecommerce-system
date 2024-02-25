@@ -78,7 +78,7 @@
         <result property="storedFileName" column="STORED_FILE_NAME" />
         <result property="filePath" column="FILE_PATH" />
         <result property="fileSize" column="FILE_SIZE" />
-        <result property="fileType" column="FILE_TYPE" />
+        <result property="fileExp" column="FILE_EXP" />
         <result property="downloadCnt" column="DOWNLOAD_CNT" />
         <result property="delYn" column="DEL_YN" />
         <result property="createDate" column="CREATE_DATE" />
@@ -111,7 +111,7 @@
             F.STORED_FILE_NAME,
             F.FILE_PATH,
             F.FILE_SIZE,
-            F.FILE_TYPE,
+            F.FILE_EXP,
             F.DOWNLOAD_CNT,
             F.DEL_YN,
             F.CREATE_DATE,

@@ -14,7 +14,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private static final String[] classPathTemplatePath = {
             "classpath:/templates/",
             "classpath:/static/",
-            "classpath:/images/"
+            "classpath:/img/"
     };
 
     // JAR 배포 후 해당 경로 접근이 안되기에 -> /** 요청 -> 아래 경로로 URL 매핑을 해준다

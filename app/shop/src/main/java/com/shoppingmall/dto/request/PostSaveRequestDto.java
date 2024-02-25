@@ -1,6 +1,6 @@
 package com.shoppingmall.dto.request;
 
-import com.shoppingmall.constant.FileType;
+import com.shoppingmall.constant.DirPathType;
 import com.shoppingmall.vo.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PostSaveRequestDto {
-
     private Long postId;
     private Long memberId;
     private int categoryId;
@@ -33,7 +32,7 @@ public class PostSaveRequestDto {
     private String fixedYn;
 
     private List<MultipartFile> files = new ArrayList<>();
-    private FileType fileType = FileType.POSTS;
+    private DirPathType dirPathType = DirPathType.posts;
 
     public Post toEntity() {
         return Post.builder()

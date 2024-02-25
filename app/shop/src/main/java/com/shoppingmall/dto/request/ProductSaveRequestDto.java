@@ -1,6 +1,6 @@
 package com.shoppingmall.dto.request;
 
-import com.shoppingmall.constant.FileType;
+import com.shoppingmall.constant.DirPathType;
 import com.shoppingmall.constant.ItemSellStatus;
 import com.shoppingmall.vo.Product;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductSaveRequestDto {
-
     private Long productId;
     private Long categoryId;
     private String productName;
@@ -27,7 +26,7 @@ public class ProductSaveRequestDto {
     private ItemSellStatus itemSellStatus = ItemSellStatus.SELL;
 
     private List<MultipartFile> files = new ArrayList<>();
-    private FileType fileType = FileType.PRODUCTS;
+    private DirPathType dirPathType = DirPathType.products;
 
     public Product toEntity() {
         return Product.builder()

@@ -14,7 +14,7 @@ public class PostFiles {
     private String storedFileName;
     private String filePath;
     private int fileSize;
-    private String fileType;
+    private String fileExp;
     private LocalDateTime createDate;
     private LocalDateTime deleteDate;
     private String delYn;

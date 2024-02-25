@@ -1,7 +1,7 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.common.response.ErrorCode;
-import com.shoppingmall.constant.FileType;
+import com.shoppingmall.constant.DirPathType;
 import com.shoppingmall.dto.request.*;
 import com.shoppingmall.dto.response.*;
 import com.shoppingmall.exception.FailSaveFileException;
@@ -56,7 +56,7 @@ public class PostService {
 
     private static PostResponseDto addPostFiles(Post post) {
         PostResponseDto postResponseDto = PostResponseDto.toDto(post);
-        List<FileResponseDto> fileResponseDtos = new ArrayList<>();
+        List<FileResponseDto> postFileResponseDtos = new ArrayList<>();
 
         // 파일이 사이즈가 0인 경우에 대한 방어로직
         if (post.getPostFiles() == null || post.getPostFiles().isEmpty()) {
@@ -68,8 +68,8 @@ public class PostService {
                 postResponseDto.addPostFiles(Collections.emptyList());
                 continue;
             }
-            fileResponseDtos.add(FileResponseDto.toDto(postFile));
-            postResponseDto.addPostFiles(fileResponseDtos);
+            postFileResponseDtos.add(PostFileResponseDto.toDto(postFile));
+            postResponseDto.addPostFiles(postFileResponseDtos);
         }
         return postResponseDto;
     }
@@ -102,7 +102,7 @@ public class PostService {
     private List<FileResponseDto> getFilesByPostId(Long postId) {
         return postFileMapper.getFilesByPostId(postId)
                 .stream()
-                .map(FileResponseDto::toDto)
+                .map(PostFileResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -117,30 +117,29 @@ public class PostService {
 
         try {
             if (!postSaveRequestDto.getFiles().isEmpty()) {
-                List<BaseFileSaveRequestDto> baseFileSaveRequestDto = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getFileType());
+                List<FileSaveRequestDto> baseFileSaveRequestDto = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getDirPathType());
                 responseCode = saveFiles(post.getPostId(), baseFileSaveRequestDto);
                 if (responseCode == 0) {
                     log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_FILES);
                     throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
                 }
             }
-        } catch (RuntimeException ex) {
+        } catch (RuntimeException e) {
             // 예외 발생 시 서버의 특정 경로에 업로드 된 파일을 삭제해야 하기에, 추가
             // 파일 업로드 성공 ----> 파일 정보 DB 저장(ERROR!! 발생) ----> Transaction Rollback ----> 이미 업로드한 파일은 지워줘야 함
-            // TODO: 아래 내용 테스트 진행해야 합니다 꼭...
             List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postSaveRequestDto.getPostId());
             fileHandlerHelper.deleteFiles(fileResponseDtos);
-            throw ex; // 현재 트랜잭션 롤백
+            throw e; // 현재 트랜잭션 롤백
         }
         return post.getPostId();
     }
 
-    public int saveFiles(Long postId, List<BaseFileSaveRequestDto> files) {
+    public int saveFiles(Long postId, List<FileSaveRequestDto> files) {
         if (CollectionUtils.isEmpty(files) || files.get(0) == null || postId == null) {
             return 0;
         }
 
-        for (BaseFileSaveRequestDto file : files) {
+        for (FileSaveRequestDto file : files) {
             if (file == null) {
                 continue;
             }
@@ -184,7 +183,7 @@ public class PostService {
             }
         }
 
-        List<BaseFileSaveRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files, FileType.POSTS);
+        List<FileSaveRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files, DirPathType.posts);
         fileRequestDtos.forEach(fileRequestDto -> fileRequestDto.setId(postId));
         return postFileMapper.saveFiles(fileRequestDtos);
     }
@@ -211,7 +210,7 @@ public class PostService {
     private List<FileResponseDto> getFileResponseDtos(long postId) {
         return postFileMapper.getFilesByPostId(postId)
                 .stream()
-                .map(FileResponseDto::toDto)
+                .map(PostFileResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 }
