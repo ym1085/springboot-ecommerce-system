@@ -215,7 +215,7 @@ public class FileHandlerHelper {
     }
 
     public File getDownloadFile(String uploadPath, String domain, String fileCreatedDate, String storedFileName) {
-        return new File(uploadPath + File.separator + domain + File.separator + fileCreatedDate + File.separator + storedFileName);
+        return new File(uploadPath + domain + File.separator + fileCreatedDate + File.separator + storedFileName);
     }
 
     public Resource getDownloadFileResource(String uploadPath) {
