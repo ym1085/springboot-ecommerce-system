@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1")
 @RestController
-public class PostFileRestController {
+public class FileRestController {
 
     private final FileService fileService;
     private final FileHandlerHelper fileHandlerHelper;
