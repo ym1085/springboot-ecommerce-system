@@ -16,8 +16,6 @@ public interface PostFileMapper {
 
     List<PostFiles> getFilesByPostId(Long postId);
 
-    int deleteUpdateFilesByPostId(Long postId);
-
     Optional<PostFiles> getFileByPostFileId(Long fileId);
 
     void increaseDownloadCntByFileId(Long fileId);

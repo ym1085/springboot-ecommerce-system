@@ -28,6 +28,9 @@ public enum SuccessCode {
     SUCCESS_UPDATE_COMMENT(HttpStatus.OK, "댓글 수정에 성공하였습니다."),
 
     // [PRODUCT]
+    SUCCESS_SAVE_PRODUCT(HttpStatus.OK, "상품 등록에 성공하였습니다."),
+    SUCCESS_UPDATE_PRODUCT(HttpStatus.OK, "상품 수정에 성공하였습니다."),
+    SUCCESS_DELETE_PRODUCT(HttpStatus.OK, "상품 삭제에 성공하였습니다."),
     // [CART]
     ;
 
