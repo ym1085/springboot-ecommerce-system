@@ -7,18 +7,18 @@
     <!-- 파일 정보 저장 -->
     <insert id="saveFiles" parameterType="list">
         INSERT INTO POST_FILE (
-            POST_FILE_ID
-            , POST_ID
-            , ORIGIN_FILE_NAME
-            , STORED_FILE_NAME
-            , FILE_PATH
-            , FILE_SIZE
+            post_file_id
+            , post_id
+            , origin_file_name
+            , stored_file_name
+            , file_path
+            , file_size
             , file_exp
-            , DOWNLOAD_CNT
-            , DEL_YN
-            , CREATE_DATE
-            , DELETE_DATE
-            , FILE_ATTACHED
+            , download_cnt
+            , del_yn
+            , create_date
+            , delete_date
+            , file_attached
         ) VALUES
         <foreach item="file" collection="list" separator=",">
             (
@@ -43,66 +43,64 @@
         트랜잭션 단위에서 수행을 하기에 괜찮을 것 같음
     -->
     <update id="deleteFilesByPostId" parameterType="long">
-        DELETE FROM POST_FILE F WHERE F.POST_ID = #{postId}
+        UPDATE POST_FILE f
+        SET
+            f.del_yn = 'Y',
+            f.delete_date = NOW()
+        WHERE f.post_id = #{postId}
+        AND f.del_yn = 'N'
     </update>
 
     <!-- 파일 조회 -->
     <select id="getFilesByPostId" parameterType="long" resultType="PostFiles">
         SELECT
-            POST_FILE_ID
-            , POST_ID
-            , ORIGIN_FILE_NAME
-            , STORED_FILE_NAME
-            , FILE_PATH
-            , FILE_SIZE
-            , FILE_EXP
-            , DOWNLOAD_CNT
-            , DEL_YN
-            , CREATE_DATE
-            , DELETE_DATE
-            , FILE_ATTACHED
-        FROM POST_FILE F
-        WHERE F.POST_ID = #{postId}
-        AND F.DEL_YN = 'N'
+            post_file_id
+            , post_id
+            , origin_file_name
+            , stored_file_name
+            , file_path
+            , file_size
+            , file_exp
+            , download_cnt
+            , del_yn
+            , create_date
+            , delete_date
+            , file_attached
+        FROM POST_FILE f
+        WHERE f.post_id = #{postId}
+        AND f.del_yn = 'N'
     </select>
-
-    <!-- 게시글 삭제 시 연관되어 있는 파일 삭제('Y') -->
-    <update id="deleteUpdateFilesByPostId" parameterType="Long">
-        UPDATE POST_FILE F
-        SET
-            F.DEL_YN = 'Y',
-            F.DELETE_DATE = NOW()
-        WHERE F.POST_ID = #{postId}
-    </update>
 
     <!-- 단건 파일 조회 -->
     <select id="getFileByPostFileId" parameterType="long" resultType="PostFiles">
         SELECT
-            POST_FILE_ID
-            , POST_ID
-            , ORIGIN_FILE_NAME
-            , STORED_FILE_NAME
-            , FILE_PATH
-            , FILE_SIZE
-            , FILE_EXP
-            , DOWNLOAD_CNT
-            , DEL_YN
-            , CREATE_DATE
-            , DELETE_DATE
-            , FILE_ATTACHED
-        FROM POST_FILE F
-        WHERE F.POST_FILE_ID = #{postFileId}
-        AND F.DEL_YN = 'N'
+            post_file_id
+            , post_id
+            , origin_file_name
+            , stored_file_name
+            , file_path
+            , file_size
+            , file_exp
+            , download_cnt
+            , del_yn
+            , create_date
+            , delete_date
+            , file_attached
+        FROM POST_FILE f
+        WHERE f.post_file_id = #{postFileId}
+        AND f.del_yn = 'N'
     </select>
 
     <!-- 파일 다운로드 수 업데이트 -->
     <update id="increaseDownloadCntByFileId" parameterType="long">
         UPDATE POST_FILE
-        SET DOWNLOAD_CNT = DOWNLOAD_CNT + 1
-        WHERE POST_FILE_ID = #{postFileId}
+        SET download_cnt = download_cnt + 1
+        WHERE post_file_id = #{postFileId}
     </update>
 
     <select id="countFilesByPostId" parameterType="long" resultType="int">
-        SELECT COUNT(*) AS COUNT FROM POST_FILE WHERE POST_ID = #{postFileId}
+        SELECT COUNT(*) AS cnt
+        FROM POST_FILE
+        WHERE post_id = #{postFileId}
     </select>
 </mapper>

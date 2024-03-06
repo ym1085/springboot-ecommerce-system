@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class Product {
+    private Long memberId;
     private Long productId;
     private Long categoryId;
     private String categoryName;
@@ -30,6 +31,7 @@ public class Product {
 
     @Builder
     public Product(
+            Long memberId,
             Long productId,
             Long categoryId,
             String categoryName,
@@ -44,6 +46,7 @@ public class Product {
             ProductFiles productFiles,
             String delYn
     ) {
+        this.memberId = memberId;
         this.productId = productId;
         this.categoryId = categoryId;
         this.categoryName = categoryName;

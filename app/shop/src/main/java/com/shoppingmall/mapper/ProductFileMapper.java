@@ -12,4 +12,8 @@ public interface ProductFileMapper {
     int saveFiles(List<FileSaveRequestDto> files);
 
     List<ProductFiles> getFilesByProductId(long productId);
+
+    int countProductFileByProductId(Long productId);
+
+    int deleteFilesByProductId(Long productId);
 }

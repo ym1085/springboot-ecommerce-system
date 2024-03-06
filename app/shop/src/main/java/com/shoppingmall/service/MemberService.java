@@ -1,6 +1,7 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.common.response.ErrorCode;
+import com.shoppingmall.constant.Role;
 import com.shoppingmall.dto.request.MemberSaveRequestDto;
 import com.shoppingmall.exception.DuplicateMemberAccountException;
 import com.shoppingmall.exception.FailSaveMemberException;
@@ -27,6 +28,7 @@ public class MemberService {
 
     @Transactional
     public int join(MemberSaveRequestDto memberRequestDto) {
+        memberRequestDto.setRole(Role.ADMIN); // TODO: 수정 필요
         memberRequestDto.setPassword(encodePassword(memberRequestDto.getPassword()));
         Member member = memberRequestDto.toEntity();
 
