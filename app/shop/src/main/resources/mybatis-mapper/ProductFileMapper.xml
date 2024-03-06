@@ -6,17 +6,17 @@
 
     <insert id="saveFiles" parameterType="list">
         INSERT INTO PRODUCT_FILE (
-            PRODUCT_ID,
-            ORIGIN_FILE_NAME,
-            STORED_FILE_NAME,
-            FILE_PATH,
-            FILE_SIZE,
-            FILE_EXP,
-            CREATE_DATE,
-            DELETE_DATE,
-            DEL_YN,
-            FILE_ATTACHED,
-            DOWNLOD_CNT
+            product_id,
+            origin_file_name,
+            stored_file_name,
+            file_path,
+            file_size,
+            file_exp,
+            create_date,
+            delete_date,
+            del_yn,
+            file_attached,
+            downlod_cnt
         ) VALUES
         <foreach item="file" collection="list" separator=",">
             (
@@ -35,4 +35,36 @@
         </foreach>
     </insert>
 
+    <select id="getFilesByProductId" parameterType="long" resultType="ProductFiles">
+        SELECT
+            product_file_id,
+            product_id,
+            origin_file_name,
+            stored_file_name,
+            file_path,
+            file_size,
+            file_exp,
+            create_date,
+            delete_date,
+            del_yn,
+            file_attached,
+            downlod_cnt
+        FROM PRODUCT_FILE pf
+        WHERE pf.product_id = #{productId}
+        AND pf.del_yn = 'N'
+    </select>
+
+    <select id="countProductFileByProductId" parameterType="long" resultType="int">
+        SELECT COUNT(*) AS cnt
+        FROM PRODUCT_FILE pf
+        WHERE pf.product_id = #{productId}
+        AND pf.del_yn = 'N'
+    </select>
+
+    <update id="deleteFilesByProductId" parameterType="long">
+        UPDATE PRODUCT_FILE pf
+        SET
+            pf.del_yn = 'Y'
+        WHERE pf.product_id = #{productId}
+    </update>
 </mapper>

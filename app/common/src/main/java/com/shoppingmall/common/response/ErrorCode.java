@@ -35,6 +35,7 @@ public enum ErrorCode {
 
     // [PRODUCT]
     FAIL_SAVE_PRODUCT(HttpStatus.INTERNAL_SERVER_ERROR, "상품 등록에 실패했습니다. 다시 시도해주세요."),
+    FAIL_UPDATE_PRODUCT(HttpStatus.INTERNAL_SERVER_ERROR, "상품 수정에 실패했습니다. 다시 시도해주세요."),
     ;
 
     private final HttpStatus httpStatus;

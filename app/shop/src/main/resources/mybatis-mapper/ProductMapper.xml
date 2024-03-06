@@ -39,92 +39,94 @@
 
     <select id="getProducts" parameterType="SearchRequestDto" resultMap="ProductResultMap">
         SELECT
-            product.product_id,
-            product.category_id,
+            p.product_id,
+            p.category_id,
             (SELECT
-                 product_category.category_name
-             FROM PRODUCT_CATEGORY product_category
-             where product_category.category_id = product.category_id) AS categoryName,
-            product.product_name,
-            product.product_price,
-            product.product_stock,
-            product.product_desc,
-            product.product_hits,
-            product.item_sell_status,
-            product.create_date,
-            product.update_date,
-            product.del_yn,
-            IFNULL(product_file.product_file_id, NULL) AS product_file_id,
-            IFNULL(product_file.origin_file_name, '') AS origin_file_name,
-            IFNULL(product_file.stored_file_name, '') AS stored_file_name,
-            IFNULL(product_file.file_path, '') AS file_path,
-            IFNULL(product_file.file_size, 0) AS file_size,
-            IFNULL(product_file.file_exp, '') AS file_exp,
-            IFNULL(product_file.create_date, '1900-01-01') AS file_create_date, -- 기본값 예시: 최소 날짜
-            IFNULL(product_file.delete_date, '1900-01-01') AS file_delete_date, -- 기본값 예시: 최소 날짜
-            IFNULL(product_file.del_yn, 'N') AS del_yn,
-            IFNULL(product_file.file_attached, 'N') AS file_attached,
-            IFNULL(product_file.downlod_cnt, 0) AS downlod_cnt
-        FROM PRODUCT product
-            INNER JOIN PRODUCT_CATEGORY product_category ON product.category_id = product_category.category_id
-            LEFT JOIN PRODUCT_FILE product_file ON product.product_id = product_file.product_id
-        ORDER BY product.create_date DESC
+                 pc.category_name
+             FROM product_category pc
+             where pc.category_id = p.category_id) AS categoryName,
+            p.product_name,
+            p.product_price,
+            p.product_stock,
+            p.product_desc,
+            p.product_hits,
+            p.item_sell_status,
+            p.create_date,
+            p.update_date,
+            p.del_yn,
+            IFNULL(pf.product_file_id, NULL) AS product_file_id,
+            IFNULL(pf.origin_file_name, '') AS origin_file_name,
+            IFNULL(pf.stored_file_name, '') AS stored_file_name,
+            IFNULL(pf.file_path, '') AS file_path,
+            IFNULL(pf.file_size, 0) AS file_size,
+            IFNULL(pf.file_exp, '') AS file_exp,
+            IFNULL(pf.create_date, '1900-01-01') AS file_create_date, -- 기본값 예시: 최소 날짜
+            IFNULL(pf.delete_date, '1900-01-01') AS file_delete_date, -- 기본값 예시: 최소 날짜
+            IFNULL(pf.del_yn, 'N') AS del_yn,
+            IFNULL(pf.file_attached, 'N') AS file_attached,
+            IFNULL(pf.downlod_cnt, 0) AS downlod_cnt
+        FROM PRODUCT p
+            INNER JOIN PRODUCT_CATEGORY pc ON p.category_id = pc.category_id
+            LEFT JOIN PRODUCT_FILE pf ON p.product_id = pf.product_id
+        WHERE p.del_yn != 'Y'
+        ORDER BY p.create_date DESC
         LIMIT #{pagination.limitStart}, #{recordSizePerPage} /*LIMIT 20;*/
     </select>
 
     <!-- 상품 수 카운팅 -->
     <select id="count" parameterType="SearchRequestDto" resultType="int">
-        SELECT COUNT(*)
-        FROM PRODUCT P
-        WHERE P.DEL_YN != 'Y'
+        SELECT COUNT(*) AS cnt
+        FROM PRODUCT p
+        WHERE p.del_yn != 'Y'
     </select>
 
     <select id="getProductByProductId" parameterType="long" resultMap="ProductResultMap">
         SELECT
-            product.product_id,
-            product.category_id,
-            (SELECT
-                 product_category.category_name
-             FROM PRODUCT_CATEGORY product_category
-             where product_category.category_id = product.category_id) AS categoryName,
-            product.product_name,
-            product.product_price,
-            product.product_stock,
-            product.product_desc,
-            product.product_hits,
-            product.item_sell_status,
-            product.create_date,
-            product.update_date,
-            product.del_yn,
-            IFNULL(product_file.product_file_id, 0) AS product_file_id,
-            IFNULL(product_file.origin_file_name, '') AS origin_file_name,
-            IFNULL(product_file.stored_file_name, '') AS stored_file_name,
-            IFNULL(product_file.file_path, '') AS file_path,
-            IFNULL(product_file.file_size, 0) AS file_size,
-            IFNULL(product_file.file_exp, '') AS file_exp,
-            IFNULL(product_file.create_date, '1900-01-01') AS file_create_date, -- 기본값 예시: 최소 날짜
-            IFNULL(product_file.delete_date, '1900-01-01') AS file_delete_date, -- 기본값 예시: 최소 날짜
-            IFNULL(product_file.del_yn, 'N') AS del_yn,
-            IFNULL(product_file.file_attached, 'N') AS file_attached,
-            IFNULL(product_file.downlod_cnt, 0) AS downlod_cnt
-        FROM PRODUCT product
-            INNER JOIN PRODUCT_CATEGORY product_category ON product.category_id = product_category.category_id
-            LEFT JOIN PRODUCT_FILE product_file ON product.product_id = product_file.product_id
-        WHERE product.product_id = #{productId}
+            p.product_id,
+            p.category_id,
+            (select
+                 pc.category_name
+             from product_category pc
+             where pc.category_id = p.category_id) AS categoryName,
+            p.product_name,
+            p.product_price,
+            p.product_stock,
+            p.product_desc,
+            p.product_hits,
+            p.item_sell_status,
+            p.create_date,
+            p.update_date,
+            p.del_yn,
+            ifnull(pf.product_file_id, 0) AS product_file_id,
+            ifnull(pf.origin_file_name, '') AS origin_file_name,
+            ifnull(pf.stored_file_name, '') AS stored_file_name,
+            ifnull(pf.file_path, '') AS file_path,
+            ifnull(pf.file_size, 0) AS file_size,
+            ifnull(pf.file_exp, '') AS file_exp,
+            ifnull(pf.create_date, '1900-01-01') AS file_create_date, -- 기본값 예시: 최소 날짜
+            ifnull(pf.delete_date, '1900-01-01') AS file_delete_date, -- 기본값 예시: 최소 날짜
+            ifnull(pf.del_yn, 'n') AS del_yn,
+            ifnull(pf.file_attached, 'n') AS file_attached,
+            ifnull(pf.downlod_cnt, 0) AS downlod_cnt
+        FROM PRODUCT p
+            INNER JOIN PRODUCT_CATEGORY pc ON p.category_id = pc.category_id
+            LEFT JOIN PRODUCT_FILE pf ON p.product_id = pf.product_id
+        WHERE p.product_id = #{productId}
+        AND p.del_yn != 'Y'
     </select>
 
     <insert id="saveProducts" parameterType="Product" useGeneratedKeys="true" keyProperty="productId">
         INSERT INTO PRODUCT
             (
-                category_id,
-                product_name,
-                product_price,
-                product_stock,
-                product_desc,
-                item_sell_status,
-                create_date,
-                update_date,
-                del_yn
+                CATEGORY_ID,
+                PRODUCT_NAME,
+                PRODUCT_PRICE,
+                PRODUCT_STOCK,
+                PRODUCT_DESC,
+                ITEM_SELL_STATUS,
+                CREATE_DATE,
+                UPDATE_DATE,
+                DEL_YN
             )
             VALUES
             (
@@ -134,10 +136,41 @@
                 #{productStock},
                 #{productDesc},
                 #{itemSellStatus},
-                now(),
-                now(),
+                NOW(),
+                NOW(),
                 'N'
             )
     </insert>
 
+    <update id="updateProduct" parameterType="Product">
+        UPDATE PRODUCT
+        SET
+            category_id = #{categoryId},
+            product_name = #{productName},
+            product_price = #{productPrice},
+            product_stock = #{productStock},
+            product_desc = #{productDesc},
+            item_sell_status = #{itemSellStatus},
+            update_date = NOW()
+        WHERE
+            product_id = #{productId}
+        AND
+            del_yn = 'N'
+        AND
+            EXISTS (
+                SELECT 1 FROM MEMBER
+                WHERE MEMBER.member_id = #{memberId}
+                AND MEMBER.role = 'ROLE_ADMIN'
+            )
+    </update>
+
+    <update id="deleteProduct" parameterType="long">
+        UPDATE PRODUCT
+        SET
+            del_yn = 'Y'
+        WHERE
+            product_id = #{productId}
+        AND
+            del_yn = 'N'
+    </update>
 </mapper>

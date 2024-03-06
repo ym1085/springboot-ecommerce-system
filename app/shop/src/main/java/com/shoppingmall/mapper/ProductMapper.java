@@ -17,4 +17,8 @@ public interface ProductMapper {
     int count(SearchRequestDto searchRequestDto);
 
     int saveProducts(Product product);
+
+    int updateProduct(Product product);
+
+    int deleteProduct(Long productId);
 }

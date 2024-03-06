@@ -171,15 +171,13 @@ public class PostService {
      * Todo: 기존 파일을 DELETE 하고 새로운 파일을 INSERT 하는 FLOW는 수정이 필요
      */
     private int updateFilesByPostId(Long postId, List<MultipartFile> files) {
-        fileHandlerHelper.deleteFiles(getFileResponseDtos(postId)); // 서버 특정 경로에 존재하는 파일 삭제
-
-        int filesCount = postFileMapper.countFilesByPostId(postId);
-        if (filesCount > 0) {
+        if (postFileMapper.countFilesByPostId(postId) > 0) {
             int responseCode = postFileMapper.deleteFilesByPostId(postId); // DB의 파일 정보 삭제
             if (responseCode > 0) {
-                log.info("success delete files from database");
+                log.info("success delete posts files from database");
+                fileHandlerHelper.deleteFiles(getFileResponseDtos(postId)); // 서버 특정 경로에 존재하는 파일 삭제
             } else {
-                log.info("fail delete files from database");
+                log.info("fail delete posts files from database");
             }
         }
 
@@ -189,18 +187,22 @@ public class PostService {
     }
 
     @Transactional
-    public int deletePost(Long postId) {
+    public void deletePost(Long postId) {
         int responseCode = postMapper.deletePostByPostId(postId);
 
-        if (responseCode > 0) {
-            List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
-            if (!CollectionUtils.isEmpty(fileResponseDtos)) {
-                fileHandlerHelper.deleteFiles(fileResponseDtos);
-                responseCode = postFileMapper.deleteUpdateFilesByPostId(postId);
-            }
+        if (responseCode <= 0) {
+            return;
         }
 
-        return responseCode;
+        List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
+        if (CollectionUtils.isEmpty(fileResponseDtos)) {
+            return;
+        }
+
+        responseCode = postFileMapper.deleteFilesByPostId(postId);
+        if (responseCode > 0) {
+            fileHandlerHelper.deleteFiles(fileResponseDtos);
+        }
     }
 
     private boolean isEmptyFiles(List<MultipartFile> files) {
