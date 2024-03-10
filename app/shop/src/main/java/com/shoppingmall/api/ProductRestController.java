@@ -34,6 +34,7 @@ public class ProductRestController {
     public ResponseEntity<CommonResponse> getProducts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<ProductDetailResponseDto> products = productService.getProducts(searchRequestDto);
         return ApiUtils.success(
+                SuccessCode.OK.getCode(),
                 SuccessCode.OK.getHttpStatus(),
                 SuccessCode.OK.getMessage(),
                 products
@@ -44,6 +45,7 @@ public class ProductRestController {
     public ResponseEntity<CommonResponse> getProductByProductId(@PathVariable("productId") Long productId) {
         ProductDetailResponseDto productItemResponseDto = productService.getProductByProductId(productId);
         return ApiUtils.success(
+                SuccessCode.OK.getCode(),
                 SuccessCode.OK.getHttpStatus(),
                 SuccessCode.OK.getMessage(),
                 productItemResponseDto
@@ -63,8 +65,9 @@ public class ProductRestController {
         productService.saveProducts(productRequestDto);
 
         return ApiUtils.success(
-                SuccessCode.SUCCESS_SAVE_PRODUCT.getHttpStatus(),
-                SuccessCode.SUCCESS_SAVE_PRODUCT.getMessage()
+                SuccessCode.SAVE_PRODUCT.getCode(),
+                SuccessCode.SAVE_PRODUCT.getHttpStatus(),
+                SuccessCode.SAVE_PRODUCT.getMessage()
         );
     }
 
@@ -90,8 +93,9 @@ public class ProductRestController {
         productService.updateProduct(productUpdateRequestDto);
 
         return ApiUtils.success(
-                SuccessCode.SUCCESS_UPDATE_PRODUCT.getHttpStatus(),
-                SuccessCode.SUCCESS_UPDATE_PRODUCT.getMessage()
+                SuccessCode.UPDATE_PRODUCT.getCode(),
+                SuccessCode.UPDATE_PRODUCT.getHttpStatus(),
+                SuccessCode.UPDATE_PRODUCT.getMessage()
         );
     }
 
@@ -101,8 +105,9 @@ public class ProductRestController {
         productService.deleteProduct(productId);
 
         return ApiUtils.success(
-                SuccessCode.SUCCESS_DELETE_PRODUCT.getHttpStatus(),
-                SuccessCode.SUCCESS_DELETE_PRODUCT.getMessage()
+                SuccessCode.DELETE_PRODUCT.getCode(),
+                SuccessCode.DELETE_PRODUCT.getHttpStatus(),
+                SuccessCode.DELETE_PRODUCT.getMessage()
         );
     }
 }
