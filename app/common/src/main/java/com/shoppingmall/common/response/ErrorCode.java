@@ -19,27 +19,27 @@ public enum ErrorCode {
     NOT_FOUND_MEMBER_PWD(1002, HttpStatus.FORBIDDEN, "멤버 비밀번호를 찾을 수 없습니다. 다시 시도해주세요."),
     NOT_FOUND_MEMBER_ACCOUNT(1003, HttpStatus.FORBIDDEN, "멤버 계정을 찾을 수 없습니다. 다시 시도해주세요."),
     DUPLICATE_MEMBER_ACCOUNT(1004, HttpStatus.FORBIDDEN, "멤버 계정이 이미 사용 중입니다. 다시 시도해주세요."),
-    FAIL_SAVE_MEMBER(1005, HttpStatus.INTERNAL_SERVER_ERROR, "멤버 등록에 실패했습니다. 다시 시도해주세요."),
-    FAIL_AUTHENTICATION_MEMBER_EMAIL(1006, HttpStatus.FORBIDDEN, "멤버 이메일 인증에 실패했습니다. 다시 시도해주세요."),
+    SAVE_MEMBER(1005, HttpStatus.INTERNAL_SERVER_ERROR, "멤버 등록에 실패했습니다. 다시 시도해주세요."),
+    AUTHENTICATION_MEMBER_EMAIL(1006, HttpStatus.FORBIDDEN, "멤버 이메일 인증에 실패했습니다. 다시 시도해주세요."),
 
     // [POST]
-    FAIL_SAVE_POST(2001, HttpStatus.INTERNAL_SERVER_ERROR, "게시글 등록에 실패했습니다. 다시 시도해주세요."),
-    FAIL_UPDATE_POST(2002, HttpStatus.INTERNAL_SERVER_ERROR, "게시글 수정에 실패했습니다. 다시 시도해주세요."),
-    FAIL_DELETE_POST(2003, HttpStatus.INTERNAL_SERVER_ERROR, "게시글 삭제에 실패했습니다. 다시 시도해주세요."),
-    FAIL_SAVE_COMMENT(2004, HttpStatus.INTERNAL_SERVER_ERROR, "댓글 등록에 실패했습니다. 다시 시도해주세요."),
-    FAIL_DELETE_COMMENT(2005, HttpStatus.INTERNAL_SERVER_ERROR, "댓글 삭제에 실패했습니다. 다시 시도해주세요."),
-    FAIL_UPDATE_COMMENT(2006, HttpStatus.INTERNAL_SERVER_ERROR, "댓글 수정에 실패했습니다. 다시 시도해주세요."),
-    FAIL_SAVE_FILES(2007, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다. 다시 시도해주세요."),
-    FAIL_DOWNLOAD_FILES(2008, HttpStatus.INTERNAL_SERVER_ERROR, "파일 다운로드에 실패했습니다. 다시 시도해주세요."),
-    FAIL_UPLOAD_FILES(2009, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업데이트에 실패했습니다. 다시 시도해주세요."),
+    SAVE_POST(2001, HttpStatus.INTERNAL_SERVER_ERROR, "게시글 등록에 실패했습니다. 다시 시도해주세요."),
+    UPDATE_POST(2002, HttpStatus.INTERNAL_SERVER_ERROR, "게시글 수정에 실패했습니다. 다시 시도해주세요."),
+    DELETE_POST(2003, HttpStatus.INTERNAL_SERVER_ERROR, "게시글 삭제에 실패했습니다. 다시 시도해주세요."),
+    SAVE_COMMENT(2004, HttpStatus.INTERNAL_SERVER_ERROR, "댓글 등록에 실패했습니다. 다시 시도해주세요."),
+    DELETE_COMMENT(2005, HttpStatus.INTERNAL_SERVER_ERROR, "댓글 삭제에 실패했습니다. 다시 시도해주세요."),
+    UPDATE_COMMENT(2006, HttpStatus.INTERNAL_SERVER_ERROR, "댓글 수정에 실패했습니다. 다시 시도해주세요."),
+    SAVE_FILES(2007, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다. 다시 시도해주세요."),
+    DOWNLOAD_FILES(2008, HttpStatus.INTERNAL_SERVER_ERROR, "파일 다운로드에 실패했습니다. 다시 시도해주세요."),
+    UPLOAD_FILES(2009, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업데이트에 실패했습니다. 다시 시도해주세요."),
 
     // [PRODUCT]
-    FAIL_SAVE_PRODUCT(3001, HttpStatus.INTERNAL_SERVER_ERROR, "상품 등록에 실패했습니다. 다시 시도해주세요."),
-    FAIL_UPDATE_PRODUCT(3002, HttpStatus.INTERNAL_SERVER_ERROR, "상품 수정에 실패했습니다. 다시 시도해주세요."),
+    SAVE_PRODUCT(3001, HttpStatus.INTERNAL_SERVER_ERROR, "상품 등록에 실패했습니다. 다시 시도해주세요."),
+    UPDATE_PRODUCT(3002, HttpStatus.INTERNAL_SERVER_ERROR, "상품 수정에 실패했습니다. 다시 시도해주세요."),
 
     // [CART]
-    FAIL_SAVE_CART(4001, HttpStatus.INTERNAL_SERVER_ERROR, "장바구니 등록에 실패했습니다. 다시 시도해주세요."),
-    FAIL_UPDATE_CART(4002, HttpStatus.INTERNAL_SERVER_ERROR, "장바구니 수정에 실패했습니다. 다시 시도해주세요."),
+    SAVE_CART(4001, HttpStatus.INTERNAL_SERVER_ERROR, "장바구니 등록에 실패했습니다. 다시 시도해주세요."),
+    UPDATE_CART(4002, HttpStatus.INTERNAL_SERVER_ERROR, "장바구니 수정에 실패했습니다. 다시 시도해주세요."),
     ;
 
     private final int code;

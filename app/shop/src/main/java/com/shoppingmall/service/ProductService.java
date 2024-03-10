@@ -67,8 +67,8 @@ public class ProductService {
         Product product = productRequestDto.toEntity();
         int responseCode = productMapper.saveProducts(product);
         if (responseCode == 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_PRODUCT.getMessage());
-            throw new FailSaveProductException(ErrorCode.FAIL_SAVE_PRODUCT);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_PRODUCT.getMessage());
+            throw new FailSaveProductException(ErrorCode.SAVE_PRODUCT);
         }
 
         try {
@@ -76,8 +76,8 @@ public class ProductService {
                 List<FileSaveRequestDto> baseFileSaveRequestDtos = fileHandlerHelper.uploadFiles(productRequestDto.getFiles(), productRequestDto.getDirPathType());
                 responseCode = saveFiles(product.getProductId(), baseFileSaveRequestDtos);
                 if (responseCode == 0) {
-                    log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_FILES);
-                    throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
+                    log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_FILES);
+                    throw new FailSaveFileException(ErrorCode.SAVE_FILES);
                 }
             }
         } catch (RuntimeException e) {
@@ -109,14 +109,14 @@ public class ProductService {
     public void updateProduct(ProductUpdateRequestDto productUpdateRequestDto) {
         int responseCode = productMapper.updateProduct(productUpdateRequestDto.toEntity());
         if (responseCode == 0) {
-            throw new FailSaveProductException(ErrorCode.FAIL_SAVE_PRODUCT);
+            throw new FailSaveProductException(ErrorCode.SAVE_PRODUCT);
         }
 
         if (!productUpdateRequestDto.getFiles().isEmpty()) {
             responseCode = updateFilesByProductId(productUpdateRequestDto.getProductId(), productUpdateRequestDto.getFiles());
             if (responseCode == 0) {
-                log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_UPLOAD_FILES.getMessage());
-                throw new FailUpdateFilesException(ErrorCode.FAIL_UPLOAD_FILES);
+                log.error("[Occurred Exception] Error Message = {}", ErrorCode.UPLOAD_FILES.getMessage());
+                throw new FailUpdateFilesException(ErrorCode.UPLOAD_FILES);
             }
         }
     }

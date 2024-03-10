@@ -45,7 +45,7 @@ public class CartService {
 
         // 장바구니 등록, 수정 실패 시 예외 발생!
         if (responseCode == 0) {
-            throw new FailSaveCartProductException(ErrorCode.FAIL_SAVE_CART);
+            throw new FailSaveCartProductException(ErrorCode.SAVE_CART);
         }
         return responseCode;
     }
@@ -54,7 +54,7 @@ public class CartService {
     public int updateCartProduct(CartSaveRequestDto cartRequestDto) {
         int responseCode = cartMapper.updateCartProduct(cartRequestDto.toEntity());
         if (responseCode == 0) {
-            throw new FailUpdateCartProductException(ErrorCode.FAIL_UPDATE_CART);
+            throw new FailUpdateCartProductException(ErrorCode.UPDATE_CART);
         }
         return responseCode;
     }

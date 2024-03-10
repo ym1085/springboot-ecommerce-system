@@ -39,8 +39,8 @@ public class MemberService {
 
         int responseCode = memberMapper.join(member);
         if (responseCode == 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_MEMBER.getMessage());
-            throw new FailSaveMemberException(ErrorCode.FAIL_SAVE_MEMBER);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_MEMBER.getMessage());
+            throw new FailSaveMemberException(ErrorCode.SAVE_MEMBER);
         }
 
         return responseCode;
