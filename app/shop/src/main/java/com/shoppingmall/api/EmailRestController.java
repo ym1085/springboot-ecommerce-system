@@ -34,8 +34,9 @@ public class EmailRestController {
         emailService.sendAuthCodeToMemberEmail(emailRequestDto.getEmail());
 
         return ApiUtils.success(
-                SuccessCode.SUCCESS_SEND_AUTH_EMAIL.getHttpStatus(),
-                SuccessCode.SUCCESS_SEND_AUTH_EMAIL.getMessage()
+                SuccessCode.SEND_AUTH_EMAIL.getCode(),
+                SuccessCode.SEND_AUTH_EMAIL.getHttpStatus(),
+                SuccessCode.SEND_AUTH_EMAIL.getMessage()
         );
     }
 
@@ -49,8 +50,9 @@ public class EmailRestController {
         }
 
         return ApiUtils.success(
-                SuccessCode.SUCCESS_VERIFY_AUTH_EMAIL.getHttpStatus(),
-                SuccessCode.SUCCESS_VERIFY_AUTH_EMAIL.getMessage()
+                SuccessCode.VERIFY_AUTH_EMAIL.getCode(),
+                SuccessCode.VERIFY_AUTH_EMAIL.getHttpStatus(),
+                SuccessCode.VERIFY_AUTH_EMAIL.getMessage()
         );
     }
 }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shoppingmall.mapper.CartMapper">
+
+    <select id="countCartProducts" parameterType="Cart" resultType="int">
+        SELECT COUNT(*)
+        FROM cart
+        WHERE member_id = #{memberId}
+        AND product_id = ${productId}
+    </select>
+
+    <insert id="addCartProduct" parameterType="Cart">
+        INSERT INTO cart
+            (
+                member_id,
+                product_id,
+                amount,
+                create_date,
+                update_date
+            )
+        VALUES
+            (
+                #{memberId},
+                #{productId},
+                #{amount},
+                NOW(),
+                NOW()
+            )
+    </insert>
+
+    <update id="updateCartProduct" parameterType="Cart">
+        UPDATE cart
+        SET
+            amount = #{amount},
+            update_date = NOW()
+        WHERE
+            member_id = #{memberId}
+        AND
+            product_id = #{productId}
+    </update>
+
+</mapper>
