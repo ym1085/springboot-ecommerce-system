@@ -58,9 +58,9 @@ public class CartRestController {
             );
         } else {
             return ApiUtils.fail(
-                    ErrorCode.FAIL_SAVE_CART.getCode(),
-                    ErrorCode.FAIL_SAVE_CART.getHttpStatus(),
-                    ErrorCode.FAIL_SAVE_CART.getMessage()
+                    ErrorCode.SAVE_CART.getCode(),
+                    ErrorCode.SAVE_CART.getHttpStatus(),
+                    ErrorCode.SAVE_CART.getMessage()
             );
         }
     }

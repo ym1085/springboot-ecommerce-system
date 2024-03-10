@@ -94,7 +94,7 @@ public class FileHandlerHelper {
             baseFileSaveRequestDto = buildFileSaveRequestDto(dirPathType, originalFilename, storedFileName, fileUploadPath, fileSize, ext);
         } catch (IOException | IllegalStateException | FailSaveFileException e) {
             log.error("[Exception] error occurred, e = {}", e.getMessage());
-            throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
+            throw new FailSaveFileException(ErrorCode.SAVE_FILES);
         }
         return baseFileSaveRequestDto;
     }
@@ -122,7 +122,7 @@ public class FileHandlerHelper {
                         .fileAttached("Y")
                         .build();
             default:
-                throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
+                throw new FailSaveFileException(ErrorCode.SAVE_FILES);
         }
     }
 
@@ -226,8 +226,8 @@ public class FileHandlerHelper {
         try {
             return resource.getInputStream();
         } catch (IOException e) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_DOWNLOAD_FILES.getMessage());
-            throw new FailDownloadFilesException(ErrorCode.FAIL_DOWNLOAD_FILES);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DOWNLOAD_FILES.getMessage());
+            throw new FailDownloadFilesException(ErrorCode.DOWNLOAD_FILES);
         }
     }
 
@@ -238,8 +238,8 @@ public class FileHandlerHelper {
             httpHeaders.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.contentLength()));
             httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE.toString());
         } catch (IOException e) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_DOWNLOAD_FILES.getMessage());
-            throw new FailDownloadFilesException(ErrorCode.FAIL_DOWNLOAD_FILES);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DOWNLOAD_FILES.getMessage());
+            throw new FailDownloadFilesException(ErrorCode.DOWNLOAD_FILES);
         }
         return httpHeaders;
     }
@@ -255,8 +255,8 @@ public class FileHandlerHelper {
             }
             zos.finish();
         } catch (IOException e) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_DOWNLOAD_FILES.getMessage());
-            throw new FailDownloadFilesException(ErrorCode.FAIL_DOWNLOAD_FILES);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DOWNLOAD_FILES.getMessage());
+            throw new FailDownloadFilesException(ErrorCode.DOWNLOAD_FILES);
         }
     }
 

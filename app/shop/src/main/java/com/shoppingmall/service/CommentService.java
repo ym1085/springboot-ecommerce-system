@@ -39,8 +39,8 @@ public class CommentService {
         Comment comment = new Comment();
         int responseCode = commentMapper.saveComment(comment);
         if (responseCode == 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_COMMENT.getMessage());
-            throw new FailSaveCommentException(ErrorCode.FAIL_SAVE_COMMENT);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_COMMENT.getMessage());
+            throw new FailSaveCommentException(ErrorCode.SAVE_COMMENT);
         }
 
         return getCommentsByPostId(commentSaveRequestDto.getPostId());
@@ -62,8 +62,8 @@ public class CommentService {
     public List<CommentResponseDto> deleteComments(CommentDeleteRequestDto commentDeleteRequestDto) {
         int responseCode = commentMapper.deleteComment(commentDeleteRequestDto.toEntity());
         if (responseCode == 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_DELETE_COMMENT.getMessage());
-            throw new FailDeleteCommentException(ErrorCode.FAIL_DELETE_COMMENT);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DELETE_COMMENT.getMessage());
+            throw new FailDeleteCommentException(ErrorCode.DELETE_COMMENT);
         }
 
         return getCommentsByPostId(commentDeleteRequestDto.getPostId());
@@ -73,8 +73,8 @@ public class CommentService {
     public List<CommentResponseDto> deleteCommentsReply(CommentDeleteRequestDto commentDeleteRequestDto) {
         int responseCode = commentMapper.deleteCommentReply(commentDeleteRequestDto.toEntity());
         if (responseCode == 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_DELETE_COMMENT.getMessage());
-            throw new FailDeleteCommentException(ErrorCode.FAIL_DELETE_COMMENT);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DELETE_COMMENT.getMessage());
+            throw new FailDeleteCommentException(ErrorCode.DELETE_COMMENT);
         }
 
         return getCommentsByPostId(commentDeleteRequestDto.getPostId());
@@ -84,8 +84,8 @@ public class CommentService {
     public List<CommentResponseDto> updateCommentByCommentId(CommentUpdateRequestDto commentUpdateRequestDto) {
         int responseCode = commentMapper.updateCommentByCommentId(commentUpdateRequestDto.toEntity());
         if (responseCode == 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_UPDATE_COMMENT.getMessage());
-            throw new FailUpdateCommentException(ErrorCode.FAIL_UPDATE_COMMENT);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.UPDATE_COMMENT.getMessage());
+            throw new FailUpdateCommentException(ErrorCode.UPDATE_COMMENT);
         }
 
         return getCommentsByPostId(commentUpdateRequestDto.getPostId());

@@ -111,8 +111,8 @@ public class PostService {
         Post post = postSaveRequestDto.toEntity();
         int responseCode = postMapper.savePost(post);
         if (responseCode == 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_POST.getMessage());
-            throw new FailSavePostException(ErrorCode.FAIL_SAVE_POST);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_POST.getMessage());
+            throw new FailSavePostException(ErrorCode.SAVE_POST);
         }
 
         try {
@@ -120,8 +120,8 @@ public class PostService {
                 List<FileSaveRequestDto> baseFileSaveRequestDto = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getDirPathType());
                 responseCode = saveFiles(post.getPostId(), baseFileSaveRequestDto);
                 if (responseCode == 0) {
-                    log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_SAVE_FILES);
-                    throw new FailSaveFileException(ErrorCode.FAIL_SAVE_FILES);
+                    log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_FILES);
+                    throw new FailSaveFileException(ErrorCode.SAVE_FILES);
                 }
             }
         } catch (RuntimeException e) {
@@ -159,8 +159,8 @@ public class PostService {
         if (!isEmptyFiles(postUpdateRequestDto.getFiles())) {
             responseCode = updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles());
             if (responseCode == 0) {
-                log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_UPLOAD_FILES.getMessage());
-                throw new FailUpdateFilesException(ErrorCode.FAIL_UPLOAD_FILES);
+                log.error("[Occurred Exception] Error Message = {}", ErrorCode.UPLOAD_FILES.getMessage());
+                throw new FailUpdateFilesException(ErrorCode.UPLOAD_FILES);
             }
         }
 
