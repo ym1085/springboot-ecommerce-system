@@ -45,8 +45,8 @@ public class EmailRestController {
             @RequestParam("code") String authCode) {
 
         if (!EmailService.emailAuthKey.equals(authCode)) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.FAIL_AUTHENTICATION_MEMBER_EMAIL.getMessage());
-            throw new FailAuthenticationMemberEmailException(ErrorCode.FAIL_AUTHENTICATION_MEMBER_EMAIL);
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.AUTHENTICATION_MEMBER_EMAIL.getMessage());
+            throw new FailAuthenticationMemberEmailException(ErrorCode.AUTHENTICATION_MEMBER_EMAIL);
         }
 
         return ApiUtils.success(
