@@ -35,8 +35,9 @@ public class MemberRestController {
         memberService.join(memberRequestDto);
 
         return ApiUtils.success(
-                SuccessCode.SUCCESS_JOIN_MEMBER.getHttpStatus(),
-                SuccessCode.SUCCESS_JOIN_MEMBER.getMessage()
+                SuccessCode.JOIN_MEMBER.getCode(),
+                SuccessCode.JOIN_MEMBER.getHttpStatus(),
+                SuccessCode.JOIN_MEMBER.getMessage()
         );
     }
 
@@ -51,6 +52,7 @@ public class MemberRestController {
         memberService.validateDuplicateMemberAccount(memberSaveRequestDto.getAccount());
 
         return ApiUtils.success(
+                SuccessCode.NONE_DUPLICATE_MEMBER.getCode(),
                 SuccessCode.NONE_DUPLICATE_MEMBER.getHttpStatus(),
                 SuccessCode.NONE_DUPLICATE_MEMBER.getMessage()
         );

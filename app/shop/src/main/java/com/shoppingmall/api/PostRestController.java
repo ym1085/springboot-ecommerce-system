@@ -31,6 +31,7 @@ public class PostRestController {
     public ResponseEntity<CommonResponse> getPosts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
         return ApiUtils.success(
+                SuccessCode.OK.getCode(),
                 SuccessCode.OK.getHttpStatus(),
                 SuccessCode.OK.getMessage(),
                 posts
@@ -41,6 +42,7 @@ public class PostRestController {
     public ResponseEntity<CommonResponse> getPostById(@PathVariable("postId") Long postId) {
         PostResponseDto post = postService.getPostById(postId);
         return ApiUtils.success(
+                SuccessCode.OK.getCode(),
                 SuccessCode.OK.getHttpStatus(),
                 SuccessCode.OK.getMessage(),
                 post
@@ -60,8 +62,9 @@ public class PostRestController {
         postService.savePost(postSaveRequestDto);
 
         return ApiUtils.success(
-                SuccessCode.SUCCESS_SAVE_POST.getHttpStatus(),
-                SuccessCode.SUCCESS_SAVE_POST.getMessage()
+                SuccessCode.SAVE_POST.getCode(),
+                SuccessCode.SAVE_POST.getHttpStatus(),
+                SuccessCode.SAVE_POST.getMessage()
         );
     }
 
@@ -82,8 +85,9 @@ public class PostRestController {
         postService.updatePost(postUpdateRequestDto);
 
         return ApiUtils.success(
-                SuccessCode.SUCCESS_UPDATE_POST.getHttpStatus(),
-                SuccessCode.SUCCESS_UPDATE_POST.getMessage()
+                SuccessCode.UPDATE_POST.getCode(),
+                SuccessCode.UPDATE_POST.getHttpStatus(),
+                SuccessCode.UPDATE_POST.getMessage()
         );
     }
 
@@ -92,8 +96,9 @@ public class PostRestController {
         postService.deletePost(postId);
 
         return ApiUtils.success(
-                SuccessCode.SUCCESS_DELETE_POST.getHttpStatus(),
-                SuccessCode.SUCCESS_DELETE_POST.getMessage()
+                SuccessCode.DELETE_POST.getCode(),
+                SuccessCode.DELETE_POST.getHttpStatus(),
+                SuccessCode.DELETE_POST.getMessage()
         );
     }
 }
