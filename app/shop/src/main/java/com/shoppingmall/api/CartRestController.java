@@ -5,6 +5,7 @@ import com.shoppingmall.common.response.CommonResponse;
 import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.common.response.SuccessCode;
 import com.shoppingmall.dto.request.CartSaveRequestDto;
+import com.shoppingmall.dto.response.CartTotalPriceResponseDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.CartService;
 import com.shoppingmall.utils.SecurityUtils;
@@ -14,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -38,7 +36,9 @@ public class CartRestController {
             throw new InvalidParameterException(bindingResult);
         }
 
-        Member member = SecurityUtils.getCurrentMember().orElseThrow(() -> new AccessDeniedException("인증된 사용자 정보를 찾을 수 없습니다."));
+        Member member = SecurityUtils.getCurrentMember()
+                .orElseThrow(() -> new AccessDeniedException("인증된 사용자 정보를 찾을 수 없습니다."));
+
         cartRequestDto.setMemberId(member.getMemberId());
         log.debug("member = {}, cartRequestDto = {}", member, cartRequestDto);
 
@@ -65,40 +65,32 @@ public class CartRestController {
         }
     }
 
-    /*@GetMapping("/cart")
-    public ResponseEntity getCartItems(Principal principal) {
-        List<CartItemResponseDto> cartDetails = cartService.getCartItems(principal.getName());
-        return ResponseEntity.ok(cartDetails);
+    @GetMapping("/cart")
+    public ResponseEntity<CommonResponse> getCartItems() {
+        Member member = SecurityUtils.getCurrentMember()
+                .orElseThrow(() -> new AccessDeniedException("인증된 사용자 정보를 찾을 수 없습니다."));
+
+        CartTotalPriceResponseDto cartItems = cartService.getCartItems(member.getMemberId());
+
+        return ApiUtils.success(
+                SuccessCode.OK.getCode(),
+                SuccessCode.OK.getHttpStatus(),
+                SuccessCode.OK.getMessage(),
+                cartItems
+        );
     }
 
-    @PutMapping("/{cartItemId}")
-    public ResponseEntity updateCartItem(
-            @PathVariable("cartItemId") Integer cartItemId,
-            @RequestBody CartItemRequestDto cartItemRequestDto,
-            BindingResult bindingResult,
-            Principal principal) {
+    @PutMapping("/cart/{cartId}")
+    public ResponseEntity<CommonResponse> deleteCartItem(@PathVariable("cartId") Long cartId) {
+        Member member = SecurityUtils.getCurrentMember()
+                .orElseThrow(() -> new AccessDeniedException("인증된 사용자 정보를 찾을 수 없습니다."));
 
-        if (bindingResult.hasErrors()) {
-            throw new InvalidParameterException(bindingResult);
-        }
+        int responseCode = cartService.deleteCartItem(cartId, member.getMemberId());
 
-        if (cartService.validateCartItem(cartItemId, principal.getName())) {
-            throw new IllegalArgumentException();
-        }
-
-        int responseCode = cartService.updateCartItemCount(cartItemId, cartItemRequestDto.getCount());
-        return ResponseEntity.ok(responseCode);
+        return ApiUtils.success(
+                SuccessCode.DELETE_CART.getCode(),
+                SuccessCode.DELETE_CART.getHttpStatus(),
+                SuccessCode.DELETE_CART.getMessage()
+        );
     }
-
-    @DeleteMapping("/{cartItemId}")
-    public ResponseEntity deleteCartItem(
-            @PathVariable("cartItemId") Integer cartItemId,
-            Principal principal) {
-
-        if (cartService.validateCartItem(cartItemId, principal.getName())) {
-            throw new IllegalArgumentException();
-        }
-
-        return ResponseEntity.ok(cartService.deleteCartItem(cartItemId));
-    }*/
 }

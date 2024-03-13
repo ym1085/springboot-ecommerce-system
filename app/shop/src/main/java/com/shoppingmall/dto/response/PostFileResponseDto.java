@@ -1,5 +1,6 @@
 package com.shoppingmall.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.vo.PostFiles;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @NoArgsConstructor
 @SuperBuilder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostFileResponseDto extends FileResponseDto {
     private Long postFileId;
     private Long postId;

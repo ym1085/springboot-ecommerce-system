@@ -1,9 +1,13 @@
 package com.shoppingmall.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
 import com.shoppingmall.vo.Member;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemberResponseDto {
     private Long memberId;
     private String name;

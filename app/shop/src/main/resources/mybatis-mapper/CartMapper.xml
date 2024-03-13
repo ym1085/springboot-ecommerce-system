@@ -41,4 +41,66 @@
             product_id = #{productId}
     </update>
 
+    <resultMap id="CartItemMap" type="com.shoppingmall.vo.Cart">
+        <id property="cartId" column="cart_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="amount" column="amount"/>
+        <result property="totalPricePerCartItem" column="total_price_per_cart_item"/>
+        <!--<result property="totalPriceCartItem" column="total_price_cart_item"/>-->
+        <association property="product" javaType="com.shoppingmall.vo.Product">
+            <result property="productName" column="product_name"/>
+            <result property="productPrice" column="product_price"/>
+            <result property="productStock" column="product_stock"/>
+            <result property="productDesc" column="product_desc"/>
+        </association>
+        <association property="member" javaType="com.shoppingmall.vo.Member">
+            <result property="name" column="name" />
+            <result property="account" column="account" />
+        </association>
+    </resultMap>
+
+    <select id="getCartItems" parameterType="long" resultMap="CartItemMap">
+        SELECT
+            c.cart_id,
+            c.member_id,
+            c.product_id,
+            c.amount,
+            (c.amount * p.product_price) AS total_price_per_cart_item,
+            p.product_name,
+            p.product_price,
+            p.product_stock,
+            p.product_desc,
+            m.name,
+            m.account
+        FROM cart c
+            JOIN product p ON c.product_id = p.product_id
+            JOIN member m ON c.member_id = m.member_id
+        WHERE c.member_id = #{memberId}
+        AND c.del_yn = 'N'
+        AND p.del_yn = 'N'
+        AND m.use_yn = 'Y'
+        ORDER BY
+            c.cart_id;
+    </select>
+
+    <select id="getCartItemsTotalPrice" parameterType="long" resultType="int">
+        SELECT IFNULL(SUM(c2.amount * p2.product_price), 0)
+        FROM cart c2
+            JOIN product p2 ON c2.product_id = p2.product_id
+        WHERE c2.member_id = #{memberId}
+        AND c2.del_yn = 'N'
+        AND p2.del_yn = 'N'
+    </select>
+    
+    <update id="deleteCartItem" parameterType="long">
+        UPDATE cart
+        SET
+            del_yn = 'Y',
+            delete_date = NOW()
+        WHERE
+            cart_id = #{cartId}
+        AND
+            member_id = #{memberId}
+    </update>
 </mapper>

@@ -2,7 +2,9 @@ package com.shoppingmall.vo;
 
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 

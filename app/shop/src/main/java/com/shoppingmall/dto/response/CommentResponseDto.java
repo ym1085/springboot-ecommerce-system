@@ -1,5 +1,6 @@
 package com.shoppingmall.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.vo.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentResponseDto {
     private Long commentId;
     private Long parentId;

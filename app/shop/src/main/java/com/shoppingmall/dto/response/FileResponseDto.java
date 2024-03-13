@@ -1,7 +1,9 @@
 package com.shoppingmall.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @SuperBuilder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class FileResponseDto {
     private String originFileName;
     private String storedFileName;
