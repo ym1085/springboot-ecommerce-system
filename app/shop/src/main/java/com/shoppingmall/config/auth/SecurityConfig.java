@@ -15,8 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 // 구글 로그인 완료 후 후처리 필요
-// 1. 코드받기(인증), 2. 엑세스토큰(권한)
-// 3. 사용자 프로필 정보를 가져오고 4-1. 그 정보를 토대로 회원가입을 자동으로 진행시키기도 함
+// 1. 코드받기(인증)
+// 2. 엑세스토큰(권한)
+// 3. 사용자 프로필 정보를 가져오고
+// 4-1. 그 정보를 토대로 회원가입을 자동으로 진행시키기도 함
 // 4-2. 쇼핑몰 아닌 경우 (이메일, 전화번호, 이름, 아이디)
 // 4-3. 쇼핑몰 같이 부가 정보 같이 저장 해야하는 경우 회원가입 2단계 진행 -> (집주소), 백화점몰 -> (VIP등급, 일반등급)
 
@@ -82,6 +84,13 @@ public class SecurityConfig {
                 .and()
                     .sessionManagement()
                     .invalidSessionUrl("/member/loginForm")
+                    .maximumSessions(1)
+                    .maxSessionsPreventsLogin(false) // 동일 사용자가 1개 이상 로그인 시도 시, 먼저 로그인한 사용자 로그아웃 + 세션 만료
+                    .expiredUrl("/member/loginForm")
+                    .and()
+                .and()
+                    .exceptionHandling()
+                    .accessDeniedPage("/error/404")
                 .and()
                     .oauth2Login()
                         .loginPage("/member/loginForm")

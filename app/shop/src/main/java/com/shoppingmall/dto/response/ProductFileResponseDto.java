@@ -1,5 +1,6 @@
 package com.shoppingmall.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.vo.ProductFiles;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -8,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @NoArgsConstructor
 @SuperBuilder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductFileResponseDto extends FileResponseDto {
     private Long productFileId;
     private Long productId;

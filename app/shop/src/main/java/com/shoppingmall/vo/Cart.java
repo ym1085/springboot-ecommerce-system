@@ -9,19 +9,26 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class Cart {
-    // Cart에 들어가야 하는 필드 전부 만들어봐
     private Long cartId;
-    private Long productId;
     private Long memberId;
-    private Integer amount;
+    private Long productId;
+    private Long amount;
     private LocalDateTime createDate;
+    private LocalDateTime updateDate;
+    private Integer totalPricePerCartItem; // 장바구니 상품별 총 합계
+    private Product product;
+    private Member member;
 
     @Builder
-    public Cart(Long cartId, Long productId, Long memberId, Integer amount, LocalDateTime createDate) {
+    public Cart(Long cartId, Long memberId, Long productId, Long amount, LocalDateTime createDate, LocalDateTime updateDate, Integer totalPricePerCartItem, Product product, Member member) {
         this.cartId = cartId;
-        this.productId = productId;
         this.memberId = memberId;
+        this.productId = productId;
         this.amount = amount;
         this.createDate = createDate;
+        this.updateDate = updateDate;
+        this.totalPricePerCartItem = totalPricePerCartItem;
+        this.product = product;
+        this.member = member;
     }
 }

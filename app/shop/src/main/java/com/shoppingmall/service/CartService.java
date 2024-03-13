@@ -2,6 +2,9 @@ package com.shoppingmall.service;
 
 import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.dto.request.CartSaveRequestDto;
+import com.shoppingmall.dto.response.CartResponseDto;
+import com.shoppingmall.dto.response.CartTotalPriceResponseDto;
+import com.shoppingmall.exception.FailDeleteCartProductException;
 import com.shoppingmall.exception.FailSaveCartProductException;
 import com.shoppingmall.exception.FailUpdateCartProductException;
 import com.shoppingmall.mapper.CartMapper;
@@ -13,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -59,20 +64,39 @@ public class CartService {
         return responseCode;
     }
 
-    /*public List<CartItemResponseDto> getCartItems(String memberAccount) {
-        memberMapper.getMemberByAccount(memberAccount)
-                .map(memberVO -> )
+    public CartTotalPriceResponseDto getCartItems(Long memberId) {
+        if (memberId == null) {
+            return new CartTotalPriceResponseDto();
+        }
+
+        List<CartResponseDto> cartResponseDtos = cartMapper.getCartItems(memberId)
+                .stream()
+                .map(CartResponseDto::toDto)
+                .collect(Collectors.toList());
+
+        int totalPriceCartItem = getTotalPriceCartItems(memberId);
+
+        return CartTotalPriceResponseDto.builder()
+                .cartItems(cartResponseDtos)
+                .totalPriceCartItem(totalPriceCartItem)
+                .build();
     }
 
-    public boolean validateCartItem(int cartItemId, String name) {
-
+    /**
+     * 장바구니의 모든 상품에 대한 총 합계 가격 반환
+     * @param memberId
+     * @return
+     */
+    private int getTotalPriceCartItems(Long memberId) {
+        return cartMapper.getCartItemsTotalPrice(memberId);
     }
 
-    public int updateCartItemCount(Integer cartItemId, Integer count) {
-
+    @Transactional
+    public int deleteCartItem(Long cartId, Long memberId) {
+        int responseCode = cartMapper.deleteCartItem(cartId, memberId);
+        if (responseCode == 0) {
+            throw new FailDeleteCartProductException(ErrorCode.DELETE_CART);
+        }
+        return responseCode;
     }
-
-    public int deleteCartItem(Integer cartItemId) {
-
-    }*/
 }

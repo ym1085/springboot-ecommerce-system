@@ -93,6 +93,7 @@ public class CommentRestController {
                 SuccessCode.DELETE_COMMENT.getCode(),
                 SuccessCode.DELETE_COMMENT.getHttpStatus(),
                 SuccessCode.DELETE_COMMENT.getMessage(),
-                comments);
+                comments
+        );
     }
 }

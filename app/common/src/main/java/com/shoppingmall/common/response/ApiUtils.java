@@ -11,12 +11,11 @@ public class ApiUtils {
      * @param status    :   HTTP status object
      * @param message   :   HTTP custom message
      */
-    public static ResponseEntity<CommonResponse> success(int code, HttpStatus status, String message) {
+    public static ResponseEntity<CommonResponse> success(String code, HttpStatus status, String message) {
         return ResponseEntity
                 .status(status)
                 .body(CommonResponse.builder()
                         .code(code)
-                        .httpStatusCode(status.value())
                         .message(message)
                         .build());
     }
@@ -27,12 +26,11 @@ public class ApiUtils {
      * @param message   :   HTTP custom message
      * @param result    :   응답 데이터
      */
-    public static <T> ResponseEntity<CommonResponse> success(int code, HttpStatus status, String message, T result) {
+    public static <T> ResponseEntity<CommonResponse> success(String code, HttpStatus status, String message, T result) {
         return ResponseEntity
                 .status(status)
                 .body(CommonResponse.builder()
                         .code(code)
-                        .httpStatusCode(status.value())
                         .message(message)
                         .result(result)
                         .build());
@@ -43,12 +41,11 @@ public class ApiUtils {
      * @param status    :   HTTP status object
      * @param message   :   HTTP custom message
      */
-    public static ResponseEntity<CommonResponse> fail(int code, HttpStatus status, String message) {
+    public static ResponseEntity<CommonResponse> fail(String code, HttpStatus status, String message) {
         return ResponseEntity
                 .status(status)
                 .body(CommonResponse.builder()
                         .code(code)
-                        .httpStatusCode(status.value())
                         .message(message)
                         .build());
     }
