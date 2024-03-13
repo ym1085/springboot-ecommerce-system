@@ -7,23 +7,20 @@ import lombok.Getter;
 @Getter
 @Builder
 public class CommonResponse<T> {
-    private final int code; // custom status code
-    private final int httpStatusCode; // HTTP status code
-    private final String message; // response message
+    private final String code; // 내부 커스텀 코드 번호 = [E0101, E0102..]
+    private final String message; // 반환 메시지
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final T result;
 
-    public CommonResponse(int code, int httpStatusCode, String message) {
+    public CommonResponse(String code, String message) {
         this.code = code;
-        this.httpStatusCode = httpStatusCode;
         this.message = message;
         this.result = null;
     }
 
-    public CommonResponse(int code, int httpStatusCode, String message, T result) {
+    public CommonResponse(String code, String message, T result) {
         this.code = code;
-        this.httpStatusCode = httpStatusCode;
         this.message = message;
         this.result = result;
     }
