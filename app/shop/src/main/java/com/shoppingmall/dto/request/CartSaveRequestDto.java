@@ -16,11 +16,11 @@ import javax.validation.constraints.NotNull;
 public class CartSaveRequestDto {
 
     @NotNull(message = "상품 아이디는 필수 입력 값 입니다.")
-    private Long productId;
+    private Integer productId;
 
     @Min(value = 1, message = "최소 1개 이상 담아주세요")
-    private Long amount;
-    private Long memberId;
+    private Integer amount;
+    private Integer memberId;
 
     public Cart toEntity() {
         return Cart.builder()

@@ -15,14 +15,12 @@ public class CommonResponse<T> {
 
     public CommonResponse(String code, String message) {
         this.code = code;
-        this.httpStatusCode = httpStatusCode;
         this.message = message;
         this.result = null;
     }
 
     public CommonResponse(String code, String message, T result) {
         this.code = code;
-        this.httpStatusCode = httpStatusCode;
         this.message = message;
         this.result = result;
     }

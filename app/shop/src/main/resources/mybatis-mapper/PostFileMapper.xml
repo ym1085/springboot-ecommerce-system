@@ -42,7 +42,7 @@
         파일 삭제 > 게시글 수정 시 클라이언트가 올린 파일이 있으면 기존 파일은 전부 삭제 후 다시 저장
         트랜잭션 단위에서 수행을 하기에 괜찮을 것 같음
     -->
-    <update id="deleteFilesByPostId" parameterType="long">
+    <update id="deleteFilesByPostId" parameterType="int">
         UPDATE POST_FILE f
         SET
             f.del_yn = 'Y',
@@ -52,7 +52,7 @@
     </update>
 
     <!-- 파일 조회 -->
-    <select id="getFilesByPostId" parameterType="long" resultType="PostFiles">
+    <select id="getFilesByPostId" parameterType="int" resultType="PostFiles">
         SELECT
             post_file_id
             , post_id
@@ -72,7 +72,7 @@
     </select>
 
     <!-- 단건 파일 조회 -->
-    <select id="getFileByPostFileId" parameterType="long" resultType="PostFiles">
+    <select id="getFileByPostFileId" parameterType="int" resultType="PostFiles">
         SELECT
             post_file_id
             , post_id
@@ -92,13 +92,13 @@
     </select>
 
     <!-- 파일 다운로드 수 업데이트 -->
-    <update id="increaseDownloadCntByFileId" parameterType="long">
+    <update id="increaseDownloadCntByFileId" parameterType="int">
         UPDATE POST_FILE
         SET download_cnt = download_cnt + 1
         WHERE post_file_id = #{postFileId}
     </update>
 
-    <select id="countFilesByPostId" parameterType="long" resultType="int">
+    <select id="countFilesByPostId" parameterType="int" resultType="int">
         SELECT COUNT(*) AS cnt
         FROM POST_FILE
         WHERE post_id = #{postFileId}

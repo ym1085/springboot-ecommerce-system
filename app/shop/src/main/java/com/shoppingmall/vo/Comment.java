@@ -9,19 +9,18 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class Comment {
-    private Long commentId;
-    private Long parentId;
-    private Long postId;
+    private Integer commentId;
+    private Integer parentId;
+    private Integer postId;
     private String content;
-    private Long memberId;
+    private Integer memberId;
     private String delYn;
     private String path;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
 
     @Builder
-    public Comment(Long commentId, Long parentId, Long postId, String content, Long memberId,
-                   String delYn, String path, LocalDateTime createDate, LocalDateTime updateDate) {
+    public Comment(Integer commentId, Integer parentId, Integer postId, String content, Integer memberId, String delYn, String path, LocalDateTime createDate, LocalDateTime updateDate) {
         this.commentId = commentId;
         this.parentId = parentId;
         this.postId = postId;

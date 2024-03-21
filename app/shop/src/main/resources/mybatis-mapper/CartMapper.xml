@@ -60,7 +60,7 @@
         </association>
     </resultMap>
 
-    <select id="getCartItems" parameterType="long" resultMap="CartItemMap">
+    <select id="getCartItems" parameterType="int" resultMap="CartItemMap">
         SELECT
             c.cart_id,
             c.member_id,
@@ -84,7 +84,7 @@
             c.cart_id;
     </select>
 
-    <select id="getCartItemsTotalPrice" parameterType="long" resultType="int">
+    <select id="getCartItemsTotalPrice" parameterType="int" resultType="int">
         SELECT IFNULL(SUM(c2.amount * p2.product_price), 0)
         FROM cart c2
             JOIN product p2 ON c2.product_id = p2.product_id
@@ -93,7 +93,7 @@
         AND p2.del_yn = 'N'
     </select>
     
-    <update id="deleteCartItem" parameterType="long">
+    <update id="deleteCartItem" parameterType="int">
         UPDATE cart
         SET
             del_yn = 'Y',

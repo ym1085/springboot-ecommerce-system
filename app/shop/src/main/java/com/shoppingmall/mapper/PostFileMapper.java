@@ -12,13 +12,13 @@ public interface PostFileMapper {
 
     int saveFiles(List<FileSaveRequestDto> files);
 
-    int deleteFilesByPostId(Long postId);
+    int deleteFilesByPostId(Integer postId);
 
-    List<PostFiles> getFilesByPostId(Long postId);
+    List<PostFiles> getFilesByPostId(Integer postId);
 
-    Optional<PostFiles> getFileByPostFileId(Long fileId);
+    Optional<PostFiles> getFileByPostFileId(Integer fileId);
 
-    void increaseDownloadCntByFileId(Long fileId);
+    void increaseDownloadCntByFileId(Integer fileId);
 
-    int countFilesByPostId(Long postId);
+    int countFilesByPostId(Integer postId);
 }

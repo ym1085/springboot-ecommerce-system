@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class RefreshToken {
-    private Long refreshTokenId;
-    private Long memberId;
+    private Integer refreshTokenId;
+    private Integer memberId;
     private String refreshToken;
 }

@@ -56,16 +56,23 @@ public class ProductService {
         return new PagingResponseDto<>(products, pagination);
     }
 
-    public ProductDetailResponseDto getProductByProductId(Long productId) {
+    public ProductDetailResponseDto getProductByProductId(Integer productId) {
         return productMapper.getProductByProductId(productId)
                 .map(ProductDetailResponseDto::toDto)
                 .orElse(new ProductDetailResponseDto());
     }
 
     @Transactional
-    public Long saveProducts(ProductSaveRequestDto productRequestDto) {
+    public int saveProducts(ProductSaveRequestDto productRequestDto) {
         Product product = productRequestDto.toEntity();
+
+        if (productMapper.countByProductName(product) > 0) {
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DUPLICATE_PRODUCT_NAME.getMessage());
+            throw new FailSaveProductException(ErrorCode.DUPLICATE_PRODUCT_NAME);
+        }
+
         int responseCode = productMapper.saveProducts(product);
+
         if (responseCode == 0) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_PRODUCT.getMessage());
             throw new FailSaveProductException(ErrorCode.SAVE_PRODUCT);
@@ -90,7 +97,7 @@ public class ProductService {
         return product.getProductId();
     }
 
-    public int saveFiles(Long productId, List<FileSaveRequestDto> files) {
+    public int saveFiles(Integer productId, List<FileSaveRequestDto> files) {
         if (CollectionUtils.isEmpty(files) || files.get(0) == null || productId == null) {
             return 0;
         }
@@ -121,7 +128,7 @@ public class ProductService {
         }
     }
 
-    private int updateFilesByProductId(Long productId, List<MultipartFile> files) {
+    private int updateFilesByProductId(Integer productId, List<MultipartFile> files) {
         if (productFileMapper.countProductFileByProductId(productId) > 0) {
             int responseCode = productFileMapper.deleteFilesByProductId(productId); // [HINT] DB에 존재하는 파일 정보 삭제 (SOFT DELETE)
             if (responseCode > 0) {
@@ -138,7 +145,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteProduct(Long productId) {
+    public void deleteProduct(Integer productId) {
         int responseCode = productMapper.deleteProduct(productId);
 
         // 상품 삭제 성공하지 않았을 경우, 추가 작업 중단 후 메서드 종료
@@ -158,7 +165,7 @@ public class ProductService {
         }
     }
 
-    private List<FileResponseDto> getFileResponseDtos(long productId) {
+    private List<FileResponseDto> getFileResponseDtos(Integer productId) {
         return productFileMapper.getFilesByProductId(productId)
                 .stream()
                 .map(ProductFileResponseDto::toDto)

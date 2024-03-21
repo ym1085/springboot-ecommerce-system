@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 @Builder
 public class MemberSaveRequestDto {
 
-    private Long memberId;
+    private Integer memberId;
 
     @NotBlank(message = "이름은 필수 입력 항목 입니다. 다시 시도해주세요.")
     @Size(min = 2, max = 6, message = "두 글자 이상, 여섯 글자 이하의 이름을 입력해주세요.")

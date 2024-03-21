@@ -12,14 +12,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Post {
-    private Long postId;
-    private Long memberId;
+    private Integer postId;
+    private Integer memberId;
     private String title;
     private String content;
-    private int categoryId;
+    private Integer categoryId;
     private String categoryName;
     private String writer;
-    private int readCnt;
+    private Integer readCnt;
     private String fixedYn;
     private String delYn;
     private LocalDateTime createDate;
@@ -33,10 +33,7 @@ public class Post {
     List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Post(Long postId, Long memberId, String title, String content, int categoryId,
-                String categoryName, String writer, int readCnt, String fixedYn, String delYn,
-                LocalDateTime createDate, LocalDateTime updateDate, LocalDateTime deleteDate,
-                List<PostFiles> postFiles, List<Comment> comments) {
+    public Post(Integer postId, Integer memberId, String title, String content, Integer categoryId, String categoryName, String writer, Integer readCnt, String fixedYn, String delYn, LocalDateTime createDate, LocalDateTime updateDate, LocalDateTime deleteDate, List<PostFiles> postFiles, List<Comment> comments) {
         this.postId = postId;
         this.memberId = memberId;
         this.title = title;

@@ -137,7 +137,7 @@
     </select>
 
     <!-- 단일 게시글 조회 -->
-    <select id="getPostByPostId" parameterType="Long" resultType="Post">
+    <select id="getPostByPostId" parameterType="int" resultType="Post">
         SELECT
             p.post_id,
             p.title,
@@ -190,7 +190,7 @@
     </update>
 
     <!-- 게시글 삭제 -->
-    <update id="deletePostByPostId" parameterType="Long">
+    <update id="deletePostByPostId" parameterType="int">
         UPDATE POST
         SET
             del_yn = 'Y',
@@ -199,7 +199,7 @@
     </update>
 
     <!-- 조회수 증가 -->
-    <update id="increasePostByPostId" parameterType="Long">
+    <update id="increasePostByPostId" parameterType="int">
         UPDATE POST
         SET
             read_cnt = read_cnt + 1
