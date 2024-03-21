@@ -65,7 +65,14 @@ public class ProductService {
     @Transactional
     public int saveProducts(ProductSaveRequestDto productRequestDto) {
         Product product = productRequestDto.toEntity();
+
+        if (productMapper.countByProductName(product) > 0) {
+            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DUPLICATE_PRODUCT_NAME.getMessage());
+            throw new FailSaveProductException(ErrorCode.DUPLICATE_PRODUCT_NAME);
+        }
+
         int responseCode = productMapper.saveProducts(product);
+
         if (responseCode == 0) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_PRODUCT.getMessage());
             throw new FailSaveProductException(ErrorCode.SAVE_PRODUCT);

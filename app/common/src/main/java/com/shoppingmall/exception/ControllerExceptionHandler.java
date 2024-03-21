@@ -16,12 +16,11 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        log.trace("Stack Trace Log = {}", e);
-        log.error("Method Not Supported = {}", e.getMessage());
+        log.error("Method Not Supported = {}", e.getMessage(), e);
 
         ErrorResponse response = ErrorResponse
                 .create()
-                .code(ErrorCode.METHOD_NOT_ALLOWED.getHttpStatus().value())
+                .code(ErrorCode.METHOD_NOT_ALLOWED.getCode()) // custom error code
                 .message(e.getMessage());
 
         return ResponseEntity
@@ -31,14 +30,13 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(InvalidParameterException.class)
     protected ResponseEntity<ErrorResponse> handleInvalidParameterException(InvalidParameterException e) {
-        log.trace("Stack Trace Log = {}", e);
-        log.error("Invalid Parameter = {}", e.getMessage());
+        log.error("Invalid Parameter = {}", e.getMessage(), e);
 
         ErrorCode errorCode = e.getErrorCode();
 
         ErrorResponse response = ErrorResponse
                 .create()
-                .code(errorCode.getHttpStatus().value())
+                .code(errorCode.getCode())  // custom error code
                 .message(errorCode.getMessage())
                 .errors(e.getErrors());
 
@@ -49,14 +47,13 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
-        log.trace("Stack Trace Log = {}", e);
-        log.error("Custom Exception = {}", e.getMessage());
+        log.error("Custom Exception = {}", e.getMessage(), e);
 
         ErrorCode errorCode = e.getErrorCode();
 
         ErrorResponse response = ErrorResponse
                 .create()
-                .code(errorCode.getHttpStatus().value())
+                .code(errorCode.getCode())
                 .message(errorCode.getMessage());
 
         return ResponseEntity
@@ -66,13 +63,12 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.trace("Stack Trace Log = {}", e);
-        log.error("Unexpected Error = {}", e.getMessage());
+        log.error("Unexpected Error = {}", e.getMessage(), e);
 
         ErrorResponse response = ErrorResponse
                 .create()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("내부 서버 오류입니다. 나중에 다시 시도해주세요.");
+                .code(ErrorCode.ERROR.getCode())
+                .message(ErrorCode.ERROR.getMessage());
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)

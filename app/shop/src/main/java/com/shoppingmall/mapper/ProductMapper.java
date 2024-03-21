@@ -16,6 +16,8 @@ public interface ProductMapper {
 
     int count(SearchRequestDto searchRequestDto);
 
+    int countByProductName(Product product);
+
     int saveProducts(Product product);
 
     int updateProduct(Product product);

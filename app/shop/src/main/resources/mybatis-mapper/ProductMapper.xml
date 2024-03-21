@@ -74,7 +74,7 @@
     </select>
 
     <!-- 상품 수 카운팅 -->
-    <select id="count" parameterType="SearchRequestDto" resultType="int">
+    <select id="count" resultType="int">
         SELECT COUNT(*) AS cnt
         FROM PRODUCT p
         WHERE p.del_yn != 'Y'
@@ -173,4 +173,11 @@
         AND
             del_yn = 'N'
     </update>
+
+    <select id="countByProductName" parameterType="Product" resultType="int">
+        SELECT COUNT(*) AS cnt
+        FROM PRODUCT
+        WHERE product_name = #{productName}
+        AND del_yn = 'N'
+    </select>
 </mapper>
