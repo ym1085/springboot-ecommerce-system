@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class Product {
-    private Long memberId;
-    private Long productId;
-    private Long categoryId;
+    private Integer memberId;
+    private Integer productId;
+    private Integer categoryId;
     private String categoryName;
     private String productName;
     private int productPrice;
@@ -30,22 +30,7 @@ public class Product {
     private ProductFiles productFiles;
 
     @Builder
-    public Product(
-            Long memberId,
-            Long productId,
-            Long categoryId,
-            String categoryName,
-            String productName,
-            int productPrice,
-            int productStock,
-            String productDesc,
-            int productHits,
-            ItemSellStatus itemSellStatus,
-            LocalDateTime createDate,
-            LocalDateTime updateDate,
-            ProductFiles productFiles,
-            String delYn
-    ) {
+    public Product(Integer memberId, Integer productId, Integer categoryId, String categoryName, String productName, int productPrice, int productStock, String productDesc, int productHits, ItemSellStatus itemSellStatus, LocalDateTime createDate, LocalDateTime updateDate, String delYn, ProductFiles productFiles) {
         this.memberId = memberId;
         this.productId = productId;
         this.categoryId = categoryId;
@@ -58,7 +43,7 @@ public class Product {
         this.itemSellStatus = itemSellStatus;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.productFiles = productFiles;
         this.delYn = delYn;
+        this.productFiles = productFiles;
     }
 }

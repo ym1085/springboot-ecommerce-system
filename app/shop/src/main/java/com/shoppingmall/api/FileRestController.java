@@ -34,7 +34,7 @@ public class FileRestController {
 
     @GetMapping("/download/{domain}/{postFileId}")
     public ResponseEntity downloadPostFile(
-            @PathVariable("postFileId") Long postFileId,
+            @PathVariable("postFileId") Integer postFileId,
             @PathVariable("domain") String domain) {
         PostFileResponseDto files = fileService.getFileByPostFileId(postFileId);
 
@@ -54,7 +54,7 @@ public class FileRestController {
     }
 
     @GetMapping(value ="/download/compress/{domain}/{postId}", produces = "application/zip")
-    public void downloadMultiZipFile(@PathVariable("postId") Long postId, HttpServletResponse response) throws IOException {
+    public void downloadMultiZipFile(@PathVariable("postId") Integer postId, HttpServletResponse response) throws IOException {
         List<File> files = fileService.getFilesByPostId(postId)
                 .stream()
                 .map(fileResponseDto -> new File(fileResponseDto.getFilePath()))

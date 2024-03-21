@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CommentUpdateRequestDto {
 
-    private Long postId;
-    private Long memberId;
-    private Long parentId;
-    private Long commentId;
+    private Integer postId;
+    private Integer memberId;
+    private Integer parentId;
+    private Integer commentId;
     private String content;
 
     public Comment toEntity() {

@@ -102,7 +102,7 @@
         AND m.cert_yn = 'Y'
     </select>
 
-    <select id="getMemberById" parameterType="long" resultType="Member">
+    <select id="getMemberById" parameterType="int" resultType="Member">
         SELECT
             m.member_id,
             m.name,

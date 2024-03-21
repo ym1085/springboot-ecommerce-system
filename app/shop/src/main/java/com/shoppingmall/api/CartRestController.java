@@ -81,7 +81,7 @@ public class CartRestController {
     }
 
     @PutMapping("/cart/{cartId}")
-    public ResponseEntity<CommonResponse> deleteCartItem(@PathVariable("cartId") Long cartId) {
+    public ResponseEntity<CommonResponse> deleteCartItem(@PathVariable("cartId") Integer cartId) {
         Member member = SecurityUtils.getCurrentMember()
                 .orElseThrow(() -> new AccessDeniedException("인증된 사용자 정보를 찾을 수 없습니다."));
 

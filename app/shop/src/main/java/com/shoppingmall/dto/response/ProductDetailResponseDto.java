@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDetailResponseDto {
-    private Long productId;
-    private Long categoryId;
+    private Integer productId;
+    private Integer categoryId;
     private String categoryName;
     private String productName;
     private int productPrice;

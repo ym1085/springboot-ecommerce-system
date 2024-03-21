@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CartResponseDto {
-    private Long cartId;
-    private Long memberId;
-    private Long productId;
-    private Long amount;
+    private Integer cartId;
+    private Integer memberId;
+    private Integer productId;
+    private Integer amount;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
     private Integer totalPricePerCartItem; // 장바구니 상품별 총 합계

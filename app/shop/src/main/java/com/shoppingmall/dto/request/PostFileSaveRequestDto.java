@@ -8,8 +8,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class PostFileSaveRequestDto extends FileSaveRequestDto {
-    private Long postFileId;
-    private Long postId;
+    private Integer postFileId;
+    private Integer postId;
 
     /**
      * 파일 저장의 경우 게시글 등록이 완료 된 이후에 진행 한다.
@@ -17,17 +17,17 @@ public class PostFileSaveRequestDto extends FileSaveRequestDto {
      * -> FileServiceImpl 클래스 참고
      */
     @Override
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.postId = id;
     }
 
     @Override
-    public Long getFileId() {
+    public Integer getFileId() {
         return this.postFileId;
     }
 
     @Override
-    public Long getId() {
+    public Integer getId() {
         return this.postId;
     }
 }

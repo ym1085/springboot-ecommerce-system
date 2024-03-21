@@ -9,9 +9,9 @@ import java.util.List;
 public interface CommentMapper {
 
     /* 계층형 댓글 리스트 조회 */
-    List<Comment> getComments(Long postId);
+    List<Comment> getComments(Integer postId);
 
-    int getCommentCountByCommentId(Long commentId);
+    int getCommentCountByCommentId(Integer commentId);
 
     int saveComment(Comment comment);
 
@@ -19,7 +19,7 @@ public interface CommentMapper {
 
     int deleteCommentReply(Comment comment);
 
-    int getCommentReplyCountByCommentId(Long commentId);
+    int getCommentReplyCountByCommentId(Integer commentId);
 
     int updateCommentByCommentId(Comment comment);
 }

@@ -80,7 +80,7 @@
         WHERE p.del_yn != 'Y'
     </select>
 
-    <select id="getProductByProductId" parameterType="long" resultMap="ProductResultMap">
+    <select id="getProductByProductId" parameterType="int" resultMap="ProductResultMap">
         SELECT
             p.product_id,
             p.category_id,
@@ -164,7 +164,7 @@
             )
     </update>
 
-    <update id="deleteProduct" parameterType="long">
+    <update id="deleteProduct" parameterType="int">
         UPDATE PRODUCT
         SET
             del_yn = 'Y'

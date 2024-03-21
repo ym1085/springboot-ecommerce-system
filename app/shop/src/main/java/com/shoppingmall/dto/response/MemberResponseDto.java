@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemberResponseDto {
-    private Long memberId;
+    private Integer memberId;
     private String name;
     private String account;
     private String password;

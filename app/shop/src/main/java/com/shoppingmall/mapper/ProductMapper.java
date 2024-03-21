@@ -12,7 +12,7 @@ public interface ProductMapper {
 
     List<Product> getProducts(SearchRequestDto searchRequestDto);
 
-    Optional<Product> getProductByProductId(Long productId);
+    Optional<Product> getProductByProductId(Integer productId);
 
     int count(SearchRequestDto searchRequestDto);
 
@@ -20,5 +20,5 @@ public interface ProductMapper {
 
     int updateProduct(Product product);
 
-    int deleteProduct(Long productId);
+    int deleteProduct(Integer productId);
 }

@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Transactional
 @AutoConfigureMockMvc
+@WithMockUser(username = "ymkim", roles = {"USER"})
 @SpringBootTest(classes = ShopApplication.class)
 class MemberRestControllerTest {
 
@@ -49,7 +51,7 @@ class MemberRestControllerTest {
     @BeforeEach
     public void setup() {
         String username = "admin";
-        String password = "Funin0302!@#$%$";
+        String password = "admin1234!";
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         UserDetails principal = new User(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
         Authentication auth = new UsernamePasswordAuthenticationToken(principal, "password", principal.getAuthorities());

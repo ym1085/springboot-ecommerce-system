@@ -26,6 +26,6 @@ public abstract class FileResponseDto {
     private LocalDateTime deleteDate;
     private String fileAttached;
 
-    public abstract Long getFileId();
-    public abstract Long getId();
+    public abstract Integer getFileId();
+    public abstract Integer getId();
 }

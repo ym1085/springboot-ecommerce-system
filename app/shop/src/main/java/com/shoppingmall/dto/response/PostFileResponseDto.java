@@ -13,8 +13,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostFileResponseDto extends FileResponseDto {
-    private Long postFileId;
-    private Long postId;
+    private Integer postFileId;
+    private Integer postId;
 
     public static PostFileResponseDto toDto(PostFiles postFiles) {
         return PostFileResponseDto.builder()
@@ -34,12 +34,12 @@ public class PostFileResponseDto extends FileResponseDto {
     }
 
     @Override
-    public Long getFileId() {
+    public Integer getFileId() {
         return this.postFileId;
     }
 
     @Override
-    public Long getId() {
+    public Integer getId() {
         return this.postId;
     }
 }

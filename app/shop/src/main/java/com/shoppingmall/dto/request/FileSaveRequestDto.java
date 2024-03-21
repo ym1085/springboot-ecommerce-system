@@ -1,6 +1,5 @@
 package com.shoppingmall.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,7 @@ public abstract class FileSaveRequestDto {
     private String fileExp;
     private String fileAttached;
 
-    public abstract void setId(Long id);
-    public abstract Long getFileId();
-    public abstract Long getId();
+    public abstract void setId(Integer id);
+    public abstract Integer getFileId();
+    public abstract Integer getId();
 }

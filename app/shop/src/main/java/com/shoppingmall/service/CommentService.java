@@ -46,7 +46,7 @@ public class CommentService {
         return getCommentsByPostId(commentSaveRequestDto.getPostId());
     }
 
-    private boolean isNotExistsCommentByCommentId(Long parentId) {
+    private boolean isNotExistsCommentByCommentId(Integer parentId) {
         return commentMapper.getCommentCountByCommentId(parentId) <= 0;
     }
 
@@ -91,7 +91,7 @@ public class CommentService {
         return getCommentsByPostId(commentUpdateRequestDto.getPostId());
     }
 
-    private List<CommentResponseDto> getCommentsByPostId(Long postId) {
+    private List<CommentResponseDto> getCommentsByPostId(Integer postId) {
         if (postId == null) {
             return Collections.emptyList();
         }

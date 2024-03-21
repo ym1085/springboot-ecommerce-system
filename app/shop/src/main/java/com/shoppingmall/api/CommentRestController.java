@@ -29,14 +29,14 @@ public class CommentRestController {
     @PostMapping("/post/{postId}/comments")
     public ResponseEntity<CommonResponse> saveComment(
             @Valid @RequestBody CommentSaveRequestDto commentSaveRequestDto,
-            @PathVariable("postId") Long postId,
+            @PathVariable("postId") Integer postId,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
         }
 
-        commentSaveRequestDto.setMemberId(1L);
+        commentSaveRequestDto.setMemberId(1);
         commentSaveRequestDto.setPostId(postId);
 
         List<CommentResponseDto> comments = commentService.saveComment(commentSaveRequestDto);
@@ -51,7 +51,7 @@ public class CommentRestController {
     @PutMapping("/post/{postId}/comments")
     public ResponseEntity<CommonResponse> updateCommentByCommentId(
             @Valid @RequestBody CommentUpdateRequestDto commentUpdateRequestDto,
-            @PathVariable("postId") Long postId,
+            @PathVariable("postId") Integer postId,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {

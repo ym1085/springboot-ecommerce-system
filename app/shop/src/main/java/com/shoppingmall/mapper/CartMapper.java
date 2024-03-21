@@ -15,9 +15,9 @@ public interface CartMapper {
 
     int updateCartProduct(Cart entity);
 
-    List<Cart> getCartItems(Long memberId);
+    List<Cart> getCartItems(Integer memberId);
 
-    int getCartItemsTotalPrice(Long memberId);
+    int getCartItemsTotalPrice(Integer memberId);
 
-    int deleteCartItem(@Param("cartId") Long cartId, @Param("memberId") Long memberId);
+    int deleteCartItem(@Param("cartId") Integer cartId, @Param("memberId") Integer memberId);
 }
