@@ -18,8 +18,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PostSaveRequestDto {
-    private Long postId;
-    private Long memberId;
+    private Integer postId;
+    private Integer memberId;
     private int categoryId;
 
     @NotEmpty(message = "제목은 반드시 입력되어야 합니다. 다시 한번 시도해주세요.")

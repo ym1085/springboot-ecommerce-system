@@ -12,13 +12,15 @@ public interface ProductMapper {
 
     List<Product> getProducts(SearchRequestDto searchRequestDto);
 
-    Optional<Product> getProductByProductId(Long productId);
+    Optional<Product> getProductByProductId(Integer productId);
 
     int count(SearchRequestDto searchRequestDto);
+
+    int countByProductName(Product product);
 
     int saveProducts(Product product);
 
     int updateProduct(Product product);
 
-    int deleteProduct(Long productId);
+    int deleteProduct(Integer productId);
 }

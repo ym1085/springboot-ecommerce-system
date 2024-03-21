@@ -5,7 +5,7 @@
 <mapper namespace="com.shoppingmall.mapper.CommentMapper">
 
     <!-- 상세 게시글 화면에 들어오는 순간 댓글 목록도 같이 나간다 -->
-    <select id="getComments" parameterType="long" resultType="Comment">
+    <select id="getComments" parameterType="int" resultType="Comment">
         WITH RECURSIVE CTE AS (
             SELECT
                 parent.comment_id,
@@ -58,7 +58,7 @@
     </select>
 
     <!-- 댓글 정보 존재 여부 반환 -->
-    <select id="getCommentCountByCommentId" parameterType="long" resultType="int">
+    <select id="getCommentCountByCommentId" parameterType="int" resultType="int">
         SELECT COUNT(*)
         FROM COMMENT
         WHERE comment_id = #{commentId}
@@ -126,7 +126,7 @@
     </update>
 
     <!-- 하위 대댓글 존재 여부 확인  -->
-    <select id="getCommentReplyCountByCommentId" parameterType="long" resultType="int">
+    <select id="getCommentReplyCountByCommentId" parameterType="int" resultType="int">
         SELECT COUNT(*) AS CNT
         FROM COMMENT
         WHERE comment_id IN ( /* 일반 댓글 삭제 시 하위 대댓글이 존재하는 경우 */

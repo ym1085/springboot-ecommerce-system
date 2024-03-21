@@ -39,7 +39,7 @@ public class PostRestController {
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<CommonResponse> getPostById(@PathVariable("postId") Long postId) {
+    public ResponseEntity<CommonResponse> getPostById(@PathVariable("postId") Integer postId) {
         PostResponseDto post = postService.getPostById(postId);
         return ApiUtils.success(
                 SuccessCode.OK.getCode(),
@@ -58,7 +58,7 @@ public class PostRestController {
             throw new InvalidParameterException(bindingResult);
         }
 
-        postSaveRequestDto.setMemberId(1L);
+        postSaveRequestDto.setMemberId(1);
         postService.savePost(postSaveRequestDto);
 
         return ApiUtils.success(
@@ -70,7 +70,7 @@ public class PostRestController {
 
     @PutMapping("/post/{postId}")
     public ResponseEntity<CommonResponse> updatePost(
-            @PathVariable("postId") Long postId,
+            @PathVariable("postId") Integer postId,
             @Valid @ModelAttribute PostUpdateRequestDto postUpdateRequestDto,
             BindingResult bindingResult,
             //@AuthenticationPrincipal PrincipalDetails principalDetails, // https://www.baeldung.com/get-user-in-spring-security
@@ -79,7 +79,8 @@ public class PostRestController {
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
         }
-        postUpdateRequestDto.setMemberId(1L);
+
+        postUpdateRequestDto.setMemberId(1);
         postUpdateRequestDto.setPostId(postId);
 
         postService.updatePost(postUpdateRequestDto);
@@ -92,7 +93,7 @@ public class PostRestController {
     }
 
     @DeleteMapping("/post/{postId}")
-    public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") Long postId) {
+    public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") Integer postId) {
         postService.deletePost(postId);
 
         return ApiUtils.success(

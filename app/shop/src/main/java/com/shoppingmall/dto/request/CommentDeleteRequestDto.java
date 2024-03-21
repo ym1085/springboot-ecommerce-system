@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CommentDeleteRequestDto {
-    private Long postId;
-    private Long commentId;
+    private Integer postId;
+    private Integer commentId;
 
     public Comment toEntity() {
         return Comment.builder()

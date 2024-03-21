@@ -1,20 +1,12 @@
 package com.shoppingmall.service;
 
 import com.shoppingmall.mapper.CommentMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
@@ -24,17 +16,6 @@ class CommentServiceTest {
 
     @Mock
     private CommentMapper commentMapper;
-
-    @BeforeEach
-    public void setup() {
-        String username = "admin";
-        String password = "Funin0302!@#$%$";
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        UserDetails principal = new User(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
-        Authentication auth = new UsernamePasswordAuthenticationToken(principal, "password", principal.getAuthorities());
-        securityContext.setAuthentication(auth);
-        SecurityContextHolder.setContext(securityContext);
-    }
 
     @Test
     @DisplayName("댓글 및 대대글 저장 테스트")

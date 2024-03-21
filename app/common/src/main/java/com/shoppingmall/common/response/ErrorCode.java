@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // COMMON
+    ERROR("-9999", HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다. 서비스 담당자에게 문의해주세요."),
     BAD_REQUEST("400", HttpStatus.BAD_REQUEST, "유효하지 않은 파라미터가 포함되었습니다."),
     RESOURCE_NOT_FOUND("404", HttpStatus.NOT_FOUND, "리소스를 찾을 수 없습니다."),
     INTERNAL_SERVER_ERROR("500", HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류가 발생했습니다."),
@@ -36,6 +37,7 @@ public enum ErrorCode {
     // PRODUCT
     SAVE_PRODUCT("E0116", HttpStatus.INTERNAL_SERVER_ERROR, "상품 등록에 실패했습니다. 다시 시도해주세요."),
     UPDATE_PRODUCT("E0117", HttpStatus.INTERNAL_SERVER_ERROR, "상품 수정에 실패했습니다. 다시 시도해주세요."),
+    DUPLICATE_PRODUCT_NAME("E0118", HttpStatus.INTERNAL_SERVER_ERROR, "상품명이 중복되었습니다. 다시 시도해주세요."),
 
     // CART
     SAVE_CART("E0118", HttpStatus.INTERNAL_SERVER_ERROR, "장바구니 등록에 실패했습니다. 다시 시도해주세요."),

@@ -17,7 +17,7 @@ public class RedisUtils {
     /**
      * Redis에 key(user=account | token=access key), value(refresh token | 'logout' keyword) 기반 값 저장
      */
-    public void setValues(String key, String data, Long duration, TimeUnit timeUnit) {
+    public void setValues(String key, String data, Integer duration, TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, data, duration, timeUnit);
     }
 
@@ -36,7 +36,7 @@ public class RedisUtils {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
 
-    public void setBlackList(String key, String data, Long duration, TimeUnit timeUnit) {
+    public void setBlackList(String key, String data, Integer duration, TimeUnit timeUnit) {
         redisBlackListTemplate.opsForValue().set(key, data, duration, timeUnit);
     }
 

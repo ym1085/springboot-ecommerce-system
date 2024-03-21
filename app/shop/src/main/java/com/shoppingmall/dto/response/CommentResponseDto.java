@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentResponseDto {
-    private Long commentId;
-    private Long parentId;
-    private Long postId;
+    private Integer commentId;
+    private Integer parentId;
+    private Integer postId;
     private String content;
-    private Long memberId;
+    private Integer memberId;
     private String delYn;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;

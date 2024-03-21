@@ -19,7 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonPropertyOrder({"timestamp", "code", "message", "errors"})
 public class ErrorResponse {
-    private int code;
+    private String code;
     private String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,7 +31,7 @@ public class ErrorResponse {
         return new ErrorResponse();
     }
 
-    public ErrorResponse code(int code) {
+    public ErrorResponse code(String code) {
         this.code = code;
         return this;
     }
@@ -49,9 +49,11 @@ public class ErrorResponse {
     public void addCustomFieldErrors(List<FieldError> fieldErrors) {
         fieldErrors.forEach(error -> {
             customFieldErrors.add(
-                    new CustomFieldError(Objects.requireNonNull(error.getCodes())[0],
+                    new CustomFieldError(
+                            Objects.requireNonNull(error.getCodes())[0],
                             error.getRejectedValue(),
-                            error.getDefaultMessage())
+                            error.getDefaultMessage()
+                    )
             );
         });
     }

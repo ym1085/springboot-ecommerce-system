@@ -11,8 +11,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductFileResponseDto extends FileResponseDto {
-    private Long productFileId;
-    private Long productId;
+    private Integer productFileId;
+    private Integer productId;
 
     public static ProductFileResponseDto toDto(ProductFiles productFiles) {
         return ProductFileResponseDto.builder()
@@ -32,12 +32,12 @@ public class ProductFileResponseDto extends FileResponseDto {
     }
 
     @Override
-    public Long getFileId() {
+    public Integer getFileId() {
         return this.productFileId;
     }
 
     @Override
-    public Long getId() {
+    public Integer getId() {
         return this.productId;
     }
 }

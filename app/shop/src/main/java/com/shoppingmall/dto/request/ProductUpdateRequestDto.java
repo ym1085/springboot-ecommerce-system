@@ -17,9 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductUpdateRequestDto {
-    private Long memberId;
-    private Long productId;
-    private Long categoryId;
+    private Integer memberId;
+    private Integer productId;
+    private Integer categoryId;
     private String productName;
     private Integer productPrice;
     private Integer productStock;

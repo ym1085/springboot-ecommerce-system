@@ -75,7 +75,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto getPostById(Long postId) {
+    public PostResponseDto getPostById(Integer postId) {
         if (postId != null) {
             int responseCode = postMapper.increasePostByPostId(postId);
             if (responseCode == 0) {
@@ -92,14 +92,14 @@ public class PostService {
         return postResponseDto;
     }
 
-    private List<CommentResponseDto> getCommentsByPostId(Long postId) {
+    private List<CommentResponseDto> getCommentsByPostId(Integer postId) {
         return commentMapper.getComments(postId)
                 .stream()
                 .map(CommentResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
-    private List<FileResponseDto> getFilesByPostId(Long postId) {
+    private List<FileResponseDto> getFilesByPostId(Integer postId) {
         return postFileMapper.getFilesByPostId(postId)
                 .stream()
                 .map(PostFileResponseDto::toDto)
@@ -107,7 +107,7 @@ public class PostService {
     }
 
     @Transactional
-    public Long savePost(PostSaveRequestDto postSaveRequestDto) {
+    public int savePost(PostSaveRequestDto postSaveRequestDto) {
         Post post = postSaveRequestDto.toEntity();
         int responseCode = postMapper.savePost(post);
         if (responseCode == 0) {
@@ -134,7 +134,7 @@ public class PostService {
         return post.getPostId();
     }
 
-    public int saveFiles(Long postId, List<FileSaveRequestDto> files) {
+    public int saveFiles(Integer postId, List<FileSaveRequestDto> files) {
         if (CollectionUtils.isEmpty(files) || files.get(0) == null || postId == null) {
             return 0;
         }
@@ -170,7 +170,7 @@ public class PostService {
     /**
      * Todo: 기존 파일을 DELETE 하고 새로운 파일을 INSERT 하는 FLOW는 수정이 필요
      */
-    private int updateFilesByPostId(Long postId, List<MultipartFile> files) {
+    private int updateFilesByPostId(Integer postId, List<MultipartFile> files) {
         if (postFileMapper.countFilesByPostId(postId) > 0) {
             int responseCode = postFileMapper.deleteFilesByPostId(postId); // DB의 파일 정보 삭제
             if (responseCode > 0) {
@@ -187,7 +187,7 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId) {
+    public void deletePost(Integer postId) {
         int responseCode = postMapper.deletePostByPostId(postId);
 
         if (responseCode <= 0) {
@@ -209,7 +209,7 @@ public class PostService {
         return (files.isEmpty());
     }
 
-    private List<FileResponseDto> getFileResponseDtos(long postId) {
+    private List<FileResponseDto> getFileResponseDtos(Integer postId) {
         return postFileMapper.getFilesByPostId(postId)
                 .stream()
                 .map(PostFileResponseDto::toDto)

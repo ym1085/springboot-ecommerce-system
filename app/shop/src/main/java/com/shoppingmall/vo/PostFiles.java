@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class PostFiles {
-    private Long postFileId;
-    private Long postId;
+    private Integer postFileId;
+    private Integer postId;
     private String originFileName;
     private String storedFileName;
     private String filePath;

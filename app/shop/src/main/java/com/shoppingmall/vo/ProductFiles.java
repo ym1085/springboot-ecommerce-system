@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class ProductFiles {
-    private Long productFileId;
-    private Long productId;
+    private Integer productFileId;
+    private Integer productId;
     private String originFileName;
     private String storedFileName;
     private String filePath;
@@ -24,8 +24,8 @@ public class ProductFiles {
 
     @Builder
     public ProductFiles(
-            Long productFileId,
-            Long productId,
+            Integer productFileId,
+            Integer productId,
             String originFileName,
             String storedFileName,
             String filePath,

@@ -64,7 +64,7 @@ public class CartService {
         return responseCode;
     }
 
-    public CartTotalPriceResponseDto getCartItems(Long memberId) {
+    public CartTotalPriceResponseDto getCartItems(Integer memberId) {
         if (memberId == null) {
             return new CartTotalPriceResponseDto();
         }
@@ -87,12 +87,12 @@ public class CartService {
      * @param memberId
      * @return
      */
-    private int getTotalPriceCartItems(Long memberId) {
+    private int getTotalPriceCartItems(Integer memberId) {
         return cartMapper.getCartItemsTotalPrice(memberId);
     }
 
     @Transactional
-    public int deleteCartItem(Long cartId, Long memberId) {
+    public int deleteCartItem(Integer cartId, Integer memberId) {
         int responseCode = cartMapper.deleteCartItem(cartId, memberId);
         if (responseCode == 0) {
             throw new FailDeleteCartProductException(ErrorCode.DELETE_CART);

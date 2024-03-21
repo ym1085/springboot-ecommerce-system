@@ -42,7 +42,7 @@ public class ProductRestController {
     }
 
     @GetMapping("/products/{productId}")
-    public ResponseEntity<CommonResponse> getProductByProductId(@PathVariable("productId") Long productId) {
+    public ResponseEntity<CommonResponse> getProductByProductId(@PathVariable("productId") Integer productId) {
         ProductDetailResponseDto productItemResponseDto = productService.getProductByProductId(productId);
         return ApiUtils.success(
                 SuccessCode.OK.getCode(),
@@ -74,7 +74,7 @@ public class ProductRestController {
     @PutMapping("/products/{productId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CommonResponse> updateProduct(
-            @PathVariable("productId") Long productId,
+            @PathVariable("productId") Integer productId,
             @Valid @ModelAttribute ProductUpdateRequestDto productUpdateRequestDto,
             BindingResult bindingResult,
             Authentication authentication) {
@@ -101,7 +101,7 @@ public class ProductRestController {
 
     @DeleteMapping("/products/{productId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<CommonResponse> deleteProduct(@PathVariable("productId") Long productId) {
+    public ResponseEntity<CommonResponse> deleteProduct(@PathVariable("productId") Integer productId) {
         productService.deleteProduct(productId);
 
         return ApiUtils.success(

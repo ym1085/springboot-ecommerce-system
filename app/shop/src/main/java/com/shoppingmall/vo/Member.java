@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class Member {
-    private Long memberId;
+    private Integer memberId;
     private String name;
     private String account;
     private String password;
@@ -40,23 +40,7 @@ public class Member {
     }
 
     @Builder
-    public Member(
-            Long memberId,
-            String name,
-            String account,
-            String password,
-            String email,
-            String phoneNumber,
-            String picture,
-            String birthDate,
-            String certYn,
-            Role role,
-            LocalDateTime createDate,
-            LocalDateTime updateDate,
-            Gender gender,
-            String registrationId,
-            String providerToken
-    ) {
+    public Member(Integer memberId, String name, String account, String password, String email, String phoneNumber, String picture, String birthDate, String certYn, Role role, LocalDateTime createDate, LocalDateTime updateDate, Gender gender, String registrationId, String providerToken) {
         this.memberId = memberId;
         this.name = name;
         this.account = account;

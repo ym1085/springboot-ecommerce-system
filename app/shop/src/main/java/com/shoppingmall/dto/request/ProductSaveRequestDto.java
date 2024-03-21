@@ -17,8 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductSaveRequestDto {
-    private Long productId;
-    private Long categoryId;
+    private Integer productId;
+    private Integer categoryId;
     private String productName;
     private Integer productPrice;
     private Integer productStock;

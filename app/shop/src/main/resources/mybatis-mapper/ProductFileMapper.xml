@@ -35,7 +35,7 @@
         </foreach>
     </insert>
 
-    <select id="getFilesByProductId" parameterType="long" resultType="ProductFiles">
+    <select id="getFilesByProductId" parameterType="int" resultType="ProductFiles">
         SELECT
             product_file_id,
             product_id,
@@ -54,14 +54,14 @@
         AND pf.del_yn = 'N'
     </select>
 
-    <select id="countProductFileByProductId" parameterType="long" resultType="int">
+    <select id="countProductFileByProductId" parameterType="int" resultType="int">
         SELECT COUNT(*) AS cnt
         FROM PRODUCT_FILE pf
         WHERE pf.product_id = #{productId}
         AND pf.del_yn = 'N'
     </select>
 
-    <update id="deleteFilesByProductId" parameterType="long">
+    <update id="deleteFilesByProductId" parameterType="int">
         UPDATE PRODUCT_FILE pf
         SET
             pf.del_yn = 'Y'

@@ -9,7 +9,6 @@ import com.shoppingmall.mapper.PostFileMapper;
 import com.shoppingmall.mapper.PostMapper;
 import com.shoppingmall.utils.FileHandlerHelper;
 import com.shoppingmall.vo.Post;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,13 +21,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
@@ -57,17 +49,6 @@ class PostServiceTest {
     @Mock
     private CommentMapper commentMapper;
 
-    @BeforeEach
-    public void setup() {
-        String username = "admin";
-        String password = "Funin0302!@#$%$";
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        UserDetails principal = new User(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
-        Authentication auth = new UsernamePasswordAuthenticationToken(principal, "password", principal.getAuthorities());
-        securityContext.setAuthentication(auth);
-        SecurityContextHolder.setContext(securityContext);
-    }
-
     private static int getRandom() {
         return new Random().nextInt(10) + 1;
     }
@@ -91,7 +72,7 @@ class PostServiceTest {
                 PostSaveRequestDto postSaveRequestDto = new PostSaveRequestDto();
                 postSaveRequestDto.setTitle("제목" + i);
                 postSaveRequestDto.setContent("내용" + i);
-                postSaveRequestDto.setMemberId((long) getRandom());
+                postSaveRequestDto.setMemberId(getRandom());
                 postSaveRequestDto.setFixedYn("N");
                 postSaveRequestDto.setCategoryId(getRandom());
                 postMapper.savePost(postSaveRequestDto.toEntity());
@@ -104,8 +85,8 @@ class PostServiceTest {
         return Stream.of(
                 Arguments.of(Arrays.asList(
                         Post.builder()
-                                .postId(1L)
-                                .memberId(1L)
+                                .postId(1)
+                                .memberId(1)
                                 .title("테스트 001")
                                 .content("내용 001")
                                 .categoryId(1)
@@ -120,8 +101,8 @@ class PostServiceTest {
                                 .build()
                         ,
                         Post.builder()
-                                .postId(2L)
-                                .memberId(2L)
+                                .postId(2)
+                                .memberId(2)
                                 .title("테스트 002")
                                 .content("내용 002")
                                 .categoryId(2)
@@ -136,8 +117,8 @@ class PostServiceTest {
                                 .build()
                         ,
                         Post.builder()
-                                .postId(3L)
-                                .memberId(3L)
+                                .postId(3)
+                                .memberId(3)
                                 .title("테스트 003")
                                 .content("내용 003")
                                 .categoryId(3)
@@ -179,8 +160,8 @@ class PostServiceTest {
         return Stream.of(
                 Arguments.of(
                         Post.builder()
-                                .postId(1L)
-                                .memberId(1L)
+                                .postId(1)
+                                .memberId(1)
                                 .title("테스트 001")
                                 .content("내용 001")
                                 .categoryId(1)
@@ -225,10 +206,10 @@ class PostServiceTest {
         Mockito.when(postMapper.savePost(Mockito.any())).thenReturn(1);
 
         // when
-        Long postId = postService.savePost(
+        Integer postId = postService.savePost(
                 PostSaveRequestDto.builder()
-                        .postId(1L)
-                        .memberId(1L)
+                        .postId(1)
+                        .memberId(1)
                         .categoryId(1)
                         .title("테스트 001")
                         .content("테스트 내용 001")

@@ -2,7 +2,6 @@ package com.shoppingmall.service;
 
 import com.shoppingmall.dto.request.PostFileSaveRequestDto;
 import com.shoppingmall.mapper.PostFileMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,13 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,17 +25,6 @@ class FileServiceTest {
 
     @Mock
     private PostFileMapper postFileMapper;
-
-    @BeforeEach
-    public void setup() {
-        String username = "admin";
-        String password = "Funin0302!@#$%$";
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        UserDetails principal = new User(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
-        Authentication auth = new UsernamePasswordAuthenticationToken(principal, "password", principal.getAuthorities());
-        securityContext.setAuthentication(auth);
-        SecurityContextHolder.setContext(securityContext);
-    }
 
     private static List<PostFileSaveRequestDto> getFileRequestDtoBuilder() {
         return Arrays.asList(
@@ -79,7 +60,7 @@ class FileServiceTest {
     @Test
     @DisplayName("게시글 파일 저장 - 성공")
     void testSaveFilesSuccess() {
-        Long postId = 1L;
+        Integer postId = 1;
         List<PostFileSaveRequestDto> postFileSaveRequestDtos = getFileRequestDtoBuilder();
     }
 

@@ -15,7 +15,7 @@ public interface MemberMapper {
 
     Optional<Member> getMemberByEmail(@Param("email") String email, @Param("registrationId") String registrationId);
 
-    Optional<Member> getMemberById(Long memberId);
+    Optional<Member> getMemberById(Integer memberId);
 
     Optional<Member> getMemberByEmailWithSocialLogin(String email, String registrationId);
 
