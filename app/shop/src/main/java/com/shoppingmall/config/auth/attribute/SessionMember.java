@@ -13,12 +13,16 @@ import java.io.Serializable;
 @Getter
 public class SessionMember implements Serializable {
     private String name;
+    private String account;
     private String email;
+    private String phoneNumber;
     private String picture;
 
-    public SessionMember(Member memberResponseDto) {
-        this.name = memberResponseDto.getName();
-        this.email = memberResponseDto.getEmail();
-        this.picture = memberResponseDto.getPicture();
+    public SessionMember(Member member) {
+        this.name = member.getName();
+        this.account = member.getAccount();
+        this.email = member.getEmail();
+        this.phoneNumber = member.getPhoneNumber();
+        this.picture = member.getPicture();
     }
 }

@@ -40,12 +40,8 @@ public class CommentRestController {
         commentSaveRequestDto.setPostId(postId);
 
         List<CommentResponseDto> comments = commentService.saveComment(commentSaveRequestDto);
-        return ApiUtils.success(
-                SuccessCode.SAVE_COMMENT.getCode(),
-                SuccessCode.SAVE_COMMENT.getHttpStatus(),
-                SuccessCode.SAVE_COMMENT.getMessage(),
-                comments
-        );
+
+        return ApiUtils.success(SuccessCode.SAVE_COMMENT.getCode(), SuccessCode.SAVE_COMMENT.getHttpStatus(), SuccessCode.SAVE_COMMENT.getMessage(), comments);
     }
 
     @PutMapping("/post/{postId}/comments")
@@ -61,12 +57,8 @@ public class CommentRestController {
         commentUpdateRequestDto.setPostId(postId);
 
         List<CommentResponseDto> comments = commentService.updateCommentByCommentId(commentUpdateRequestDto);
-        return ApiUtils.success(
-                SuccessCode.UPDATE_COMMENT.getCode(),
-                SuccessCode.UPDATE_COMMENT.getHttpStatus(),
-                SuccessCode.UPDATE_COMMENT.getMessage(),
-                comments
-        );
+
+        return ApiUtils.success(SuccessCode.UPDATE_COMMENT.getCode(), SuccessCode.UPDATE_COMMENT.getHttpStatus(), SuccessCode.UPDATE_COMMENT.getMessage(), comments);
     }
 
     @DeleteMapping("/post/comments")
@@ -75,12 +67,7 @@ public class CommentRestController {
 
         List<CommentResponseDto> comments = commentService.deleteComments(commentDeleteRequestDto);
 
-        return ApiUtils.success(
-                SuccessCode.DELETE_COMMENT.getCode(),
-                SuccessCode.DELETE_COMMENT.getHttpStatus(),
-                SuccessCode.DELETE_COMMENT.getMessage(),
-                comments
-        );
+        return ApiUtils.success(SuccessCode.DELETE_COMMENT.getCode(), SuccessCode.DELETE_COMMENT.getHttpStatus(), SuccessCode.DELETE_COMMENT.getMessage(), comments);
     }
 
     @DeleteMapping("/post/comments/reply")
@@ -89,11 +76,6 @@ public class CommentRestController {
 
         List<CommentResponseDto> comments = commentService.deleteCommentsReply(commentDeleteRequestDto);
 
-        return ApiUtils.success(
-                SuccessCode.DELETE_COMMENT.getCode(),
-                SuccessCode.DELETE_COMMENT.getHttpStatus(),
-                SuccessCode.DELETE_COMMENT.getMessage(),
-                comments
-        );
+        return ApiUtils.success(SuccessCode.DELETE_COMMENT.getCode(), SuccessCode.DELETE_COMMENT.getHttpStatus(), SuccessCode.DELETE_COMMENT.getMessage(), comments);
     }
 }
