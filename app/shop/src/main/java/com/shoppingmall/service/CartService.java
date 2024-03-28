@@ -2,8 +2,8 @@ package com.shoppingmall.service;
 
 import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.dto.request.CartSaveRequestDto;
-import com.shoppingmall.dto.response.CartResponseDto;
-import com.shoppingmall.dto.response.CartTotalPriceResponseDto;
+import com.shoppingmall.dto.request.CartUpdateRequestDto;
+import com.shoppingmall.dto.response.CartDetailResponseDto;
 import com.shoppingmall.exception.FailDeleteCartProductException;
 import com.shoppingmall.exception.FailSaveCartProductException;
 import com.shoppingmall.exception.FailUpdateCartProductException;
@@ -16,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -56,30 +58,23 @@ public class CartService {
     }
 
     @Transactional
-    public int updateCartProduct(CartSaveRequestDto cartRequestDto) {
-        int responseCode = cartMapper.updateCartProduct(cartRequestDto.toEntity());
+    public void updateCartProduct(CartUpdateRequestDto cartUpdateRequestDto) {
+        int responseCode = cartMapper.updateCartProduct(cartUpdateRequestDto.toEntity());
         if (responseCode == 0) {
             throw new FailUpdateCartProductException(ErrorCode.UPDATE_CART);
         }
-        return responseCode;
     }
 
-    public CartTotalPriceResponseDto getCartItems(Integer memberId) {
+    public List<CartDetailResponseDto> getCartItems(Integer memberId) {
         if (memberId == null) {
-            return new CartTotalPriceResponseDto();
+            return Collections.emptyList();
         }
 
-        List<CartResponseDto> cartResponseDtos = cartMapper.getCartItems(memberId)
+        return cartMapper.getCartItems(memberId)
                 .stream()
-                .map(CartResponseDto::toDto)
+                .filter(Objects::nonNull)
+                .map(CartDetailResponseDto::toDto)
                 .collect(Collectors.toList());
-
-        int totalPriceCartItem = getTotalPriceCartItems(memberId);
-
-        return CartTotalPriceResponseDto.builder()
-                .cartItems(cartResponseDtos)
-                .totalPriceCartItem(totalPriceCartItem)
-                .build();
     }
 
     /**
@@ -92,11 +87,10 @@ public class CartService {
     }
 
     @Transactional
-    public int deleteCartItem(Integer cartId, Integer memberId) {
+    public void deleteCartItem(Integer cartId, Integer memberId) {
         int responseCode = cartMapper.deleteCartItem(cartId, memberId);
         if (responseCode == 0) {
             throw new FailDeleteCartProductException(ErrorCode.DELETE_CART);
         }
-        return responseCode;
     }
 }
