@@ -24,7 +24,7 @@ import java.util.Collections;
 public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private static final String SESSION_NAME = "LOGIN_SESSION_USER";
     private final MemberMapper memberMapper;
-    private final HttpSession session;
+    private final HttpSession session; // JWT 사용하게 되면 SESSION 사용은 필요없어짐
 
     /**
      * OAuth2 후처리 함수로 부가적인 정보 저장이 필요한 경우 아래 함수에서 처리

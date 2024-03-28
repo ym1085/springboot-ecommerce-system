@@ -32,24 +32,18 @@ public class ProductRestController {
 
     @GetMapping("/products")
     public ResponseEntity<CommonResponse> getProducts(SearchRequestDto searchRequestDto) {
+
         PagingResponseDto<ProductDetailResponseDto> products = productService.getProducts(searchRequestDto);
-        return ApiUtils.success(
-                SuccessCode.OK.getCode(),
-                SuccessCode.OK.getHttpStatus(),
-                SuccessCode.OK.getMessage(),
-                products
-        );
+
+        return ApiUtils.success(SuccessCode.OK.getCode(), SuccessCode.OK.getHttpStatus(), SuccessCode.OK.getMessage(), products);
     }
 
     @GetMapping("/products/{productId}")
     public ResponseEntity<CommonResponse> getProductByProductId(@PathVariable("productId") Integer productId) {
+
         ProductDetailResponseDto productItemResponseDto = productService.getProductByProductId(productId);
-        return ApiUtils.success(
-                SuccessCode.OK.getCode(),
-                SuccessCode.OK.getHttpStatus(),
-                SuccessCode.OK.getMessage(),
-                productItemResponseDto
-        );
+
+        return ApiUtils.success(SuccessCode.OK.getCode(), SuccessCode.OK.getHttpStatus(), SuccessCode.OK.getMessage(), productItemResponseDto);
     }
 
     @PostMapping("/products")
@@ -64,11 +58,7 @@ public class ProductRestController {
 
         productService.saveProducts(productRequestDto);
 
-        return ApiUtils.success(
-                SuccessCode.SAVE_PRODUCT.getCode(),
-                SuccessCode.SAVE_PRODUCT.getHttpStatus(),
-                SuccessCode.SAVE_PRODUCT.getMessage()
-        );
+        return ApiUtils.success(SuccessCode.SAVE_PRODUCT.getCode(), SuccessCode.SAVE_PRODUCT.getHttpStatus(), SuccessCode.SAVE_PRODUCT.getMessage());
     }
 
     @PutMapping("/products/{productId}")
@@ -92,22 +82,15 @@ public class ProductRestController {
 
         productService.updateProduct(productUpdateRequestDto);
 
-        return ApiUtils.success(
-                SuccessCode.UPDATE_PRODUCT.getCode(),
-                SuccessCode.UPDATE_PRODUCT.getHttpStatus(),
-                SuccessCode.UPDATE_PRODUCT.getMessage()
-        );
+        return ApiUtils.success(SuccessCode.UPDATE_PRODUCT.getCode(), SuccessCode.UPDATE_PRODUCT.getHttpStatus(), SuccessCode.UPDATE_PRODUCT.getMessage());
     }
 
     @DeleteMapping("/products/{productId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CommonResponse> deleteProduct(@PathVariable("productId") Integer productId) {
+
         productService.deleteProduct(productId);
 
-        return ApiUtils.success(
-                SuccessCode.DELETE_PRODUCT.getCode(),
-                SuccessCode.DELETE_PRODUCT.getHttpStatus(),
-                SuccessCode.DELETE_PRODUCT.getMessage()
-        );
+        return ApiUtils.success(SuccessCode.DELETE_PRODUCT.getCode(), SuccessCode.DELETE_PRODUCT.getHttpStatus(), SuccessCode.DELETE_PRODUCT.getMessage());
     }
 }

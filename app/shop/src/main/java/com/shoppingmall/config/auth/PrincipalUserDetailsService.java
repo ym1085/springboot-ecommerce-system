@@ -1,13 +1,16 @@
 package com.shoppingmall.config.auth;
 
-import com.shoppingmall.vo.Member;
+import com.shoppingmall.config.auth.attribute.SessionMember;
 import com.shoppingmall.mapper.MemberMapper;
+import com.shoppingmall.vo.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpSession;
 
 // 시큐리티 설정에서 loginProcessingUrl("/member/login");
 // login 요청이 오면 자동으로 UserDetailService 타입으로 IoC 되어 있는 loadUserByUsername 호출
@@ -16,8 +19,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class PrincipalUserDetailsService implements UserDetailsService {
-
+    private static final String SESSION_NAME = "LOGIN_SESSION_USER";
     private final MemberMapper memberMapper;
+    private final HttpSession session; // JWT 사용하게 되면 SESSION 사용은 필요없어짐
 
     // 001. Security Session > Authentication > UserDetails
     // 002. Security Session > Authentication(UserDetails)
@@ -25,6 +29,10 @@ public class PrincipalUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberMapper.getMemberByAccount(username)
                 .orElseThrow(() -> new UsernameNotFoundException("로그인에 사용할 유저 계정(account)가 존재하지 않습니다, username = " + username));
+
+        SessionMember sessionMember = new SessionMember(member);
+        session.setAttribute(SESSION_NAME, sessionMember);
+
         return new PrincipalUserDetails(member);
     }
 }
