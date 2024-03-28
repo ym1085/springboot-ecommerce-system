@@ -4,6 +4,25 @@
 
 <mapper namespace="com.shoppingmall.mapper.CartMapper">
 
+    <resultMap id="CartItemMap" type="com.shoppingmall.vo.Cart">
+        <id property="cartId" column="cart_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="amount" column="amount"/>
+        <result property="totalPricePerCartItem" column="total_price_per_cart_item"/>
+        <!--<result property="totalPriceCartItem" column="total_price_cart_item"/>-->
+        <association property="product" javaType="com.shoppingmall.vo.Product">
+            <result property="productName" column="product_name"/>
+            <result property="productPrice" column="product_price"/>
+            <result property="productStock" column="product_stock"/>
+            <result property="productDesc" column="product_desc"/>
+        </association>
+        <association property="member" javaType="com.shoppingmall.vo.Member">
+            <result property="name" column="name" />
+            <result property="account" column="account" />
+        </association>
+    </resultMap>
+
     <select id="countCartProducts" parameterType="Cart" resultType="int">
         SELECT COUNT(*)
         FROM cart
@@ -40,25 +59,6 @@
         AND
             product_id = #{productId}
     </update>
-
-    <resultMap id="CartItemMap" type="com.shoppingmall.vo.Cart">
-        <id property="cartId" column="cart_id"/>
-        <result property="memberId" column="member_id"/>
-        <result property="productId" column="product_id"/>
-        <result property="amount" column="amount"/>
-        <result property="totalPricePerCartItem" column="total_price_per_cart_item"/>
-        <!--<result property="totalPriceCartItem" column="total_price_cart_item"/>-->
-        <association property="product" javaType="com.shoppingmall.vo.Product">
-            <result property="productName" column="product_name"/>
-            <result property="productPrice" column="product_price"/>
-            <result property="productStock" column="product_stock"/>
-            <result property="productDesc" column="product_desc"/>
-        </association>
-        <association property="member" javaType="com.shoppingmall.vo.Member">
-            <result property="name" column="name" />
-            <result property="account" column="account" />
-        </association>
-    </resultMap>
 
     <select id="getCartItems" parameterType="int" resultMap="CartItemMap">
         SELECT
