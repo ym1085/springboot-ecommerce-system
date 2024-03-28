@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CartResponseDto {
+public class CartDetailResponseDto {
     private Integer cartId;
     private Integer memberId;
     private Integer productId;
@@ -29,8 +29,8 @@ public class CartResponseDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private MemberResponseDto member;
 
-    public static CartResponseDto toDto(Cart cart) {
-        return CartResponseDto.builder()
+    public static CartDetailResponseDto toDto(Cart cart) {
+        return CartDetailResponseDto.builder()
                 .cartId(cart.getCartId())
                 .memberId(cart.getMemberId())
                 .productId(cart.getProductId())
