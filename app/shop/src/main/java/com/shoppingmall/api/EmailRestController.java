@@ -33,11 +33,7 @@ public class EmailRestController {
 
         emailService.sendAuthCodeToMemberEmail(emailRequestDto.getEmail());
 
-        return ApiUtils.success(
-                SuccessCode.SEND_AUTH_EMAIL.getCode(),
-                SuccessCode.SEND_AUTH_EMAIL.getHttpStatus(),
-                SuccessCode.SEND_AUTH_EMAIL.getMessage()
-        );
+        return ApiUtils.success(SuccessCode.SEND_AUTH_EMAIL.getCode(), SuccessCode.SEND_AUTH_EMAIL.getHttpStatus(), SuccessCode.SEND_AUTH_EMAIL.getMessage());
     }
 
     @GetMapping("/email/verify")
@@ -49,10 +45,6 @@ public class EmailRestController {
             throw new FailAuthenticationMemberEmailException(ErrorCode.AUTHENTICATION_MEMBER_EMAIL);
         }
 
-        return ApiUtils.success(
-                SuccessCode.VERIFY_AUTH_EMAIL.getCode(),
-                SuccessCode.VERIFY_AUTH_EMAIL.getHttpStatus(),
-                SuccessCode.VERIFY_AUTH_EMAIL.getMessage()
-        );
+        return ApiUtils.success(SuccessCode.VERIFY_AUTH_EMAIL.getCode(), SuccessCode.VERIFY_AUTH_EMAIL.getHttpStatus(), SuccessCode.VERIFY_AUTH_EMAIL.getMessage());
     }
 }

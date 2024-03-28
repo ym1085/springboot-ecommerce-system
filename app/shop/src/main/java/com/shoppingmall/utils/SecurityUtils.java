@@ -4,6 +4,7 @@ import com.shoppingmall.config.auth.PrincipalUserDetails;
 import com.shoppingmall.vo.Member;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -25,4 +26,7 @@ public class SecurityUtils {
         return Optional.ofNullable(member);
     }
 
+    public static boolean isValidLoginMember(Member member) {
+        return member != null && member.getMemberId() != null && member.getMemberId() != 0 && StringUtils.isNotBlank(member.getAccount());
+    }
 }
