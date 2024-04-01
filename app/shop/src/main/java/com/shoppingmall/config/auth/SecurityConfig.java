@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .antMatchers("/api/v1/member/exists").permitAll()
                         .antMatchers("/api/v1/email/verify").permitAll()
                         .antMatchers("/api/v1/email/verify-request").permitAll()
+                        .antMatchers("/api/v1/cart/**").permitAll()
                         .antMatchers("/api/v1/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
                         .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                         .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
