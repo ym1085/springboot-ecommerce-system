@@ -9,11 +9,11 @@ import java.util.List;
 @Mapper
 public interface CartMapper {
 
-    int countCartProducts(Cart entity);
+    int countCartProducts(Cart cart);
 
-    int addCartProduct(Cart entity);
+    int addCartProduct(Cart cart);
 
-    int updateCartProduct(Cart entity);
+    int updateCartProduct(Cart cart);
 
     List<Cart> getCartItems(Integer memberId);
 

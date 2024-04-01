@@ -26,10 +26,16 @@
     <select id="countCartProducts" parameterType="Cart" resultType="int">
         SELECT COUNT(*)
         FROM cart
-        WHERE member_id = #{memberId}
-        AND product_id = ${productId}
+        WHERE product_id = #{productId}
+        <if test="memberId != null and memberId != ''">
+            AND member_id = #{memberId}
+        </if>
+        <if test="uuid != null and uuid != ''">
+            AND uuid = #{uuid}
+        </if>
     </select>
 
+    <!-- 회원 장바구니는 member_id, product_id를 넣는다 -->
     <insert id="addCartProduct" parameterType="Cart">
         INSERT INTO cart
             (
@@ -37,15 +43,35 @@
                 product_id,
                 amount,
                 create_date,
-                update_date
+                update_date,
+                delete_date,
+                uuid <!-- UUID 컬럼 명시 -->
             )
         VALUES
             (
-                #{memberId},
-                #{productId},
-                #{amount},
-                NOW(),
-                NOW()
+            <choose>
+                <!-- memberId가 있을 때와 없을 때를 처리 -->
+                <when test="memberId != null and memberId != ''">
+                    #{memberId},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            #{productId},
+            #{amount},
+            NOW(),
+            NOW(),
+            NOW(),
+            <choose>
+                <!-- uuid가 있을 때와 없을 때를 처리 -->
+                <when test="uuid != null and uuid != ''">
+                    #{uuid}
+                </when>
+                <otherwise>
+                    NULL
+                </otherwise>
+            </choose>
             )
     </insert>
 
@@ -54,10 +80,14 @@
         SET
             amount = #{amount},
             update_date = NOW()
-        WHERE
-            member_id = #{memberId}
+        WHERE product_id = #{productId}
         AND
-            product_id = #{productId}
+            <if test="memberId != null and memberId != ''">
+                member_id = #{memberId}
+            </if>
+            <if test="uuid != null and uuid != ''">
+                uuid = #{uuid}
+            </if>
     </update>
 
     <select id="getCartItems" parameterType="int" resultMap="CartItemMap">
@@ -72,7 +102,8 @@
             p.product_stock,
             p.product_desc,
             m.name,
-            m.account
+            m.account,
+            c.uuid
         FROM cart c
             JOIN product p ON c.product_id = p.product_id
             JOIN member m ON c.member_id = m.member_id
