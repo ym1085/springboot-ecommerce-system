@@ -21,12 +21,14 @@ public class CartSaveRequestDto {
     @Min(value = 1, message = "최소 1개 이상 담아주세요")
     private Integer amount;
     private Integer memberId;
+    private String uuid;
 
     public Cart toEntity() {
         return Cart.builder()
                 .productId(productId)
                 .amount(amount)
                 .memberId(memberId)
+                .uuid(uuid)
                 .build();
     }
 }

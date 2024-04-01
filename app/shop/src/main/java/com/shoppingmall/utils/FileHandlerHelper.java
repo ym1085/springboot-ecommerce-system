@@ -51,6 +51,8 @@ public class FileHandlerHelper {
         this.resourceLoader = resourceLoader;
     }
 
+    private static final Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
+
     /**
      * Linux Server 특정 경로(외부 경로)에 도메인에 따라서(POSTS, PRODUCT) 파일 업로드 진행
      * @param multipartFiles 업로드 하고자 하는 파일 목록 (리스트)
@@ -209,7 +211,6 @@ public class FileHandlerHelper {
             return "";
         }
 
-        final Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
         Matcher matcher = pattern.matcher(filePath);
         return matcher.find() ? matcher.group(0) : "";
     }
