@@ -2,7 +2,6 @@ package com.shoppingmall.mapper;
 
 import com.shoppingmall.vo.Cart;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,9 +14,9 @@ public interface CartMapper {
 
     int updateCartProduct(Cart cart);
 
-    List<Cart> getCartItems(Integer memberId);
+    List<Cart> getCartItems(Cart cart);
 
     int getCartItemsTotalPrice(Integer memberId);
 
-    int deleteCartItem(@Param("cartId") Integer cartId, @Param("memberId") Integer memberId);
+    int deleteCartItem(Cart cart);
 }
