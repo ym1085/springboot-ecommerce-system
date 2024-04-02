@@ -81,6 +81,7 @@
             amount = #{amount},
             update_date = NOW()
         WHERE product_id = #{productId}
+        AND cartId = #{cartId}
         AND
             <if test="memberId != null and memberId != ''">
                 member_id = #{memberId}
@@ -90,7 +91,7 @@
             </if>
     </update>
 
-    <select id="getCartItems" parameterType="int" resultMap="CartItemMap">
+    <select id="getCartItems" parameterType="Cart" resultMap="CartItemMap">
         SELECT
             c.cart_id,
             c.member_id,
@@ -101,18 +102,34 @@
             p.product_price,
             p.product_stock,
             p.product_desc,
+            <choose>
+                <when test="memberId != null and memberId != ''">
+                    m.name,
+                    m.account,
+                </when>
+                <otherwise>
+                    NULL AS name,
+                    NULL AS account,
+                </otherwise>
+            </choose>
             m.name,
             m.account,
             c.uuid
         FROM cart c
-            JOIN product p ON c.product_id = p.product_id
-            JOIN member m ON c.member_id = m.member_id
-        WHERE c.member_id = #{memberId}
-        AND c.del_yn = 'N'
+            INNER JOIN product p ON c.product_id = p.product_id
+            LEFT JOIN member m ON c.member_id = m.member_id
+        WHERE c.del_yn = 'N'
         AND p.del_yn = 'N'
-        AND m.use_yn = 'Y'
-        ORDER BY
-            c.cart_id;
+        AND
+            <choose>
+                <when test="memberId != null and memberId != ''">
+                    c.member_id = #{memberId}
+                </when>
+                <otherwise>
+                    c.uuid = #{uuid}
+                </otherwise>
+            </choose>
+        ORDER BY c.cart_id;
     </select>
 
     <select id="getCartItemsTotalPrice" parameterType="int" resultType="int">
@@ -124,7 +141,7 @@
         AND p2.del_yn = 'N'
     </select>
     
-    <update id="deleteCartItem" parameterType="int">
+    <update id="deleteCartItem" parameterType="Cart">
         UPDATE cart
         SET
             del_yn = 'Y',
@@ -132,6 +149,13 @@
         WHERE
             cart_id = #{cartId}
         AND
-            member_id = #{memberId}
+            <choose>
+                <when test="memberId != null and memberId != ''">
+                    member_id = #{memberId}
+                </when>
+                <otherwise>
+                    uuid = #{uuid}
+                </otherwise>
+            </choose>
     </update>
 </mapper>

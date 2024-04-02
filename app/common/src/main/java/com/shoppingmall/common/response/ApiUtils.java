@@ -49,4 +49,20 @@ public class ApiUtils {
                         .message(message)
                         .build());
     }
+
+    /**
+     * [FAIL] 데이터와 함께 실패 응답값 반환
+     * @param status    :   HTTP status object
+     * @param message   :   HTTP custom message
+     * @param result    :   응답 데이터
+     */
+    public static <T> ResponseEntity<CommonResponse> fail(String code, HttpStatus status, String message, T result) {
+        return ResponseEntity
+                .status(status)
+                .body(CommonResponse.builder()
+                        .code(code)
+                        .message(message)
+                        .result(result)
+                        .build());
+    }
 }
