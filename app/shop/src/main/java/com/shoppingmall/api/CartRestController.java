@@ -62,20 +62,19 @@ public class CartRestController {
             member = principalUserDetails.getMember();
         }
 
-        ResponseEntity<CommonResponse> response = null;
         if (SecurityUtils.isValidLoginMember(member)) {
             cartSaveRequestDto.setMemberId(member.getMemberId());
-            response = cartService.addCartProductForMember(cartSaveRequestDto);
+            cartService.addOrUpdateCartProduct(cartSaveRequestDto);
         } else if (!SecurityUtils.isValidLoginMember(member)){
             cartSaveRequestDto.setUuid(StringUtils.isBlank(cartSaveRequestDto.getUuid()) ? CommonUtils.generateRandomUUID() : cartSaveRequestDto.getUuid());
-            response = cartService.addCartProductForMember(cartSaveRequestDto);
+            cartService.addOrUpdateCartProduct(cartSaveRequestDto);
         } else {
             // 회원도 아니고 비회원도 아닌 경우 예외 처리
             log.error("장바구니 등록 중, 오류 발생!!");
             throw new RuntimeException("장바구니 등록 중, 알 수 없는 서버 오류가 발생했습니다. 다시 시도해주세요.");
         }
 
-        return response;
+        return ApiUtils.success(SuccessCode.SAVE_CART.getCode(), SuccessCode.SAVE_CART.getHttpStatus(), SuccessCode.SAVE_CART.getMessage());
     }
 
     @GetMapping("/cart")
@@ -129,19 +128,18 @@ public class CartRestController {
             member = principalUserDetails.getMember();
         }
 
-        ResponseEntity<CommonResponse> response = null;
         if (SecurityUtils.isValidLoginMember(member)) {
             cartUpdateRequestDto.setMemberId(member.getMemberId());
-            response = cartService.updateCartProduct(cartUpdateRequestDto);
+            cartService.updateCartProducts(cartUpdateRequestDto);
         } else if (!SecurityUtils.isValidLoginMember(member)) {
             cartUpdateRequestDto.setUuid(StringUtils.isBlank(cartUpdateRequestDto.getUuid()) ? "" : cartUpdateRequestDto.getUuid());
-            response = cartService.updateCartProduct(cartUpdateRequestDto);
+            cartService.updateCartProducts(cartUpdateRequestDto);
         } else {
             log.error("장바구니 업데이트 중, 오류 발생!!");
             throw new RuntimeException("장바구니 업데이트 중, 알 수 없는 서버 오류가 발생했습니다. 다시 시도해주세요.");
         }
 
-        return response;
+        return ApiUtils.success(SuccessCode.UPDATE_CART.getCode(), SuccessCode.UPDATE_CART.getHttpStatus(), SuccessCode.UPDATE_CART.getMessage());
     }
 
     @DeleteMapping("/cart/delete/{cartId}")
@@ -158,21 +156,20 @@ public class CartRestController {
             member = principalUserDetails.getMember();
         }
 
-        ResponseEntity<CommonResponse> response = null;
         CartDeleteRequestDto cartDeleteRequestDto = new CartDeleteRequestDto();
         if (SecurityUtils.isValidLoginMember(member)) {
             cartDeleteRequestDto.setCartId(cartId);
             cartDeleteRequestDto.setMemberId(member.getMemberId());
-            response = cartService.deleteCartItem(cartDeleteRequestDto);
+            cartService.deleteCartItem(cartDeleteRequestDto);
         } else if (!SecurityUtils.isValidLoginMember(member)) {
             cartDeleteRequestDto.setCartId(cartId);
             cartDeleteRequestDto.setUuid(StringUtils.isBlank(cartDeleteRequestDto.getUuid()) ? "" : cartDeleteRequestDto.getUuid());
-            response = cartService.deleteCartItem(cartDeleteRequestDto);
+            cartService.deleteCartItem(cartDeleteRequestDto);
         } else {
             log.error("장바구니 삭제 중, 오류 발생!!");
             throw new RuntimeException("장바구니 삭제 중, 알 수 없는 서버 오류가 발생했습니다. 다시 시도해주세요.");
         }
 
-        return response;
+        return ApiUtils.success(SuccessCode.DELETE_CART.getCode(), SuccessCode.DELETE_CART.getHttpStatus(), SuccessCode.DELETE_CART.getMessage());
     }
 }

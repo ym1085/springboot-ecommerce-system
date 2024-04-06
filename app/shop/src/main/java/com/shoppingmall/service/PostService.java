@@ -2,7 +2,10 @@ package com.shoppingmall.service;
 
 import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.constant.DirPathType;
-import com.shoppingmall.dto.request.*;
+import com.shoppingmall.dto.request.FileSaveRequestDto;
+import com.shoppingmall.dto.request.PostSaveRequestDto;
+import com.shoppingmall.dto.request.PostUpdateRequestDto;
+import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.*;
 import com.shoppingmall.exception.FailSaveFileException;
 import com.shoppingmall.exception.FailSavePostException;
@@ -12,8 +15,8 @@ import com.shoppingmall.mapper.PostFileMapper;
 import com.shoppingmall.mapper.PostMapper;
 import com.shoppingmall.utils.FileHandlerHelper;
 import com.shoppingmall.utils.PaginationUtils;
-import com.shoppingmall.vo.PostFiles;
 import com.shoppingmall.vo.Post;
+import com.shoppingmall.vo.PostFiles;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +25,10 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -77,8 +83,7 @@ public class PostService {
     @Transactional
     public PostResponseDto getPostById(Integer postId) {
         if (postId != null) {
-            int responseCode = postMapper.increasePostByPostId(postId);
-            if (responseCode == 0) {
+            if (postMapper.increasePostByPostId(postId) < 1) {
                 throw new RuntimeException();
             }
         }
@@ -109,8 +114,7 @@ public class PostService {
     @Transactional
     public int savePost(PostSaveRequestDto postSaveRequestDto) {
         Post post = postSaveRequestDto.toEntity();
-        int responseCode = postMapper.savePost(post);
-        if (responseCode == 0) {
+        if (postMapper.savePost(post) == 0) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_POST.getMessage());
             throw new FailSavePostException(ErrorCode.SAVE_POST);
         }
@@ -118,8 +122,7 @@ public class PostService {
         try {
             if (!postSaveRequestDto.getFiles().isEmpty()) {
                 List<FileSaveRequestDto> baseFileSaveRequestDto = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getDirPathType());
-                responseCode = saveFiles(post.getPostId(), baseFileSaveRequestDto);
-                if (responseCode == 0) {
+                if (saveFiles(post.getPostId(), baseFileSaveRequestDto) < 1) {
                     log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_FILES);
                     throw new FailSaveFileException(ErrorCode.SAVE_FILES);
                 }
@@ -150,21 +153,17 @@ public class PostService {
     }
 
     @Transactional
-    public int updatePost(PostUpdateRequestDto postUpdateRequestDto) {
-        int responseCode = postMapper.updatePost(postUpdateRequestDto.toEntity());
-        if (responseCode == 0) {
+    public void updatePost(PostUpdateRequestDto postUpdateRequestDto) {
+        if (postMapper.updatePost(postUpdateRequestDto.toEntity()) < 1) {
             throw new RuntimeException();
         }
 
         if (!isEmptyFiles(postUpdateRequestDto.getFiles())) {
-            responseCode = updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles());
-            if (responseCode == 0) {
+            if (updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles()) < 1) {
                 log.error("[Occurred Exception] Error Message = {}", ErrorCode.UPLOAD_FILES.getMessage());
                 throw new FailUpdateFilesException(ErrorCode.UPLOAD_FILES);
             }
         }
-
-        return responseCode;
     }
 
     /**
@@ -172,8 +171,7 @@ public class PostService {
      */
     private int updateFilesByPostId(Integer postId, List<MultipartFile> files) {
         if (postFileMapper.countFilesByPostId(postId) > 0) {
-            int responseCode = postFileMapper.deleteFilesByPostId(postId); // DB의 파일 정보 삭제
-            if (responseCode > 0) {
+            if (postFileMapper.deleteFilesByPostId(postId) > 0) { // DB의 파일 정보 삭제
                 log.info("success delete posts files from database");
                 fileHandlerHelper.deleteFiles(getFileResponseDtos(postId)); // 서버 특정 경로에 존재하는 파일 삭제
             } else {
@@ -188,9 +186,7 @@ public class PostService {
 
     @Transactional
     public void deletePost(Integer postId) {
-        int responseCode = postMapper.deletePostByPostId(postId);
-
-        if (responseCode <= 0) {
+        if (postMapper.deletePostByPostId(postId) <= 0) {
             return;
         }
 
@@ -199,8 +195,7 @@ public class PostService {
             return;
         }
 
-        responseCode = postFileMapper.deleteFilesByPostId(postId);
-        if (responseCode > 0) {
+        if (postFileMapper.deleteFilesByPostId(postId) > 0) {
             fileHandlerHelper.deleteFiles(fileResponseDtos);
         }
     }
