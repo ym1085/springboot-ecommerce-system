@@ -71,9 +71,7 @@ public class ProductService {
             throw new FailSaveProductException(ErrorCode.DUPLICATE_PRODUCT_NAME);
         }
 
-        int responseCode = productMapper.saveProducts(product);
-
-        if (responseCode == 0) {
+        if (productMapper.saveProducts(product) < 1) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_PRODUCT.getMessage());
             throw new FailSaveProductException(ErrorCode.SAVE_PRODUCT);
         }
@@ -81,8 +79,7 @@ public class ProductService {
         try {
             if (!productRequestDto.getFiles().isEmpty()) {
                 List<FileSaveRequestDto> baseFileSaveRequestDtos = fileHandlerHelper.uploadFiles(productRequestDto.getFiles(), productRequestDto.getDirPathType());
-                responseCode = saveFiles(product.getProductId(), baseFileSaveRequestDtos);
-                if (responseCode == 0) {
+                if (saveFiles(product.getProductId(), baseFileSaveRequestDtos) < 1) {
                     log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_FILES);
                     throw new FailSaveFileException(ErrorCode.SAVE_FILES);
                 }
@@ -114,14 +111,12 @@ public class ProductService {
 
     @Transactional
     public void updateProduct(ProductUpdateRequestDto productUpdateRequestDto) {
-        int responseCode = productMapper.updateProduct(productUpdateRequestDto.toEntity());
-        if (responseCode == 0) {
+        if (productMapper.updateProduct(productUpdateRequestDto.toEntity()) < 0) {
             throw new FailSaveProductException(ErrorCode.SAVE_PRODUCT);
         }
 
         if (!productUpdateRequestDto.getFiles().isEmpty()) {
-            responseCode = updateFilesByProductId(productUpdateRequestDto.getProductId(), productUpdateRequestDto.getFiles());
-            if (responseCode == 0) {
+            if (updateFilesByProductId(productUpdateRequestDto.getProductId(), productUpdateRequestDto.getFiles()) < 1) {
                 log.error("[Occurred Exception] Error Message = {}", ErrorCode.UPLOAD_FILES.getMessage());
                 throw new FailUpdateFilesException(ErrorCode.UPLOAD_FILES);
             }
@@ -130,8 +125,7 @@ public class ProductService {
 
     private int updateFilesByProductId(Integer productId, List<MultipartFile> files) {
         if (productFileMapper.countProductFileByProductId(productId) > 0) {
-            int responseCode = productFileMapper.deleteFilesByProductId(productId); // [HINT] DB에 존재하는 파일 정보 삭제 (SOFT DELETE)
-            if (responseCode > 0) {
+            if (productFileMapper.deleteFilesByProductId(productId) > 0) { // [HINT] DB에 존재하는 파일 정보 삭제 (SOFT DELETE)
                 log.info("success delete product files from database");
                 fileHandlerHelper.deleteFiles(getFileResponseDtos(productId)); // [HINT] 서버의 특정 경로에 존재하는 파일 삭제
             } else {
@@ -146,10 +140,8 @@ public class ProductService {
 
     @Transactional
     public void deleteProduct(Integer productId) {
-        int responseCode = productMapper.deleteProduct(productId);
-
         // 상품 삭제 성공하지 않았을 경우, 추가 작업 중단 후 메서드 종료
-        if (responseCode <= 0) {
+        if (productMapper.deleteProduct(productId) < 1) {
             return;
         }
 
@@ -159,8 +151,7 @@ public class ProductService {
             return;
         }
 
-        responseCode = productFileMapper.deleteFilesByProductId(productId);
-        if (responseCode > 0) {
+        if (productFileMapper.deleteFilesByProductId(productId) > 0) {
             fileHandlerHelper.deleteFiles(fileResponseDtos);
         }
     }

@@ -11,7 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -34,7 +37,7 @@ public class MemberRestController {
 
         memberService.join(memberRequestDto);
 
-        return ApiUtils.success(SuccessCode.JOIN_MEMBER.getCode(), SuccessCode.JOIN_MEMBER.getHttpStatus(), SuccessCode.JOIN_MEMBER.getMessage());
+        return ApiUtils.success(SuccessCode.SAVE_MEMBER.getCode(), SuccessCode.SAVE_MEMBER.getHttpStatus(), SuccessCode.SAVE_MEMBER.getMessage());
     }
 
     @PostMapping("/member/exists")

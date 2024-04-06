@@ -27,23 +27,19 @@ public class MemberService {
     private final RedisUtils redisUtils;
 
     @Transactional
-    public int join(MemberSaveRequestDto memberRequestDto) {
-        memberRequestDto.setRole(Role.ADMIN); // TODO: 수정 필요
+    public void join(MemberSaveRequestDto memberRequestDto) {
+        memberRequestDto.setRole(Role.ADMIN);
         memberRequestDto.setPassword(encodePassword(memberRequestDto.getPassword()));
-        Member member = memberRequestDto.toEntity();
 
+        Member member = memberRequestDto.toEntity();
         if (memberMapper.checkDuplicateMemberAccount(member.getAccount()) > 0) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.DUPLICATE_MEMBER_ACCOUNT.getMessage());
             throw new DuplicateMemberAccountException(ErrorCode.DUPLICATE_MEMBER_ACCOUNT);
         }
 
-        int responseCode = memberMapper.join(member);
-        if (responseCode == 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_MEMBER.getMessage());
+        if (memberMapper.join(member) < 1) {
             throw new FailSaveMemberException(ErrorCode.SAVE_MEMBER);
         }
-
-        return responseCode;
     }
 
     public void validateDuplicateMemberAccount(String account) {

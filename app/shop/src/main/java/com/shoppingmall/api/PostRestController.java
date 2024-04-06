@@ -3,6 +3,7 @@ package com.shoppingmall.api;
 import com.shoppingmall.common.response.ApiUtils;
 import com.shoppingmall.common.response.CommonResponse;
 import com.shoppingmall.common.response.SuccessCode;
+import com.shoppingmall.config.auth.PrincipalUserDetails;
 import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.PostUpdateRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
@@ -13,11 +14,11 @@ import com.shoppingmall.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -61,10 +62,9 @@ public class PostRestController {
     @PutMapping("/post/{postId}")
     public ResponseEntity<CommonResponse> updatePost(
             @PathVariable("postId") Integer postId,
+            @AuthenticationPrincipal PrincipalUserDetails principalUserDetails,
             @Valid @ModelAttribute PostUpdateRequestDto postUpdateRequestDto,
-            BindingResult bindingResult,
-            //@AuthenticationPrincipal PrincipalDetails principalDetails, // https://www.baeldung.com/get-user-in-spring-security
-            Principal principal) {
+            BindingResult bindingResult) { // https://www.baeldung.com/get-user-in-spring-security
 
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
@@ -80,6 +80,7 @@ public class PostRestController {
 
     @DeleteMapping("/post/{postId}")
     public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") Integer postId) {
+
         postService.deletePost(postId);
 
         return ApiUtils.success(SuccessCode.DELETE_POST.getCode(), SuccessCode.DELETE_POST.getHttpStatus(), SuccessCode.DELETE_POST.getMessage());
