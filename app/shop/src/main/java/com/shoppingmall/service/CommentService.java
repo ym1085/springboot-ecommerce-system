@@ -37,8 +37,7 @@ public class CommentService {
         }
 
         Comment comment = new Comment();
-        int responseCode = commentMapper.saveComment(comment);
-        if (responseCode == 0) {
+        if (commentMapper.saveComment(comment) < 1) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_COMMENT.getMessage());
             throw new FailSaveCommentException(ErrorCode.SAVE_COMMENT);
         }
@@ -60,8 +59,7 @@ public class CommentService {
      */
     @Transactional
     public List<CommentResponseDto> deleteComments(CommentDeleteRequestDto commentDeleteRequestDto) {
-        int responseCode = commentMapper.deleteComment(commentDeleteRequestDto.toEntity());
-        if (responseCode == 0) {
+        if (commentMapper.deleteComment(commentDeleteRequestDto.toEntity()) < 1) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.DELETE_COMMENT.getMessage());
             throw new FailDeleteCommentException(ErrorCode.DELETE_COMMENT);
         }
@@ -71,8 +69,7 @@ public class CommentService {
 
     @Transactional
     public List<CommentResponseDto> deleteCommentsReply(CommentDeleteRequestDto commentDeleteRequestDto) {
-        int responseCode = commentMapper.deleteCommentReply(commentDeleteRequestDto.toEntity());
-        if (responseCode == 0) {
+        if (commentMapper.deleteCommentReply(commentDeleteRequestDto.toEntity()) < 1) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.DELETE_COMMENT.getMessage());
             throw new FailDeleteCommentException(ErrorCode.DELETE_COMMENT);
         }
@@ -82,8 +79,7 @@ public class CommentService {
 
     @Transactional
     public List<CommentResponseDto> updateCommentByCommentId(CommentUpdateRequestDto commentUpdateRequestDto) {
-        int responseCode = commentMapper.updateCommentByCommentId(commentUpdateRequestDto.toEntity());
-        if (responseCode == 0) {
+        if (commentMapper.updateCommentByCommentId(commentUpdateRequestDto.toEntity()) < 1) {
             log.error("[Occurred Exception] Error Message = {}", ErrorCode.UPDATE_COMMENT.getMessage());
             throw new FailUpdateCommentException(ErrorCode.UPDATE_COMMENT);
         }

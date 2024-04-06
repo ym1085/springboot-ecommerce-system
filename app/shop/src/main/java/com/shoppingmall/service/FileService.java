@@ -2,7 +2,6 @@ package com.shoppingmall.service;
 
 import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.dto.response.PostFileResponseDto;
-import com.shoppingmall.vo.PostFiles;
 import com.shoppingmall.mapper.PostFileMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +25,9 @@ public class FileService {
     }
 
     public PostFileResponseDto getFileByPostFileId(Integer postFileId) {
-        PostFiles postFiles = postFileMapper.getFileByPostFileId(postFileId).orElseGet(PostFiles::new);
-        return PostFileResponseDto.toDto(postFiles);
+        return postFileMapper.getFileByPostFileId(postFileId)
+                .map(PostFileResponseDto::toDto)
+                .orElseThrow(() -> new IllegalArgumentException("해당 파일이 존재하지 않습니다."));
     }
 
     @Transactional
