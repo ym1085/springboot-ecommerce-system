@@ -25,47 +25,13 @@
 
 > ✏️ [swagger Document](http://localhost:8080/swagger-ui/index.html)
 
-## 🚀 04. 프로젝트 실행 방법
+## 🚀 04. 프로젝트 추가 설정
 
-### [/resources/application.yaml](./app/shop/src/main/resources/application-sample.yaml)
+### [application.yaml](./app/shop/src/main/resources/application-sample.yaml)
 
-> 구글 이메일 전송 기능이 존재하기에 구글 앱 비밀번호 생성 후 application.yaml 파일에 입력
+- 구글 이메일 전송 기능이 존재하기에 구글 앱 비밀번호 생성 후 application.yaml 파일에 입력
 
-### [/resources/application-oauth.yaml](./app/shop/src/main/resources/application-oauth-sample.yaml)
+### [application-oauth.yaml](./app/shop/src/main/resources/application-oauth-sample.yaml)
 
-> 소셜 로그인을 위해서 각 플랫폼별로 제공해주는 클라이언트 ID, Secret을 기재 필요  
-> application-oauth-sample.yaml 설정 후 파일 이름 변경 -> application-oauth.yaml
-
-### ⚙️ 파일 권한 변경
-
-```shell
-chmod +x run_docker.sh
-chmod +x stop_docker.sh
-```
-
-- 파일 실행 권한 변경
-
-### 🐳 docker-compose up
-
-```shell 
-./start_docker.sh
-```
-
-- run_docker.sh 실행시 로컬 Docker desktop의 모든 이미지를 지우고 이미지 생성
-- 위 shell script는 유의하여 사용할 필요가 존재합니다
-- gradle clean bootJar 진행 후 생성된 jar 파일을 가지고 docker 실행
-
-### 🐳 docker-compose down
-
-```shell
-./stop_docker.sh
-```
-
-- docker 서버 중지
-
-### 📂 참고
-
-```shell
-추가적으로 파일 업로드의 경우 본인 운영체제 맞춰서 업로드 하나  
-디렉토리 이름은 본인 컴퓨터 환경에 맞춰서 작성해주시면 됩니다(application-dev.yaml)
-```
+- 소셜 로그인을 위해서 각 플랫폼별로 제공해주는 클라이언트 ID, Secret을 기재 필요  
+- application-oauth-sample.yaml 설정 후 파일 이름 변경 -> application-oauth.yaml
