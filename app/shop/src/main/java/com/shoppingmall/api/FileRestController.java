@@ -1,5 +1,7 @@
 package com.shoppingmall.api;
 
+import com.shoppingmall.common.dto.BaseResponse;
+import com.shoppingmall.common.utils.ApiResponseUtils;
 import com.shoppingmall.dto.response.PostFileResponseDto;
 import com.shoppingmall.service.FileService;
 import com.shoppingmall.utils.FileHandlerHelper;
@@ -8,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.shoppingmall.common.code.success.CommonSuccessCode.SUCCESS;
+
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1")
@@ -33,7 +36,7 @@ public class FileRestController {
     private final FileHandlerHelper fileHandlerHelper;
 
     @GetMapping("/download/{domain}/{postFileId}")
-    public ResponseEntity downloadPostFile(
+    public ResponseEntity<BaseResponse<?>> downloadPostFile(
             @PathVariable("postFileId") Integer postFileId,
             @PathVariable("domain") String domain) {
         PostFileResponseDto files = fileService.getFileByPostFileId(postFileId);
@@ -44,17 +47,18 @@ public class FileRestController {
 
         Resource resource = fileHandlerHelper.getDownloadFileResource(file.getPath());
         InputStream inputStream = fileHandlerHelper.getDownloadFileInputStream(resource);
-        HttpHeaders httpHeaders = fileHandlerHelper.getHttpHeadersByDownloadFile(files, resource, inputStream);
+        HttpHeaders headers = fileHandlerHelper.getHttpHeadersByDownloadFile(files, resource, inputStream);
 
         fileService.increaseDownloadCntByFileId(postFileId);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .headers(httpHeaders)
-                .body(new InputStreamResource(inputStream));
+        return ApiResponseUtils.success(SUCCESS, headers, new InputStreamResource(inputStream));
     }
 
     @GetMapping(value ="/download/compress/{domain}/{postId}", produces = "application/zip")
-    public void downloadMultiZipFile(@PathVariable("postId") Integer postId, HttpServletResponse response) throws IOException {
+    public void downloadMultiZipFile(
+            @PathVariable String domain,
+            @PathVariable("postId") Integer postId,
+            HttpServletResponse response) throws IOException {
+
         List<File> files = fileService.getFilesByPostId(postId)
                 .stream()
                 .map(fileResponseDto -> new File(fileResponseDto.getFilePath()))
@@ -63,10 +67,8 @@ public class FileRestController {
         if (files.isEmpty()) {
             throw new FileNotFoundException("저장된 파일이 존재하지 않습니다");
         }
-
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileHandlerHelper.generateUUID() + ".zip\";");
         response.setContentType("application/zip");
-
         fileHandlerHelper.responseZipFromAttachments(response, files);
     }
 }

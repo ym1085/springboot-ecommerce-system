@@ -1,11 +1,8 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.constant.Role;
 import com.shoppingmall.dto.request.MemberSaveRequestDto;
-import com.shoppingmall.exception.DuplicateMemberAccountException;
-import com.shoppingmall.exception.FailSaveMemberException;
-import com.shoppingmall.exception.PasswordNotFoundException;
+import com.shoppingmall.exception.MemberException;
 import com.shoppingmall.mapper.MemberMapper;
 import com.shoppingmall.utils.RedisUtils;
 import com.shoppingmall.vo.Member;
@@ -15,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import static com.shoppingmall.common.code.failure.member.MemberFailureCode.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,26 +32,26 @@ public class MemberService {
 
         Member member = memberRequestDto.toEntity();
         if (memberMapper.checkDuplicateMemberAccount(member.getAccount()) > 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DUPLICATE_MEMBER_ACCOUNT.getMessage());
-            throw new DuplicateMemberAccountException(ErrorCode.DUPLICATE_MEMBER_ACCOUNT);
+            log.error(DUPLICATE_MEMBER_ACCOUNT.getMessage());
+            throw new MemberException(DUPLICATE_MEMBER_ACCOUNT);
         }
 
         if (memberMapper.join(member) < 1) {
-            throw new FailSaveMemberException(ErrorCode.SAVE_MEMBER);
+            throw new MemberException(SAVE_MEMBER);
         }
     }
 
     public void validateDuplicateMemberAccount(String account) {
         if (memberMapper.checkDuplicateMemberAccount(account) > 0) {
-            log.warn("[Occurred Exception] Error Message = {}", ErrorCode.DUPLICATE_MEMBER_ACCOUNT.getMessage());
-            throw new DuplicateMemberAccountException(ErrorCode.DUPLICATE_MEMBER_ACCOUNT);
+            log.warn("[Occurred Exception] Error Message = {}", DUPLICATE_MEMBER_ACCOUNT.getMessage());
+            throw new MemberException(DUPLICATE_MEMBER_ACCOUNT);
         }
     }
 
     private String encodePassword(String password) {
         if (!StringUtils.hasText(password)) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.NOT_FOUND_MEMBER_PWD.getMessage());
-            throw new PasswordNotFoundException(ErrorCode.NOT_FOUND_MEMBER_PWD);
+            log.error("[Occurred Exception] Error Message = {}", NOT_FOUND_MEMBER_PWD.getMessage());
+            throw new MemberException(NOT_FOUND_MEMBER_PWD);
         }
         return passwordEncoder.encode(password);
     }

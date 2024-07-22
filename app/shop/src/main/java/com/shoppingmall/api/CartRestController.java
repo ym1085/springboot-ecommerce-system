@@ -1,9 +1,9 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.response.ApiUtils;
-import com.shoppingmall.common.response.CommonResponse;
-import com.shoppingmall.common.response.ErrorCode;
-import com.shoppingmall.common.response.SuccessCode;
+import com.shoppingmall.common.code.failure.CommonFailureCode;
+import com.shoppingmall.common.code.success.cart.CartSuccessCode;
+import com.shoppingmall.common.dto.BaseResponse;
+import com.shoppingmall.common.utils.ApiResponseUtils;
 import com.shoppingmall.common.utils.CommonUtils;
 import com.shoppingmall.config.auth.PrincipalUserDetails;
 import com.shoppingmall.dto.request.CartDeleteRequestDto;
@@ -25,8 +25,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
+
+import static com.shoppingmall.common.code.success.CommonSuccessCode.SUCCESS;
+import static com.shoppingmall.common.code.success.cart.CartSuccessCode.UPDATE_CART;
 
 // 좋은 API Response Body 만들기 : https://jojoldu.tistory.com/720
 
@@ -48,7 +50,7 @@ public class CartRestController {
      * 02) 세션을 사용하지 않은 이유는 A 서버의 session과 B 서버의 session은 다르기 때문에 사용하지 않음
      */
     @PostMapping("/cart")
-    public ResponseEntity<CommonResponse> addCartItem(
+    public ResponseEntity<BaseResponse<?>> addCartItem(
             @AuthenticationPrincipal PrincipalUserDetails principalUserDetails,
             @RequestBody @Valid CartSaveRequestDto cartSaveRequestDto,
             BindingResult bindingResult) {
@@ -73,12 +75,11 @@ public class CartRestController {
             log.error("장바구니 등록 중, 오류 발생!!");
             throw new RuntimeException("장바구니 등록 중, 알 수 없는 서버 오류가 발생했습니다. 다시 시도해주세요.");
         }
-
-        return ApiUtils.success(SuccessCode.SAVE_CART.getCode(), SuccessCode.SAVE_CART.getHttpStatus(), SuccessCode.SAVE_CART.getMessage());
+        return ApiResponseUtils.success(CartSuccessCode.SAVE_CART);
     }
 
     @GetMapping("/cart")
-    public ResponseEntity<CommonResponse> getCartItems(
+    public ResponseEntity<BaseResponse<?>> getCartItems(
             @AuthenticationPrincipal PrincipalUserDetails principalUserDetails,
             @RequestParam(value = "uuid", required = false) String uuid) {
 
@@ -87,7 +88,7 @@ public class CartRestController {
             member = principalUserDetails.getMember();
         }
 
-        List<CartDetailResponseDto> cartItems = new ArrayList<>();
+        List<CartDetailResponseDto> cartItems = null;
         CartDetailRequestDto cartDetailRequestDto = new CartDetailRequestDto();
         if (SecurityUtils.isValidLoginMember(member)) {
             cartDetailRequestDto.setMemberId(member.getMemberId());
@@ -99,17 +100,11 @@ public class CartRestController {
 
         // 장바구니 정보 저장 및 장바구니 상품별 총 합계 저장
         CartTotalPriceResponseDto cartTotalPriceResponseDto = CartTotalPriceResponseDto.calculateTotalPrice(cartItems);
-
-        return ApiUtils.success(
-                SuccessCode.OK.getCode(),
-                SuccessCode.OK.getHttpStatus(),
-                SuccessCode.OK.getMessage(),
-                cartTotalPriceResponseDto
-        );
+        return ApiResponseUtils.success(SUCCESS, cartTotalPriceResponseDto);
     }
 
     @PutMapping("/cart/update/{cartId}")
-    public ResponseEntity<CommonResponse> updateCartItem(
+    public ResponseEntity<BaseResponse<?>> updateCartItem(
             @PathVariable("cartId") Integer cartId,
             @AuthenticationPrincipal PrincipalUserDetails principalUserDetails,
             @RequestBody @Valid CartUpdateRequestDto cartUpdateRequestDto,
@@ -120,7 +115,7 @@ public class CartRestController {
         }
 
         if (cartId == null) {
-            return ApiUtils.fail(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getHttpStatus(), ErrorCode.BAD_REQUEST.getMessage());
+            return ApiResponseUtils.failure(CommonFailureCode.BAD_REQUEST);
         }
 
         Member member = null;
@@ -138,17 +133,16 @@ public class CartRestController {
             log.error("장바구니 업데이트 중, 오류 발생!!");
             throw new RuntimeException("장바구니 업데이트 중, 알 수 없는 서버 오류가 발생했습니다. 다시 시도해주세요.");
         }
-
-        return ApiUtils.success(SuccessCode.UPDATE_CART.getCode(), SuccessCode.UPDATE_CART.getHttpStatus(), SuccessCode.UPDATE_CART.getMessage());
+        return ApiResponseUtils.success(UPDATE_CART);
     }
 
     @DeleteMapping("/cart/delete/{cartId}")
-    public ResponseEntity<CommonResponse> deleteCartItem(
+    public ResponseEntity<BaseResponse<?>> deleteCartItem(
             @AuthenticationPrincipal PrincipalUserDetails principalUserDetails,
             @PathVariable("cartId") Integer cartId) {
 
         if (cartId == null) {
-            return ApiUtils.fail(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getHttpStatus(), ErrorCode.BAD_REQUEST.getMessage());
+            return ApiResponseUtils.failure(CommonFailureCode.BAD_REQUEST);
         }
 
         Member member = new Member();
@@ -169,7 +163,6 @@ public class CartRestController {
             log.error("장바구니 삭제 중, 오류 발생!!");
             throw new RuntimeException("장바구니 삭제 중, 알 수 없는 서버 오류가 발생했습니다. 다시 시도해주세요.");
         }
-
-        return ApiUtils.success(SuccessCode.DELETE_CART.getCode(), SuccessCode.DELETE_CART.getHttpStatus(), SuccessCode.DELETE_CART.getMessage());
+        return ApiResponseUtils.success(CartSuccessCode.DELETE_CART);
     }
 }

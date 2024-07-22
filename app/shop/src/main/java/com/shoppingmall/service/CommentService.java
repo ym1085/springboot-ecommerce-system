@@ -1,13 +1,10 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.dto.request.CommentDeleteRequestDto;
 import com.shoppingmall.dto.request.CommentSaveRequestDto;
 import com.shoppingmall.dto.request.CommentUpdateRequestDto;
 import com.shoppingmall.dto.response.CommentResponseDto;
-import com.shoppingmall.exception.FailDeleteCommentException;
-import com.shoppingmall.exception.FailSaveCommentException;
-import com.shoppingmall.exception.FailUpdateCommentException;
+import com.shoppingmall.exception.CommentException;
 import com.shoppingmall.mapper.CommentMapper;
 import com.shoppingmall.vo.Comment;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.shoppingmall.common.code.failure.post.PostFailureCode.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,8 +37,8 @@ public class CommentService {
 
         Comment comment = new Comment();
         if (commentMapper.saveComment(comment) < 1) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_COMMENT.getMessage());
-            throw new FailSaveCommentException(ErrorCode.SAVE_COMMENT);
+            log.error(SAVE_COMMENT.getMessage());
+            throw new CommentException(SAVE_COMMENT);
         }
 
         return getCommentsByPostId(commentSaveRequestDto.getPostId());
@@ -60,8 +59,8 @@ public class CommentService {
     @Transactional
     public List<CommentResponseDto> deleteComments(CommentDeleteRequestDto commentDeleteRequestDto) {
         if (commentMapper.deleteComment(commentDeleteRequestDto.toEntity()) < 1) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DELETE_COMMENT.getMessage());
-            throw new FailDeleteCommentException(ErrorCode.DELETE_COMMENT);
+            log.error(DELETE_COMMENT.getMessage());
+            throw new CommentException(DELETE_COMMENT);
         }
 
         return getCommentsByPostId(commentDeleteRequestDto.getPostId());
@@ -70,8 +69,8 @@ public class CommentService {
     @Transactional
     public List<CommentResponseDto> deleteCommentsReply(CommentDeleteRequestDto commentDeleteRequestDto) {
         if (commentMapper.deleteCommentReply(commentDeleteRequestDto.toEntity()) < 1) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DELETE_COMMENT.getMessage());
-            throw new FailDeleteCommentException(ErrorCode.DELETE_COMMENT);
+            log.error(DELETE_COMMENT.getMessage());
+            throw new CommentException(DELETE_COMMENT);
         }
 
         return getCommentsByPostId(commentDeleteRequestDto.getPostId());
@@ -80,8 +79,8 @@ public class CommentService {
     @Transactional
     public List<CommentResponseDto> updateCommentByCommentId(CommentUpdateRequestDto commentUpdateRequestDto) {
         if (commentMapper.updateCommentByCommentId(commentUpdateRequestDto.toEntity()) < 1) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.UPDATE_COMMENT.getMessage());
-            throw new FailUpdateCommentException(ErrorCode.UPDATE_COMMENT);
+            log.error(UPDATE_COMMENT.getMessage());
+            throw new CommentException(UPDATE_COMMENT);
         }
 
         return getCommentsByPostId(commentUpdateRequestDto.getPostId());

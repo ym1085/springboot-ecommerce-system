@@ -1,14 +1,12 @@
 package com.shoppingmall.utils;
 
-import com.shoppingmall.common.response.ErrorCode;
-import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.constant.DirPathType;
+import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.dto.request.FileSaveRequestDto;
 import com.shoppingmall.dto.request.PostFileSaveRequestDto;
 import com.shoppingmall.dto.request.ProductFileSaveRequestDto;
 import com.shoppingmall.dto.response.FileResponseDto;
-import com.shoppingmall.exception.FailDownloadFilesException;
-import com.shoppingmall.exception.FailSaveFileException;
+import com.shoppingmall.exception.FileException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +34,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.DOWNLOAD_FILES;
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.SAVE_FILES;
 
 @Slf4j
 @Getter
@@ -94,9 +95,9 @@ public class FileHandlerHelper {
 
             multipartFile.transferTo(uploadFile); // upload file to server host dir
             baseFileSaveRequestDto = buildFileSaveRequestDto(dirPathType, originalFilename, storedFileName, fileUploadPath, fileSize, ext);
-        } catch (IOException | IllegalStateException | FailSaveFileException e) {
+        } catch (IOException | IllegalStateException | FileException e) {
             log.error("[Exception] error occurred, e = {}", e.getMessage());
-            throw new FailSaveFileException(ErrorCode.SAVE_FILES);
+            throw new FileException(SAVE_FILES);
         }
         return baseFileSaveRequestDto;
     }
@@ -124,7 +125,7 @@ public class FileHandlerHelper {
                         .fileAttached("Y")
                         .build();
             default:
-                throw new FailSaveFileException(ErrorCode.SAVE_FILES);
+                throw new FileException(SAVE_FILES);
         }
     }
 
@@ -227,8 +228,8 @@ public class FileHandlerHelper {
         try {
             return resource.getInputStream();
         } catch (IOException e) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DOWNLOAD_FILES.getMessage());
-            throw new FailDownloadFilesException(ErrorCode.DOWNLOAD_FILES);
+            log.error("[Occurred Exception] Error Message = {}", DOWNLOAD_FILES.getMessage());
+            throw new FileException(DOWNLOAD_FILES);
         }
     }
 
@@ -239,8 +240,8 @@ public class FileHandlerHelper {
             httpHeaders.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.contentLength()));
             httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE.toString());
         } catch (IOException e) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DOWNLOAD_FILES.getMessage());
-            throw new FailDownloadFilesException(ErrorCode.DOWNLOAD_FILES);
+            log.error("[Occurred Exception] Error Message = {}", DOWNLOAD_FILES.getMessage());
+            throw new FileException(DOWNLOAD_FILES);
         }
         return httpHeaders;
     }
@@ -256,8 +257,8 @@ public class FileHandlerHelper {
             }
             zos.finish();
         } catch (IOException e) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DOWNLOAD_FILES.getMessage());
-            throw new FailDownloadFilesException(ErrorCode.DOWNLOAD_FILES);
+            log.error("[Occurred Exception] Error Message = {}", DOWNLOAD_FILES.getMessage());
+            throw new FileException(DOWNLOAD_FILES);
         }
     }
 
