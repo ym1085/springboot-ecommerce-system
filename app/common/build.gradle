@@ -1,3 +1,11 @@
+jar {
+    enabled = true // jar 형태의 lib 로만 패키징 가능
+}
+
+bootJar {
+    enabled = false // spring boot APP -> 실행 가능한 JAR 파일로 패키징
+}
+
 dependencies {
 
 }

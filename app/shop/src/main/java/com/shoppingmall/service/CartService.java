@@ -1,15 +1,12 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.dto.request.CartDeleteRequestDto;
 import com.shoppingmall.dto.request.CartDetailRequestDto;
 import com.shoppingmall.dto.request.CartSaveRequestDto;
 import com.shoppingmall.dto.request.CartUpdateRequestDto;
 import com.shoppingmall.dto.response.CartDetailResponseDto;
 import com.shoppingmall.dto.response.CartUUIDResponseDto;
-import com.shoppingmall.exception.FailDeleteCartProductException;
-import com.shoppingmall.exception.FailSaveCartProductException;
-import com.shoppingmall.exception.FailUpdateCartProductException;
+import com.shoppingmall.exception.CartException;
 import com.shoppingmall.mapper.CartMapper;
 import com.shoppingmall.mapper.MemberMapper;
 import com.shoppingmall.mapper.ProductMapper;
@@ -21,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.shoppingmall.common.code.failure.cart.CartFailureCode.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -64,13 +63,13 @@ public class CartService {
 
     private void updateCartProducts(CartSaveRequestDto cartSaveRequestDto) {
         if (cartMapper.updateCartProduct(cartSaveRequestDto.toEntity()) < 1) {
-            throw new FailUpdateCartProductException(ErrorCode.UPDATE_CART);
+            throw new CartException(UPDATE_CART);
         }
     }
 
     private void addCartProduct(CartSaveRequestDto cartSaveRequestDto) {
         if (cartMapper.addCartProduct(cartSaveRequestDto.toEntity()) < 1) {
-            throw new FailSaveCartProductException(ErrorCode.SAVE_CART);
+            throw new CartException(SAVE_CART);
         }
     }
 
@@ -87,14 +86,14 @@ public class CartService {
     @Transactional
     public void updateCartProducts(CartUpdateRequestDto cartUpdateRequestDto) {
         if (cartMapper.updateCartProduct(cartUpdateRequestDto.toEntity()) < 1) {
-            throw new FailUpdateCartProductException(ErrorCode.UPDATE_CART);
+            throw new CartException(UPDATE_CART);
         }
     }
 
     @Transactional
     public void deleteCartItem(CartDeleteRequestDto cartDeleteRequestDto) {
         if (cartMapper.deleteCartItem(cartDeleteRequestDto.toEntity()) < 1) {
-            throw new FailDeleteCartProductException(ErrorCode.DELETE_CART);
+            throw new CartException(DELETE_CART);
         }
     }
 

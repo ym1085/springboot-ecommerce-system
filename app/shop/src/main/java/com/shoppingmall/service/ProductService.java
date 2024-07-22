@@ -1,6 +1,5 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.constant.DirPathType;
 import com.shoppingmall.dto.request.FileSaveRequestDto;
 import com.shoppingmall.dto.request.ProductSaveRequestDto;
@@ -10,9 +9,8 @@ import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.dto.response.PagingResponseDto;
 import com.shoppingmall.dto.response.ProductDetailResponseDto;
 import com.shoppingmall.dto.response.ProductFileResponseDto;
-import com.shoppingmall.exception.FailSaveFileException;
-import com.shoppingmall.exception.FailSaveProductException;
-import com.shoppingmall.exception.FailUpdateFilesException;
+import com.shoppingmall.exception.FileException;
+import com.shoppingmall.exception.ProductException;
 import com.shoppingmall.mapper.ProductFileMapper;
 import com.shoppingmall.mapper.ProductMapper;
 import com.shoppingmall.utils.FileHandlerHelper;
@@ -28,6 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.*;
+import static com.shoppingmall.common.code.failure.product.ProductFailureCode.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -67,21 +68,21 @@ public class ProductService {
         Product product = productRequestDto.toEntity();
 
         if (productMapper.countByProductName(product) > 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.DUPLICATE_PRODUCT_NAME.getMessage());
-            throw new FailSaveProductException(ErrorCode.DUPLICATE_PRODUCT_NAME);
+            log.error("[Occurred Exception] Error Message = {}", DUPLICATE_PRODUCT_NAME.getMessage());
+            throw new ProductException(DUPLICATE_PRODUCT_NAME);
         }
 
         if (productMapper.saveProducts(product) < 1) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_PRODUCT.getMessage());
-            throw new FailSaveProductException(ErrorCode.SAVE_PRODUCT);
+            log.error("[Occurred Exception] Error Message = {}", SAVE_PRODUCT.getMessage());
+            throw new ProductException(SAVE_PRODUCT);
         }
 
         try {
             if (!productRequestDto.getFiles().isEmpty()) {
                 List<FileSaveRequestDto> baseFileSaveRequestDtos = fileHandlerHelper.uploadFiles(productRequestDto.getFiles(), productRequestDto.getDirPathType());
                 if (saveFiles(product.getProductId(), baseFileSaveRequestDtos) < 1) {
-                    log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_FILES);
-                    throw new FailSaveFileException(ErrorCode.SAVE_FILES);
+                    log.error("[Occurred Exception] Error Message = {}", SAVE_FILES);
+                    throw new FileException(SAVE_FILES);
                 }
             }
         } catch (RuntimeException e) {
@@ -112,13 +113,13 @@ public class ProductService {
     @Transactional
     public void updateProduct(ProductUpdateRequestDto productUpdateRequestDto) {
         if (productMapper.updateProduct(productUpdateRequestDto.toEntity()) < 0) {
-            throw new FailSaveProductException(ErrorCode.SAVE_PRODUCT);
+            throw new ProductException(SAVE_PRODUCT);
         }
 
         if (!productUpdateRequestDto.getFiles().isEmpty()) {
             if (updateFilesByProductId(productUpdateRequestDto.getProductId(), productUpdateRequestDto.getFiles()) < 1) {
-                log.error("[Occurred Exception] Error Message = {}", ErrorCode.UPLOAD_FILES.getMessage());
-                throw new FailUpdateFilesException(ErrorCode.UPLOAD_FILES);
+                log.error("[Occurred Exception] Error Message = {}", UPLOAD_FILES.getMessage());
+                throw new FileException(UPLOAD_FILES);
             }
         }
     }

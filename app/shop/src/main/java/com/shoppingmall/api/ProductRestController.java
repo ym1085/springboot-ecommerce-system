@@ -1,8 +1,7 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.response.ApiUtils;
-import com.shoppingmall.common.response.CommonResponse;
-import com.shoppingmall.common.response.SuccessCode;
+import com.shoppingmall.common.dto.BaseResponse;
+import com.shoppingmall.common.utils.ApiResponseUtils;
 import com.shoppingmall.config.auth.PrincipalUserDetails;
 import com.shoppingmall.dto.request.ProductSaveRequestDto;
 import com.shoppingmall.dto.request.ProductUpdateRequestDto;
@@ -22,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.shoppingmall.common.code.success.CommonSuccessCode.SUCCESS;
+import static com.shoppingmall.common.code.success.product.ProductSuccessCode.*;
+
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -31,39 +33,33 @@ public class ProductRestController {
     private final ProductService productService;
 
     @GetMapping("/products")
-    public ResponseEntity<CommonResponse> getProducts(SearchRequestDto searchRequestDto) {
-
+    public ResponseEntity<BaseResponse<?>> getProducts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<ProductDetailResponseDto> products = productService.getProducts(searchRequestDto);
-
-        return ApiUtils.success(SuccessCode.OK.getCode(), SuccessCode.OK.getHttpStatus(), SuccessCode.OK.getMessage(), products);
+        return ApiResponseUtils.success(SUCCESS, products);
     }
 
     @GetMapping("/products/{productId}")
-    public ResponseEntity<CommonResponse> getProductByProductId(@PathVariable("productId") Integer productId) {
-
+    public ResponseEntity<BaseResponse<?>> getProductByProductId(@PathVariable("productId") Integer productId) {
         ProductDetailResponseDto productItemResponseDto = productService.getProductByProductId(productId);
-
-        return ApiUtils.success(SuccessCode.OK.getCode(), SuccessCode.OK.getHttpStatus(), SuccessCode.OK.getMessage(), productItemResponseDto);
+        return ApiResponseUtils.success(SUCCESS, productItemResponseDto);
     }
 
     @PostMapping("/products")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<CommonResponse> saveProducts(
+    public ResponseEntity<BaseResponse<?>> saveProducts(
             @Valid @ModelAttribute ProductSaveRequestDto productRequestDto,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
         }
-
         productService.saveProducts(productRequestDto);
-
-        return ApiUtils.success(SuccessCode.SAVE_PRODUCT.getCode(), SuccessCode.SAVE_PRODUCT.getHttpStatus(), SuccessCode.SAVE_PRODUCT.getMessage());
+        return ApiResponseUtils.success(SAVE_PRODUCT);
     }
 
     @PutMapping("/products/{productId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<CommonResponse> updateProduct(
+    public ResponseEntity<BaseResponse<?>> updateProduct(
             @PathVariable("productId") Integer productId,
             @Valid @ModelAttribute ProductUpdateRequestDto productUpdateRequestDto,
             BindingResult bindingResult,
@@ -79,18 +75,15 @@ public class ProductRestController {
 
         productUpdateRequestDto.setMemberId(member.getMemberId());
         productUpdateRequestDto.setProductId(productId);
-
         productService.updateProduct(productUpdateRequestDto);
 
-        return ApiUtils.success(SuccessCode.UPDATE_PRODUCT.getCode(), SuccessCode.UPDATE_PRODUCT.getHttpStatus(), SuccessCode.UPDATE_PRODUCT.getMessage());
+        return ApiResponseUtils.success(UPDATE_PRODUCT);
     }
 
     @DeleteMapping("/products/{productId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<CommonResponse> deleteProduct(@PathVariable("productId") Integer productId) {
-
+    public ResponseEntity<BaseResponse<?>> deleteProduct(@PathVariable("productId") Integer productId) {
         productService.deleteProduct(productId);
-
-        return ApiUtils.success(SuccessCode.DELETE_PRODUCT.getCode(), SuccessCode.DELETE_PRODUCT.getHttpStatus(), SuccessCode.DELETE_PRODUCT.getMessage());
+        return ApiResponseUtils.success(DELETE_PRODUCT);
     }
 }

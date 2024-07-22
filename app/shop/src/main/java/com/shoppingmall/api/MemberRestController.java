@@ -1,8 +1,7 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.response.ApiUtils;
-import com.shoppingmall.common.response.CommonResponse;
-import com.shoppingmall.common.response.SuccessCode;
+import com.shoppingmall.common.dto.BaseResponse;
+import com.shoppingmall.common.utils.ApiResponseUtils;
 import com.shoppingmall.dto.request.MemberSaveRequestDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.MemberService;
@@ -18,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static com.shoppingmall.common.code.success.member.MemberSuccessCode.*;
+
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1")
@@ -27,30 +28,26 @@ public class MemberRestController {
     private final MemberService memberService;
 
     @PostMapping("/member/join")
-    public ResponseEntity<CommonResponse> join(
+    public ResponseEntity<BaseResponse<?>> join(
             @RequestBody @Valid MemberSaveRequestDto memberRequestDto,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
         }
-
         memberService.join(memberRequestDto);
-
-        return ApiUtils.success(SuccessCode.SAVE_MEMBER.getCode(), SuccessCode.SAVE_MEMBER.getHttpStatus(), SuccessCode.SAVE_MEMBER.getMessage());
+        return ApiResponseUtils.success(SAVE_MEMBER);
     }
 
     @PostMapping("/member/exists")
-    public ResponseEntity<CommonResponse> checkDuplicateMemberAccount(
+    public ResponseEntity<BaseResponse<?>> checkDuplicateMemberAccount(
             @RequestBody MemberSaveRequestDto memberSaveRequestDto) {
 
         if (!StringUtils.hasText(memberSaveRequestDto.getAccount())) {
             throw new IllegalArgumentException();
         }
-
         memberService.validateDuplicateMemberAccount(memberSaveRequestDto.getAccount());
-
-        return ApiUtils.success(SuccessCode.NONE_DUPLICATE_MEMBER.getCode(), SuccessCode.NONE_DUPLICATE_MEMBER.getHttpStatus(), SuccessCode.NONE_DUPLICATE_MEMBER.getMessage());
+        return ApiResponseUtils.success(NONE_DUPLICATE_MEMBER);
     }
 }
 

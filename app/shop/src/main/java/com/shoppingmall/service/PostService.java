@@ -1,15 +1,13 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.common.response.ErrorCode;
 import com.shoppingmall.constant.DirPathType;
 import com.shoppingmall.dto.request.FileSaveRequestDto;
 import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.PostUpdateRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.dto.response.*;
-import com.shoppingmall.exception.FailSaveFileException;
-import com.shoppingmall.exception.FailSavePostException;
-import com.shoppingmall.exception.FailUpdateFilesException;
+import com.shoppingmall.exception.FileException;
+import com.shoppingmall.exception.PostException;
 import com.shoppingmall.mapper.CommentMapper;
 import com.shoppingmall.mapper.PostFileMapper;
 import com.shoppingmall.mapper.PostMapper;
@@ -30,6 +28,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.SAVE_FILES;
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.UPLOAD_FILES;
+import static com.shoppingmall.common.code.failure.post.PostFailureCode.SAVE_POST;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -115,16 +117,16 @@ public class PostService {
     public int savePost(PostSaveRequestDto postSaveRequestDto) {
         Post post = postSaveRequestDto.toEntity();
         if (postMapper.savePost(post) == 0) {
-            log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_POST.getMessage());
-            throw new FailSavePostException(ErrorCode.SAVE_POST);
+            log.error("[Occurred Exception] Error Message = {}", SAVE_POST.getMessage());
+            throw new PostException(SAVE_POST);
         }
 
         try {
             if (!postSaveRequestDto.getFiles().isEmpty()) {
                 List<FileSaveRequestDto> baseFileSaveRequestDto = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getDirPathType());
                 if (saveFiles(post.getPostId(), baseFileSaveRequestDto) < 1) {
-                    log.error("[Occurred Exception] Error Message = {}", ErrorCode.SAVE_FILES);
-                    throw new FailSaveFileException(ErrorCode.SAVE_FILES);
+                    log.error("[Occurred Exception] Error Message = {}", SAVE_FILES);
+                    throw new FileException(SAVE_FILES);
                 }
             }
         } catch (RuntimeException e) {
@@ -160,8 +162,8 @@ public class PostService {
 
         if (!isEmptyFiles(postUpdateRequestDto.getFiles())) {
             if (updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles()) < 1) {
-                log.error("[Occurred Exception] Error Message = {}", ErrorCode.UPLOAD_FILES.getMessage());
-                throw new FailUpdateFilesException(ErrorCode.UPLOAD_FILES);
+                log.error("[Occurred Exception] Error Message = {}", UPLOAD_FILES.getMessage());
+                throw new FileException(UPLOAD_FILES);
             }
         }
     }

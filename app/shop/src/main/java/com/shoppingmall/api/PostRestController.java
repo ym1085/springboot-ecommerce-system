@@ -1,8 +1,7 @@
 package com.shoppingmall.api;
 
-import com.shoppingmall.common.response.ApiUtils;
-import com.shoppingmall.common.response.CommonResponse;
-import com.shoppingmall.common.response.SuccessCode;
+import com.shoppingmall.common.dto.BaseResponse;
+import com.shoppingmall.common.utils.ApiResponseUtils;
 import com.shoppingmall.config.auth.PrincipalUserDetails;
 import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.PostUpdateRequestDto;
@@ -20,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.shoppingmall.common.code.success.CommonSuccessCode.SUCCESS;
+import static com.shoppingmall.common.code.success.post.PostSuccessCode.*;
+
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1")
@@ -29,38 +31,32 @@ public class PostRestController {
     private final PostService postService;
 
     @GetMapping("/post")
-    public ResponseEntity<CommonResponse> getPosts(SearchRequestDto searchRequestDto) {
-
+    public ResponseEntity<BaseResponse<?>> getPosts(SearchRequestDto searchRequestDto) {
         PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
-
-        return ApiUtils.success(SuccessCode.OK.getCode(), SuccessCode.OK.getHttpStatus(), SuccessCode.OK.getMessage(), posts);
+        return ApiResponseUtils.success(SUCCESS, posts);
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<CommonResponse> getPostById(@PathVariable("postId") Integer postId) {
-
+    public ResponseEntity<BaseResponse<?>> getPostById(@PathVariable("postId") Integer postId) {
         PostResponseDto post = postService.getPostById(postId);
-
-        return ApiUtils.success(SuccessCode.OK.getCode(), SuccessCode.OK.getHttpStatus(), SuccessCode.OK.getMessage(), post);
+        return ApiResponseUtils.success(SUCCESS, post);
     }
 
     @PostMapping("/post")
-    public ResponseEntity<CommonResponse> savePost(
+    public ResponseEntity<BaseResponse<?>> savePost(
             @Valid @ModelAttribute PostSaveRequestDto postSaveRequestDto,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
         }
-
         postSaveRequestDto.setMemberId(1);
         postService.savePost(postSaveRequestDto);
-
-        return ApiUtils.success(SuccessCode.SAVE_POST.getCode(), SuccessCode.SAVE_POST.getHttpStatus(), SuccessCode.SAVE_POST.getMessage());
+        return ApiResponseUtils.success(SAVE_POST);
     }
 
     @PutMapping("/post/{postId}")
-    public ResponseEntity<CommonResponse> updatePost(
+    public ResponseEntity<BaseResponse<?>> updatePost(
             @PathVariable("postId") Integer postId,
             @AuthenticationPrincipal PrincipalUserDetails principalUserDetails,
             @Valid @ModelAttribute PostUpdateRequestDto postUpdateRequestDto,
@@ -69,20 +65,15 @@ public class PostRestController {
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
         }
-
         postUpdateRequestDto.setMemberId(1);
         postUpdateRequestDto.setPostId(postId);
-
         postService.updatePost(postUpdateRequestDto);
-
-        return ApiUtils.success(SuccessCode.UPDATE_POST.getCode(), SuccessCode.UPDATE_POST.getHttpStatus(), SuccessCode.UPDATE_POST.getMessage());
+        return ApiResponseUtils.success(UPDATE_POST);
     }
 
     @DeleteMapping("/post/{postId}")
-    public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") Integer postId) {
-
+    public ResponseEntity<BaseResponse<?>> deletePost(@PathVariable("postId") Integer postId) {
         postService.deletePost(postId);
-
-        return ApiUtils.success(SuccessCode.DELETE_POST.getCode(), SuccessCode.DELETE_POST.getHttpStatus(), SuccessCode.DELETE_POST.getMessage());
+        return ApiResponseUtils.success(DELETE_POST);
     }
 }

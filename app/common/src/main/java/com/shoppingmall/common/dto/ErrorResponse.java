@@ -1,4 +1,4 @@
-package com.shoppingmall.common.response;
+package com.shoppingmall.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

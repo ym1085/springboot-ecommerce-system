@@ -18,10 +18,7 @@ public class MainController {
     private final ProductService productService;
 
     @GetMapping(value = {"/", ""})
-    public String init(
-            SearchRequestDto searchRequestDto,
-            Model model) {
-
+    public String init(SearchRequestDto searchRequestDto, Model model) {
         PagingResponseDto<ProductDetailResponseDto> products = productService.getProducts(searchRequestDto);
         log.debug("products = {}", products);
 
