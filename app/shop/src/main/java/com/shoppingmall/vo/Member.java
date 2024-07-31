@@ -29,7 +29,7 @@ public class Member {
 
     // 클라이언트가 소셜 로그인를 시도하는 사용자가 제공되는 정보(data)에 변경이 있으면
     // 해당 데이터를 받아서 DB에 실제 업데이트 하기 전 값 셋팅을 위해 사용
-    public Member updateRenewalMember(String name, String picture) {
+    public Member updateSocialMemberProfile(String name, String picture) {
         this.name = name;
         this.picture = picture;
         return this;

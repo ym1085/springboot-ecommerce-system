@@ -5,7 +5,7 @@
 <mapper namespace="com.shoppingmall.mapper.ProductFileMapper">
 
     <insert id="saveFiles" parameterType="list">
-        INSERT INTO PRODUCT_FILE (
+        INSERT INTO product_file (
             product_id,
             origin_file_name,
             stored_file_name,
@@ -49,20 +49,20 @@
             del_yn,
             file_attached,
             downlod_cnt
-        FROM PRODUCT_FILE pf
+        FROM product_file pf
         WHERE pf.product_id = #{productId}
         AND pf.del_yn = 'N'
     </select>
 
     <select id="countProductFileByProductId" parameterType="int" resultType="int">
         SELECT COUNT(*) AS cnt
-        FROM PRODUCT_FILE pf
+        FROM product_file pf
         WHERE pf.product_id = #{productId}
         AND pf.del_yn = 'N'
     </select>
 
     <update id="deleteFilesByProductId" parameterType="int">
-        UPDATE PRODUCT_FILE pf
+        UPDATE product_file pf
         SET
             pf.del_yn = 'Y'
         WHERE pf.product_id = #{productId}

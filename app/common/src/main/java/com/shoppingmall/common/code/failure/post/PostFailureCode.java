@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum PostFailureCode implements FailureCode {
+    NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "게시글이 존재하지 않습니다. 다시 시도해주세요."),
     SAVE_POST(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 등록에 실패했습니다. 다시 시도해주세요."),
     UPDATE_POST(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 수정에 실패했습니다. 다시 시도해주세요."),
     DELETE_POST(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 삭제에 실패했습니다. 다시 시도해주세요."),

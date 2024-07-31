@@ -5,9 +5,9 @@ import com.shoppingmall.common.utils.ApiResponseUtils;
 import com.shoppingmall.dto.request.CommentDeleteRequestDto;
 import com.shoppingmall.dto.request.CommentSaveRequestDto;
 import com.shoppingmall.dto.request.CommentUpdateRequestDto;
-import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.CommentService;
+import com.shoppingmall.vo.Comment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +39,7 @@ public class CommentRestController {
         commentSaveRequestDto.setMemberId(1);
         commentSaveRequestDto.setPostId(postId);
 
-        List<CommentResponseDto> comments = commentService.saveComment(commentSaveRequestDto);
+        List<Comment> comments = commentService.saveComment(commentSaveRequestDto);
         return ApiResponseUtils.success(SAVE_COMMENT, comments);
     }
 
@@ -53,21 +53,21 @@ public class CommentRestController {
             throw new InvalidParameterException(bindingResult);
         }
         commentUpdateRequestDto.setPostId(postId);
-        List<CommentResponseDto> comments = commentService.updateCommentByCommentId(commentUpdateRequestDto);
+        List<Comment> comments = commentService.updateCommentByCommentId(commentUpdateRequestDto);
         return ApiResponseUtils.success(UPDATE_COMMENT, comments);
     }
 
     @DeleteMapping("/post/comments")
     public ResponseEntity<BaseResponse<?>> deleteComments(
             @ModelAttribute CommentDeleteRequestDto commentDeleteRequestDto) {
-        List<CommentResponseDto> comments = commentService.deleteComments(commentDeleteRequestDto);
+        List<Comment> comments = commentService.deleteComments(commentDeleteRequestDto);
         return ApiResponseUtils.success(DELETE_COMMENT, comments);
     }
 
     @DeleteMapping("/post/comments/reply")
     public ResponseEntity<BaseResponse<?>> deleteCommentsReply(
             @ModelAttribute CommentDeleteRequestDto commentDeleteRequestDto) {
-        List<CommentResponseDto> comments = commentService.deleteCommentsReply(commentDeleteRequestDto);
+        List<Comment> comments = commentService.deleteCommentsReply(commentDeleteRequestDto);
         return ApiResponseUtils.success(DELETE_COMMENT, comments);
     }
 }

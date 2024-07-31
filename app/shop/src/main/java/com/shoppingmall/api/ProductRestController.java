@@ -6,11 +6,11 @@ import com.shoppingmall.config.auth.PrincipalUserDetails;
 import com.shoppingmall.dto.request.ProductSaveRequestDto;
 import com.shoppingmall.dto.request.ProductUpdateRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
-import com.shoppingmall.dto.response.PagingResponseDto;
-import com.shoppingmall.dto.response.ProductDetailResponseDto;
+import com.shoppingmall.vo.PagingResponse;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.ProductService;
 import com.shoppingmall.vo.Member;
+import com.shoppingmall.vo.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,14 +34,14 @@ public class ProductRestController {
 
     @GetMapping("/products")
     public ResponseEntity<BaseResponse<?>> getProducts(SearchRequestDto searchRequestDto) {
-        PagingResponseDto<ProductDetailResponseDto> products = productService.getProducts(searchRequestDto);
+        PagingResponse<Product> products = productService.getProducts(searchRequestDto);
         return ApiResponseUtils.success(SUCCESS, products);
     }
 
     @GetMapping("/products/{productId}")
     public ResponseEntity<BaseResponse<?>> getProductByProductId(@PathVariable("productId") Integer productId) {
-        ProductDetailResponseDto productItemResponseDto = productService.getProductByProductId(productId);
-        return ApiResponseUtils.success(SUCCESS, productItemResponseDto);
+        Product product = productService.getProductByProductId(productId);
+        return ApiResponseUtils.success(SUCCESS, product);
     }
 
     @PostMapping("/products")

@@ -6,7 +6,7 @@
 
     <!-- 파일 정보 저장 -->
     <insert id="saveFiles" parameterType="list">
-        INSERT INTO POST_FILE (
+        INSERT INTO post_file (
             post_file_id
             , post_id
             , origin_file_name
@@ -43,7 +43,7 @@
         트랜잭션 단위에서 수행을 하기에 괜찮을 것 같음
     -->
     <update id="deleteFilesByPostId" parameterType="int">
-        UPDATE POST_FILE f
+        UPDATE post_file f
         SET
             f.del_yn = 'Y',
             f.delete_date = NOW()
@@ -66,7 +66,7 @@
             , create_date
             , delete_date
             , file_attached
-        FROM POST_FILE f
+        FROM post_file f
         WHERE f.post_id = #{postId}
         AND f.del_yn = 'N'
     </select>
@@ -86,21 +86,21 @@
             , create_date
             , delete_date
             , file_attached
-        FROM POST_FILE f
+        FROM post_file f
         WHERE f.post_file_id = #{postFileId}
         AND f.del_yn = 'N'
     </select>
 
     <!-- 파일 다운로드 수 업데이트 -->
     <update id="increaseDownloadCntByFileId" parameterType="int">
-        UPDATE POST_FILE
+        UPDATE post_file
         SET download_cnt = download_cnt + 1
         WHERE post_file_id = #{postFileId}
     </update>
 
     <select id="countFilesByPostId" parameterType="int" resultType="int">
         SELECT COUNT(*) AS cnt
-        FROM POST_FILE
+        FROM post_file
         WHERE post_id = #{postFileId}
     </select>
 </mapper>

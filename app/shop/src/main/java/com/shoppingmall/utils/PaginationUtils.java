@@ -14,8 +14,8 @@ public class PaginationUtils {
     private boolean existsNextPage;     // 다음 페이지 존재 여부
 
     public PaginationUtils(int totalRecordCount, SearchRequestDto searchRequestDto) {
+        this.totalRecordCount = totalRecordCount;
         if (totalRecordCount > 0) {
-            this.totalRecordCount = totalRecordCount;
             calculation(searchRequestDto);
         }
     }
@@ -32,22 +32,17 @@ public class PaginationUtils {
      */
     public void calculation(SearchRequestDto searchRequestDto) {
         setTotalPageCount(searchRequestDto); // [1], [2], [3], [4], .... 설정
-
         if (searchRequestDto.getPageNo() > this.totalPageCount) {
             searchRequestDto.setPageNo(this.totalPageCount);
         }
-
         setStartPage(searchRequestDto);
         setEndPage(searchRequestDto);
 
         if (this.endPage > this.totalPageCount) {
             this.endPage = this.totalPageCount;
         }
-
         setLimitStart(searchRequestDto); // LIMIT 시작 위치 계산
-
         checkExistsPrevPage(); // 이전 페이지 존재 여부 확인
-
         checkExistsNextPage(searchRequestDto); // 다음 페이지 존재 여부 확인
     }
 

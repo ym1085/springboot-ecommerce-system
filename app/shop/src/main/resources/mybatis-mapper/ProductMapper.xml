@@ -65,9 +65,9 @@
             IFNULL(pf.del_yn, 'N') AS del_yn,
             IFNULL(pf.file_attached, 'N') AS file_attached,
             IFNULL(pf.downlod_cnt, 0) AS downlod_cnt
-        FROM PRODUCT p
-            INNER JOIN PRODUCT_CATEGORY pc ON p.category_id = pc.category_id
-            LEFT JOIN PRODUCT_FILE pf ON p.product_id = pf.product_id
+        FROM product p
+        INNER JOIN product_category pc ON p.category_id = pc.category_id
+        LEFT OUTER JOIN product_file pf ON p.product_id = pf.product_id
         WHERE p.del_yn != 'Y'
         ORDER BY p.create_date DESC
         LIMIT #{pagination.limitStart}, #{recordSizePerPage} /*LIMIT 20;*/
@@ -76,7 +76,7 @@
     <!-- 상품 수 카운팅 -->
     <select id="count" resultType="int">
         SELECT COUNT(*) AS cnt
-        FROM PRODUCT p
+        FROM product p
         WHERE p.del_yn != 'Y'
     </select>
 
@@ -108,15 +108,15 @@
             ifnull(pf.del_yn, 'n') AS del_yn,
             ifnull(pf.file_attached, 'n') AS file_attached,
             ifnull(pf.downlod_cnt, 0) AS downlod_cnt
-        FROM PRODUCT p
-            INNER JOIN PRODUCT_CATEGORY pc ON p.category_id = pc.category_id
-            LEFT JOIN PRODUCT_FILE pf ON p.product_id = pf.product_id
+        FROM product p
+        INNER JOIN product_category pc ON p.category_id = pc.category_id
+        LEFT OUTER JOIN product_file pf ON p.product_id = pf.product_id
         WHERE p.product_id = #{productId}
         AND p.del_yn != 'Y'
     </select>
 
-    <insert id="saveProducts" parameterType="Product" useGeneratedKeys="true" keyProperty="productId">
-        INSERT INTO PRODUCT
+    <insert id="saveProducts" parameterType="ProductSaveRequestDto" useGeneratedKeys="true" keyProperty="productId">
+        INSERT INTO product
             (
                 CATEGORY_ID,
                 PRODUCT_NAME,
@@ -142,8 +142,8 @@
             )
     </insert>
 
-    <update id="updateProduct" parameterType="Product">
-        UPDATE PRODUCT
+    <update id="updateProduct" parameterType="ProductUpdateRequestDto">
+        UPDATE product
         SET
             category_id = #{categoryId},
             product_name = #{productName},
@@ -158,14 +158,14 @@
             del_yn = 'N'
         AND
             EXISTS (
-                SELECT 1 FROM MEMBER
-                WHERE MEMBER.member_id = #{memberId}
-                AND MEMBER.role = 'ROLE_ADMIN'
+                SELECT 1 FROM member
+                WHERE member.member_id = #{memberId}
+                AND member.role = 'ROLE_ADMIN'
             )
     </update>
 
     <update id="deleteProduct" parameterType="int">
-        UPDATE PRODUCT
+        UPDATE product
         SET
             del_yn = 'Y'
         WHERE
@@ -174,9 +174,9 @@
             del_yn = 'N'
     </update>
 
-    <select id="countByProductName" parameterType="Product" resultType="int">
+    <select id="countByProductName" parameterType="ProductSaveRequestDto" resultType="int">
         SELECT COUNT(*) AS cnt
-        FROM PRODUCT
+        FROM product
         WHERE product_name = #{productName}
         AND del_yn = 'N'
     </select>

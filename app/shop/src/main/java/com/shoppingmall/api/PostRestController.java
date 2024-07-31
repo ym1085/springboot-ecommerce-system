@@ -6,10 +6,10 @@ import com.shoppingmall.config.auth.PrincipalUserDetails;
 import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.PostUpdateRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
-import com.shoppingmall.dto.response.PagingResponseDto;
-import com.shoppingmall.dto.response.PostResponseDto;
+import com.shoppingmall.vo.PagingResponse;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.PostService;
+import com.shoppingmall.vo.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,13 +32,13 @@ public class PostRestController {
 
     @GetMapping("/post")
     public ResponseEntity<BaseResponse<?>> getPosts(SearchRequestDto searchRequestDto) {
-        PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
+        PagingResponse<Post> posts = postService.getPosts(searchRequestDto);
         return ApiResponseUtils.success(SUCCESS, posts);
     }
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<BaseResponse<?>> getPostById(@PathVariable("postId") Integer postId) {
-        PostResponseDto post = postService.getPostById(postId);
+        Post post = postService.getPostById(postId);
         return ApiResponseUtils.success(SUCCESS, post);
     }
 

@@ -25,6 +25,7 @@ public class PrincipalOAuth2LoginSuccessHandler implements AuthenticationSuccess
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        log.info("request = {}", request);
         response.sendRedirect("/");
     }
 }

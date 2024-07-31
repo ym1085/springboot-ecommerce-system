@@ -1,18 +1,12 @@
 package com.shoppingmall.dto.request;
 
-import com.shoppingmall.vo.Cart;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Getter
+@Setter
 public class CartUpdateRequestDto {
 
     @NotNull(message = "상품 아이디는 필수 입력 값 입니다.")
@@ -23,14 +17,4 @@ public class CartUpdateRequestDto {
     private Integer memberId;
     private Integer cartId;
     private String uuid;
-
-    public Cart toEntity() {
-        return Cart.builder()
-                .cartId(cartId)
-                .productId(productId)
-                .amount(amount)
-                .memberId(memberId)
-                .uuid(uuid)
-                .build();
-    }
 }

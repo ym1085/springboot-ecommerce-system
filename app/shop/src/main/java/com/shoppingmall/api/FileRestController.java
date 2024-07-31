@@ -2,9 +2,9 @@ package com.shoppingmall.api;
 
 import com.shoppingmall.common.dto.BaseResponse;
 import com.shoppingmall.common.utils.ApiResponseUtils;
-import com.shoppingmall.dto.response.PostFileResponseDto;
 import com.shoppingmall.service.FileService;
 import com.shoppingmall.utils.FileHandlerHelper;
+import com.shoppingmall.vo.PostFiles;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -39,7 +39,7 @@ public class FileRestController {
     public ResponseEntity<BaseResponse<?>> downloadPostFile(
             @PathVariable("postFileId") Integer postFileId,
             @PathVariable("domain") String domain) {
-        PostFileResponseDto files = fileService.getFileByPostFileId(postFileId);
+        PostFiles files = fileService.getFileByPostFileId(postFileId);
 
         String serverUploadPath = fileHandlerHelper.getUploadPath();
         String fileUploadPath = fileHandlerHelper.extractFileDateTimeByFilePath(files.getFilePath());
@@ -61,7 +61,7 @@ public class FileRestController {
 
         List<File> files = fileService.getFilesByPostId(postId)
                 .stream()
-                .map(fileResponseDto -> new File(fileResponseDto.getFilePath()))
+                .map(postFiles -> new File(postFiles.getFilePath()))
                 .collect(Collectors.toList());
 
         if (files.isEmpty()) {

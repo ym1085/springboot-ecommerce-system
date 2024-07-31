@@ -22,13 +22,18 @@ public class Post {
     private Integer readCnt;
     private String fixedYn;
     private String delYn;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime createDate;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime updateDate;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime deleteDate;
 
+    // 게시글에 매핑된 파일 목록
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<PostFiles> postFiles = new ArrayList<>();
+
+    // 게시글에 매핑된 댓글 목록
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<Comment> comments = new ArrayList<>();
 

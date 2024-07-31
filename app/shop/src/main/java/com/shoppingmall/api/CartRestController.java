@@ -8,13 +8,11 @@ import com.shoppingmall.common.utils.CommonUtils;
 import com.shoppingmall.config.auth.PrincipalUserDetails;
 import com.shoppingmall.dto.request.CartDeleteRequestDto;
 import com.shoppingmall.dto.request.CartDetailRequestDto;
-import com.shoppingmall.dto.request.CartSaveRequestDto;
 import com.shoppingmall.dto.request.CartUpdateRequestDto;
-import com.shoppingmall.dto.response.CartDetailResponseDto;
-import com.shoppingmall.dto.response.CartTotalPriceResponseDto;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.CartService;
 import com.shoppingmall.utils.SecurityUtils;
+import com.shoppingmall.vo.CartTotalPrice;
 import com.shoppingmall.vo.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +23,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static com.shoppingmall.common.code.success.CommonSuccessCode.SUCCESS;
 import static com.shoppingmall.common.code.success.cart.CartSuccessCode.UPDATE_CART;
@@ -52,7 +49,7 @@ public class CartRestController {
     @PostMapping("/cart")
     public ResponseEntity<BaseResponse<?>> addCartItem(
             @AuthenticationPrincipal PrincipalUserDetails principalUserDetails,
-            @RequestBody @Valid CartSaveRequestDto cartSaveRequestDto,
+            @RequestBody @Valid CartUpdateRequestDto cartUpdateRequestDto,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -65,11 +62,11 @@ public class CartRestController {
         }
 
         if (SecurityUtils.isValidLoginMember(member)) {
-            cartSaveRequestDto.setMemberId(member.getMemberId());
-            cartService.addOrUpdateCartProduct(cartSaveRequestDto);
+            cartUpdateRequestDto.setMemberId(member.getMemberId());
+            cartService.addOrUpdateCartProduct(cartUpdateRequestDto);
         } else if (!SecurityUtils.isValidLoginMember(member)){
-            cartSaveRequestDto.setUuid(StringUtils.isBlank(cartSaveRequestDto.getUuid()) ? CommonUtils.generateRandomUUID() : cartSaveRequestDto.getUuid());
-            cartService.addOrUpdateCartProduct(cartSaveRequestDto);
+            cartUpdateRequestDto.setUuid(StringUtils.isBlank(cartUpdateRequestDto.getUuid()) ? CommonUtils.generateRandomUUID() : cartUpdateRequestDto.getUuid());
+            cartService.addOrUpdateCartProduct(cartUpdateRequestDto);
         } else {
             // 회원도 아니고 비회원도 아닌 경우 예외 처리
             log.error("장바구니 등록 중, 오류 발생!!");
@@ -88,7 +85,7 @@ public class CartRestController {
             member = principalUserDetails.getMember();
         }
 
-        List<CartDetailResponseDto> cartItems = null;
+        CartTotalPrice cartItems = null;
         CartDetailRequestDto cartDetailRequestDto = new CartDetailRequestDto();
         if (SecurityUtils.isValidLoginMember(member)) {
             cartDetailRequestDto.setMemberId(member.getMemberId());
@@ -97,10 +94,7 @@ public class CartRestController {
             cartDetailRequestDto.setUuid(uuid);
             cartItems = cartService.getCartItems(cartDetailRequestDto);
         }
-
-        // 장바구니 정보 저장 및 장바구니 상품별 총 합계 저장
-        CartTotalPriceResponseDto cartTotalPriceResponseDto = CartTotalPriceResponseDto.calculateTotalPrice(cartItems);
-        return ApiResponseUtils.success(SUCCESS, cartTotalPriceResponseDto);
+        return ApiResponseUtils.success(SUCCESS, cartItems);
     }
 
     @PutMapping("/cart/update/{cartId}")

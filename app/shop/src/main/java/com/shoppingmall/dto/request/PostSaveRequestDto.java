@@ -1,22 +1,16 @@
 package com.shoppingmall.dto.request;
 
 import com.shoppingmall.constant.DirPathType;
-import com.shoppingmall.vo.Post;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Getter
+@Setter
 public class PostSaveRequestDto {
     private Integer postId;
     private Integer memberId;
@@ -31,18 +25,6 @@ public class PostSaveRequestDto {
     private String content;
     private String fixedYn;
 
-    private List<MultipartFile> files = new ArrayList<>();
-    private DirPathType dirPathType = DirPathType.posts;
-
-    public Post toEntity() {
-        return Post.builder()
-                .postId(postId)
-                .memberId(memberId)
-                .title(title)
-                .content(content)
-                .fixedYn(fixedYn)
-                .categoryId(categoryId)
-                .build();
-    }
-
+    private List<MultipartFile> files;
+    private DirPathType dirPathType;
 }

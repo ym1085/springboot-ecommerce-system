@@ -21,9 +21,7 @@ class CommentServiceTest {
     @DisplayName("댓글 및 대대글 저장 테스트")
     void testSaveComment() {
         // given
-
         // when
-
         // then
     }
 
@@ -31,9 +29,7 @@ class CommentServiceTest {
     @DisplayName("부모 댓글이 없는 경우 테스트")
     void testSaveCommentNoneParentCommentId() {
         // given
-
         // when
-
         // then
     }
 
@@ -41,9 +37,7 @@ class CommentServiceTest {
     @DisplayName("댓글 삭제 테스트(부모, 자식 댓글 전부 삭제)")
     void testDeleteParentAndChildComments() {
         // given
-
         // when
-
         // then
     }
 
@@ -51,9 +45,7 @@ class CommentServiceTest {
     @DisplayName("대댓글 삭제 테스트")
     void testDeleteChildComments() {
         // given
-
         // when
-
         // then
     }
 
@@ -61,9 +53,7 @@ class CommentServiceTest {
     @DisplayName("commentId, parentId가 모두 공백인 경우 예외 발생 테스트")
     void testDeleteParentAndChildCommentsAllIdNull() {
         // given
-
         // when
-
         // then
     }
 
@@ -71,9 +61,7 @@ class CommentServiceTest {
     @DisplayName("댓글 내용 수정 테스트")
     void testUpdateCommentById() {
         // given
-
         // when
-
         // then
     }
 }

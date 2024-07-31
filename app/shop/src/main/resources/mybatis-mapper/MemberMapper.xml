@@ -5,7 +5,7 @@
 <mapper namespace="com.shoppingmall.mapper.MemberMapper">
     
     <insert id="join" parameterType="Member">
-        INSERT INTO MEMBER
+        INSERT INTO member
             (
                 name
                , account
@@ -95,7 +95,7 @@
             m.update_date,
             m.gender,
             sm.provider_type AS registrationid
-        FROM MEMBER m JOIN SOCIAL_MEMBER sm ON m.member_id = sm.member_id
+        FROM member m JOIN social_member sm ON m.member_id = sm.member_id
         WHERE m.email = #{email}
         AND sm.provider_type = #{registrationId}
         AND m.use_yn = 'Y'
@@ -118,7 +118,7 @@
             m.create_date,
             m.update_date,
             m.gender
-        FROM MEMBER m
+        FROM member m
         WHERE m.member_id = #{memberId}
         AND m.use_yn = 'Y'
         AND m.cert_yn = 'Y'
@@ -132,7 +132,7 @@
             m.picture,
             <include refid="roleCase"/>,
             sm.provider_type AS registrationid
-        FROM MEMBER m JOIN SOCIAL_MEMBER sm ON m.member_id = sm.member_id
+        FROM member m JOIN social_member sm ON m.member_id = sm.member_id
         WHERE m.email = #{email}
         AND sm.provider_type = #{registrationId}
         AND m.use_yn = 'Y'
@@ -140,8 +140,8 @@
     </select>
 
     <!-- 소셜 로그인 사용자의 이메일, 대표 이미지가 변경 된 경우 DB 데이터 변경 -->
-    <update id="updateMemberByEmailAndPicture" parameterType="Member">
-        UPDATE MEMBER m
+    <update id="updateSocialMemberLoginProfile" parameterType="Member">
+        UPDATE member m
             INNER JOIN SOCIAL_MEMBER sm ON m.member_id = sm.member_id
         SET m.email = #{email},
             m.picture = #{picture}
@@ -167,7 +167,7 @@
             m.create_date,
             m.update_date,
             m.gender
-        FROM MEMBER m
+        FROM member m
         WHERE m.ACCOUNT = #{username}
         AND m.USE_YN = 'Y'
         AND m.CERT_YN = 'Y'
@@ -175,7 +175,7 @@
     
     <select id="checkDuplicateMemberAccount" parameterType="string" resultType="int">
         SELECT COUNT(*) AS cnt
-        FROM MEMBER m
+        FROM member m
         WHERE m.account = #{account}
     </select>
 

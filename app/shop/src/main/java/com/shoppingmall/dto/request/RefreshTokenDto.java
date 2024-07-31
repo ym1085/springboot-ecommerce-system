@@ -1,16 +1,11 @@
 package com.shoppingmall.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Setter
 public class RefreshTokenDto {
 
     @NotEmpty(message = "accessToken을 입력해주세요.")
@@ -18,5 +13,4 @@ public class RefreshTokenDto {
 
     @NotEmpty(message = "refreshToken을 입력해주세요.")
     private String refreshToken;
-
 }

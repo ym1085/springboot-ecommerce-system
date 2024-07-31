@@ -1,9 +1,7 @@
 package com.shoppingmall.dto.request;
 
-import com.shoppingmall.vo.Post;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
@@ -11,9 +9,8 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class PostUpdateRequestDto {
 
     private Integer postId;
@@ -30,16 +27,4 @@ public class PostUpdateRequestDto {
     private String fixedYn;
 
     private List<MultipartFile> files = new ArrayList<>();
-
-    public Post toEntity() {
-        return Post.builder()
-                .postId(postId)
-                .memberId(memberId)
-                .title(title)
-                .content(content)
-                .fixedYn(fixedYn)
-                .categoryId(categoryId)
-                .build();
-    }
-
 }

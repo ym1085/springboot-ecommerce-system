@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.nio.file.AccessDeniedException;
 
+/**
+ * Global Exception Handler
+ */
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
