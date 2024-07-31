@@ -2,8 +2,8 @@ package com.shoppingmall.config.auth;
 
 import com.shoppingmall.config.auth.attribute.OAuthAttributes;
 import com.shoppingmall.config.auth.attribute.SessionMember;
-import com.shoppingmall.vo.Member;
 import com.shoppingmall.mapper.MemberMapper;
+import com.shoppingmall.vo.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserR
         String providerToken = userRequest.getAccessToken().getTokenValue();
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttribute, oAuth2User.getAttributes(), providerToken);
 
-        Member member = saveOrUpdate(attributes);
+        Member member = upsertMember(attributes);
         SessionMember sessionMember = new SessionMember(member);
         session.setAttribute(SESSION_NAME, sessionMember);
 
@@ -61,7 +62,7 @@ public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserR
                 attributes.getNameAttributeKey()
         );
 
-        // 2023. 12. 17(Sun) new PrincipalDetails()로 변경 하는데 ERROR 발생해서 일단 주석 처리
+        // new PrincipalDetails()로 변경 하는데 ERROR 발생해서 일단 주석 처리
         /*return new PrincipalDetails(
                 member,
                 attributes.getAttributes(),
@@ -70,31 +71,28 @@ public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserR
     }
 
     /**
-     * save member information at social login
+     * 사용자 소셜 로그인 시도 시, DB에 UPSERT 하는 함수
+     * 사용자가 있는 경우 UPDATE, 그렇지 않으면 INSERT 수행
      */
-    private Member saveOrUpdate(OAuthAttributes attributes) {
-        Member findMember = memberMapper.getMemberByEmail(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
-        if (findMember.getEmail() != null
-                && attributes.getEmail().equalsIgnoreCase(findMember.getEmail())
-                && attributes.getRegistrationId().equalsIgnoreCase(findMember.getRegistrationId())) {
+    private Member upsertMember(OAuthAttributes attributes) {
+        Optional<Member> findMember = memberMapper.getMemberByEmail(attributes.getEmail(), attributes.getRegistrationId());
 
-            if(isUpdateNameAndPictureCondition(findMember, attributes)) {
-                findMember.updateRenewalMember(attributes.getName(), attributes.getPicture());
-                memberMapper.updateMemberByEmailAndPicture(findMember);
+        if (findMember.isPresent()) { // DB에 기존 소셜 로그인 회원이 존재 -> UPDATE 수행
+            Member existMember = findMember.get();
+            if(isRequiredSocialMemberProfile(existMember, attributes)) {
+                existMember.updateSocialMemberProfile(attributes.getName(), attributes.getPicture());
+                memberMapper.updateSocialMemberLoginProfile(existMember);
             }
-            return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
+            return existMember;
         } else {
-            Member savedMember = attributes.toEntity();
-            memberMapper.joinWithSocialLogin(savedMember);
-            return memberMapper.getMemberByEmailWithSocialLogin(attributes.getEmail(), attributes.getRegistrationId()).orElse(new Member());
+            Member newMember = attributes.toEntity();
+            memberMapper.joinWithSocialLogin(newMember);
+            return newMember;
         }
     }
 
-    private boolean isUpdateNameAndPictureCondition(Member findMember, OAuthAttributes attributes) {
-        boolean flag = true;
-        if (findMember.getPicture().equalsIgnoreCase(attributes.getPicture()) && findMember.getName().equalsIgnoreCase(attributes.getName())) {
-            flag = false;
-        }
-        return flag;
+    private boolean isRequiredSocialMemberProfile(Member existingMember, OAuthAttributes attributes) {
+        return !existingMember.getName().equalsIgnoreCase(attributes.getName()) ||
+                !existingMember.getPicture().equalsIgnoreCase(attributes.getPicture());
     }
 }

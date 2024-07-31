@@ -5,8 +5,9 @@ import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.dto.request.FileSaveRequestDto;
 import com.shoppingmall.dto.request.PostFileSaveRequestDto;
 import com.shoppingmall.dto.request.ProductFileSaveRequestDto;
-import com.shoppingmall.dto.response.FileResponseDto;
 import com.shoppingmall.exception.FileException;
+import com.shoppingmall.vo.Files;
+import com.shoppingmall.vo.PostFiles;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -96,7 +97,7 @@ public class FileHandlerHelper {
             multipartFile.transferTo(uploadFile); // upload file to server host dir
             baseFileSaveRequestDto = buildFileSaveRequestDto(dirPathType, originalFilename, storedFileName, fileUploadPath, fileSize, ext);
         } catch (IOException | IllegalStateException | FileException e) {
-            log.error("[Exception] error occurred, e = {}", e.getMessage());
+            log.error("e = {}", e.getMessage(), e);
             throw new FileException(SAVE_FILES);
         }
         return baseFileSaveRequestDto;
@@ -146,7 +147,7 @@ public class FileHandlerHelper {
 
     private String createFileUploadDirAndGetPath(DirPathType dirPathType, String today, String storedFileName) {
         String uploadFullPath = uploadPath + dirPathType.getDirPathTypeName() + File.separator + today;
-        log.debug("서버 파일 업로드 Full Path, uploadFullPath = {}", uploadFullPath);
+        log.debug("Create upload file path, uploadFullPath = {}", uploadFullPath);
         createDirectory(uploadFullPath);
         return uploadFullPath + File.separator + storedFileName; // 서버 업로드 경로/UUID.파일명
     }
@@ -167,24 +168,21 @@ public class FileHandlerHelper {
         return FileExtension.isAcceptFileExtension(ext);
     }
 
-    public boolean deleteFiles(List<FileResponseDto> fileResponseDtos) {
-        boolean isDeleteSuccess = false;
-        for (FileResponseDto fileResponseDto : fileResponseDtos) {
-            File deleteFile = new File(fileResponseDto.getFilePath());
-            if (!isExistsFile(deleteFile)) { // 파일 경로가 존재하지 않으면 Loop 탈출 후 재 반복
-                break;
+    public <T extends Files> boolean deleteFiles(List<T> files) {
+        for (Files file : files) {
+            File deleteFile = new File(file.getFilePath());
+
+            if (!isExistsFile(deleteFile)) { // 파일 경로가 존재하지 않으면 루프 종료
+                log.error("파일 경로가 존재하지 않습니다. filePath = {}", file.getFilePath());
+                return false;
             }
 
-            isDeleteSuccess = deleteFile(deleteFile);
-
-            if (isDeleteSuccess) {
-                log.info("파일 삭제에 성공하였습니다. fileName = {}, isDeleteSuccess = {}", deleteFile.getName(), isDeleteSuccess);
-            } else {
-                log.info("파일 삭제에 실패하였습니다. isDeleteSuccess = {}", isDeleteSuccess);
+            if (!deleteFile(deleteFile)) {
+                log.error("파일 삭제에 실패하였습니다. fileName = {}", deleteFile.getName());
+                return false;
             }
         }
-
-        return isDeleteSuccess;
+        return true;
     }
 
     private boolean isExistsFile(File file) {
@@ -199,16 +197,8 @@ public class FileHandlerHelper {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
     }
 
-    /*public String extractFileDateTime(String filePath) {
-        Path path = Paths.get(filePath);
-        if (!StringUtils.isEmpty(path.getName(3).toString())) {
-            return path.getName(3).toString();
-        }
-        return "";
-    }*/
-
     public String extractFileDateTimeByFilePath(String filePath) {
-        if (filePath.isEmpty()) {
+        if (!StringUtils.hasText(filePath)) {
             return "";
         }
 
@@ -228,19 +218,19 @@ public class FileHandlerHelper {
         try {
             return resource.getInputStream();
         } catch (IOException e) {
-            log.error("[Occurred Exception] Error Message = {}", DOWNLOAD_FILES.getMessage());
+            log.error(DOWNLOAD_FILES.getMessage());
             throw new FileException(DOWNLOAD_FILES);
         }
     }
 
-    public HttpHeaders getHttpHeadersByDownloadFile(FileResponseDto files, Resource resource, InputStream inputStream) {
+    public HttpHeaders getHttpHeadersByDownloadFile(PostFiles files, Resource resource, InputStream inputStream) {
         HttpHeaders httpHeaders = new HttpHeaders();
         try {
             httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + files.getOriginFileName() + "\"");
             httpHeaders.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.contentLength()));
             httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE.toString());
         } catch (IOException e) {
-            log.error("[Occurred Exception] Error Message = {}", DOWNLOAD_FILES.getMessage());
+            log.error(DOWNLOAD_FILES.getMessage());
             throw new FileException(DOWNLOAD_FILES);
         }
         return httpHeaders;
@@ -257,7 +247,7 @@ public class FileHandlerHelper {
             }
             zos.finish();
         } catch (IOException e) {
-            log.error("[Occurred Exception] Error Message = {}", DOWNLOAD_FILES.getMessage());
+            log.error(DOWNLOAD_FILES.getMessage());
             throw new FileException(DOWNLOAD_FILES);
         }
     }

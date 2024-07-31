@@ -23,7 +23,7 @@
         </association>
     </resultMap>
 
-    <select id="countCartProducts" parameterType="Cart" resultType="int">
+    <select id="countCartProducts" parameterType="CartUpdateRequestDto" resultType="int">
         SELECT COUNT(*)
         FROM cart
         WHERE product_id = #{productId}
@@ -36,7 +36,7 @@
     </select>
 
     <!-- 회원 장바구니는 member_id, product_id를 넣는다 -->
-    <insert id="addCartProduct" parameterType="Cart">
+    <insert id="addCartProduct" parameterType="CartUpdateRequestDto">
         INSERT INTO cart
             (
                 member_id,
@@ -75,7 +75,7 @@
             )
     </insert>
 
-    <update id="updateCartProduct" parameterType="Cart">
+    <update id="updateCartProduct" parameterType="CartUpdateRequestDto">
         UPDATE cart
         SET
             amount = #{amount},
@@ -91,7 +91,7 @@
             </if>
     </update>
 
-    <select id="getCartItems" parameterType="Cart" resultMap="CartItemMap">
+    <select id="getCartItems" parameterType="CartDetailRequestDto" resultMap="CartItemMap">
         SELECT
             c.cart_id,
             c.member_id,
@@ -141,7 +141,7 @@
         AND p2.del_yn = 'N'
     </select>
     
-    <update id="deleteCartItem" parameterType="Cart">
+    <update id="deleteCartItem" parameterType="CartDeleteRequestDto">
         UPDATE cart
         SET
             del_yn = 'Y',

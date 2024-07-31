@@ -1,5 +1,0 @@
-node_modules/
-dist/
-build/
-*.log
-shoppingmall/shop/src/main/resources/static/js/common/message.js

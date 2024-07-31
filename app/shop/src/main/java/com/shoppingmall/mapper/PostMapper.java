@@ -1,5 +1,7 @@
 package com.shoppingmall.mapper;
 
+import com.shoppingmall.dto.request.PostSaveRequestDto;
+import com.shoppingmall.dto.request.PostUpdateRequestDto;
 import com.shoppingmall.vo.Post;
 import com.shoppingmall.dto.request.SearchRequestDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,9 +18,9 @@ public interface PostMapper {
 
     Optional<Post> getPostByPostId(Integer postId);
 
-    int savePost(Post post);
+    int savePost(PostSaveRequestDto postSaveRequestDto);
 
-    int updatePost(Post post);
+    int updatePost(PostUpdateRequestDto postUpdateRequestDto);
 
     int deletePostByPostId(Integer postId);
 

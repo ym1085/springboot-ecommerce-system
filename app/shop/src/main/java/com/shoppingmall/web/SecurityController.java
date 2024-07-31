@@ -23,7 +23,6 @@ public class SecurityController {
 
         log.info("requestURI = /test/login");
         PrincipalUserDetails principalUserDetails = (PrincipalUserDetails) authentication.getPrincipal();
-        log.info("principalDetails = {}", principalUserDetails.getMember());
         log.info("userDetails = {}", userDetails.getUsername());
 
         return "세션 정보 확인";

@@ -28,7 +28,7 @@ public class PrincipalUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberMapper.getMemberByAccount(username)
-                .orElseThrow(() -> new UsernameNotFoundException("로그인에 사용할 유저 계정(account)가 존재하지 않습니다, username = " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("사용자가 존재하지 않습니다, username = " + username));
 
         SessionMember sessionMember = new SessionMember(member);
         session.setAttribute(SESSION_NAME, sessionMember);

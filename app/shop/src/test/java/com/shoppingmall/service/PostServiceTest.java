@@ -2,8 +2,7 @@ package com.shoppingmall.service;
 
 import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
-import com.shoppingmall.dto.response.PagingResponseDto;
-import com.shoppingmall.dto.response.PostResponseDto;
+import com.shoppingmall.vo.PagingResponse;
 import com.shoppingmall.mapper.CommentMapper;
 import com.shoppingmall.mapper.PostFileMapper;
 import com.shoppingmall.mapper.PostMapper;
@@ -66,7 +65,7 @@ class PostServiceTest {
     @Test
     @DisplayName("테스트 데이터 생성")
     void insertPostData() {
-        List<PostResponseDto> posts = postService.getPosts(new SearchRequestDto()).getData();
+        List<Post> posts = postService.getPosts(new SearchRequestDto()).getData();
         if (CollectionUtils.isEmpty(posts)) {
             for (int i = 1; i <= 1000; i++) {
                 PostSaveRequestDto postSaveRequestDto = new PostSaveRequestDto();
@@ -75,7 +74,7 @@ class PostServiceTest {
                 postSaveRequestDto.setMemberId(getRandom());
                 postSaveRequestDto.setFixedYn("N");
                 postSaveRequestDto.setCategoryId(getRandom());
-                postMapper.savePost(postSaveRequestDto.toEntity());
+                postMapper.savePost(postSaveRequestDto);
 //                postService.savePost(postSaveRequestDto);
             }
         }
@@ -144,8 +143,8 @@ class PostServiceTest {
         Mockito.when(postMapper.getPosts(Mockito.any(SearchRequestDto.class))).thenReturn(mockPosts);
 
         // when
-        PagingResponseDto<PostResponseDto> pagingResponseDto = postService.getPosts(new SearchRequestDto());
-        List<PostResponseDto> posts = pagingResponseDto.getData();
+        PagingResponse<Post> paging = postService.getPosts(new SearchRequestDto());
+        List<Post> posts = paging.getData();
         logger.info("posts = " + posts);
         logger.info("posts.size = " + posts.size());
 
@@ -188,8 +187,7 @@ class PostServiceTest {
         Mockito.when(postMapper.getPostByPostId(Mockito.any())).thenReturn(Optional.of(mockPost));
 
         // when
-        PostResponseDto post = postService.getPostById(mockPost.getPostId());
-        logger.info("post = {}", post);
+        Post post = postService.getPostById(mockPost.getPostId());
 
         // then
         assertThat(post).isNotNull();
@@ -206,20 +204,19 @@ class PostServiceTest {
         Mockito.when(postMapper.savePost(Mockito.any())).thenReturn(1);
 
         // when
-        Integer postId = postService.savePost(
-                PostSaveRequestDto.builder()
-                        .postId(1)
-                        .memberId(1)
-                        .categoryId(1)
-                        .title("테스트 001")
-                        .content("테스트 내용 001")
-                        .files(new ArrayList<>())
-                        .fixedYn("N")
-                        .build());
+        PostSaveRequestDto postSaveRequestDto = new PostSaveRequestDto();
+        postSaveRequestDto.setPostId(1);
+        postSaveRequestDto.setMemberId(1);
+        postSaveRequestDto.setCategoryId(1);
+        postSaveRequestDto.setTitle("테스트 001");
+        postSaveRequestDto.setContent("테스트 내용 001");
+        postSaveRequestDto.setFixedYn("N");
+        postSaveRequestDto.setFiles(new ArrayList<>());
+
+        Integer postId = postService.savePost(postSaveRequestDto);
         logger.info("postId = {}", postId);
 
-        PostResponseDto result = postService.getPostById(postId);
-        logger.info("result = {}", result);
+        Post result = postService.getPostById(postId);
 
         // then
         assertThat(result).isNotNull();

@@ -2,21 +2,15 @@ package com.shoppingmall.dto.request;
 
 import com.shoppingmall.constant.Gender;
 import com.shoppingmall.constant.Role;
-import com.shoppingmall.vo.Member;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Getter
+@Setter
 public class MemberSaveRequestDto {
 
     private Integer memberId;
@@ -54,21 +48,5 @@ public class MemberSaveRequestDto {
 
     private String picture;
     private Gender gender;
-    private Role role;
-
-    public Member toEntity() {
-        return Member.builder()
-                .memberId(memberId)
-                .name(name)
-                .account(account)
-                .password(password)
-                .email(email)
-                .phoneNumber(phoneNumber)
-                .certYn(certYn)
-                .birthDate(birthDate)
-                .picture(picture)
-                .gender(gender)
-                .role(role)
-                .build();
-    }
+    private Role role = Role.GUEST;
 }

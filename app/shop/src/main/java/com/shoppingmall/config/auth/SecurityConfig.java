@@ -35,71 +35,91 @@ public class SecurityConfig {
     private final CustomLogInSuccessHandler customLogInSuccessHandler;
     private final CustomLogInFailerHandler customLogInFailerHandler;
 
+    // TODO: DB로 빼서 관리 해야함 URL 같은 경우, 우선 배열로 관리
+    private static final String[] PUBLIC_MATCHERS = {
+            "/css/**",
+            "/img/**",
+            "/js/**",
+            "/favicon.ico",
+            "/h2-console/**",
+            "/member/loginForm",
+            "/member/joinForm",
+            "/api/v1/member/join",
+            "/api/v1/member/exists",
+            "/api/v1/email/verify",
+            "/api/v1/email/verify-request",
+            "/api/v1/cart/**"
+    };
+
+    private static final String[] USER_MATCHERS = {
+            "/api/v1/**",
+            "/post/**",
+            "/product/**",
+            "/cart/**",
+            "/"
+    };
+
+    private static final String[] ADMIN_MATCHERS = {
+            "/admin/**"
+    };
+
+    private static final String[] MANAGER_MATCHERS = {
+            "/manager/**"
+    };
+
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
-                .httpBasic() // TODO: 서비스 오픈시에는 제거
-                .and()
-                    .authorizeRequests()
-                        .antMatchers("/css/**","/img/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
-                        .antMatchers("/member/loginForm").permitAll()
-                        .antMatchers("/member/joinForm").permitAll()
-                        .antMatchers("/api/v1/member/join").permitAll()
-                        .antMatchers("/api/v1/member/exists").permitAll()
-                        .antMatchers("/api/v1/email/verify").permitAll()
-                        .antMatchers("/api/v1/email/verify-request").permitAll()
-                        .antMatchers("/api/v1/cart/**").permitAll()
-                        .antMatchers("/api/v1/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
-                        .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-                        .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
-                        .antMatchers("/post/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
-                        .antMatchers("/product/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
-                        .antMatchers("/cart/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
-                        .antMatchers("/").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
+                .httpBasic().disable() // 서비스 오픈시 비활성화
+                .authorizeRequests(authorize -> authorize
+                        .antMatchers(PUBLIC_MATCHERS).permitAll()
+                        .antMatchers(USER_MATCHERS).hasAnyRole("ADMIN", "MANAGER", "USER")
+                        .antMatchers(ADMIN_MATCHERS).hasRole("ADMIN")
+                        .antMatchers(MANAGER_MATCHERS).hasAnyRole("ADMIN", "MANAGER")
                         .anyRequest().authenticated()
-                .and()
-                    .formLogin()
-                    .loginPage("/member/loginForm")
-                    .usernameParameter("username")
-                    .passwordParameter("password")
-                    .loginProcessingUrl("/member/login")
-                    .successHandler(customLogInSuccessHandler)
-                    .failureHandler(customLogInFailerHandler)
-                .and()
-                    .logout()
-                    .logoutSuccessUrl("/member/loginForm")
-                    .invalidateHttpSession(true) // 로그아웃 이후에 모든 세션 삭제
-                    .deleteCookies("JSESSIONID", "remember-me") // 로그아웃 이후에 모든 쿠키 삭제
-                .and()
-                    .rememberMe()
-                    .rememberMeParameter("remember-me")
-                    .tokenValiditySeconds(3600)
-                    .userDetailsService(principalUserDetailsService)
-                .and()
-                    .sessionManagement()
-                    .invalidSessionUrl("/member/loginForm")
-                    .maximumSessions(1)
-                    .maxSessionsPreventsLogin(false) // 동일 사용자가 1개 이상 로그인 시도 시, 먼저 로그인한 사용자 로그아웃 + 세션 만료
-                    .expiredUrl("/member/loginForm")
-                    .and()
-                .and()
-                    .exceptionHandling()
-                    .accessDeniedPage("/error/404")
-                .and()
-                    .oauth2Login()
+                )
+                .formLogin(form -> form
+                        .loginPage("/member/loginForm")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .loginProcessingUrl("/member/login")
+                        .successHandler(customLogInSuccessHandler)
+                        .failureHandler(customLogInFailerHandler)
+                )
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/member/loginForm")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID", "remember-me")
+                )
+                .rememberMe(rememberMe -> rememberMe
+                        .rememberMeParameter("remember-me")
+                        .tokenValiditySeconds(3600)
+                        .userDetailsService(principalUserDetailsService)
+                )
+                .sessionManagement(session -> session
+                        .invalidSessionUrl("/member/loginForm")
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false)
+                        .expiredUrl("/member/loginForm")
+                )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/error/404")
+                )
+                .oauth2Login(oauth2 -> oauth2
                         .loginPage("/member/loginForm")
                         .successHandler(principalOAuth2LoginSuccessHandler)
                         .failureHandler(principalOAuth2LoginFailureHandler)
                         .userInfoEndpoint()
-                        .userService(principalOAuth2UserService);
+                        .userService(principalOAuth2UserService)
+                );
 
         return http.build();
     }

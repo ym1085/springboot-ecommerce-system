@@ -1,5 +1,6 @@
 package com.shoppingmall.mapper;
 
+import com.shoppingmall.dto.request.MemberSaveRequestDto;
 import com.shoppingmall.vo.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -9,7 +10,7 @@ import java.util.Optional;
 @Mapper
 public interface MemberMapper {
 
-    int join(Member member);
+    int join(MemberSaveRequestDto member);
 
     void joinWithSocialLogin(Member member);
 
@@ -17,9 +18,9 @@ public interface MemberMapper {
 
     Optional<Member> getMemberById(Integer memberId);
 
-    Optional<Member> getMemberByEmailWithSocialLogin(String email, String registrationId);
+    Optional<Member> getSocialMember(String email, String registrationId);
 
-    void updateMemberByEmailAndPicture(Member member);
+    void updateSocialMemberLoginProfile(Member member);
 
     Optional<Member> getMemberByAccount(String username);
 

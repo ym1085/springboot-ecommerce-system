@@ -4,11 +4,6 @@
 
 <mapper namespace="com.shoppingmall.mapper.PostMapper">
 
-    <sql id="subCategoryId">
-        <if test="subCategoryId != null and subCategoryId != ''">
-        </if>
-    </sql>
-
     <!-- 검색 키워드가 존재하는 경우 -->
     <sql id="search">
         <if test="searchKeyword != null and searchKeyword != ''">
@@ -69,8 +64,11 @@
 
         <!-- 1(Post) : N(PostFiles) -->
         <collection property="postFiles" resultMap="PostFilesResultMap" />
+        <!-- 1(Post) : N(Comments) -->
+        <collection property="comments" resultMap="CommentsResultMap" />
     </resultMap>
 
+    <!-- 게시글에 매핑된 파일 정보 -->
     <resultMap id="PostFilesResultMap" type="PostFiles">
         <id property="postFileId" column="POST_FILE_ID" />
         <result property="postId" column="POST_ID" />
@@ -79,11 +77,24 @@
         <result property="filePath" column="FILE_PATH" />
         <result property="fileSize" column="FILE_SIZE" />
         <result property="fileExp" column="FILE_EXP" />
-        <result property="downloadCnt" column="DOWNLOAD_CNT" />
         <result property="delYn" column="DEL_YN" />
         <result property="createDate" column="CREATE_DATE" />
         <result property="deleteDate" column="DELETE_DATE" />
         <result property="fileAttached" column="FILE_ATTACHED" />
+        <result property="downloadCnt" column="DOWNLOAD_CNT" />
+    </resultMap>
+
+    <!-- 게시글에 매핑된 댓글 정보 -->
+    <resultMap id="CommentsResultMap" type="Comment">
+        <id property="commentId" column="COMMENT_ID" />
+        <result property="parentId" column="PARENT_ID" />
+        <result property="postId" column="POST_ID" />
+        <result property="content" column="COMMENT_CONTENT" />
+        <result property="memberId" column="COMMENT_MEMBER_ID" />
+        <result property="delYn" column="COMMENT_DEL_YN" />
+        <result property="path" column="PATH" />
+        <result property="createDate" column="COMMENT_CREATE_DATE" />
+        <result property="updateDate" column="COMMENT_UPDATE_DATE" />
     </resultMap>
 
     <!-- 전체 게시글 조회 -->
@@ -117,23 +128,22 @@
             f.create_date,
             f.delete_date,
             f.file_attached
-        FROM POST p
-            LEFT OUTER JOIN POST_FILE f
+        FROM post p LEFT OUTER JOIN post_file f
         ON p.post_id = f.post_id
         WHERE p.del_yn != 'Y'
-            <include refid="search" />
-        ORDER BY p.create_date DESC,
-                 p.post_id DESC
+        <include refid="search" />
+        ORDER BY
+            p.create_date DESC,
+            p.post_id DESC
         LIMIT #{pagination.limitStart}, #{recordSizePerPage}
     </select>
 
     <!-- 게시글 수 카운팅 -->
     <select id="count" parameterType="SearchRequestDto" resultType="int">
         SELECT COUNT(*) AS cnt
-        FROM POST p
-        WHERE
-            p.del_yn = 'N'
-            <include refid="search" />
+        FROM post p
+        WHERE p.del_yn = 'N'
+        <include refid="search" />
     </select>
 
     <!-- 단일 게시글 조회 -->
@@ -143,23 +153,48 @@
             p.title,
             p.content,
             p.member_id,
-            (select m.name from member m where m.member_id = p.member_id and m.use_yn = 'y' and m.cert_yn = 'y') AS writer,
+            (SELECT m.name
+             FROM member m
+             WHERE m.member_id = p.member_id
+             AND m.use_yn = 'y' AND m.cert_yn = 'y') AS writer,
             p.category_id,
-            (select c.category_name from post_category c where c.category_id = p.category_id) AS categoryName,
+            (SELECT c.category_name
+             FROM post_category c
+             WHERE c.category_id = p.category_id) AS categoryName,
             p.read_cnt,
             p.fixed_yn,
             p.del_yn,
             p.create_date,
             p.update_date,
-            p.delete_date
-        FROM POST p
+            p.delete_date,
+            pf.post_file_id,
+            pf.origin_file_name,
+            pf.stored_file_name,
+            pf.file_path,
+            pf.file_size,
+            pf.file_exp,
+            pf.download_cnt,
+            pf.create_date AS file_create_date,
+            pf.delete_date AS file_delete_date,
+            pf.del_yn AS file_del_yn,
+            pf.file_attached,
+            cmt.comment_id,
+            cmt.parent_id,
+            cmt.content AS comment_content,
+            cmt.member_id AS comment_member_id,
+            cmt.del_yn AS comment_del_yn,
+            cmt.create_date AS comment_create_date,
+            cmt.update_date AS comment_update_date
+        FROM post p
+        LEFT OUTER JOIN post_file pf ON p.post_id = pf.post_id
+        LEFT OUTER JOIN comment cmt ON p.post_id = cmt.post_id
         WHERE p.post_id = #{postId}
         AND p.del_yn != 'Y'
     </select>
 
     <!-- 게시글 등록 -->
-    <insert id="savePost" parameterType="Post" useGeneratedKeys="true" keyProperty="postId">
-        INSERT INTO POST (member_id, title, content, fixed_yn, category_id)
+    <insert id="savePost" parameterType="PostSaveRequestDto" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO post (member_id, title, content, fixed_yn, category_id)
         VALUE
             (
                 #{memberId},
@@ -178,8 +213,8 @@
     </insert>
 
     <!-- 게시글 수정 -->
-    <update id="updatePost" parameterType="Post">
-        UPDATE POST
+    <update id="updatePost" parameterType="PostUpdateRequestDto">
+        UPDATE post
         SET
             title = #{title},
             content = #{content},
@@ -191,7 +226,7 @@
 
     <!-- 게시글 삭제 -->
     <update id="deletePostByPostId" parameterType="int">
-        UPDATE POST
+        UPDATE post
         SET
             del_yn = 'Y',
             delete_date = NOW()
@@ -200,7 +235,7 @@
 
     <!-- 조회수 증가 -->
     <update id="increasePostByPostId" parameterType="int">
-        UPDATE POST
+        UPDATE post
         SET
             read_cnt = read_cnt + 1
         WHERE post_id = #{postId}

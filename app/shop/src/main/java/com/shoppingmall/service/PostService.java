@@ -5,14 +5,13 @@ import com.shoppingmall.dto.request.FileSaveRequestDto;
 import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.PostUpdateRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
-import com.shoppingmall.dto.response.*;
 import com.shoppingmall.exception.FileException;
 import com.shoppingmall.exception.PostException;
-import com.shoppingmall.mapper.CommentMapper;
 import com.shoppingmall.mapper.PostFileMapper;
 import com.shoppingmall.mapper.PostMapper;
 import com.shoppingmall.utils.FileHandlerHelper;
 import com.shoppingmall.utils.PaginationUtils;
+import com.shoppingmall.vo.PagingResponse;
 import com.shoppingmall.vo.Post;
 import com.shoppingmall.vo.PostFiles;
 import lombok.RequiredArgsConstructor;
@@ -20,17 +19,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 import static com.shoppingmall.common.code.failure.file.FileFailureCode.SAVE_FILES;
 import static com.shoppingmall.common.code.failure.file.FileFailureCode.UPLOAD_FILES;
+import static com.shoppingmall.common.code.failure.post.PostFailureCode.NOT_FOUND;
 import static com.shoppingmall.common.code.failure.post.PostFailureCode.SAVE_POST;
 
 @Slf4j
@@ -38,109 +35,59 @@ import static com.shoppingmall.common.code.failure.post.PostFailureCode.SAVE_POS
 @Transactional(readOnly = true)
 @Service
 public class PostService {
-
     private final PostMapper postMapper;
     private final PostFileMapper postFileMapper;
     private final FileHandlerHelper fileHandlerHelper;
-    private final CommentMapper commentMapper;
 
-    public PagingResponseDto<PostResponseDto> getPosts(SearchRequestDto searchRequestDto) {
+    public PagingResponse<Post> getPosts(SearchRequestDto searchRequestDto) {
         int totalRecordCount = postMapper.count(searchRequestDto);
         if (totalRecordCount < 1) {
-            return new PagingResponseDto<>(Collections.emptyList(), null);
+            return new PagingResponse<>(Collections.emptyList(), null);
         }
-
         PaginationUtils pagination = new PaginationUtils(totalRecordCount, searchRequestDto);
         searchRequestDto.setPagination(pagination);
 
-        List<PostResponseDto> posts = postMapper.getPosts(searchRequestDto)
-                .stream()
-                .filter(Objects::nonNull)
-                .map(PostService::addPostFiles)
-                .collect(Collectors.toList());
-
-        return new PagingResponseDto<>(posts, pagination);
-    }
-
-    private static PostResponseDto addPostFiles(Post post) {
-        PostResponseDto postResponseDto = PostResponseDto.toDto(post);
-        List<FileResponseDto> postFileResponseDtos = new ArrayList<>();
-
-        // 파일이 사이즈가 0인 경우에 대한 방어로직
-        if (post.getPostFiles() == null || post.getPostFiles().isEmpty()) {
-            return postResponseDto;
-        }
-
-        for (PostFiles postFile : post.getPostFiles()) {
-            if (postFile.getPostFileId() == null || !StringUtils.hasText(postFile.getOriginFileName())) {
-                postResponseDto.addPostFiles(Collections.emptyList());
-                continue;
-            }
-            postFileResponseDtos.add(PostFileResponseDto.toDto(postFile));
-            postResponseDto.addPostFiles(postFileResponseDtos);
-        }
-        return postResponseDto;
+        List<Post> posts = postMapper.getPosts(searchRequestDto);
+        return new PagingResponse<>(posts, pagination);
     }
 
     @Transactional
-    public PostResponseDto getPostById(Integer postId) {
+    public Post getPostById(Integer postId) {
         if (postId != null) {
             if (postMapper.increasePostByPostId(postId) < 1) {
-                throw new RuntimeException();
+                throw new PostException(NOT_FOUND);
             }
         }
-
-        PostResponseDto postResponseDto = postMapper.getPostByPostId(postId)
-                .map(PostResponseDto::toDto)
-                .orElse(new PostResponseDto());
-
-        postResponseDto.addComments(getCommentsByPostId(postId));
-        postResponseDto.addPostFiles(getFilesByPostId(postId));
-        return postResponseDto;
+        return postMapper.getPostByPostId(postId).orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
     }
-
-    private List<CommentResponseDto> getCommentsByPostId(Integer postId) {
-        return commentMapper.getComments(postId)
-                .stream()
-                .map(CommentResponseDto::toDto)
-                .collect(Collectors.toList());
-    }
-
-    private List<FileResponseDto> getFilesByPostId(Integer postId) {
-        return postFileMapper.getFilesByPostId(postId)
-                .stream()
-                .map(PostFileResponseDto::toDto)
-                .collect(Collectors.toList());
-    }
-
+    
     @Transactional
     public int savePost(PostSaveRequestDto postSaveRequestDto) {
-        Post post = postSaveRequestDto.toEntity();
-        if (postMapper.savePost(post) == 0) {
-            log.error("[Occurred Exception] Error Message = {}", SAVE_POST.getMessage());
+        if (postMapper.savePost(postSaveRequestDto) == 0) {
+            log.error(SAVE_POST.getMessage());
             throw new PostException(SAVE_POST);
         }
 
         try {
             if (!postSaveRequestDto.getFiles().isEmpty()) {
                 List<FileSaveRequestDto> baseFileSaveRequestDto = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getDirPathType());
-                if (saveFiles(post.getPostId(), baseFileSaveRequestDto) < 1) {
-                    log.error("[Occurred Exception] Error Message = {}", SAVE_FILES);
+                if (saveFiles(postSaveRequestDto.getPostId(), baseFileSaveRequestDto) < 1) {
+                    log.error(SAVE_FILES.getMessage());
                     throw new FileException(SAVE_FILES);
                 }
             }
-        } catch (RuntimeException e) {
+        } catch (FileException e) {
             // 예외 발생 시 서버의 특정 경로에 업로드 된 파일을 삭제해야 하기에, 추가
             // 파일 업로드 성공 ----> 파일 정보 DB 저장(ERROR!! 발생) ----> Transaction Rollback ----> 이미 업로드한 파일은 지워줘야 함
-            List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postSaveRequestDto.getPostId());
-            fileHandlerHelper.deleteFiles(fileResponseDtos);
+            List<PostFiles> postFiles = getFileResponseDtos(postSaveRequestDto.getPostId());
+            fileHandlerHelper.deleteFiles(postFiles);
             throw e; // 현재 트랜잭션 롤백
         }
-        return post.getPostId();
+        return postSaveRequestDto.getPostId();
     }
 
     public int saveFiles(Integer postId, List<FileSaveRequestDto> files) {
-        if (CollectionUtils.isEmpty(files) || files.get(0) == null || postId == null) {
+        if (CollectionUtils.isEmpty(files)) {
             return 0;
         }
 
@@ -150,26 +97,25 @@ public class PostService {
             }
             file.setId(postId);
         }
-
         return postFileMapper.saveFiles(files);
     }
 
     @Transactional
     public void updatePost(PostUpdateRequestDto postUpdateRequestDto) {
-        if (postMapper.updatePost(postUpdateRequestDto.toEntity()) < 1) {
+        if (postMapper.updatePost(postUpdateRequestDto) < 1) {
             throw new RuntimeException();
         }
 
         if (!isEmptyFiles(postUpdateRequestDto.getFiles())) {
             if (updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles()) < 1) {
-                log.error("[Occurred Exception] Error Message = {}", UPLOAD_FILES.getMessage());
+                log.error(UPLOAD_FILES.getMessage());
                 throw new FileException(UPLOAD_FILES);
             }
         }
     }
 
     /**
-     * Todo: 기존 파일을 DELETE 하고 새로운 파일을 INSERT 하는 FLOW는 수정이 필요
+     * Todo: 기존 파일을 DELETE 하고 새로운 파일을 INSERT 하는 Flow는 수정 필요
      */
     private int updateFilesByPostId(Integer postId, List<MultipartFile> files) {
         if (postFileMapper.countFilesByPostId(postId) > 0) {
@@ -177,7 +123,7 @@ public class PostService {
                 log.info("success delete posts files from database");
                 fileHandlerHelper.deleteFiles(getFileResponseDtos(postId)); // 서버 특정 경로에 존재하는 파일 삭제
             } else {
-                log.info("fail delete posts files from database");
+                log.error("fail delete posts files from database");
             }
         }
 
@@ -192,7 +138,7 @@ public class PostService {
             return;
         }
 
-        List<FileResponseDto> fileResponseDtos = getFileResponseDtos(postId);
+        List<PostFiles> fileResponseDtos = getFileResponseDtos(postId);
         if (CollectionUtils.isEmpty(fileResponseDtos)) {
             return;
         }
@@ -206,10 +152,7 @@ public class PostService {
         return (files.isEmpty());
     }
 
-    private List<FileResponseDto> getFileResponseDtos(Integer postId) {
-        return postFileMapper.getFilesByPostId(postId)
-                .stream()
-                .map(PostFileResponseDto::toDto)
-                .collect(Collectors.toList());
+    private List<PostFiles> getFileResponseDtos(Integer postId) {
+        return postFileMapper.getFilesByPostId(postId);
     }
 }

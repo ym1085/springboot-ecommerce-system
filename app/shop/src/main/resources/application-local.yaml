@@ -70,6 +70,7 @@ file:
 #    upload-path: /var/www/shoppingmall/upload/
 
 email:
+  from: "admin@gmail.com"
   title: "쇼핑몰 인증 번호 입니다."
 
 jwt:

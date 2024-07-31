@@ -1,9 +1,9 @@
 package com.shoppingmall.web;
 
 import com.shoppingmall.dto.request.SearchRequestDto;
-import com.shoppingmall.dto.response.PagingResponseDto;
-import com.shoppingmall.dto.response.PostResponseDto;
 import com.shoppingmall.service.PostService;
+import com.shoppingmall.vo.PagingResponse;
+import com.shoppingmall.vo.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ public class PostController {
 
     @GetMapping("/post")
     public String getPosts(@ModelAttribute SearchRequestDto searchRequestDto, Model model) {
-        PagingResponseDto<PostResponseDto> posts = postService.getPosts(searchRequestDto);
+        PagingResponse<Post> posts = postService.getPosts(searchRequestDto);
         model.addAttribute("posts", posts);
         model.addAttribute("searchRequestDto", searchRequestDto);
         return "post/list";
@@ -29,7 +29,7 @@ public class PostController {
 
     @GetMapping("/post/{postId}")
     public String getPostById(@PathVariable("postId") Integer postId, @ModelAttribute SearchRequestDto searchRequestDto, Model model) {
-        PostResponseDto post = postService.getPostById(postId);
+        Post post = postService.getPostById(postId);
         model.addAttribute("post", post);
         return "post/detail";
     }

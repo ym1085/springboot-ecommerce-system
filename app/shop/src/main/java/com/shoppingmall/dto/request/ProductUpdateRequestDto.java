@@ -2,10 +2,7 @@ package com.shoppingmall.dto.request;
 
 import com.shoppingmall.constant.DirPathType;
 import com.shoppingmall.constant.ItemSellStatus;
-import com.shoppingmall.vo.Product;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,8 +11,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class ProductUpdateRequestDto {
     private Integer memberId;
     private Integer productId;
@@ -28,17 +23,4 @@ public class ProductUpdateRequestDto {
 
     private List<MultipartFile> files = new ArrayList<>();
     private DirPathType dirPathType = DirPathType.products;
-
-    public Product toEntity() {
-        return Product.builder()
-                .memberId(memberId)
-                .productId(productId)
-                .categoryId(categoryId)
-                .productName(productName)
-                .productPrice(productPrice)
-                .productStock(productStock)
-                .productDesc(productDesc)
-                .itemSellStatus(itemSellStatus)
-                .build();
-    }
 }

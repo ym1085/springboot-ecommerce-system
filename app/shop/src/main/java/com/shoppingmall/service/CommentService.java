@@ -3,7 +3,6 @@ package com.shoppingmall.service;
 import com.shoppingmall.dto.request.CommentDeleteRequestDto;
 import com.shoppingmall.dto.request.CommentSaveRequestDto;
 import com.shoppingmall.dto.request.CommentUpdateRequestDto;
-import com.shoppingmall.dto.response.CommentResponseDto;
 import com.shoppingmall.exception.CommentException;
 import com.shoppingmall.mapper.CommentMapper;
 import com.shoppingmall.vo.Comment;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.shoppingmall.common.code.failure.post.PostFailureCode.*;
 
@@ -27,20 +25,18 @@ public class CommentService {
     private final CommentMapper commentMapper;
 
     @Transactional
-    public List<CommentResponseDto> saveComment(CommentSaveRequestDto commentSaveRequestDto) {
+    public List<Comment> saveComment(CommentSaveRequestDto commentSaveRequestDto) {
         // 대댓글 등록 전 부모 댓글 존재 유무 판단, 일반 댓글은 해당 없음
         if (commentSaveRequestDto.getParentId() != null) {
             if (isNotExistsCommentByCommentId(commentSaveRequestDto.getParentId())) {
                 return Collections.emptyList();
             }
         }
-
-        Comment comment = new Comment();
-        if (commentMapper.saveComment(comment) < 1) {
+        // TODO: 댓글 저장하는 로직 추후 확인 필요
+        if (commentMapper.saveComment(commentSaveRequestDto) < 1) {
             log.error(SAVE_COMMENT.getMessage());
             throw new CommentException(SAVE_COMMENT);
         }
-
         return getCommentsByPostId(commentSaveRequestDto.getPostId());
     }
 
@@ -57,43 +53,36 @@ public class CommentService {
      * 중복 로직 수정은 고민 해봅시다
      */
     @Transactional
-    public List<CommentResponseDto> deleteComments(CommentDeleteRequestDto commentDeleteRequestDto) {
-        if (commentMapper.deleteComment(commentDeleteRequestDto.toEntity()) < 1) {
+    public List<Comment> deleteComments(CommentDeleteRequestDto commentDeleteRequestDto) {
+        if (commentMapper.deleteComment(commentDeleteRequestDto) < 1) {
             log.error(DELETE_COMMENT.getMessage());
             throw new CommentException(DELETE_COMMENT);
         }
-
         return getCommentsByPostId(commentDeleteRequestDto.getPostId());
     }
 
     @Transactional
-    public List<CommentResponseDto> deleteCommentsReply(CommentDeleteRequestDto commentDeleteRequestDto) {
-        if (commentMapper.deleteCommentReply(commentDeleteRequestDto.toEntity()) < 1) {
+    public List<Comment> deleteCommentsReply(CommentDeleteRequestDto commentDeleteRequestDto) {
+        if (commentMapper.deleteCommentReply(commentDeleteRequestDto) < 1) {
             log.error(DELETE_COMMENT.getMessage());
             throw new CommentException(DELETE_COMMENT);
         }
-
         return getCommentsByPostId(commentDeleteRequestDto.getPostId());
     }
 
     @Transactional
-    public List<CommentResponseDto> updateCommentByCommentId(CommentUpdateRequestDto commentUpdateRequestDto) {
-        if (commentMapper.updateCommentByCommentId(commentUpdateRequestDto.toEntity()) < 1) {
+    public List<Comment> updateCommentByCommentId(CommentUpdateRequestDto commentUpdateRequestDto) {
+        if (commentMapper.updateCommentByCommentId(commentUpdateRequestDto) < 1) {
             log.error(UPDATE_COMMENT.getMessage());
             throw new CommentException(UPDATE_COMMENT);
         }
-
         return getCommentsByPostId(commentUpdateRequestDto.getPostId());
     }
 
-    private List<CommentResponseDto> getCommentsByPostId(Integer postId) {
+    private List<Comment> getCommentsByPostId(Integer postId) {
         if (postId == null) {
             return Collections.emptyList();
         }
-
-        return commentMapper.getComments(postId)
-                .stream()
-                .map(CommentResponseDto::toDto)
-                .collect(Collectors.toList());
+        return commentMapper.getComments(postId);
     }
 }

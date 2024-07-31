@@ -17,7 +17,7 @@
                 parent.create_date,
                 parent.update_date,
                 convert(parent.comment_id, char) AS path /* 댓글의 계층 구조를 추적하기 위함 ( path : 1-2-3 || 2-3-4 ) */
-            FROM COMMENT parent
+            FROM comment parent
             WHERE parent.parent_id IS NULL /* 최상위 부모 댓글 의미 */
               AND parent.post_id = #{postId}
             UNION ALL
@@ -31,7 +31,7 @@
                 child.create_date,
                 child.update_date,
                 concat(cte.comment_id, '-', child.comment_id) AS path /* 부모 path에 '-' 구분 기호를 사용하여 하위 댓글 계층 구조를 표현 */
-            FROM COMMENT child
+            FROM comment child
                 JOIN CTE
                     ON child.parent_id = cte.comment_id
             WHERE
@@ -60,7 +60,7 @@
     <!-- 댓글 정보 존재 여부 반환 -->
     <select id="getCommentCountByCommentId" parameterType="int" resultType="int">
         SELECT COUNT(*)
-        FROM COMMENT
+        FROM comment
         WHERE comment_id = #{commentId}
     </select>
 
@@ -71,12 +71,12 @@
 
         (*) null을 넣는 이유는 재귀 쿼리 참고하시면 될 것 같습니다.
     -->
-    <insert id="saveComment" parameterType="Comment">
+    <insert id="saveComment" parameterType="CommentSaveRequestDto">
         <!--<selectKey keyProperty="commentId" order="AFTER" resultType="int" >
             SELECT COMMENT_ID.nextval FROM DUAL
         </selectKey>-->
 
-        INSERT INTO COMMENT(
+        INSERT INTO comment(
             parent_id
             , post_id
             , content
@@ -104,14 +104,14 @@
     </insert>
 
     <!-- 부모 댓글 삭제 시 하위 대댓글도 전부 'N' 삭제 처리 -->
-    <update id="deleteComment" parameterType="Comment">
-        UPDATE COMMENT
+    <update id="deleteComment" parameterType="CommentDeleteRequestDto">
+        UPDATE comment
         SET del_yn = 'Y'
         WHERE comment_id IN (
             SELECT comment_id
             FROM (
                 SELECT comment_id
-                FROM COMMENT
+                FROM comment
                 WHERE comment_id = #{commentId}
                 OR parent_id = #{commentId}
             ) A
@@ -119,8 +119,8 @@
     </update>
 
     <!-- 하위 대댓글 삭제 시 사용 -->
-    <update id="deleteCommentReply" parameterType="Comment">
-        UPDATE COMMENT
+    <update id="deleteCommentReply" parameterType="CommentDeleteRequestDto">
+        UPDATE comment
         SET del_yn = 'Y'
         WHERE comment_id = #{commentId}
     </update>
@@ -128,20 +128,20 @@
     <!-- 하위 대댓글 존재 여부 확인  -->
     <select id="getCommentReplyCountByCommentId" parameterType="int" resultType="int">
         SELECT COUNT(*) AS CNT
-        FROM COMMENT
+        FROM comment
         WHERE comment_id IN ( /* 일반 댓글 삭제 시 하위 대댓글이 존재하는 경우 */
             SELECT comment_id
             FROM (
                  SELECT comment_id
-                 FROM COMMENT
+                 FROM comment
                  WHERE parent_id = #{commentId}
              ) A
         )
     </select>
 
     <!-- 댓글 수정, 댓글은 1:1 로만 수정이 가능 -->
-    <update id="updateCommentByCommentId" parameterType="Comment">
-        UPDATE COMMENT
+    <update id="updateCommentByCommentId" parameterType="CommentUpdateRequestDto">
+        UPDATE comment
         SET content = #{content}
         WHERE comment_id = #{commentId}
     </update>

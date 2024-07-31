@@ -103,9 +103,7 @@ class FileServiceTest {
     @DisplayName("게시글 파일 저장 - 성공")
     void testSavePostFiles(List<PostFileSaveRequestDto> mockPostFileSaveRequestDtos) throws Exception {
         //given
-
         //when
-
         //then
     }
 }

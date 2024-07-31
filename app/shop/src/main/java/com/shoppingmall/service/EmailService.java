@@ -1,6 +1,5 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,13 +16,14 @@ import java.util.Random;
 @RequiredArgsConstructor
 @Service
 public class EmailService {
-
     private final JavaMailSender emailSender;
-    private final MemberMapper memberMapper;
     public static final String emailAuthKey = createEmailAutoCode();
 
     @Value("${email.title}")
     private String title;
+
+    @Value("${email.from}")
+    private String from;
 
     private static String createEmailAutoCode() {
         int length = 6;
@@ -45,7 +45,6 @@ public class EmailService {
     }
 
     public void sendEmail(String to, String title, String text) {
-        String from = "admin@gmail.com";
         SimpleMailMessage emailForm = createEmailForm(from, to, title, text);
         try {
             emailSender.send(emailForm);
