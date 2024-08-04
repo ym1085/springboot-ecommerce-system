@@ -36,7 +36,7 @@ public class MemberRestController {
             throw new InvalidParameterException(bindingResult);
         }
         memberService.join(memberRequestDto);
-        return ApiResponseUtils.success(SAVE_MEMBER);
+        return ApiResponseUtils.success(SUCCESS_SAVE_MEMBER);
     }
 
     @PostMapping("/member/exists")

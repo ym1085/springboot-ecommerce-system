@@ -33,7 +33,7 @@ public class MemberService {
         }
 
         if (memberMapper.join(memberRequestDto) < 1) {
-            throw new MemberException(SAVE_MEMBER);
+            throw new MemberException(FAIL_SAVE_MEMBER);
         }
     }
 

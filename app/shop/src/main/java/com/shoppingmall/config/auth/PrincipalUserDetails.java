@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 // 시큐리티가 -> /member/login 주소 요청이 오면 낚아채서 로그인 진행
 // 로그인 진행이 완료가 되면 시큐리티가 가지고 있는 session을 만들어준다. (key 값 : Security ContextHolder에 세션 정보 저장)
@@ -36,6 +37,13 @@ public class PrincipalUserDetails implements UserDetails, OAuth2User {
         this.member = member;
         this.attributes = attributes;
         this.nameAttributeKey= nameAttributeKey;
+    }
+
+    public Member getLoginMember() {
+        if (Objects.isNull(this.member)) {
+            return new Member();
+        }
+        return this.member;
     }
 
     // 해당 유저의 권한을 리턴, spring security 인증 처리

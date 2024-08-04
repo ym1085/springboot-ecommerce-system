@@ -6,6 +6,9 @@ import com.shoppingmall.config.auth.PrincipalUserDetails;
 import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.PostUpdateRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
+import com.shoppingmall.exception.MemberException;
+import com.shoppingmall.utils.SecurityUtils;
+import com.shoppingmall.vo.Member;
 import com.shoppingmall.vo.PagingResponse;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.PostService;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.shoppingmall.common.code.failure.member.MemberFailureCode.NOT_LOGIN_MEMBER;
 import static com.shoppingmall.common.code.success.CommonSuccessCode.SUCCESS;
 import static com.shoppingmall.common.code.success.post.PostSuccessCode.*;
 
@@ -44,15 +48,22 @@ public class PostRestController {
 
     @PostMapping("/post")
     public ResponseEntity<BaseResponse<?>> savePost(
+            @AuthenticationPrincipal PrincipalUserDetails principalUserDetails,
             @Valid @ModelAttribute PostSaveRequestDto postSaveRequestDto,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
         }
-        postSaveRequestDto.setMemberId(1);
+
+        if (!SecurityUtils.isValidLoginMember(principalUserDetails)) {
+            log.error(NOT_LOGIN_MEMBER.getMessage());
+            throw new MemberException(NOT_LOGIN_MEMBER);
+        }
+        Member member = principalUserDetails.getLoginMember();
+        postSaveRequestDto.setMemberId(member.getMemberId());
         postService.savePost(postSaveRequestDto);
-        return ApiResponseUtils.success(SAVE_POST);
+        return ApiResponseUtils.success(SUCCESS_SAVE_POST);
     }
 
     @PutMapping("/post/{postId}")
@@ -65,15 +76,21 @@ public class PostRestController {
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterException(bindingResult);
         }
-        postUpdateRequestDto.setMemberId(1);
+
+        if (!SecurityUtils.isValidLoginMember(principalUserDetails)) {
+            log.error(NOT_LOGIN_MEMBER.getMessage());
+            throw new MemberException(NOT_LOGIN_MEMBER);
+        }
+        Member member = principalUserDetails.getLoginMember();
+        postUpdateRequestDto.setMemberId(member.getMemberId());
         postUpdateRequestDto.setPostId(postId);
         postService.updatePost(postUpdateRequestDto);
-        return ApiResponseUtils.success(UPDATE_POST);
+        return ApiResponseUtils.success(SUCCESS_UPDATE_POST);
     }
 
     @DeleteMapping("/post/{postId}")
     public ResponseEntity<BaseResponse<?>> deletePost(@PathVariable("postId") Integer postId) {
         postService.deletePost(postId);
-        return ApiResponseUtils.success(DELETE_POST);
+        return ApiResponseUtils.success(SUCCESS_DELETE_POST);
     }
 }

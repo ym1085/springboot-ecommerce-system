@@ -22,11 +22,15 @@ public class SecurityUtils {
         }
 
         PrincipalUserDetails principalUserDetails = (PrincipalUserDetails) authentication.getPrincipal();
-        Member member = principalUserDetails.getMember();
+        Member member = principalUserDetails.getLoginMember();
         return Optional.ofNullable(member);
     }
 
-    public static boolean isValidLoginMember(Member member) {
+    public static boolean isValidLoginMember(PrincipalUserDetails principalUserDetails) {
+        Member member = null;
+        if (principalUserDetails != null) {
+            member = principalUserDetails.getMember();
+        }
         return member != null && member.getMemberId() != null && member.getMemberId() != 0 && StringUtils.isNotBlank(member.getAccount());
     }
 }

@@ -36,8 +36,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static com.shoppingmall.common.code.failure.file.FileFailureCode.DOWNLOAD_FILES;
-import static com.shoppingmall.common.code.failure.file.FileFailureCode.SAVE_FILES;
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_DOWNLOAD_FILES;
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_SAVE_FILES;
 
 @Slf4j
 @Getter
@@ -98,7 +98,7 @@ public class FileHandlerHelper {
             baseFileSaveRequestDto = buildFileSaveRequestDto(dirPathType, originalFilename, storedFileName, fileUploadPath, fileSize, ext);
         } catch (IOException | IllegalStateException | FileException e) {
             log.error("e = {}", e.getMessage(), e);
-            throw new FileException(SAVE_FILES);
+            throw new FileException(FAIL_SAVE_FILES);
         }
         return baseFileSaveRequestDto;
     }
@@ -126,7 +126,7 @@ public class FileHandlerHelper {
                         .fileAttached("Y")
                         .build();
             default:
-                throw new FileException(SAVE_FILES);
+                throw new FileException(FAIL_SAVE_FILES);
         }
     }
 
@@ -218,8 +218,8 @@ public class FileHandlerHelper {
         try {
             return resource.getInputStream();
         } catch (IOException e) {
-            log.error(DOWNLOAD_FILES.getMessage());
-            throw new FileException(DOWNLOAD_FILES);
+            log.error(FAIL_DOWNLOAD_FILES.getMessage());
+            throw new FileException(FAIL_DOWNLOAD_FILES);
         }
     }
 
@@ -230,8 +230,8 @@ public class FileHandlerHelper {
             httpHeaders.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.contentLength()));
             httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE.toString());
         } catch (IOException e) {
-            log.error(DOWNLOAD_FILES.getMessage());
-            throw new FileException(DOWNLOAD_FILES);
+            log.error(FAIL_DOWNLOAD_FILES.getMessage());
+            throw new FileException(FAIL_DOWNLOAD_FILES);
         }
         return httpHeaders;
     }
@@ -247,8 +247,8 @@ public class FileHandlerHelper {
             }
             zos.finish();
         } catch (IOException e) {
-            log.error(DOWNLOAD_FILES.getMessage());
-            throw new FileException(DOWNLOAD_FILES);
+            log.error(FAIL_DOWNLOAD_FILES.getMessage());
+            throw new FileException(FAIL_DOWNLOAD_FILES);
         }
     }
 

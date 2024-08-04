@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,6 +26,6 @@ public class PostSaveRequestDto {
     private String content;
     private String fixedYn;
 
-    private List<MultipartFile> files;
+    private List<MultipartFile> files = new ArrayList<>();
     private DirPathType dirPathType;
 }

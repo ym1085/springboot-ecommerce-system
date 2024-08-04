@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.shoppingmall.common.code.failure.file.FileFailureCode.SAVE_FILES;
-import static com.shoppingmall.common.code.failure.file.FileFailureCode.UPLOAD_FILES;
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_SAVE_FILES;
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_UPLOAD_FILES;
 import static com.shoppingmall.common.code.failure.product.ProductFailureCode.*;
 
 @Slf4j
@@ -52,27 +52,27 @@ public class ProductService {
 
     public Product getProductByProductId(Integer productId) {
         return productMapper.getProductByProductId(productId)
-                .orElseThrow(() -> new NoSuchElementException(NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_PRODUCT.getMessage()));
     }
 
     @Transactional
     public int saveProducts(ProductSaveRequestDto productRequestDto) {
         if (productMapper.countByProductName(productRequestDto) > 0) {
-            log.error(DUPLICATE_PRODUCT_NAME.getMessage());
-            throw new ProductException(DUPLICATE_PRODUCT_NAME);
+            log.error(FAIL_DUPLICATE_PRODUCT_NAME.getMessage());
+            throw new ProductException(FAIL_DUPLICATE_PRODUCT_NAME);
         }
 
         if (productMapper.saveProducts(productRequestDto) < 1) {
-            log.error(SAVE_PRODUCT.getMessage());
-            throw new ProductException(SAVE_PRODUCT);
+            log.error(FAIL_SAVE_PRODUCT.getMessage());
+            throw new ProductException(FAIL_SAVE_PRODUCT);
         }
 
         try {
             if (!productRequestDto.getFiles().isEmpty()) {
                 List<FileSaveRequestDto> baseFileSaveRequestDtos = fileHandlerHelper.uploadFiles(productRequestDto.getFiles(), productRequestDto.getDirPathType());
                 if (saveFiles(productRequestDto.getProductId(), baseFileSaveRequestDtos) < 1) {
-                    log.error(SAVE_FILES.getMessage());
-                    throw new FileException(SAVE_FILES);
+                    log.error(FAIL_SAVE_FILES.getMessage());
+                    throw new FileException(FAIL_SAVE_FILES);
                 }
             }
         } catch (RuntimeException e) {
@@ -100,13 +100,13 @@ public class ProductService {
     @Transactional
     public void updateProduct(ProductUpdateRequestDto productUpdateRequestDto) {
         if (productMapper.updateProduct(productUpdateRequestDto) < 0) {
-            throw new ProductException(SAVE_PRODUCT);
+            throw new ProductException(FAIL_SAVE_PRODUCT);
         }
 
         if (!productUpdateRequestDto.getFiles().isEmpty()) {
             if (updateFilesByProductId(productUpdateRequestDto.getProductId(), productUpdateRequestDto.getFiles()) < 1) {
-                log.error(UPLOAD_FILES.getMessage());
-                throw new FileException(UPLOAD_FILES);
+                log.error(FAIL_UPLOAD_FILES.getMessage());
+                throw new FileException(FAIL_UPLOAD_FILES);
             }
         }
     }

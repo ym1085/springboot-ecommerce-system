@@ -13,8 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import static com.shoppingmall.common.code.failure.member.MemberFailureCode.AUTHENTICATION_MEMBER_EMAIL;
-import static com.shoppingmall.common.code.success.member.MemberSuccessCode.SEND_AUTH_EMAIL;
-import static com.shoppingmall.common.code.success.member.MemberSuccessCode.VERIFY_AUTH_EMAIL;
+import static com.shoppingmall.common.code.success.member.MemberSuccessCode.SUCCESS_SEND_AUTH_EMAIL;
+import static com.shoppingmall.common.code.success.member.MemberSuccessCode.SUCCESS_VERIFY_AUTH_EMAIL;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class EmailRestController {
             throw new InvalidParameterException(bindingResult);
         }
         emailService.sendAuthCodeToMemberEmail(emailRequestDto.getEmail());
-        return ApiResponseUtils.success(SEND_AUTH_EMAIL);
+        return ApiResponseUtils.success(SUCCESS_SEND_AUTH_EMAIL);
     }
 
     @GetMapping("/email/verify")
@@ -44,6 +44,6 @@ public class EmailRestController {
             log.error(AUTHENTICATION_MEMBER_EMAIL.getMessage());
             throw new MemberException(AUTHENTICATION_MEMBER_EMAIL);
         }
-        return ApiResponseUtils.success(VERIFY_AUTH_EMAIL);
+        return ApiResponseUtils.success(SUCCESS_VERIFY_AUTH_EMAIL);
     }
 }

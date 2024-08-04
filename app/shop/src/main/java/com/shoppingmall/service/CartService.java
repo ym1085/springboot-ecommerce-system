@@ -57,7 +57,7 @@ public class CartService {
 
     private void addCartProduct(CartUpdateRequestDto cartUpdateRequestDto) {
         if (cartMapper.addCartProduct(cartUpdateRequestDto) < 1) {
-            throw new CartException(SAVE_CART);
+            throw new CartException(FAIL_SAVE_CART);
         }
     }
 
@@ -73,14 +73,14 @@ public class CartService {
     @Transactional
     public void updateCartProducts(CartUpdateRequestDto cartUpdateRequestDto) {
         if (cartMapper.updateCartProduct(cartUpdateRequestDto) < 1) {
-            throw new CartException(UPDATE_CART);
+            throw new CartException(FAIL_UPDATE_CART);
         }
     }
 
     @Transactional
     public void deleteCartItem(CartDeleteRequestDto cartDeleteRequestDto) {
         if (cartMapper.deleteCartItem(cartDeleteRequestDto) < 1) {
-            throw new CartException(DELETE_CART);
+            throw new CartException(FAIL_DELETE_CART);
         }
     }
 }

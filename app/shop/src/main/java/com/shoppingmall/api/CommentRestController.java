@@ -40,7 +40,7 @@ public class CommentRestController {
         commentSaveRequestDto.setPostId(postId);
 
         List<Comment> comments = commentService.saveComment(commentSaveRequestDto);
-        return ApiResponseUtils.success(SAVE_COMMENT, comments);
+        return ApiResponseUtils.success(SUCCESS_SAVE_COMMENT, comments);
     }
 
     @PutMapping("/post/{postId}/comments")
@@ -54,20 +54,20 @@ public class CommentRestController {
         }
         commentUpdateRequestDto.setPostId(postId);
         List<Comment> comments = commentService.updateCommentByCommentId(commentUpdateRequestDto);
-        return ApiResponseUtils.success(UPDATE_COMMENT, comments);
+        return ApiResponseUtils.success(SUCCESS_UPDATE_COMMENT, comments);
     }
 
     @DeleteMapping("/post/comments")
     public ResponseEntity<BaseResponse<?>> deleteComments(
             @ModelAttribute CommentDeleteRequestDto commentDeleteRequestDto) {
         List<Comment> comments = commentService.deleteComments(commentDeleteRequestDto);
-        return ApiResponseUtils.success(DELETE_COMMENT, comments);
+        return ApiResponseUtils.success(SUCCESS_DELETE_COMMENT, comments);
     }
 
     @DeleteMapping("/post/comments/reply")
     public ResponseEntity<BaseResponse<?>> deleteCommentsReply(
             @ModelAttribute CommentDeleteRequestDto commentDeleteRequestDto) {
         List<Comment> comments = commentService.deleteCommentsReply(commentDeleteRequestDto);
-        return ApiResponseUtils.success(DELETE_COMMENT, comments);
+        return ApiResponseUtils.success(SUCCESS_DELETE_COMMENT, comments);
     }
 }
