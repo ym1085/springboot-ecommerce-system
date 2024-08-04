@@ -25,10 +25,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.shoppingmall.common.code.failure.file.FileFailureCode.SAVE_FILES;
-import static com.shoppingmall.common.code.failure.file.FileFailureCode.UPLOAD_FILES;
-import static com.shoppingmall.common.code.failure.post.PostFailureCode.NOT_FOUND;
-import static com.shoppingmall.common.code.failure.post.PostFailureCode.SAVE_POST;
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_SAVE_FILES;
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_UPLOAD_FILES;
+import static com.shoppingmall.common.code.failure.post.PostFailureCode.NOT_FOUND_POST;
+import static com.shoppingmall.common.code.failure.post.PostFailureCode.FAIL_SAVE_POST;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -53,27 +53,27 @@ public class PostService {
 
     @Transactional
     public Post getPostById(Integer postId) {
-        if (postId != null) {
-            if (postMapper.increasePostByPostId(postId) < 1) {
-                throw new PostException(NOT_FOUND);
-            }
+        if (postId == null) {
+            throw new PostException(NOT_FOUND_POST);
         }
-        return postMapper.getPostByPostId(postId).orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
+        Post post = postMapper.getPostByPostId(postId).orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
+        postMapper.increasePostByPostId(post.getPostId());
+        return post;
     }
     
     @Transactional
     public int savePost(PostSaveRequestDto postSaveRequestDto) {
         if (postMapper.savePost(postSaveRequestDto) == 0) {
-            log.error(SAVE_POST.getMessage());
-            throw new PostException(SAVE_POST);
+            log.error(FAIL_SAVE_POST.getMessage());
+            throw new PostException(FAIL_SAVE_POST);
         }
 
         try {
             if (!postSaveRequestDto.getFiles().isEmpty()) {
                 List<FileSaveRequestDto> baseFileSaveRequestDto = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getDirPathType());
                 if (saveFiles(postSaveRequestDto.getPostId(), baseFileSaveRequestDto) < 1) {
-                    log.error(SAVE_FILES.getMessage());
-                    throw new FileException(SAVE_FILES);
+                    log.error(FAIL_SAVE_FILES.getMessage());
+                    throw new FileException(FAIL_SAVE_FILES);
                 }
             }
         } catch (FileException e) {
@@ -108,8 +108,8 @@ public class PostService {
 
         if (!isEmptyFiles(postUpdateRequestDto.getFiles())) {
             if (updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles()) < 1) {
-                log.error(UPLOAD_FILES.getMessage());
-                throw new FileException(UPLOAD_FILES);
+                log.error(FAIL_UPLOAD_FILES.getMessage());
+                throw new FileException(FAIL_UPLOAD_FILES);
             }
         }
     }

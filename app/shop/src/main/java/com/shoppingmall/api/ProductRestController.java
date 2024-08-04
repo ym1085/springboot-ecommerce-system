@@ -54,7 +54,7 @@ public class ProductRestController {
             throw new InvalidParameterException(bindingResult);
         }
         productService.saveProducts(productRequestDto);
-        return ApiResponseUtils.success(SAVE_PRODUCT);
+        return ApiResponseUtils.success(SUCCESS_SAVE_PRODUCT);
     }
 
     @PutMapping("/products/{productId}")
@@ -70,20 +70,20 @@ public class ProductRestController {
         }
 
         PrincipalUserDetails principalUserDetails = (PrincipalUserDetails) authentication.getPrincipal();
-        Member member = principalUserDetails.getMember();
+        Member member = principalUserDetails.getLoginMember();
         log.debug("member = {}", member);
 
         productUpdateRequestDto.setMemberId(member.getMemberId());
         productUpdateRequestDto.setProductId(productId);
         productService.updateProduct(productUpdateRequestDto);
 
-        return ApiResponseUtils.success(UPDATE_PRODUCT);
+        return ApiResponseUtils.success(SUCCESS_UPDATE_PRODUCT);
     }
 
     @DeleteMapping("/products/{productId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse<?>> deleteProduct(@PathVariable("productId") Integer productId) {
         productService.deleteProduct(productId);
-        return ApiResponseUtils.success(DELETE_PRODUCT);
+        return ApiResponseUtils.success(SUCCESS_DELETE_PRODUCT);
     }
 }

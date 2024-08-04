@@ -1,7 +1,6 @@
 package com.shoppingmall.api;
 
 import com.shoppingmall.common.code.failure.CommonFailureCode;
-import com.shoppingmall.common.code.success.cart.CartSuccessCode;
 import com.shoppingmall.common.dto.BaseResponse;
 import com.shoppingmall.common.utils.ApiResponseUtils;
 import com.shoppingmall.common.utils.CommonUtils;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.shoppingmall.common.code.success.CommonSuccessCode.SUCCESS;
-import static com.shoppingmall.common.code.success.cart.CartSuccessCode.UPDATE_CART;
+import static com.shoppingmall.common.code.success.cart.CartSuccessCode.*;
 
 // 좋은 API Response Body 만들기 : https://jojoldu.tistory.com/720
 
@@ -56,23 +55,19 @@ public class CartRestController {
             throw new InvalidParameterException(bindingResult);
         }
 
-        Member member = null;
-        if (principalUserDetails != null) {
-            member = principalUserDetails.getMember();
-        }
-
-        if (SecurityUtils.isValidLoginMember(member)) {
+        if (SecurityUtils.isValidLoginMember(principalUserDetails)) {
+            Member member = principalUserDetails.getMember();
             cartUpdateRequestDto.setMemberId(member.getMemberId());
             cartService.addOrUpdateCartProduct(cartUpdateRequestDto);
-        } else if (!SecurityUtils.isValidLoginMember(member)){
+        } else if (!SecurityUtils.isValidLoginMember(principalUserDetails)){
             cartUpdateRequestDto.setUuid(StringUtils.isBlank(cartUpdateRequestDto.getUuid()) ? CommonUtils.generateRandomUUID() : cartUpdateRequestDto.getUuid());
             cartService.addOrUpdateCartProduct(cartUpdateRequestDto);
         } else {
             // 회원도 아니고 비회원도 아닌 경우 예외 처리
             log.error("장바구니 등록 중, 오류 발생!!");
-            throw new RuntimeException("장바구니 등록 중, 알 수 없는 서버 오류가 발생했습니다. 다시 시도해주세요.");
+            throw new RuntimeException("Error while adding or updating cart product");
         }
-        return ApiResponseUtils.success(CartSuccessCode.SAVE_CART);
+        return ApiResponseUtils.success(SUCCESS_SAVE_CART);
     }
 
     @GetMapping("/cart")
@@ -80,17 +75,13 @@ public class CartRestController {
             @AuthenticationPrincipal PrincipalUserDetails principalUserDetails,
             @RequestParam(value = "uuid", required = false) String uuid) {
 
-        Member member = null;
-        if (principalUserDetails != null) {
-            member = principalUserDetails.getMember();
-        }
-
-        CartTotalPrice cartItems = null;
+        CartTotalPrice cartItems = new CartTotalPrice();
         CartDetailRequestDto cartDetailRequestDto = new CartDetailRequestDto();
-        if (SecurityUtils.isValidLoginMember(member)) {
+        if (SecurityUtils.isValidLoginMember(principalUserDetails)) {
+            Member member = principalUserDetails.getLoginMember();
             cartDetailRequestDto.setMemberId(member.getMemberId());
             cartItems = cartService.getCartItems(cartDetailRequestDto);
-        } else if (!SecurityUtils.isValidLoginMember(member)) {
+        } else if (!SecurityUtils.isValidLoginMember(principalUserDetails)) {
             cartDetailRequestDto.setUuid(uuid);
             cartItems = cartService.getCartItems(cartDetailRequestDto);
         }
@@ -112,22 +103,18 @@ public class CartRestController {
             return ApiResponseUtils.failure(CommonFailureCode.BAD_REQUEST);
         }
 
-        Member member = null;
-        if (principalUserDetails != null) {
-            member = principalUserDetails.getMember();
-        }
-
-        if (SecurityUtils.isValidLoginMember(member)) {
+        if (SecurityUtils.isValidLoginMember(principalUserDetails)) {
+            Member member = principalUserDetails.getLoginMember();
             cartUpdateRequestDto.setMemberId(member.getMemberId());
             cartService.updateCartProducts(cartUpdateRequestDto);
-        } else if (!SecurityUtils.isValidLoginMember(member)) {
+        } else if (!SecurityUtils.isValidLoginMember(principalUserDetails)) {
             cartUpdateRequestDto.setUuid(StringUtils.isBlank(cartUpdateRequestDto.getUuid()) ? "" : cartUpdateRequestDto.getUuid());
             cartService.updateCartProducts(cartUpdateRequestDto);
         } else {
             log.error("장바구니 업데이트 중, 오류 발생!!");
-            throw new RuntimeException("장바구니 업데이트 중, 알 수 없는 서버 오류가 발생했습니다. 다시 시도해주세요.");
+            throw new RuntimeException("Error while updating cart product");
         }
-        return ApiResponseUtils.success(UPDATE_CART);
+        return ApiResponseUtils.success(SUCCESS_UPDATE_CART);
     }
 
     @DeleteMapping("/cart/delete/{cartId}")
@@ -139,17 +126,13 @@ public class CartRestController {
             return ApiResponseUtils.failure(CommonFailureCode.BAD_REQUEST);
         }
 
-        Member member = new Member();
-        if (principalUserDetails != null) {
-            member = principalUserDetails.getMember();
-        }
-
         CartDeleteRequestDto cartDeleteRequestDto = new CartDeleteRequestDto();
-        if (SecurityUtils.isValidLoginMember(member)) {
+        if (SecurityUtils.isValidLoginMember(principalUserDetails)) {
+            Member member = principalUserDetails.getLoginMember();
             cartDeleteRequestDto.setCartId(cartId);
             cartDeleteRequestDto.setMemberId(member.getMemberId());
             cartService.deleteCartItem(cartDeleteRequestDto);
-        } else if (!SecurityUtils.isValidLoginMember(member)) {
+        } else if (!SecurityUtils.isValidLoginMember(principalUserDetails)) {
             cartDeleteRequestDto.setCartId(cartId);
             cartDeleteRequestDto.setUuid(StringUtils.isBlank(cartDeleteRequestDto.getUuid()) ? "" : cartDeleteRequestDto.getUuid());
             cartService.deleteCartItem(cartDeleteRequestDto);
@@ -157,6 +140,6 @@ public class CartRestController {
             log.error("장바구니 삭제 중, 오류 발생!!");
             throw new RuntimeException("장바구니 삭제 중, 알 수 없는 서버 오류가 발생했습니다. 다시 시도해주세요.");
         }
-        return ApiResponseUtils.success(CartSuccessCode.DELETE_CART);
+        return ApiResponseUtils.success(SUCCESS_DELETE_CART);
     }
 }

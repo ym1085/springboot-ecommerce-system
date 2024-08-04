@@ -15,10 +15,9 @@
 | Docker          | 23.0.5 | o    |
 | AWS EC2         |       | x    |
 
-## ✅ 02. ERD
+## ✅ 02. DB
 
-> ⚠️ DB 설계의 경우 아래 링크 참고해주세요  
-> [[dbdiagram.io] 쇼핑몰 ERD](https://dbdiagram.io/d/20231015_TOY_PROJECT_DB_DIAGRAM-652b82a9ffbf5169f0b329e7)
+![erd.png](./img/erd.png)
 
 ## 📜 03. API Docs
 

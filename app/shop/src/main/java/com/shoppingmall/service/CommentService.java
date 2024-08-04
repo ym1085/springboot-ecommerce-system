@@ -34,8 +34,8 @@ public class CommentService {
         }
         // TODO: 댓글 저장하는 로직 추후 확인 필요
         if (commentMapper.saveComment(commentSaveRequestDto) < 1) {
-            log.error(SAVE_COMMENT.getMessage());
-            throw new CommentException(SAVE_COMMENT);
+            log.error(FAIL_SAVE_COMMENT.getMessage());
+            throw new CommentException(FAIL_SAVE_COMMENT);
         }
         return getCommentsByPostId(commentSaveRequestDto.getPostId());
     }
@@ -55,8 +55,8 @@ public class CommentService {
     @Transactional
     public List<Comment> deleteComments(CommentDeleteRequestDto commentDeleteRequestDto) {
         if (commentMapper.deleteComment(commentDeleteRequestDto) < 1) {
-            log.error(DELETE_COMMENT.getMessage());
-            throw new CommentException(DELETE_COMMENT);
+            log.error(FAIL_DELETE_COMMENT.getMessage());
+            throw new CommentException(FAIL_DELETE_COMMENT);
         }
         return getCommentsByPostId(commentDeleteRequestDto.getPostId());
     }
@@ -64,8 +64,8 @@ public class CommentService {
     @Transactional
     public List<Comment> deleteCommentsReply(CommentDeleteRequestDto commentDeleteRequestDto) {
         if (commentMapper.deleteCommentReply(commentDeleteRequestDto) < 1) {
-            log.error(DELETE_COMMENT.getMessage());
-            throw new CommentException(DELETE_COMMENT);
+            log.error(FAIL_DELETE_COMMENT.getMessage());
+            throw new CommentException(FAIL_DELETE_COMMENT);
         }
         return getCommentsByPostId(commentDeleteRequestDto.getPostId());
     }
@@ -73,8 +73,8 @@ public class CommentService {
     @Transactional
     public List<Comment> updateCommentByCommentId(CommentUpdateRequestDto commentUpdateRequestDto) {
         if (commentMapper.updateCommentByCommentId(commentUpdateRequestDto) < 1) {
-            log.error(UPDATE_COMMENT.getMessage());
-            throw new CommentException(UPDATE_COMMENT);
+            log.error(FAIL_UPDATE_COMMENT.getMessage());
+            throw new CommentException(FAIL_UPDATE_COMMENT);
         }
         return getCommentsByPostId(commentUpdateRequestDto.getPostId());
     }
