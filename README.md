@@ -2,7 +2,7 @@
 
 ## ⛏ 01. 사용 기술
 
-### 📌 01-1. Backend
+### 📌 Backend
 
 | 기술              | 버전    | 적용 여부 |
 |-----------------|-------|------|
@@ -15,15 +15,11 @@
 | Docker          | 23.0.5 | o    |
 | AWS EC2         |       | x    |
 
-## ✅ 02. DB
-
-![erd.png](./img/erd.png)
-
-## 📜 03. API Docs
+## 📜 API Docs
 
 > ✏️ [swagger Document](http://localhost:8080/swagger-ui/index.html)
 
-## 🚀 04. 프로젝트 추가 설정
+## 🚀 프로젝트 추가 설정
 
 ### [application.yaml](./app/shop/src/main/resources/application-sample.yaml)
 
