@@ -1,6 +1,5 @@
 package com.shoppingmall.dto.request;
 
-import com.shoppingmall.constant.DirPathType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,5 +26,4 @@ public class PostSaveRequestDto {
     private String fixedYn;
 
     private List<MultipartFile> files = new ArrayList<>();
-    private DirPathType dirPathType;
 }

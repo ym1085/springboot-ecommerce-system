@@ -4,14 +4,14 @@
 
 <mapper namespace="com.shoppingmall.mapper.CartMapper">
 
-    <resultMap id="CartItemMap" type="com.shoppingmall.vo.Cart">
+    <resultMap id="CartResult" type="com.shoppingmall.vo.Cart">
         <id property="cartId" column="cart_id"/>
         <result property="memberId" column="member_id"/>
         <result property="productId" column="product_id"/>
         <result property="amount" column="amount"/>
         <result property="totalPricePerCartItem" column="total_price_per_cart_item"/>
         <!--<result property="totalPriceCartItem" column="total_price_cart_item"/>-->
-        <association property="product" javaType="com.shoppingmall.vo.Product">
+        <association property="product" javaType="com.shoppingmall.vo.Product" notNullColumn="">
             <result property="productName" column="product_name"/>
             <result property="productPrice" column="product_price"/>
             <result property="productStock" column="product_stock"/>
@@ -91,7 +91,7 @@
             </if>
     </update>
 
-    <select id="getCartItems" parameterType="CartDetailRequestDto" resultMap="CartItemMap">
+    <select id="getCartItems" parameterType="CartDetailRequestDto" resultMap="CartResult">
         SELECT
             c.cart_id,
             c.member_id,

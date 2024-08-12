@@ -4,7 +4,7 @@
 
 <mapper namespace="com.shoppingmall.mapper.ProductMapper">
 
-    <resultMap id="ProductResultMap" type="Product">
+    <resultMap id="ProductsResult" type="Product">
         <id property="productId" column="product_id" />
         <result property="categoryId" column="category_id" />
         <result property="categoryName" column="categoryName" />
@@ -19,10 +19,10 @@
         <result property="delYn" column="del_yn" />
 
         <!-- 상품(1) : 상품 파일(N) -->
-        <collection property="productFiles" resultMap="ProductFilesResultMap" />
+        <collection property="productFiles" resultMap="ProductFilesResult" notNullColumn="product_file_id" />
     </resultMap>
 
-    <resultMap id="ProductFilesResultMap" type="ProductFiles">
+    <resultMap id="ProductFilesResult" type="ProductFiles">
         <id property="productFileId" column="product_file_id" />
         <result property="productId" column="product_id" />
         <result property="originFileName" column="origin_file_name" />
@@ -37,7 +37,7 @@
         <result property="downloadCnt" column="download_cnt" />
     </resultMap>
 
-    <select id="getProducts" parameterType="SearchRequestDto" resultMap="ProductResultMap">
+    <select id="getProducts" parameterType="SearchRequestDto" resultMap="ProductsResult">
         SELECT
             p.product_id,
             p.category_id,
@@ -80,7 +80,7 @@
         WHERE p.del_yn != 'Y'
     </select>
 
-    <select id="getProductByProductId" parameterType="int" resultMap="ProductResultMap">
+    <select id="getProductByProductId" parameterType="int" resultMap="ProductsResult">
         SELECT
             p.product_id,
             p.category_id,
@@ -97,17 +97,17 @@
             p.create_date,
             p.update_date,
             p.del_yn,
-            ifnull(pf.product_file_id, 0) AS product_file_id,
-            ifnull(pf.origin_file_name, '') AS origin_file_name,
-            ifnull(pf.stored_file_name, '') AS stored_file_name,
-            ifnull(pf.file_path, '') AS file_path,
-            ifnull(pf.file_size, 0) AS file_size,
-            ifnull(pf.file_exp, '') AS file_exp,
-            ifnull(pf.create_date, '1900-01-01') AS file_create_date, -- 기본값 예시: 최소 날짜
-            ifnull(pf.delete_date, '1900-01-01') AS file_delete_date, -- 기본값 예시: 최소 날짜
-            ifnull(pf.del_yn, 'n') AS del_yn,
-            ifnull(pf.file_attached, 'n') AS file_attached,
-            ifnull(pf.downlod_cnt, 0) AS downlod_cnt
+            IFNULL(pf.product_file_id, 0) AS product_file_id,
+            IFNULL(pf.origin_file_name, '') AS origin_file_name,
+            IFNULL(pf.stored_file_name, '') AS stored_file_name,
+            IFNULL(pf.file_path, '') AS file_path,
+            IFNULL(pf.file_size, 0) AS file_size,
+            IFNULL(pf.file_exp, '') AS file_exp,
+            IFNULL(pf.create_date, '1900-01-01') AS file_create_date, -- 기본값 예시: 최소 날짜
+            IFNULL(pf.delete_date, '1900-01-01') AS file_delete_date, -- 기본값 예시: 최소 날짜
+            IFNULL(pf.del_yn, 'n') AS del_yn,
+            IFNULL(pf.file_attached, 'n') AS file_attached,
+            IFNULL(pf.downlod_cnt, 0) AS downlod_cnt
         FROM product p
         INNER JOIN product_category pc ON p.category_id = pc.category_id
         LEFT OUTER JOIN product_file pf ON p.product_id = pf.product_id
