@@ -4,8 +4,10 @@ import com.shoppingmall.common.dto.BaseResponse;
 import com.shoppingmall.common.utils.ApiResponseUtils;
 import com.shoppingmall.exception.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.nio.file.AccessDeniedException;
+import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 
 /**
  * Global Exception Handler
@@ -91,6 +95,18 @@ public class ErrorHandler {
     public ResponseEntity<BaseResponse<?>> handleAccessDeniedException(AccessDeniedException ex) {
         log.error(ex.getMessage());
         return ApiResponseUtils.failure("Access denied: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(SQLException.class)
+    protected ResponseEntity<BaseResponse<?>> handleSQLException(SQLException ex) {
+        log.error("Database error occurred: {}", ex.getMessage());
+        return ApiResponseUtils.failure("Database error occurred. Please contact to support.");
+    }
+
+    @ExceptionHandler({BadSqlGrammarException.class, DataAccessException.class, SQLSyntaxErrorException.class})
+    protected ResponseEntity<BaseResponse<?>> handleSQLSyntaxErrorException(SQLException ex) {
+        log.error("Database syntax error occurred: {}", ex.getMessage());
+        return ApiResponseUtils.failure("Database syntax error occurred. Please contact to support.");
     }
 
     @ExceptionHandler(Exception.class)

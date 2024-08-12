@@ -1,6 +1,5 @@
 package com.shoppingmall.dto.request;
 
-import com.shoppingmall.constant.DirPathType;
 import com.shoppingmall.constant.ItemSellStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,5 +20,4 @@ public class ProductSaveRequestDto {
     private ItemSellStatus itemSellStatus = ItemSellStatus.SELL;
 
     private List<MultipartFile> files = new ArrayList<>();
-    private DirPathType dirPathType = DirPathType.products;
 }

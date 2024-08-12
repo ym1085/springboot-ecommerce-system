@@ -47,54 +47,74 @@
         아래 부분은 조금 고민 Map or VO에 그냥 필드 넣어서 처리가 가능하긴 한데 resultMap으로 하는게 좋을 듯?
         그래도 1 : N 처리를 위해 resultMap을 사용해서 일단 처리하고 추후 테이블이 복잡해지면 VO를 분리할 것
      -->
-    <resultMap id="PostResultMap" type="Post">
-        <id property="postId" column="POST_ID" />
-        <result property="memberId" column="MEMBER_ID" />
-        <result property="title" column="TITLE" />
-        <result property="content" column="CONTENT" />
-        <result property="categoryId" column="CATEGORY_ID" />
-        <result property="categoryName" column="CATEGORYNAME" />
-        <result property="writer" column="WRITER" />
-        <result property="readCnt" column="READ_CNT" />
-        <result property="fixedYn" column="FIXED_YN" />
-        <result property="delYn" column="DEL_YN" />
-        <result property="createDate" column="CREATE_DATE" />
-        <result property="updateDate" column="UPDATE_DATE" />
-        <result property="deleteDate" column="DELETE_DATE" />
+    <resultMap id="PostsResult" type="Post">
+        <id property="postId" column="post_id" />
+        <result property="memberId" column="member_id" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="categoryId" column="category_id" />
+        <result property="categoryName" column="categoryName" />
+        <result property="writer" column="writer" />
+        <result property="readCnt" column="read_cnt" />
+        <result property="fixedYn" column="fixed_yn" />
+        <result property="delYn" column="del_yn" />
+        <result property="createDate" column="create_date" />
+        <result property="updateDate" column="update_date" />
+        <result property="deleteDate" column="delete_date" />
 
         <!-- 1(Post) : N(PostFiles) -->
-        <collection property="postFiles" resultMap="PostFilesResultMap" />
-        <!-- 1(Post) : N(Comments) -->
-        <collection property="comments" resultMap="CommentsResultMap" />
+        <collection property="postFiles" resultMap="PostFilesResult" notNullColumn="post_file_id" />
+    </resultMap>
+
+    <resultMap id="PostResult" type="Post">
+        <id property="postId" column="post_id" />
+        <result property="memberId" column="member_id" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="categoryId" column="category_id" />
+        <result property="categoryName" column="categoryName" />
+        <result property="writer" column="writer" />
+        <result property="readCnt" column="read_cnt" />
+        <result property="fixedYn" column="fixed_yn" />
+        <result property="delYn" column="del_yn" />
+        <result property="createDate" column="create_date" />
+        <result property="updateDate" column="update_date" />
+        <result property="deleteDate" column="delete_date" />
+
+        <!-- 1(Post) : N(PostFiles) -->
+        <collection property="postFiles" resultMap="PostFilesResult" notNullColumn="post_file_id" />
+
+        <!-- 1(Post) : N(Comment) -->
+        <collection property="comments" resultMap="CommentsResult" notNullColumn="comment_id" />
     </resultMap>
 
     <!-- 게시글에 매핑된 파일 정보 -->
-    <resultMap id="PostFilesResultMap" type="PostFiles">
-        <id property="postFileId" column="POST_FILE_ID" />
-        <result property="postId" column="POST_ID" />
-        <result property="originFileName" column="ORIGIN_FILE_NAME" />
-        <result property="storedFileName" column="STORED_FILE_NAME" />
-        <result property="filePath" column="FILE_PATH" />
-        <result property="fileSize" column="FILE_SIZE" />
-        <result property="fileExp" column="FILE_EXP" />
-        <result property="delYn" column="DEL_YN" />
-        <result property="createDate" column="CREATE_DATE" />
-        <result property="deleteDate" column="DELETE_DATE" />
-        <result property="fileAttached" column="FILE_ATTACHED" />
-        <result property="downloadCnt" column="DOWNLOAD_CNT" />
+    <resultMap id="PostFilesResult" type="PostFiles">
+        <id property="postFileId" column="post_file_id" />
+        <result property="postId" column="post_id" />
+        <result property="originFileName" column="origin_file_name" />
+        <result property="storedFileName" column="stored_file_name" />
+        <result property="filePath" column="file_path" />
+        <result property="fileSize" column="file_size" />
+        <result property="fileExp" column="file_exp" />
+        <result property="delYn" column="del_yn" />
+        <result property="createDate" column="create_date" />
+        <result property="deleteDate" column="delete_date" />
+        <result property="fileAttached" column="file_attached" />
+        <result property="downloadCnt" column="download_cnt" />
     </resultMap>
 
     <!-- 게시글에 매핑된 댓글 정보 -->
-    <resultMap id="CommentsResultMap" type="Comment">
-        <id property="commentId" column="COMMENT_ID" />
-        <result property="parentId" column="PARENT_ID" />
-        <result property="postId" column="POST_ID" />
-        <result property="content" column="COMMENT_CONTENT" />
-        <result property="memberId" column="COMMENT_MEMBER_ID" />
-        <result property="delYn" column="COMMENT_DEL_YN" />
-        <result property="path" column="PATH" />
-        <result property="createDate" column="COMMENT_CREATE_DATE" />
-        <result property="updateDate" column="COMMENT_UPDATE_DATE" />
+    <resultMap id="CommentsResult" type="Comment">
+        <id property="commentId" column="comment_id" />
+        <result property="parentId" column="parent_id" />
+        <result property="postId" column="post_id" />
+        <result property="content" column="comment_content" />
+        <result property="memberId" column="comment_member_id" />
+        <result property="delYn" column="comment_del_yn" />
+        <result property="path" column="path" />
+        <result property="createDate" column="create_date" />
+        <result property="updateDate" column="update_date" />
     </resultMap>
 
     <!-- 전체 게시글 조회 -->
@@ -102,14 +122,20 @@
         Mybatis에서 쿼리의 parameterType이 클래스의 객체인 경우, XML Mapper의 #{parameter}
         는 맴버 변수의 getter에 해당. 쉽게 말해 getter를 통해 파라미터 바인딩 수행.
     -->
-    <select id="getPosts" parameterType="SearchRequestDto" resultMap="PostResultMap">
+    <select id="getPosts" parameterType="SearchRequestDto" resultMap="PostsResult">
         SELECT
             p.post_id,
             p.title,
             p.content,
-            (select m.name from member m where m.member_id = p.member_id and m.use_yn = 'y' and m.cert_yn = 'y') AS writer,
+            p.member_id,
+            IFNULL((select m.name
+            from member m
+            where m.member_id = p.member_id
+            and m.use_yn = 'y' and m.cert_yn = 'y'), '') AS writer,
             p.category_id,
-            (select c.category_name from post_category c where c.category_id = p.category_id) AS categoryName,
+            IFNULL((select c.category_name
+             from post_category c
+             where c.category_id = p.category_id), '') AS categoryName,
             p.read_cnt,
             p.fixed_yn,
             p.del_yn,
@@ -147,20 +173,20 @@
     </select>
 
     <!-- 단일 게시글 조회 -->
-    <select id="getPostByPostId" parameterType="int" resultType="Post">
+    <select id="getPostByPostId" parameterType="int" resultMap="PostResult">
         SELECT
             p.post_id,
             p.title,
             p.content,
             p.member_id,
-            (SELECT m.name
-             FROM member m
-             WHERE m.member_id = p.member_id
-             AND m.use_yn = 'y' AND m.cert_yn = 'y') AS writer,
+            IFNULL((select m.name
+             from member m
+             where m.member_id = p.member_id
+             and m.use_yn = 'y' and m.cert_yn = 'y'), '') AS writer,
             p.category_id,
-            (SELECT c.category_name
-             FROM post_category c
-             WHERE c.category_id = p.category_id) AS categoryName,
+            IFNULL((select c.category_name
+            from post_category c
+            where c.category_id = p.category_id), '') AS categoryName,
             p.read_cnt,
             p.fixed_yn,
             p.del_yn,

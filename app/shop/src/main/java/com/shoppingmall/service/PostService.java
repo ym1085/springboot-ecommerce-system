@@ -1,6 +1,6 @@
 package com.shoppingmall.service;
 
-import com.shoppingmall.constant.DirPathType;
+import com.shoppingmall.constant.FileType;
 import com.shoppingmall.dto.request.FileSaveRequestDto;
 import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.PostUpdateRequestDto;
@@ -14,6 +14,7 @@ import com.shoppingmall.utils.PaginationUtils;
 import com.shoppingmall.vo.PagingResponse;
 import com.shoppingmall.vo.Post;
 import com.shoppingmall.vo.PostFiles;
+import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_SAVE_FILES;
-import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_UPLOAD_FILES;
-import static com.shoppingmall.common.code.failure.post.PostFailureCode.NOT_FOUND_POST;
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.*;
 import static com.shoppingmall.common.code.failure.post.PostFailureCode.FAIL_SAVE_POST;
+import static com.shoppingmall.common.code.failure.post.PostFailureCode.NOT_FOUND_POST;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -63,27 +63,41 @@ public class PostService {
     
     @Transactional
     public int savePost(PostSaveRequestDto postSaveRequestDto) {
-        if (postMapper.savePost(postSaveRequestDto) == 0) {
+        if (postMapper.savePost(postSaveRequestDto) < 1) {
             log.error(FAIL_SAVE_POST.getMessage());
             throw new PostException(FAIL_SAVE_POST);
         }
+        handlePostFiles(postSaveRequestDto);
+        return postSaveRequestDto.getPostId();
+    }
+
+    /**
+     * 서버 && DB에 파일 저장
+     */
+    private void handlePostFiles(PostSaveRequestDto postSaveRequestDto) {
+        if (CollectionUtils.isEmpty(postSaveRequestDto.getFiles())) {
+            log.error(FAIL_SAVE_FILES.getMessage());
+            return;
+        }
 
         try {
-            if (!postSaveRequestDto.getFiles().isEmpty()) {
-                List<FileSaveRequestDto> baseFileSaveRequestDto = fileHandlerHelper.uploadFiles(postSaveRequestDto.getFiles(), postSaveRequestDto.getDirPathType());
-                if (saveFiles(postSaveRequestDto.getPostId(), baseFileSaveRequestDto) < 1) {
-                    log.error(FAIL_SAVE_FILES.getMessage());
-                    throw new FileException(FAIL_SAVE_FILES);
-                }
-            }
-        } catch (FileException e) {
-            // 예외 발생 시 서버의 특정 경로에 업로드 된 파일을 삭제해야 하기에, 추가
-            // 파일 업로드 성공 ----> 파일 정보 DB 저장(ERROR!! 발생) ----> Transaction Rollback ----> 이미 업로드한 파일은 지워줘야 함
-            List<PostFiles> postFiles = getFileResponseDtos(postSaveRequestDto.getPostId());
-            fileHandlerHelper.deleteFiles(postFiles);
-            throw e; // 현재 트랜잭션 롤백
+            List<FileSaveRequestDto> fileSaveRequestDtos = fileHandlerHelper.uploadFilesToServer(postSaveRequestDto.getFiles(), FileType.posts);
+            int result = saveFiles(postSaveRequestDto.getPostId(), fileSaveRequestDtos);
+            log.info("DB 파일 저장 결과 = {}", result);
+        } catch (IOException | FileException e) {
+            log.error("File processing error: {}", e.getMessage());
+            rollbackUploadedFiles(postSaveRequestDto.getPostId()); // 업로드된 파일을 서버 상에서 DELETE
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error: {}", e.getMessage());
+            rollbackUploadedFiles(postSaveRequestDto.getPostId()); // 업로드된 파일을 서버 상에서 DELETE
+            throw e;
         }
-        return postSaveRequestDto.getPostId();
+    }
+
+    private void rollbackUploadedFiles(Integer postId) {
+        List<PostFiles> postFiles = getFileResponseDtos(postId);
+        fileHandlerHelper.deleteFiles(postFiles);
     }
 
     public int saveFiles(Integer postId, List<FileSaveRequestDto> files) {
@@ -106,30 +120,46 @@ public class PostService {
             throw new RuntimeException();
         }
 
-        if (!isEmptyFiles(postUpdateRequestDto.getFiles())) {
-            if (updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles()) < 1) {
-                log.error(FAIL_UPLOAD_FILES.getMessage());
-                throw new FileException(FAIL_UPLOAD_FILES);
-            }
+        if (isEmptyFiles(postUpdateRequestDto.getFiles())) {
+            throw new FileException(FAIL_UPDATE_FILES);
+        }
+
+        int updateFilesCount = updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles());
+        if (updateFilesCount < 1) {
+            log.error(FAIL_UPLOAD_FILES.getMessage());
+            throw new FileException(FAIL_UPLOAD_FILES);
         }
     }
 
     /**
-     * Todo: 기존 파일을 DELETE 하고 새로운 파일을 INSERT 하는 Flow는 수정 필요
+     * 게시글 업데이트 시 파일이 첨부되어 있는 경우, 기존 파일은 전부 삭제하고 새로 업로드를 진행 한다
+     * TODO: 아래 플로우는 개선이 필요한 것으로 보임
      */
     private int updateFilesByPostId(Integer postId, List<MultipartFile> files) {
-        if (postFileMapper.countFilesByPostId(postId) > 0) {
-            if (postFileMapper.deleteFilesByPostId(postId) > 0) { // DB의 파일 정보 삭제
-                log.info("success delete posts files from database");
-                fileHandlerHelper.deleteFiles(getFileResponseDtos(postId)); // 서버 특정 경로에 존재하는 파일 삭제
-            } else {
-                log.error("fail delete posts files from database");
-            }
+        if (postId == null || CollectionUtils.isEmpty(files)) {
+            return 0;
         }
+        int deleteCount = deleteExistingFiles(postId);
+        log.info("[uploadFilesByPostId] 삭제된 파일 개수 = {}", deleteCount);
 
-        List<FileSaveRequestDto> fileRequestDtos = fileHandlerHelper.uploadFiles(files, DirPathType.posts);
-        fileRequestDtos.forEach(fileRequestDto -> fileRequestDto.setId(postId));
-        return postFileMapper.saveFiles(fileRequestDtos);
+        return saveUpdatedNewFiles(postId, files);
+    }
+
+    private int saveUpdatedNewFiles(Integer postId, List<MultipartFile> files) {
+        List<FileSaveRequestDto> fileSaveRequestDtos = fileHandlerHelper.uploadFilesToServer(files, FileType.posts);
+        fileSaveRequestDtos.forEach(fileRequestDto -> fileRequestDto.setId(postId));
+        return postFileMapper.saveFiles(fileSaveRequestDtos);
+    }
+
+    private int deleteExistingFiles(Integer postId) {
+        int deleteCount = postFileMapper.deleteFilesByPostId(postId);
+        if (deleteCount > 0) {
+            log.info("[uploadFilesByPostId] 파일 삭제에 성공하였습니다. postId = {}", postId);
+            fileHandlerHelper.deleteFiles(getFileResponseDtos(postId)); // 서버 특정 경로에 존재하는 파일 삭제
+        } else {
+            log.error("[uploadFilesByPostId] 파일 삭제에 실패하였습니다. postId = {}", postId);
+        }
+        return deleteCount;
     }
 
     @Transactional
@@ -149,7 +179,7 @@ public class PostService {
     }
 
     private boolean isEmptyFiles(List<MultipartFile> files) {
-        return (files.isEmpty());
+        return CollectionUtils.isEmpty(files);
     }
 
     private List<PostFiles> getFileResponseDtos(Integer postId) {
