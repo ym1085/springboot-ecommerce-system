@@ -1,5 +1,4 @@
 /**
- * @since           :       2023-08-13
  * @author          :       youngmin
  * @version         :       1.0.0
  * @description     :       javascript 공통 함수
@@ -8,6 +7,36 @@
  * -----------------------------------------------------------
  * 2023-08-13       youngmin           최초 생성
  **/
+
+function loadLoginForm() {
+    closeCurrentModal(); // 현재 열려있는 모달이 있으면 닫기
+    loadModal('/member/loginForm', 'loginModal');
+}
+
+function loadJoinForm() {
+    closeCurrentModal(); // 현재 열려있는 모달이 있으면 닫기
+    loadModal('/member/joinForm', 'joinModal');
+}
+
+function closeCurrentModal() {
+    // 현재 열려있는 모달이 있으면 닫고 DOM에서 완전히 제거
+    const currentModal = $('.modal.show'); // 현재 열려있는 모달을 찾기
+    if (currentModal.length > 0) {
+        currentModal.modal('hide'); // 모달을 숨기고
+        currentModal.on('hidden.bs.modal', function () {
+            currentModal.remove(); // DOM에서 완전히 제거
+        });
+    }
+}
+
+function loadModal(url, id) {
+    console.log(`Loading => ${url}, ${id}`)
+    $("#modalContainer").empty();
+    $("#modalContainer").load(url + " #" + id, function() {
+        console.log(`url = ${url}, id = ${id}`);
+        $('#' + id).modal('show');
+    });
+}
 
 function movePageWithPageNo(pageNo) {
     const searchForm = document.getElementById('searchForm');

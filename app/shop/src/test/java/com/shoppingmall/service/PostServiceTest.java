@@ -2,7 +2,7 @@ package com.shoppingmall.service;
 
 import com.shoppingmall.dto.request.PostSaveRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
-import com.shoppingmall.vo.PagingResponse;
+import com.shoppingmall.vo.response.PagingResponse;
 import com.shoppingmall.mapper.CommentMapper;
 import com.shoppingmall.mapper.PostFileMapper;
 import com.shoppingmall.mapper.PostMapper;

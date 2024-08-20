@@ -105,8 +105,22 @@ CREATE TABLE DELIVERY_ADDRESS
     FOREIGN KEY (member_id) REFERENCES MEMBER (member_id)
 );
 
+# 외래키 검사 활성화 or 비활성화
+# 0: 비활성화, 1: 활성화 -> 해당 옵션은 웬만하면 건들지 말자
+#SET foreign_key_checks = 0;
+#DROP TABLE product_category;
+#SET foreign_key_checks = 1;
+-- PRODUCT_CATEGORY 테이블에 데이터 삽입
+INSERT INTO product_category (category_name)
+VALUES
+    ('휴대폰'),
+    ('스마트 시계'),
+    ('태블릿'),
+    ('노트북'),
+    ('액세서리');
+
 -- Create the PRODUCT_CATEGORY table
-CREATE TABLE PRODUCT_CATEGORY
+CREATE TABLE product_category
 (
     category_id   INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(50) NOT NULL COMMENT '상품 카테고리명'

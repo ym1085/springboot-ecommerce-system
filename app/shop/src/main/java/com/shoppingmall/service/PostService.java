@@ -11,7 +11,7 @@ import com.shoppingmall.mapper.PostFileMapper;
 import com.shoppingmall.mapper.PostMapper;
 import com.shoppingmall.utils.FileHandlerHelper;
 import com.shoppingmall.utils.PaginationUtils;
-import com.shoppingmall.vo.PagingResponse;
+import com.shoppingmall.vo.response.PagingResponse;
 import com.shoppingmall.vo.Post;
 import com.shoppingmall.vo.PostFiles;
 import io.jsonwebtoken.io.IOException;
@@ -81,7 +81,8 @@ public class PostService {
         }
 
         try {
-            List<FileSaveRequestDto> fileSaveRequestDtos = fileHandlerHelper.uploadFilesToServer(postSaveRequestDto.getFiles(), FileType.posts);
+            String categoryName = postMapper.getCategoryNameByPostCategoryId(postSaveRequestDto.getCategoryId());
+            List<FileSaveRequestDto> fileSaveRequestDtos = fileHandlerHelper.uploadFilesToServer(postSaveRequestDto.getFiles(), FileType.posts, categoryName);
             int result = saveFiles(postSaveRequestDto.getPostId(), fileSaveRequestDtos);
             log.info("DB 파일 저장 결과 = {}", result);
         } catch (IOException | FileException e) {
@@ -124,7 +125,7 @@ public class PostService {
             throw new FileException(FAIL_UPDATE_FILES);
         }
 
-        int updateFilesCount = updateFilesByPostId(postUpdateRequestDto.getPostId(), postUpdateRequestDto.getFiles());
+        int updateFilesCount = updateFilesByPostId(postUpdateRequestDto);
         if (updateFilesCount < 1) {
             log.error(FAIL_UPLOAD_FILES.getMessage());
             throw new FileException(FAIL_UPLOAD_FILES);
@@ -135,19 +136,22 @@ public class PostService {
      * 게시글 업데이트 시 파일이 첨부되어 있는 경우, 기존 파일은 전부 삭제하고 새로 업로드를 진행 한다
      * TODO: 아래 플로우는 개선이 필요한 것으로 보임
      */
-    private int updateFilesByPostId(Integer postId, List<MultipartFile> files) {
+    private int updateFilesByPostId(PostUpdateRequestDto postUpdateRequestDto) {
+        Integer postId = postUpdateRequestDto.getPostId();
+        List<MultipartFile> files = postUpdateRequestDto.getFiles();
         if (postId == null || CollectionUtils.isEmpty(files)) {
             return 0;
         }
         int deleteCount = deleteExistingFiles(postId);
         log.info("[uploadFilesByPostId] 삭제된 파일 개수 = {}", deleteCount);
 
-        return saveUpdatedNewFiles(postId, files);
+        return saveUpdatedNewFiles(postUpdateRequestDto);
     }
 
-    private int saveUpdatedNewFiles(Integer postId, List<MultipartFile> files) {
-        List<FileSaveRequestDto> fileSaveRequestDtos = fileHandlerHelper.uploadFilesToServer(files, FileType.posts);
-        fileSaveRequestDtos.forEach(fileRequestDto -> fileRequestDto.setId(postId));
+    private int saveUpdatedNewFiles(PostUpdateRequestDto postUpdateRequestDto) {
+        String categoryName = postMapper.getCategoryNameByPostCategoryId(postUpdateRequestDto.getCategoryId());
+        List<FileSaveRequestDto> fileSaveRequestDtos = fileHandlerHelper.uploadFilesToServer(postUpdateRequestDto.getFiles(), FileType.posts, categoryName);
+        fileSaveRequestDtos.forEach(fileRequestDto -> fileRequestDto.setId(postUpdateRequestDto.getPostId()));
         return postFileMapper.saveFiles(fileSaveRequestDtos);
     }
 

@@ -10,10 +10,9 @@ import com.shoppingmall.exception.ProductException;
 import com.shoppingmall.mapper.ProductFileMapper;
 import com.shoppingmall.mapper.ProductMapper;
 import com.shoppingmall.utils.FileHandlerHelper;
-import com.shoppingmall.utils.PaginationUtils;
-import com.shoppingmall.vo.PagingResponse;
 import com.shoppingmall.vo.Product;
 import com.shoppingmall.vo.ProductFiles;
+import com.shoppingmall.vo.response.ProductResponse;
 import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_UPDATE_FILES;
 import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_UPLOAD_FILES;
@@ -39,16 +39,18 @@ public class ProductService {
     private final ProductFileMapper productFileMapper;
     private final FileHandlerHelper fileHandlerHelper;
 
-    public PagingResponse<Product> getProducts(SearchRequestDto searchRequestDto) {
-        int totalRecordCount = productMapper.count(searchRequestDto);
-        if (totalRecordCount < 1) {
-            return new PagingResponse<>(Collections.emptyList(), null);
-        }
-        PaginationUtils pagination = new PaginationUtils(totalRecordCount, searchRequestDto);
-        searchRequestDto.setPagination(pagination);
-
+    public ProductResponse getProducts(SearchRequestDto searchRequestDto) {
         List<Product> products = productMapper.getProducts(searchRequestDto);
-        return new PagingResponse<>(products, pagination);
+        if (CollectionUtils.isEmpty(products)) {
+            return new ProductResponse();
+        }
+        List<Product> productByPhones = products.stream().filter(Objects::nonNull).filter(product -> product.getCategoryId() == 1).collect(Collectors.toList());
+        List<Product> productByWatches = products.stream().filter(Objects::nonNull).filter(product -> product.getCategoryId() == 2).collect(Collectors.toList());
+        return ProductResponse
+                .builder()
+                .productByPhones(productByPhones)
+                .productByWatches(productByWatches)
+                .build();
     }
 
     public Product getProductByProductId(Integer productId) {
@@ -79,7 +81,8 @@ public class ProductService {
         }
 
         try {
-            List<FileSaveRequestDto> fileSaveRequestDtos = fileHandlerHelper.uploadFilesToServer(productRequestDto.getFiles(), FileType.products);
+            String categoryName = productMapper.getCategoryNameByProductCategoryId(productRequestDto.getCategoryId());
+            List<FileSaveRequestDto> fileSaveRequestDtos = fileHandlerHelper.uploadFilesToServer(productRequestDto.getFiles(), FileType.products, categoryName);
             int result = saveFiles(productRequestDto.getProductId(), fileSaveRequestDtos);
             log.info("Successfully saved {} files to database for product ID {}.", result, productRequestDto.getProductId());
         } catch (IOException | FileException e) {
@@ -122,26 +125,29 @@ public class ProductService {
             throw new FileException(FAIL_UPDATE_FILES);
         }
 
-        int uploadFilesCount = updateFilesByProductId(productUpdateRequestDto.getProductId(), productUpdateRequestDto.getFiles());
+        int uploadFilesCount = updateFilesByProductId(productUpdateRequestDto);
         if (uploadFilesCount < 1) {
             log.error(FAIL_UPLOAD_FILES.getMessage());
             throw new FileException(FAIL_UPLOAD_FILES);
         }
     }
 
-    private int updateFilesByProductId(Integer productId, List<MultipartFile> files) {
+    private int updateFilesByProductId(ProductUpdateRequestDto productUpdateRequestDto) {
+        Integer productId = productUpdateRequestDto.getProductId();
+        List<MultipartFile> files = productUpdateRequestDto.getFiles();
         if (productId == null || CollectionUtils.isEmpty(files)) {
             return 0;
         }
         int deleteCount = deleteExistingFiles(productId);
         log.info("[updateFilesByProductId] 삭제된 파일 개수 = {}", deleteCount);
 
-        return saveUpdatedNewFiles(productId, files);
+        return saveUpdatedNewFiles(productUpdateRequestDto);
     }
 
-    private int saveUpdatedNewFiles(Integer productId, List<MultipartFile> files) {
-        List<FileSaveRequestDto> fileSaveRequestDtos = fileHandlerHelper.uploadFilesToServer(files, FileType.products); // 서버의 특정 경로에 파일 업로드
-        fileSaveRequestDtos.forEach(fileRequestDto -> fileRequestDto.setId(productId));
+    private int saveUpdatedNewFiles(ProductUpdateRequestDto productUpdateRequestDto) {
+        String categoryName = productMapper.getCategoryNameByProductCategoryId(productUpdateRequestDto.getCategoryId());
+        List<FileSaveRequestDto> fileSaveRequestDtos = fileHandlerHelper.uploadFilesToServer(productUpdateRequestDto.getFiles(), FileType.products, categoryName); // 서버의 특정 경로에 파일 업로드
+        fileSaveRequestDtos.forEach(fileRequestDto -> fileRequestDto.setId(productUpdateRequestDto.getProductId()));
         return productFileMapper.saveFiles(fileSaveRequestDtos);
     }
 

@@ -37,40 +37,109 @@
         <result property="downloadCnt" column="download_cnt" />
     </resultMap>
 
+    <!-- TODO: 메인화면에 뿌릴 상품 N개를 쿼리로 분리하여 가지고 가야 할 듯 -->
     <select id="getProducts" parameterType="SearchRequestDto" resultMap="ProductsResult">
         SELECT
-            p.product_id,
-            p.category_id,
-            (SELECT
-                 pc.category_name
-             FROM product_category pc
-             where pc.category_id = p.category_id) AS categoryName,
-            p.product_name,
-            p.product_price,
-            p.product_stock,
-            p.product_desc,
-            p.product_hits,
-            p.item_sell_status,
-            p.create_date,
-            p.update_date,
-            p.del_yn,
-            IFNULL(pf.product_file_id, NULL) AS product_file_id,
-            IFNULL(pf.origin_file_name, '') AS origin_file_name,
-            IFNULL(pf.stored_file_name, '') AS stored_file_name,
-            IFNULL(pf.file_path, '') AS file_path,
-            IFNULL(pf.file_size, 0) AS file_size,
-            IFNULL(pf.file_exp, '') AS file_exp,
-            IFNULL(pf.create_date, '1900-01-01') AS file_create_date, -- 기본값 예시: 최소 날짜
-            IFNULL(pf.delete_date, '1900-01-01') AS file_delete_date, -- 기본값 예시: 최소 날짜
-            IFNULL(pf.del_yn, 'N') AS del_yn,
-            IFNULL(pf.file_attached, 'N') AS file_attached,
-            IFNULL(pf.downlod_cnt, 0) AS downlod_cnt
-        FROM product p
-        INNER JOIN product_category pc ON p.category_id = pc.category_id
-        LEFT OUTER JOIN product_file pf ON p.product_id = pf.product_id
-        WHERE p.del_yn != 'Y'
-        ORDER BY p.create_date DESC
-        LIMIT #{pagination.limitStart}, #{recordSizePerPage} /*LIMIT 20;*/
+            pp.product_id,
+            pp.category_id,
+            pp.category_name,
+            pp.product_name,
+            pp.product_price,
+            pp.product_stock,
+            pp.product_desc,
+            pp.product_hits,
+            pp.item_sell_status,
+            pp.create_date,
+            pp.update_date,
+            pp.del_yn,
+            pf.product_file_id,  -- 추가된 컬럼
+            pf.origin_file_name, -- 추가된 컬럼
+            pf.stored_file_name, -- 추가된 컬럼
+            pf.file_path,        -- 추가된 컬럼
+            pf.file_size,        -- 추가된 컬럼
+            pf.file_exp,         -- 추가된 컬럼
+            pf.create_date AS file_create_date,  -- 추가된 컬럼
+            pf.delete_date,      -- 추가된 컬럼
+            pf.del_yn AS file_del_yn,            -- 추가된 컬럼
+            pf.file_attached,    -- 추가된 컬럼
+            pf.download_cnt      -- 추가된 컬럼
+        FROM
+            (
+                SELECT
+                    p.product_id,
+                    p.category_id,
+                    (SELECT pc.category_name FROM product_category pc WHERE pc.category_id = p.category_id) AS category_name,
+                    p.product_name,
+                    p.product_price,
+                    p.product_stock,
+                    p.product_desc,
+                    p.product_hits,
+                    p.item_sell_status,
+                    p.create_date,
+                    p.update_date,
+                    p.del_yn
+                FROM product p
+                WHERE p.category_id = 1
+                ORDER BY p.create_date DESC
+                LIMIT 10
+            ) AS pp
+                LEFT JOIN product_file pf ON pp.product_id = pf.product_id
+
+        UNION ALL
+
+        SELECT
+            pw.product_id,
+            pw.category_id,
+            pw.category_name,
+            pw.product_name,
+            pw.product_price,
+            pw.product_stock,
+            pw.product_desc,
+            pw.product_hits,
+            pw.item_sell_status,
+            pw.create_date,
+            pw.update_date,
+            pw.del_yn,
+            pf.product_file_id,  -- 추가된 컬럼
+            pf.origin_file_name, -- 추가된 컬럼
+            pf.stored_file_name, -- 추가된 컬럼
+            pf.file_path,        -- 추가된 컬럼
+            pf.file_size,        -- 추가된 컬럼
+            pf.file_exp,         -- 추가된 컬럼
+            pf.create_date AS file_create_date,  -- 추가된 컬럼
+            pf.delete_date,      -- 추가된 컬럼
+            pf.del_yn AS file_del_yn,            -- 추가된 컬럼
+            pf.file_attached,    -- 추가된 컬럼
+            pf.download_cnt      -- 추가된 컬럼
+        FROM
+            (
+                SELECT
+                    p.product_id,
+                    p.category_id,
+                    (SELECT pc.category_name FROM product_category pc WHERE pc.category_id = p.category_id) AS category_name,
+                    p.product_name,
+                    p.product_price,
+                    p.product_stock,
+                    p.product_desc,
+                    p.product_hits,
+                    p.item_sell_status,
+                    p.create_date,
+                    p.update_date,
+                    p.del_yn
+                FROM product p
+                WHERE p.category_id = 2
+                ORDER BY p.create_date DESC
+                LIMIT 10
+            ) AS pw
+                LEFT JOIN product_file pf ON pw.product_id = pf.product_id
+    </select>
+
+
+    <select id="getCategoryNameByProductCategoryId" parameterType="int" resultType="string">
+        SELECT
+            pc.category_name
+        FROM product_category pc
+        WHERE pc.category_id = #{categoryId}
     </select>
 
     <!-- 상품 수 카운팅 -->

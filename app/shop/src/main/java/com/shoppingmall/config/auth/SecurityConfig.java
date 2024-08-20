@@ -37,8 +37,10 @@ public class SecurityConfig {
 
     // TODO: DB로 빼서 관리 해야함 URL 같은 경우, 우선 배열로 관리
     private static final String[] PUBLIC_MATCHERS = {
+            "/",
             "/css/**",
-            "/img/**",
+            "/images/**",
+            "/bootstrap/**",
             "/js/**",
             "/favicon.ico",
             "/h2-console/**",
@@ -49,15 +51,14 @@ public class SecurityConfig {
             "/api/v1/email/verify",
             "/api/v1/email/verify-request",
             "/api/v1/cart/**",
-            "/api/**" // TODO: Remove this URL
+            "/api/**", // TODO: Remove this URL
     };
 
     private static final String[] USER_MATCHERS = {
             "/api/v1/**",
             "/post/**",
             "/product/**",
-            "/cart/**",
-            "/"
+            "/cart/**"
     };
 
     private static final String[] ADMIN_MATCHERS = {
@@ -88,7 +89,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/member/loginForm")
+                        //.loginPage("/member/loginForm")
+                        .loginPage("/")
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .loginProcessingUrl("/member/login")
@@ -96,7 +98,7 @@ public class SecurityConfig {
                         .failureHandler(customLogInFailerHandler)
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/member/loginForm")
+                        .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID", "remember-me")
                 )
@@ -106,16 +108,16 @@ public class SecurityConfig {
                         .userDetailsService(principalUserDetailsService)
                 )
                 .sessionManagement(session -> session
-                        .invalidSessionUrl("/member/loginForm")
+                        .invalidSessionUrl("/")
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false)
-                        .expiredUrl("/member/loginForm")
+                        .expiredUrl("/")
                 )
                 .exceptionHandling(exception -> exception
                         .accessDeniedPage("/error/404")
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/member/loginForm")
+                        .loginPage("/")
                         .successHandler(principalOAuth2LoginSuccessHandler)
                         .failureHandler(principalOAuth2LoginFailureHandler)
                         .userInfoEndpoint()

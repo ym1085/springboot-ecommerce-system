@@ -25,4 +25,6 @@ public interface ProductMapper {
     int updateProduct(ProductUpdateRequestDto product);
 
     int deleteProduct(Integer productId);
+
+    String getCategoryNameByProductCategoryId(Integer categoryId);
 }

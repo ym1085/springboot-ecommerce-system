@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Setter
 public class ProductSaveRequestDto {
     private Integer productId;
+    @NotNull
     private Integer categoryId;
     private String productName;
     private Integer productPrice;

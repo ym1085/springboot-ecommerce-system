@@ -2,7 +2,7 @@ package com.shoppingmall.web;
 
 import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.service.PostService;
-import com.shoppingmall.vo.PagingResponse;
+import com.shoppingmall.vo.response.PagingResponse;
 import com.shoppingmall.vo.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
