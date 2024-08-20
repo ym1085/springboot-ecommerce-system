@@ -6,11 +6,11 @@ import com.shoppingmall.config.auth.PrincipalUserDetails;
 import com.shoppingmall.dto.request.ProductSaveRequestDto;
 import com.shoppingmall.dto.request.ProductUpdateRequestDto;
 import com.shoppingmall.dto.request.SearchRequestDto;
-import com.shoppingmall.vo.PagingResponse;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.ProductService;
 import com.shoppingmall.vo.Member;
 import com.shoppingmall.vo.Product;
+import com.shoppingmall.vo.response.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class ProductRestController {
 
     @GetMapping("/products")
     public ResponseEntity<BaseResponse<?>> getProducts(SearchRequestDto searchRequestDto) {
-        PagingResponse<Product> products = productService.getProducts(searchRequestDto);
+        ProductResponse products = productService.getProducts(searchRequestDto);
         return ApiResponseUtils.success(SUCCESS, products);
     }
 
@@ -45,7 +45,7 @@ public class ProductRestController {
     }
 
     @PostMapping("/products")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse<?>> saveProducts(
             @Valid @ModelAttribute ProductSaveRequestDto productRequestDto,
             BindingResult bindingResult) {

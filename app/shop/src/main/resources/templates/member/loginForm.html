@@ -2,52 +2,67 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="layout/basic">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-    <th:block layout:fragment="title">
-        <title>로그인 페이지</title>
-    </th:block>
+<th:block th:fragment="loginModal">
+    <section id="login-section">
+        <!-- 모달에 필요한 ID 추가 -->
+        <div id="loginModal" class="modal fade" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginModalLabel">로그인</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4"> <!-- 내부 여백 조정 -->
+                        <div class="container-fluid p-0">
+                            <div class="row justify-content-center">
+                                <div class="col-12 bg-white rounded shadow">
+                                    <!-- 사용자 인증 확인 -->
+                                    <div sec:authorize="isAuthenticated()" class="text-center mb-4">
+                                        <h2 class="h4 text-dark">Welcome!</h2>
+                                        <div th:if="${name != null}" th:inline="text" class="mt-3 text-dark">
+                                            [[${name}]] 님, 안녕하세요. email : [[${email}]]
+                                        </div>
+                                        <a href="/logout" class="btn btn-dark mt-4 text-uppercase btn-rounded-none">Logout</a>
+                                    </div>
 
-    <th:block layout:fragment="content">
-        <div class="col-md-6">
-            <!-- userName이 존재한다면 아래 로직 수행 -->
-            <div sec:authorize="isAuthenticated()">
-                Logged in as: <span id="user" sec:authentication="name"></span>
-                <div th:if="${name != null}" th:inline="text">
-                    [[${name}]] 님, 안녕하세요. email : [[${email}]]
-                </div>
-                <a href="/logout" class="btn btn-primary" role="button">Logout</a>
-            </div>
-            <div sec:authorize="!isAuthenticated()">
-                <!-- javascript에서 검증 후 서버로 넘긴다 -->
-                <form th:action="@{/member/login}" action="/member/login" method="post">
-                    <div class="form-group">
-                        <label for="username">아이디</label>
-                        <input type="text" class="form-control" id="username" name="username" required placeholder="아이디를 입력해주세요."/>
+                                    <!-- 로그인 폼 -->
+                                    <div sec:authorize="!isAuthenticated()">
+                                        <form th:action="@{/member/login}" action="/member/login" method="post">
+                                            <div class="form-group mb-3">
+                                                <label for="username" class="text-dark text-uppercase">아이디</label>
+                                                <input type="text" class="form-control" id="username" name="username"
+                                                       required placeholder="아이디를 입력해주세요.">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="password" class="text-dark text-uppercase">비밀번호</label>
+                                                <input type="password" class="form-control" id="password"
+                                                       name="password" required placeholder="비밀번호를 입력해주세요.">
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input type="checkbox" class="form-check-input" id="rememberMe"
+                                                       name="remember-me" checked>
+                                                <label class="form-check-label text-dark" for="rememberMe">로그인 유지</label>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <button type="submit" id="btn-login" class="btn" style="background-color: #000; color: #fff; border: none; text-transform: uppercase;">로그인</button>
+                                                <button type="button" id="btn-join" class="btn" style="background-color: transparent; border: 2px solid #000; color: #000; text-transform: uppercase;" onclick="loadJoinForm()">회원 가입</button>
+                                            </div>
+                                        </form>
+                                        <div class="social-login text-center mt-4">
+                                            <a href="/oauth2/authorization/google" class="btn btn-outline-dark btn-full" style="display: block; margin: .85em 0; width: 100%; border-radius: 0; text-transform: uppercase;">구글 로그인</a>
+                                            <a href="/oauth2/authorization/naver" class="btn btn-outline-dark btn-full mt-2" style="display: block; margin: .85em 0; width: 100%; border-radius: 0; text-transform: uppercase;">네이버 로그인</a>
+                                            <a href="/oauth2/authorization/kakao" class="btn btn-outline-dark btn-full mt-2" style="display: block; margin: .85em 0; width: 100%; border-radius: 0; text-transform: uppercase;">카카오 로그인</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="password">비밀번호</label>
-                        <input type="password" class="form-control" id="password" name="password" required placeholder="비밀번호를 입력해주세요."/>
-                    </div>
-                    <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="rememberMe" name="remember-me" checked>
-                        <label class="form-check-label" for="rememberMe">로그인 유지</label>
-                    </div>
-                    <button type="submit" class="btns btn_bdr1 btn_mid">로그인</button>
-                    <button type="button" class="btns btn_bdr2 btn_mid" onClick="location.href='/member/joinForm'">회원 가입</button>
-                </form>
-                <br>
-                <div class="social-login">
-                    <!-- OAuth2 Client Lib 사용하면 아래와 같이 URL이 고정되어 있음 -->
-                    <a href="/oauth2/authorization/google" class="btn btn-secondary login-button google-login">
-                        <button type="button" class="btns btn_bdr1 btn_mid">구글 로그인</button></a>
-                    <a href="/oauth2/authorization/naver" class="btn btn-secondary login-button naver-login">
-                        <button type="button" class="btns btn_bdr2 btn_mid">네이버 로그인</button></a>
-                    <a href="/oauth2/authorization/kakao" class="btn btn-secondary login-button kakao-login">
-                        <button type="button" class="btns btn_bdr3 btn_mid">카카오 로그인</button></a>
                 </div>
             </div>
         </div>
-    </th:block>
+    </section>
+</th:block>
 </html>

@@ -9,7 +9,7 @@ import com.shoppingmall.dto.request.SearchRequestDto;
 import com.shoppingmall.exception.MemberException;
 import com.shoppingmall.utils.SecurityUtils;
 import com.shoppingmall.vo.Member;
-import com.shoppingmall.vo.PagingResponse;
+import com.shoppingmall.vo.response.PagingResponse;
 import com.shoppingmall.exception.InvalidParameterException;
 import com.shoppingmall.service.PostService;
 import com.shoppingmall.vo.Post;

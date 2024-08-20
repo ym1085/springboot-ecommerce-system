@@ -218,6 +218,13 @@
         AND p.del_yn != 'Y'
     </select>
 
+    <select id="getCategoryNameByPostCategoryId" parameterType="int" resultType="string">
+        SELECT
+            pc.category_name
+        FROM post_category pc
+        WHERE pc.category_id = #{categoryId}
+    </select>
+
     <!-- 게시글 등록 -->
     <insert id="savePost" parameterType="PostSaveRequestDto" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO post (member_id, title, content, fixed_yn, category_id)

@@ -25,6 +25,6 @@ public class PrincipalOAuth2LoginFailureHandler implements AuthenticationFailure
      */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        response.sendRedirect("/member/loginForm");
+        response.sendRedirect("/");
     }
 }

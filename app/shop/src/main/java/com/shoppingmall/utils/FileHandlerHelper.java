@@ -1,5 +1,6 @@
 package com.shoppingmall.utils;
 
+import com.shoppingmall.constant.Category;
 import com.shoppingmall.constant.FileExtension;
 import com.shoppingmall.constant.FileType;
 import com.shoppingmall.dto.request.FileSaveRequestDto;
@@ -36,8 +37,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_DOWNLOAD_FILES;
-import static com.shoppingmall.common.code.failure.file.FileFailureCode.FAIL_SAVE_FILES;
+import static com.shoppingmall.common.code.failure.file.FileFailureCode.*;
 
 @Slf4j
 @Getter
@@ -60,21 +60,21 @@ public class FileHandlerHelper {
      * @param multipartFiles 업로드 하고자 하는 파일 목록 (리스트)
      * @return
      */
-    public List<FileSaveRequestDto> uploadFilesToServer(List<MultipartFile> multipartFiles, FileType fileType) {
+    public List<FileSaveRequestDto> uploadFilesToServer(List<MultipartFile> multipartFiles, FileType fileType, String categoryName) {
         List<FileSaveRequestDto> baseFileSaveRequestDtos = new ArrayList<>();
         for (MultipartFile file : multipartFiles) {
             if (file.isEmpty()) {
                 continue;
             }
-            FileSaveRequestDto baseFileSaveRequestDto = this.uploadFilesToServer(file, fileType); // 서버 상에 파일 업로드 진행
+            FileSaveRequestDto baseFileSaveRequestDto = this.uploadFilesToServer(file, fileType, categoryName); // 서버 상에 파일 업로드 진행
             baseFileSaveRequestDtos.add(baseFileSaveRequestDto);
         }
         return baseFileSaveRequestDtos;
     }
 
-    private FileSaveRequestDto uploadFilesToServer(MultipartFile multipartFile, FileType fileType) {
+    private FileSaveRequestDto uploadFilesToServer(MultipartFile multipartFile, FileType fileType, String categoryName) {
         FileSaveRequestDto fileSaveRequestDto = null;
-        if (multipartFile.isEmpty() || fileType == null) {
+        if (multipartFile.isEmpty() || fileType == null || !StringUtils.hasText(categoryName)) {
             return null;
         }
 
@@ -88,7 +88,7 @@ public class FileHandlerHelper {
             }
 
             String storedFileName = createStoredFileName(originalFilename);
-            String uploadFileFullPath = createUploadFileFullPath(fileType, storedFileName);
+            String uploadFileFullPath = createUploadFileFullPath(fileType, storedFileName, categoryName);
             File uploadFile = new File(uploadFileFullPath);
 
             // 서버 상에 파일 업로드 수행
@@ -114,6 +114,7 @@ public class FileHandlerHelper {
                 break;
             default:
                 log.error("Not Found FileType Error = {}", fileType);
+                throw new FileException(FAIL_SAVE_FILES);
         }
         return fileSaveRequestDto;
     }
@@ -169,12 +170,71 @@ public class FileHandlerHelper {
      * 서버상의 물리적 경로와 파일명을 반환
      * ex) /var/www/shoppingmall/upload/UUID.파일명
      */
-    private String createUploadFileFullPath(FileType fileType, String storedFileName) {
+    private String createUploadFileFullPath(FileType fileType, String storedFileName, String categoryName) {
         String today = getCurrentDate();
-        String uploadFileFullPath = this.uploadPath + fileType.getFileType() + File.separator + today;
+        String directoryPath = getDirectoryPath(fileType, categoryName);
+
+        String uploadFileFullPath = this.uploadPath + directoryPath + File.separator + today;
+
         log.debug("[createUploadFileFullPath] fileType = {}, uploadFullPath = {}", fileType, uploadFileFullPath);
         createDirectory(uploadFileFullPath); // 디렉토리 경로 생성
         return uploadFileFullPath + File.separator + storedFileName; // 서버 업로드 경로/UUID.파일명
+    }
+
+    private String getDirectoryPath(FileType fileType, String categoryName) {
+        Category category = Category.fromCategoryName(categoryName);
+
+        switch (fileType) {
+            case posts:
+                return getDirectoryPathByPosts(fileType, category);
+            case products:
+                return getDirectoryPathByProducts(fileType, category);
+            default:;
+                log.error("존재하지 않는 파일 타입 입니다.");
+                throw new FileException(FAIL_SAVE_FILES);
+        }
+    }
+
+    /**
+     * 게시판 이미지 저장 시, 카테고리 구분을 위한 함수
+     * @param fileType
+     * @param category
+     * @return
+     */
+    private String getDirectoryPathByPosts(FileType fileType, Category category) {
+        switch (category) {
+            case GBOARD:
+                return fileType + File.separator + Category.GBOARD.getLowerCaseName();
+            case MBOARD:
+                return fileType + File.separator + Category.MBOARD.getLowerCaseName();
+            default:
+                log.error("존재하지 않는 카테고리입니다.");
+                throw new FileException(FAIL_SAVE_FILES);
+        }
+    }
+
+    /**
+     * 상품 이미지 저장 시, 카테고리 구분을 위한 함수
+     * @param fileType
+     * @param category
+     * @return
+     */
+    private String getDirectoryPathByProducts(FileType fileType, Category category) {
+        switch (category) {
+            case PHONE:
+                return fileType + File.separator + Category.PHONE.getLowerCaseName();
+            case WATCH:
+                return fileType + File.separator + Category.WATCH.getLowerCaseName();
+            case TABLET:
+                return fileType + File.separator + Category.TABLET.getLowerCaseName();
+            case LAPTOP:
+                return fileType + File.separator + Category.LAPTOP.getLowerCaseName();
+            case ACCESSORY:
+                return fileType + File.separator + Category.ACCESSORY.getLowerCaseName();
+            default:
+                log.error("존재하지 않는 제품 카테고리 입니다.");
+                throw new FileException(FAIL_SAVE_FILES);
+        }
     }
 
     /**

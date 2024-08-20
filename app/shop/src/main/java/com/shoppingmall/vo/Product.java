@@ -1,6 +1,5 @@
 package com.shoppingmall.vo;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shoppingmall.constant.ItemSellStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +24,5 @@ public class Product {
     private String delYn;
 
     // 1(Product) : 1(ProductFile)
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private ProductFiles productFiles;
 }

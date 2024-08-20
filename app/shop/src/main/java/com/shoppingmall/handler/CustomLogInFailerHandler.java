@@ -25,6 +25,6 @@ public class CustomLogInFailerHandler implements AuthenticationFailureHandler {
      */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        response.sendRedirect("/member/loginForm");
+        response.sendRedirect("/");
     }
 }

@@ -239,3 +239,36 @@ VALUES
 (3, '상품명48', FLOOR(10000 + (RAND() * 40000)), FLOOR(1 + (RAND() * 100)), '이 상품은 세 번째 카테고리 상품입니다.', 0, NOW(), 'SELL', NOW()),
 (4, '상품명49', FLOOR(10000 + (RAND() * 40000)), FLOOR(1 + (RAND() * 100)), '이 상품은 네 번째 카테고리 상품입니다.', 0, NOW(), 'SELL', NOW()),
 (5, '상품명50', FLOOR(10000 + (RAND() * 40000)), FLOOR(1 + (RAND() * 100)), '이 상품은 다섯 번째 카테고리 상품입니다.', 0, NOW(), 'SELL', NOW());
+
+INSERT INTO shoppingmall.product
+(category_id, product_name, product_price, product_stock, product_desc, product_hits, create_date, item_sell_status, update_date, del_yn)
+VALUES
+    -- 휴대폰 (category_id: 1)
+    (1, 'iPhone 15 Pro', 1500000, 70, 'A17 Pro 칩이 탑재된 6.1인치 슈퍼 레티나 XDR 디스플레이 iPhone.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (1, 'iPhone 15', 1200000, 100, 'Dynamic Island과 A16 Bionic 칩을 갖춘 최신 iPhone.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (1, 'iPhone 14', 1000000, 150, '48MP 듀얼 카메라 시스템과 iOS 17을 탑재한 iPhone 14.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (1, 'Galaxy S23 Ultra', 1450000, 60, '1억 800만 화소 카메라와 S펜을 지원하는 삼성의 최고급 스마트폰.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (1, 'Galaxy S23+', 1250000, 80, '6.6인치 다이나믹 AMOLED 디스플레이와 50MP 카메라를 갖춘 삼성 스마트폰.', 0, NOW(), 'SELL', NOW(), 'N'),
+
+    -- 스마트 시계 (category_id: 2)
+    (2, 'Apple Watch Series 9', 550000, 120, '더 강력한 S9 칩이 탑재된 Apple의 최신 스마트워치.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (2, 'Galaxy Watch 6 Classic', 400000, 140, '원형 베젤과 건강 모니터링 기능을 갖춘 삼성의 스마트워치.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (2, 'Apple Watch SE (2nd Generation)', 350000, 200, '기본적인 기능을 갖춘 경제적인 Apple 스마트워치.', 0, NOW(), 'SELL', NOW(), 'N'),
+
+    -- 태블릿 (category_id: 3)
+    (3, 'iPad Pro 12.9-inch (M2)', 1800000, 30, 'M2 칩이 탑재된 대형 화면의 iPad Pro.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (3, 'iPad Air (5th Generation)', 900000, 50, 'M1 칩이 탑재된 10.9인치 iPad Air.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (3, 'Galaxy Tab S9 Ultra', 1300000, 40, '12.4인치 슈퍼 AMOLED 디스플레이를 갖춘 삼성의 고성능 태블릿.', 0, NOW(), 'SELL', NOW(), 'N'),
+
+    -- 노트북 (category_id: 4)
+    (4, 'MacBook Pro 16-inch (M2 Max)', 3500000, 20, 'M2 Max 칩과 16GB RAM이 탑재된 최고의 성능을 자랑하는 MacBook.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (4, 'MacBook Air 13-inch (M2)', 1600000, 50, 'M2 칩이 탑재된 경량화된 MacBook Air.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (4, 'Dell XPS 13', 1800000, 40, '인피니티엣지 디스플레이를 가진 Dell의 대표 노트북.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (4, 'HP Spectre x360', 1700000, 30, '360도 회전 가능한 OLED 디스플레이를 갖춘 HP의 프리미엄 노트북.', 0, NOW(), 'SELL', NOW(), 'N'),
+
+    -- 액세서리 (category_id: 5)
+    (5, 'AirPods Pro (2nd Generation)', 350000, 150, '액티브 노이즈 캔슬링과 공간 음향을 제공하는 Apple의 프리미엄 무선 이어폰.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (5, 'MagSafe Charger', 50000, 200, 'iPhone과 호환되는 무선 충전기.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (5, 'Samsung Galaxy Buds 2 Pro', 250000, 180, '고해상도 오디오와 ANC를 지원하는 삼성의 무선 이어폰.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (5, 'Apple Magic Keyboard', 400000, 100, 'iPad Pro 및 iPad Air용 트랙패드가 탑재된 Apple의 키보드 케이스.', 0, NOW(), 'SELL', NOW(), 'N'),
+    (5, 'Apple Pencil (2nd Generation)', 170000, 120, '정밀한 드로잉과 필기를 위한 Apple의 스타일러스 펜.', 0, NOW(), 'SELL', NOW(), 'N');
