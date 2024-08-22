@@ -21,7 +21,7 @@ public class MainController {
     private final HttpSession session;
 
     @GetMapping(value = {"/", ""})
-    public String init(SearchRequestDto searchRequestDto, Model model) {
+    public String enter(SearchRequestDto searchRequestDto, Model model) {
         SessionMember loginSessionUser = (SessionMember) session.getAttribute("LOGIN_SESSION_USER");
         if (loginSessionUser != null) {
             model.addAttribute("name", loginSessionUser.getName());
