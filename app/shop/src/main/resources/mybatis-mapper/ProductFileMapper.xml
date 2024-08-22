@@ -16,7 +16,7 @@
             delete_date,
             del_yn,
             file_attached,
-            downlod_cnt
+            download_cnt
         ) VALUES
         <foreach item="file" collection="list" separator=",">
             (
@@ -48,7 +48,7 @@
             delete_date,
             del_yn,
             file_attached,
-            downlod_cnt
+            download_cnt
         FROM product_file pf
         WHERE pf.product_id = #{productId}
         AND pf.del_yn = 'N'

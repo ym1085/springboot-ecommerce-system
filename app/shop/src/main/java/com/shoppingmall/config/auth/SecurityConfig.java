@@ -38,6 +38,7 @@ public class SecurityConfig {
     // TODO: DB로 빼서 관리 해야함 URL 같은 경우, 우선 배열로 관리
     private static final String[] PUBLIC_MATCHERS = {
             "/",
+            "/upload/**",
             "/css/**",
             "/images/**",
             "/bootstrap/**",

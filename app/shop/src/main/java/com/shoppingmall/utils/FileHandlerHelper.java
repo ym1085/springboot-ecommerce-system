@@ -88,14 +88,17 @@ public class FileHandlerHelper {
             }
 
             String storedFileName = createStoredFileName(originalFilename);
-            String uploadFileFullPath = createUploadFileFullPath(fileType, storedFileName, categoryName);
+            String uploadFileFullPath = createFullFilePath(fileType, storedFileName, categoryName);
             File uploadFile = new File(uploadFileFullPath);
+            log.info("물리적인 서버 파일 업로드 경로, uploadFile = {}", uploadFile);
 
-            // 서버 상에 파일 업로드 수행
+            // 서버 상 물리적인 경로에 파일 업로드 수행
             multipartFile.transferTo(uploadFile);
 
-            // DB에 도메인(게시판, 상품)별 데이터를 저장하기 위해 Builder 객체 데이터 생성 후 반환
-            fileSaveRequestDto = buildFileSaveRequestDto(fileType, originalFilename, storedFileName, uploadFileFullPath, fileSize, ext);
+            // DB에 도메인(게시판, 상품)별 데이터를 저장하기 위해 Builder 객체 생성 후 반환
+            String uploadDBFilePath = createDBFilePath(fileType, storedFileName, categoryName);
+            log.info("DB 파일 업로드 경로, uploadDBFilePath = {}", uploadDBFilePath);
+            fileSaveRequestDto = buildFileSaveRequestDto(fileType, originalFilename, storedFileName, uploadDBFilePath, fileSize, ext);
         } catch (IOException | IllegalStateException | FileException e) {
             log.error("e = {}", e.getMessage(), e);
             throw new FileException(FAIL_SAVE_FILES);
@@ -170,15 +173,34 @@ public class FileHandlerHelper {
      * 서버상의 물리적 경로와 파일명을 반환
      * ex) /var/www/shoppingmall/upload/UUID.파일명
      */
-    private String createUploadFileFullPath(FileType fileType, String storedFileName, String categoryName) {
+    private String createFullFilePath(FileType fileType, String storedFileName, String categoryName) {
         String today = getCurrentDate();
         String directoryPath = getDirectoryPath(fileType, categoryName);
 
-        String uploadFileFullPath = this.uploadPath + directoryPath + File.separator + today;
+        String uploadFullFilePath = uploadPath + directoryPath + File.separator + today; // -> /Users/...
+        log.debug("uploadFullFilePath = {}", uploadFullFilePath);
 
-        log.debug("[createUploadFileFullPath] fileType = {}, uploadFullPath = {}", fileType, uploadFileFullPath);
-        createDirectory(uploadFileFullPath); // 디렉토리 경로 생성
-        return uploadFileFullPath + File.separator + storedFileName; // 서버 업로드 경로/UUID.파일명
+        createDirectory(uploadFullFilePath); // 디렉토리 경로 생성
+        return uploadFullFilePath + File.separator + storedFileName; // 서버 업로드 경로/UUID.파일명
+    }
+
+    /**
+     * DB에 저장하기 위한 File Path 생성
+     */
+    private String createDBFilePath(FileType fileType, String storedFileName, String categoryName) {
+        String today = getCurrentDate();
+        String directoryPath = getDirectoryPath(fileType, categoryName);
+        return File.separator + directoryPath + File.separator + today + File.separator + storedFileName;
+    }
+
+    /**
+     * 물리 디렉토리 경로 생성
+     */
+    private void createDirectory(String uploadFileFullPath) {
+        File dir = new File(uploadFileFullPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
     }
 
     private String getDirectoryPath(FileType fileType, String categoryName) {
@@ -242,16 +264,6 @@ public class FileHandlerHelper {
      */
     private String getFileExtension(String originalFilename) {
         return StringUtils.getFilenameExtension(originalFilename);
-    }
-
-    /**
-     * 물리 디렉토리 경로 생성
-     */
-    private void createDirectory(String uploadFileFullPath) {
-        File dir = new File(uploadFileFullPath);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
     }
 
     /**

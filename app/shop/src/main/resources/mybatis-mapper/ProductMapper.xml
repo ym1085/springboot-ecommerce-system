@@ -37,7 +37,7 @@
         <result property="downloadCnt" column="download_cnt" />
     </resultMap>
 
-    <!-- TODO: 메인화면에 뿌릴 상품 N개를 쿼리로 분리하여 가지고 가야 할 듯 -->
+    <!-- TODO: 메인화면에는 'N' 개의 컨텐츠를 10개씩만 조회한다 -->
     <select id="getProducts" parameterType="SearchRequestDto" resultMap="ProductsResult">
         SELECT
             pp.product_id,
@@ -52,17 +52,17 @@
             pp.create_date,
             pp.update_date,
             pp.del_yn,
-            pf.product_file_id,  -- 추가된 컬럼
-            pf.origin_file_name, -- 추가된 컬럼
-            pf.stored_file_name, -- 추가된 컬럼
-            pf.file_path,        -- 추가된 컬럼
-            pf.file_size,        -- 추가된 컬럼
-            pf.file_exp,         -- 추가된 컬럼
-            pf.create_date AS file_create_date,  -- 추가된 컬럼
-            pf.delete_date,      -- 추가된 컬럼
-            pf.del_yn AS file_del_yn,            -- 추가된 컬럼
-            pf.file_attached,    -- 추가된 컬럼
-            pf.download_cnt      -- 추가된 컬럼
+            pf.product_file_id,
+            pf.origin_file_name,
+            pf.stored_file_name,
+            pf.file_path,
+            pf.file_size,
+            pf.file_exp,
+            pf.create_date AS file_create_date,
+            pf.delete_date,
+            pf.del_yn AS file_del_yn,
+            pf.file_attached,
+            pf.download_cnt
         FROM
             (
                 SELECT
@@ -100,17 +100,17 @@
             pw.create_date,
             pw.update_date,
             pw.del_yn,
-            pf.product_file_id,  -- 추가된 컬럼
-            pf.origin_file_name, -- 추가된 컬럼
-            pf.stored_file_name, -- 추가된 컬럼
-            pf.file_path,        -- 추가된 컬럼
-            pf.file_size,        -- 추가된 컬럼
-            pf.file_exp,         -- 추가된 컬럼
-            pf.create_date AS file_create_date,  -- 추가된 컬럼
-            pf.delete_date,      -- 추가된 컬럼
-            pf.del_yn AS file_del_yn,            -- 추가된 컬럼
-            pf.file_attached,    -- 추가된 컬럼
-            pf.download_cnt      -- 추가된 컬럼
+            pf.product_file_id,
+            pf.origin_file_name,
+            pf.stored_file_name,
+            pf.file_path,
+            pf.file_size,
+            pf.file_exp,
+            pf.create_date AS file_create_date,
+            pf.delete_date,
+            pf.del_yn AS file_del_yn,
+            pf.file_attached,
+            pf.download_cnt
         FROM
             (
                 SELECT
@@ -176,7 +176,7 @@
             IFNULL(pf.delete_date, '1900-01-01') AS file_delete_date, -- 기본값 예시: 최소 날짜
             IFNULL(pf.del_yn, 'n') AS del_yn,
             IFNULL(pf.file_attached, 'n') AS file_attached,
-            IFNULL(pf.downlod_cnt, 0) AS downlod_cnt
+            IFNULL(pf.download_cnt, 0) AS download_cnt
         FROM product p
         INNER JOIN product_category pc ON p.category_id = pc.category_id
         LEFT OUTER JOIN product_file pf ON p.product_id = pf.product_id

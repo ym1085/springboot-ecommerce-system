@@ -136,125 +136,37 @@
                 <div class="swiper product-swiper">
                     <div class="swiper-wrapper">
                         <!-- TODO: 이 부분을 서버에서 받아와서 처리, 이미지도 서버에서 받아오는게 좋을 듯 -->
-                        <div class="swiper-slide">
-                            <div class="product-card position-relative">
-                                <div class="image-holder">
-                                    <img th:src="@{/bootstrap/images/product-item1.jpg}" alt="product-item"
-                                         class="img-fluid">
-                                </div>
-                                <div class="cart-concern position-absolute">
-                                    <div class="cart-button d-flex">
-                                        <a href="#" class="btn btn-medium btn-black">Add to Cart
-                                            <svg class="cart-outline">
-                                                <use xlink:href="#cart-outline"></use>
-                                            </svg>
-                                        </a>
+                        <th:block th:each="phone : ${products.productByPhones}">
+                            <div class="swiper-slide">
+                                <div class="product-card position-relative">
+                                    <!-- 상품 이미지 출력 -->
+                                    <div class="image-holder">
+                                        <img th:if="${phone != null and not #strings.isEmpty(phone.productFiles.filePath)}"
+                                             th:src="@{'/upload' + ${phone.productFiles.filePath}}" alt="product-item" class="img-fluid">
+                                    </div>
+                                    <div class="cart-concern position-absolute">
+                                        <div class="cart-button d-flex">
+                                            <a href="#" class="btn btn-medium btn-black">Add to Cart
+                                                <svg class="cart-outline">
+                                                    <use xlink:href="#cart-outline"></use>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
+                                        <!-- 상품명 -->
+                                        <h3 class="card-title text-uppercase">
+                                            <a th:if="${phone != null and not #strings.isEmpty(phone.productId) and not #strings.isEmpty(phone.productName)}"
+                                                th:href="@{/api/v1/products(productId = ${phone.productId})}"
+                                                th:text="${phone.productName}"></a>
+                                        </h3>
+                                        <!-- 상품 가격 -->
+                                        <span th:if="${phone != null and not #strings.isEmpty(phone.productPrice)}"
+                                              th:text="${#numbers.formatInteger(phone.productPrice, 0, 'COMMA')}" class="item-price text-primary">1,000,000</span>
                                     </div>
                                 </div>
-                                <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
-                                    <h3 class="card-title text-uppercase">
-                                        <a href="#">Iphone 10</a>
-                                    </h3>
-                                    <span class="item-price text-primary">$980</span>
-                                </div>
                             </div>
-                        </div>
-                        <!-- TODO: 수정 -->
-                        <div class="swiper-slide">
-                            <div class="product-card position-relative">
-                                <div class="image-holder">
-                                    <img th:src="@{/bootstrap/images/product-item2.jpg}" alt="product-item"
-                                         class="img-fluid">
-                                </div>
-                                <div class="cart-concern position-absolute">
-                                    <div class="cart-button d-flex">
-                                        <a href="#" class="btn btn-medium btn-black">Add to Cart
-                                            <svg class="cart-outline">
-                                                <use xlink:href="#cart-outline"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
-                                    <h3 class="card-title text-uppercase">
-                                        <a href="#">Iphone 11</a>
-                                    </h3>
-                                    <span class="item-price text-primary">$1100</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- TODO: 수정 -->
-                        <div class="swiper-slide">
-                            <div class="product-card position-relative">
-                                <div class="image-holder">
-                                    <img th:src="@{/bootstrap/images/product-item3.jpg}" alt="product-item"
-                                         class="img-fluid">
-                                </div>
-                                <div class="cart-concern position-absolute">
-                                    <div class="cart-button d-flex">
-                                        <a href="#" class="btn btn-medium btn-black">Add to Cart
-                                            <svg class="cart-outline">
-                                                <use xlink:href="#cart-outline"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
-                                    <h3 class="card-title text-uppercase">
-                                        <a href="#">Iphone 8</a>
-                                    </h3>
-                                    <span class="item-price text-primary">$780</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- TODO: 수정 -->
-                        <div class="swiper-slide">
-                            <div class="product-card position-relative">
-                                <div class="image-holder">
-                                    <img th:src="@{/bootstrap/images/product-item4.jpg}" alt="product-item"
-                                         class="img-fluid">
-                                </div>
-                                <div class="cart-concern position-absolute">
-                                    <div class="cart-button d-flex">
-                                        <a href="#" class="btn btn-medium btn-black">Add to Cart
-                                            <svg class="cart-outline">
-                                                <use xlink:href="#cart-outline"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
-                                    <h3 class="card-title text-uppercase">
-                                        <a href="#">Iphone 13</a>
-                                    </h3>
-                                    <span class="item-price text-primary">$1500</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- TODO: 수정 -->
-                        <div class="swiper-slide">
-                            <div class="product-card position-relative">
-                                <div class="image-holder">
-                                    <img th:src="@{/bootstrap/images/product-item5.jpg}" alt="product-item"
-                                         class="img-fluid">
-                                </div>
-                                <div class="cart-concern position-absolute">
-                                    <div class="cart-button d-flex">
-                                        <a href="#" class="btn btn-medium btn-black">Add to Cart
-                                            <svg class="cart-outline">
-                                                <use xlink:href="#cart-outline"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
-                                    <h3 class="card-title text-uppercase">
-                                        <a href="#">Iphone 12</a>
-                                    </h3>
-                                    <span class="item-price text-primary">$1300</span>
-                                </div>
-                            </div>
-                        </div>
+                        </th:block>
                     </div>
                 </div>
             </div>
@@ -268,132 +180,42 @@
                 <div class="display-header d-flex justify-content-between pb-3">
                     <h2 class="display-7 text-dark text-uppercase">Smart Watches</h2>
                     <div class="btn-right">
-                        <!-- TODO: 수정 -->
+                        <!-- TODO: 링크 연결 수정 -->
                         <a href="#" class="btn btn-medium btn-normal text-uppercase">Go to Shop</a>
                     </div>
                 </div>
                 <div class="swiper product-watch-swiper">
                     <div class="swiper-wrapper">
-                        <!-- TODO: 수정 -->
-                        <div class="swiper-slide">
-                            <div class="product-card position-relative">
-                                <div class="image-holder">
-                                    <img th:src="@{/bootstrap/images/product-item6.jpg}" alt="product-item"
-                                         class="img-fluid">
-                                </div>
-                                <div class="cart-concern position-absolute">
-                                    <div class="cart-button d-flex">
-                                        <a href="#" class="btn btn-medium btn-black">Add to Cart
-                                            <svg class="cart-outline">
-                                                <use xlink:href="#cart-outline"></use>
-                                            </svg>
-                                        </a>
+                        <th:block th:each="watch : ${products.productByWatches}">
+                            <div class="swiper-slide">
+                                <div class="product-card position-relative">
+                                    <div class="image-holder">
+                                        <img th:if="${watch != null and not #strings.isEmpty(watch.productFiles.filePath)}"
+                                             th:src="@{'/upload' + ${watch.productFiles.filePath}}" alt="product-item" class="img-fluid">
+                                    </div>
+                                    <div class="cart-concern position-absolute">
+                                        <div class="cart-button d-flex">
+                                            <a href="#" class="btn btn-medium btn-black">Add to Cart
+                                                <svg class="cart-outline">
+                                                    <use xlink:href="#cart-outline"></use>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
+                                        <!-- 상품명 -->
+                                        <h3 class="card-title text-uppercase">
+                                            <a th:if="${watch != null and not #strings.isEmpty(watch.productId) and not #strings.isEmpty(watch.productName)}"
+                                               th:href="@{/api/v1/products(productId = ${watch.productId})}"
+                                               th:text="${watch.productName}"></a>
+                                        </h3>
+                                        <!-- 상품 가격 -->
+                                        <span th:if="${watch != null and not #strings.isEmpty(watch.productPrice)}"
+                                              th:text="${#numbers.formatInteger(watch.productPrice, 0, 'COMMA')}" class="item-price text-primary">1,000,000</span>
                                     </div>
                                 </div>
-                                <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
-                                    <h3 class="card-title text-uppercase">
-                                        <a href="#">Pink watch</a>
-                                    </h3>
-                                    <span class="item-price text-primary">$870</span>
-                                </div>
                             </div>
-                        </div>
-                        <!-- TODO: 수정 -->
-                        <div class="swiper-slide">
-                            <div class="product-card position-relative">
-                                <div class="image-holder">
-                                    <img th:src="@{/bootstrap/images/product-item7.jpg}" alt="product-item"
-                                         class="img-fluid">
-                                </div>
-                                <div class="cart-concern position-absolute">
-                                    <div class="cart-button d-flex">
-                                        <a href="#" class="btn btn-medium btn-black">Add to Cart
-                                            <svg class="cart-outline">
-                                                <use xlink:href="#cart-outline"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
-                                    <h3 class="card-title text-uppercase">
-                                        <a href="#">Heavy watch</a>
-                                    </h3>
-                                    <span class="item-price text-primary">$680</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- TODO: 수정 -->
-                        <div class="swiper-slide">
-                            <div class="product-card position-relative">
-                                <div class="image-holder">
-                                    <img th:src="@{/bootstrap/images/product-item8.jpg}" alt="product-item"
-                                         class="img-fluid">
-                                </div>
-                                <div class="cart-concern position-absolute">
-                                    <div class="cart-button d-flex">
-                                        <a href="#" class="btn btn-medium btn-black">Add to Cart
-                                            <svg class="cart-outline">
-                                                <use xlink:href="#cart-outline"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
-                                    <h3 class="card-title text-uppercase">
-                                        <a href="#">spotted watch</a>
-                                    </h3>
-                                    <span class="item-price text-primary">$750</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- TODO: 수정 -->
-                        <div class="swiper-slide">
-                            <div class="product-card position-relative">
-                                <div class="image-holder">
-                                    <img th:src="@{/bootstrap/images/product-item9.jpg}" alt="product-item"
-                                         class="img-fluid">
-                                </div>
-                                <div class="cart-concern position-absolute">
-                                    <div class="cart-button d-flex">
-                                        <a href="#" class="btn btn-medium btn-black">Add to Cart
-                                            <svg class="cart-outline">
-                                                <use xlink:href="#cart-outline"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
-                                    <h3 class="card-title text-uppercase">
-                                        <a href="#">black watch</a>
-                                    </h3>
-                                    <span class="item-price text-primary">$650</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- TODO: 수정 -->
-                        <div class="swiper-slide">
-                            <div class="product-card position-relative">
-                                <div class="image-holder">
-                                    <img th:src="@{/bootstrap/images/product-item10.jpg}" alt="product-item"
-                                         class="img-fluid">
-                                </div>
-                                <div class="cart-concern position-absolute">
-                                    <div class="cart-button d-flex">
-                                        <a href="#" class="btn btn-medium btn-black">Add to Cart
-                                            <svg class="cart-outline">
-                                                <use xlink:href="#cart-outline"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="card-detail d-flex justify-content-between pt-3">
-                                    <h3 class="card-title text-uppercase">
-                                        <a href="#">black watch</a>
-                                    </h3>
-                                    <span class="item-price text-primary">$750</span>
-                                </div>
-                            </div>
-                        </div>
+                        </th:block>
                     </div>
                 </div>
             </div>
