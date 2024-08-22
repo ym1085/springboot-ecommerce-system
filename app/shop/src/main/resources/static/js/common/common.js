@@ -1,13 +1,3 @@
-/**
- * @author          :       youngmin
- * @version         :       1.0.0
- * @description     :       javascript 공통 함수
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-08-13       youngmin           최초 생성
- **/
-
 function loadLoginForm() {
     closeCurrentModal(); // 현재 열려있는 모달이 있으면 닫기
     loadModal('/member/loginForm', 'loginModal');

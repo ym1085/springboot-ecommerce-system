@@ -481,7 +481,10 @@ function validateMemberJoinInfo() {
     return isValidation;
 }
 
-const main = {
+// TODO: 아래 ES5 -> ES6로 전부 변경
+// TODO: 위 선언형 함수 -> obj func 형태로 변경하자..
+const memberJoin = {
+
     init: function () {
         let _this = this;
         $('#btn-join').on('click', function () {

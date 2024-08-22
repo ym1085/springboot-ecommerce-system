@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 @Builder
 public class BaseResponse<T> {
-    //private final String code; // 내부 커스텀 코드 번호 = [E0101, E0102..]
-    private final boolean success;
-    private final String message; // 반환 메시지
+    private final String statusCode; // HTTP status code
+    private final boolean success; // success status
+    private final String message; // response message
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final T result;
@@ -24,6 +24,14 @@ public class BaseResponse<T> {
 
     public static BaseResponse<?> of(boolean isSuccess, String message) {
         return BaseResponse.builder()
+                .success(isSuccess)
+                .message(message)
+                .build();
+    }
+
+    public static BaseResponse<?> of(String statusCode, boolean isSuccess, String message) {
+        return BaseResponse.builder()
+                .statusCode(statusCode)
                 .success(isSuccess)
                 .message(message)
                 .build();

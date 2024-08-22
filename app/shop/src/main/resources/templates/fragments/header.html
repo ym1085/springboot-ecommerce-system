@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
     <th:block th:fragment="main-header">
         <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
             <symbol id="search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
@@ -79,6 +82,7 @@
             </symbol>
         </svg>
 
+        <!-- 검색 -->
         <div class="search-popup">
             <div class="search-popup-container">
                 <form role="search" method="get" class="search-form" action="">
@@ -121,7 +125,7 @@
         <header id="header" class="site-header header-scrolled position-fixed text-black bg-light">
             <nav id="header-nav" class="navbar navbar-expand-lg px-3 mb-3">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="index.html">
+                    <a class="navbar-brand" th:href="@{/}">
                         <img th:src="@{/bootstrap/images/main-logo.png}" class="logo">
                     </a>
                     <button class="navbar-toggler d-flex d-lg-none order-3 p-2" type="button" data-bs-toggle="offcanvas"
@@ -133,7 +137,7 @@
                     </button>
                     <div class="offcanvas offcanvas-end" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel">
                         <div class="offcanvas-header px-4 pb-0">
-                            <a class="navbar-brand" href="index.html">
+                            <a class="navbar-brand" th:href="@{/}">
                                 <img th:src="@{/bootstrap/images/main-logo.png}" class="logo">
                             </a>
                             <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas"
@@ -190,7 +194,8 @@
                                         </li>-->
                                     </ul>
                                 </li>
-                                <li class="nav-item">
+                                <!-- 비로그인 사용자 -->
+                                <li class="nav-item" sec:authorize="isAnonymous()">
                                     <div class="user-items ps-5">
                                         <ul class="d-flex justify-content-end list-unstyled">
                                             <li class="search-item pe-3">
@@ -200,14 +205,46 @@
                                                     </svg>
                                                 </a>
                                             </li>
+                                            <!-- 회원 이미지 클릭 시 로그인 모달 출력 -->
                                             <li class="pe-3">
-                                                <!-- 회원 이미지 클릭 시 로그인 모달 출력 -->
                                                 <a href="#" onclick="loadLoginForm()">
                                                     <svg class="user">
                                                         <use xlink:href="#user"></use>
                                                     </svg>
                                                 </a>
                                             </li>
+                                            <!-- 비회원 장바구니 등록 후 나중에 병합 -->
+                                            <li>
+                                                <a th:href="@{/cart}">
+                                                    <svg class="cart">
+                                                        <use xlink:href="#cart"></use>
+                                                    </svg>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <!-- 로그인 사용자 -->
+                                <li class="nav-item" sec:authorize="isAuthenticated()">
+                                    <div class="user-items ps-5" sec:authorize="hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')">
+                                        <ul class="d-flex justify-content-end list-unstyled">
+                                            <li class="search-item pe-3">
+                                                <a href="#" class="search-button">
+                                                    <svg class="search">
+                                                        <use xlink:href="#search"></use>
+                                                    </svg>
+                                                </a>
+                                            </li>
+                                            <!-- TODO: 일단 홀딩 -->
+                                            <li class="pe-3">
+                                                <a href="#">
+                                                    <svg class="user">
+                                                        <use xlink:href="#user"></use>
+                                                    </svg>
+                                                </a>
+                                            </li>
+                                            <!-- TODO: 일단 홀딩 -->
                                             <li>
                                                 <a th:href="@{/cart}">
                                                     <svg class="cart">

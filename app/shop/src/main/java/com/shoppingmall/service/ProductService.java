@@ -44,13 +44,25 @@ public class ProductService {
         if (CollectionUtils.isEmpty(products)) {
             return new ProductResponse();
         }
-        List<Product> productByPhones = products.stream().filter(Objects::nonNull).filter(product -> product.getCategoryId() == 1).collect(Collectors.toList());
-        List<Product> productByWatches = products.stream().filter(Objects::nonNull).filter(product -> product.getCategoryId() == 2).collect(Collectors.toList());
         return ProductResponse
                 .builder()
-                .productByPhones(productByPhones)
-                .productByWatches(productByWatches)
+                .productByPhones(getProductByPhones(products))
+                .productByWatches(getProductByWatches(products))
                 .build();
+    }
+
+    private static List<Product> getProductByPhones(List<Product> products) {
+        return products.stream()
+                .filter(Objects::nonNull)
+                .filter(product -> product.getCategoryId() == 1)
+                .collect(Collectors.toList());
+    }
+
+    private static List<Product> getProductByWatches(List<Product> products) {
+        return products.stream()
+                .filter(Objects::nonNull)
+                .filter(product -> product.getCategoryId() == 2)
+                .collect(Collectors.toList());
     }
 
     public Product getProductByProductId(Integer productId) {
