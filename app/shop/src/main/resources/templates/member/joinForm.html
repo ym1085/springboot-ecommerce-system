@@ -4,7 +4,7 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<th:block th:fragment="joinModal">
+<!--<th:block th:fragment="joinModal">-->
 	<section id="join-section" class="padding-large bg-light">
 		<!-- 회원가입 모달 -->
 		<div id="joinModal" class="modal fade" tabindex="-1" aria-labelledby="joinModalLabel" aria-hidden="true">
@@ -30,7 +30,7 @@
 										   placeholder="계정을 입력해주세요."/>
 									<div class="input-group-append">
 										<button type="button" class="btn btn-outline-secondary" id="checkDuplicateId"
-												onclick="checkDuplAccount();">아이디 중복 체크
+												onclick="checkDuplicateAccount();">아이디 중복 체크
 										</button>
 									</div>
 								</div>
@@ -113,11 +113,11 @@
 			</div>
 		</div>
 	</section>
-</th:block>
+<!--</th:block>-->
 
 <!-- 고유 스크립트 추가 -->
-<th:block layout:fragment="script">
-	<script th:src="@{/js/common/loading.js}"></script>
-	<script th:src="@{/js/member/join.js}"></script>
-</th:block>
+<!--<th:block layout:fragment="script">-->
+<script type="text/javascript" th:src="@{/js/common/memberValidate.js}"></script>
+<script type="text/javascript" th:src="@{/js/member/join.js}"></script>
+<!--</th:block>-->
 </html>
