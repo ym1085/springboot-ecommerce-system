@@ -41,8 +41,8 @@ function closeCurrentModal() {
 
 function loadModal(url, id) {
 	console.log(`Loading => ${url}, ${id}`);
-	$('#modalContainer').empty();
-	$('#modalContainer').load(url + ' #' + id, function () {
+	$('#mainModalContainer').empty();
+	$('#mainModalContainer').load(url + ' #' + id, function () {
 		console.log(`url = ${url}, id = ${id}`);
 		$('#' + id).modal('show');
 	});
@@ -57,8 +57,7 @@ function movePageWithPageNo(pageNo) {
 		searchType: searchForm.searchType.value,
 		searchKeyword: searchForm.searchKeyword.value,
 	};
-	location.href =
-		location.pathname + '?' + new URLSearchParams(queryString).toString();
+	location.href = location.pathname + '?' + new URLSearchParams(queryString).toString();
 }
 
 function focus(element) {
@@ -126,11 +125,7 @@ function showMessage(message) {
  */
 function isEmpty(str) {
 	return (
-		str === '' ||
-		str === undefined ||
-		str === 'undefined' ||
-		str === null ||
-		str === 'null'
+		str === '' || str === undefined || str === 'undefined' || str === null || str === 'null'
 		// str.trim() === ''
 	);
 }
