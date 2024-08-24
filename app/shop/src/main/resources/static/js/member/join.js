@@ -1,5 +1,10 @@
 let memberJoinInfoObj = {};
 
+$(function () {
+	/* document is already on loaded */
+	main.init();
+});
+
 /**
  * Set the member information global variable memberJoinInfoObj,
  * when the Join button is clicked
@@ -29,16 +34,8 @@ function validateMemberJoinInfo() {
 		() => memberJoinValidator.validateAccountRegExp(memberJoinInfoObj.account),
 		() => memberJoinValidator.validatePrefixPwd(memberJoinInfoObj.password1),
 		() => memberJoinValidator.validateLastPwd(memberJoinInfoObj.password2),
-		() =>
-			memberJoinValidator.validateEqualsPasswords(
-				memberJoinInfoObj.password1,
-				memberJoinInfoObj.password2,
-			),
-		() =>
-			memberJoinValidator.validatePasswordRegExp(
-				memberJoinInfoObj.password1,
-				memberJoinInfoObj.password2,
-			),
+		() => memberJoinValidator.validateEqualsPasswords(memberJoinInfoObj.password1, memberJoinInfoObj.password2),
+		() => memberJoinValidator.validatePasswordRegExp(memberJoinInfoObj.password1, memberJoinInfoObj.password2),
 		() => memberJoinValidator.validateEmail(memberJoinInfoObj.email),
 		() => memberJoinValidator.validateEmailRegExp(memberJoinInfoObj.email),
 		() => memberJoinValidator.validatePhonePrefix(memberJoinInfoObj.phonePrefix),
@@ -53,10 +50,7 @@ function validateMemberJoinInfo() {
 				memberJoinInfoObj.phoneLast,
 			),
 		() => memberJoinValidator.validateCertYn(memberJoinInfoObj.certYn),
-		() =>
-			memberJoinValidator.validateDuplicateAccount(
-				memberJoinInfoObj.accountCertYn,
-			),
+		() => memberJoinValidator.validateDuplicateAccount(memberJoinInfoObj.accountCertYn),
 	];
 
 	for (const validation of validations) {
@@ -72,17 +66,16 @@ const main = {
 	 * Initializing member objects
 	 */
 	init() {
-		console.log(`init`);
-		$('#btn-join').on('click', function () {
-			console.log(`btn-join click`);
+		const _this = this;
+		$('#mainModalContainer').on('click', '#btn-join', function () {
 			if (!confirm(messages.CONFIRM_MEMBER_JOIN.msg)) {
 				return;
 			}
 
-			if (this.validate()) {
+			if (_this.validate()) {
 				console.log(`success validate`);
 				showMessage(messages.PROCEED_MEMBER_JOIN.msg);
-				this.join();
+				_this.join();
 			}
 		});
 	},
@@ -122,10 +115,7 @@ const main = {
 		};
 
 		// create request data
-		const request =
-			memberRequestDataBuilder.createMemberRequestInfoBuilder(
-				requestMemberJoinObj,
-			);
+		const request = memberRequestDataBuilder.createMemberRequestInfoBuilder(requestMemberJoinObj);
 
 		try {
 			const response = await commonFetchTemplate.sendFetchRequest(request);
@@ -140,5 +130,3 @@ const main = {
 		}
 	},
 };
-console.log(`join start`);
-main.init();
