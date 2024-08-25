@@ -30,7 +30,7 @@
 										   placeholder="계정을 입력해주세요."/>
 									<div class="input-group-append">
 										<button type="button" class="btn btn-outline-secondary" id="checkDuplicateId"
-												onclick="checkDuplicateAccount();">아이디 중복 체크
+												onclick="memberJoinValidator.checkDuplicateAccount();">아이디 중복 체크
 										</button>
 									</div>
 								</div>
@@ -52,7 +52,7 @@
 										   placeholder="이메일을 입력해주세요." autocomplete='off'/>
 									<div class="input-group-append">
 										<button type="button" class="btn btn-outline-secondary" id="sendVerification"
-												onclick="sendAuthEmail();">인증 번호 발송
+												onclick="memberJoinValidator.sendAuthEmail();">인증 번호 발송
 										</button>
 									</div>
 								</div>
@@ -64,7 +64,7 @@
 										   required placeholder="인증 번호를 입력해주세요."/>
 									<div class="input-group-append">
 										<button type="button" class="btn btn-outline-secondary" id="verifyCode"
-												onclick="verifyEmailAuthCode();">인증 확인
+												onclick="memberJoinValidator.verifyEmailAuthCode();">인증 확인
 										</button>
 									</div>
 								</div>

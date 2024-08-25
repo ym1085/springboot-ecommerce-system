@@ -115,7 +115,7 @@ const main = {
         };
 
         // create request data
-        const request = memberRequestDataBuilder.createMemberRequestInfoBuilder(requestMemberJoinObj);
+        let request = memberRequestDataBuilder.createMemberRequestBodyInfoBuilder(requestMemberJoinObj);
 
         try {
             const response = await commonFetchTemplate.sendFetchRequest(request);

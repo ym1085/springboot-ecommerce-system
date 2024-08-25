@@ -157,7 +157,7 @@ function isNotEmptyObject(obj) {
  * @returns {boolean}
  */
 function isNotEmpty(str) {
-    return isEmpty(str) ? false : true;
+    return !isEmpty(str);
 }
 
 /**

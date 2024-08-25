@@ -1,26 +1,86 @@
+/**
+ * Create member request object data
+ */
 const memberRequestDataBuilder = {
-    createMemberRequestInfoBuilder(data) {
+    createMemberRequestBodyInfoBuilder(request) {
         const requestBody = {};
-
-        if (data.requestBody.username) requestBody.username = data.username;
-        if (data.requestBody.account) requestBody.account = data.account;
-        if (data.requestBody.password1) requestBody.password = data.password1;
-        if (data.requestBody.email) requestBody.email = data.email;
-        if (data.requestBody.phonePrefix && data.requestBody.phoneMiddle && data.requestBody.phoneLast) {
-            requestBody.phoneNumber = `${data.phonePrefix}-${data.phoneMiddle}-${data.phoneLast}`;
+        if (request.requestBody.username) {
+            requestBody.username = request.username;
         }
-        if (data.requestBody.certYn) requestBody.certYn = data.certYn;
-        if (data.requestBody.accountCertYn) {
-            requestBody.accountCertYn = data.accountCertYn;
+        if (request.requestBody.account) {
+            requestBody.account = request.account;
         }
-        if (data.requestBody.gender) requestBody.gender = data.gender;
-        if (data.requestBody.birthDate) requestBody.birthDate = data.birthDate;
+        if (request.requestBody.password1) {
+            requestBody.password = request.password1;
+        }
+        if (request.requestBody.email) {
+            requestBody.email = request.email;
+        }
+        if (request.requestBody.phonePrefix && request.requestBody.phoneMiddle && request.requestBody.phoneLast) {
+            requestBody.phoneNumber = `${request.phonePrefix}-${request.phoneMiddle}-${request.phoneLast}`;
+        }
+        if (request.requestBody.certYn) {
+            requestBody.certYn = request.certYn;
+        }
+        if (request.requestBody.accountCertYn) {
+            requestBody.accountCertYn = request.accountCertYn;
+        }
+        if (request.requestBody.gender) {
+            requestBody.gender = request.gender;
+        }
+        if (request.requestBody.birthDate) {
+            requestBody.birthDate = request.birthDate;
+        }
 
         return {
-            baseUrl: data.baseUrl,
-            method: data.method,
-            contentType: data.contentType,
+            baseUrl: request.baseUrl,
+            method: request.method,
+            contentType: request.contentType,
             requestBody: requestBody,
+        };
+    },
+
+    createMemberRequestQueryStringInfoBuilder(request) {
+        const queryParams = [];
+        if (request.name) {
+            queryParams.push(`name=${encodeURIComponent(request.name)}`);
+        }
+        if (request.account) {
+            queryParams.push(`account=${encodeURIComponent(request.account)}`);
+        }
+        if (request.password) {
+            queryParams.push(`password=${encodeURIComponent(request.password)}`);
+        }
+        if (request.email) {
+            queryParams.push(`email=${encodeURIComponent(request.email)}`);
+        }
+        if (request.phoneNumber) {
+            queryParams.push(`phoneNumber=${encodeURIComponent(request.phoneNumber)}`);
+        }
+        if (request.certYn) {
+            queryParams.push(`certYn=${encodeURIComponent(request.certYn)}`);
+        }
+        if (request.accountCertYn) {
+            queryParams.push(`accountCertYn=${encodeURIComponent(request.accountCertYn)}`);
+        }
+        if (request.birthDate) {
+            queryParams.push(`birthDate=${encodeURIComponent(request.birthDate)}`);
+        }
+        if (request.gender) {
+            queryParams.push(`gender=${encodeURIComponent(request.gender)}`);
+        }
+        if (request.role) {
+            queryParams.push(`role=${encodeURIComponent(request.role)}`);
+        }
+
+        // Combine elements from each array with &
+        const queryString = queryParams.join('&');
+
+        return {
+            baseUrl: request.baseUrl,
+            method: request.method,
+            contentType: request.contentType,
+            queryString: queryString,
         };
     },
 };
@@ -289,20 +349,22 @@ const memberJoinValidator = {
         // FIXME: 추후 수정 해야함, 로딩 나오도록
         // showLoadingMask();
 
-        const requestMemberSendAuthEmailObj = {
+        const requestDataObj = {
             baseUrl: URL_VERIFY_REQUEST,
             method: HTTP_METHODS.POST,
-            contentType: CONTENT_TYPE.JSON,
+            headers: {
+                contentType: CONTENT_TYPE.JSON,
+            },
             requestBody: {
                 email: certEmail.value,
             },
         };
 
         // create request data
-        const request = memberRequestDataBuilder.createMemberRequestInfoBuilder(requestMemberSendAuthEmailObj);
+        let requestFetchObj = memberRequestDataBuilder.createMemberRequestBodyInfoBuilder(requestDataObj);
 
         try {
-            const response = await commonFetchTemplate.sendFetchRequest(request);
+            const response = await commonFetchTemplate.sendFetchRequest(requestFetchObj);
             const result = await response.json();
             if (result.code === messages.STATUS.OK) {
                 showMessage(result.message);
@@ -315,8 +377,8 @@ const memberJoinValidator = {
                 certEmail.focus();
             }
         } catch (error) {
-            console.error(`requestURL => ${request.baseUrl} error => ${error}`);
-            commonFetchTemplate.handleResponseError(error, request);
+            console.error(`requestURL => ${requestFetchObj.baseUrl} error => ${error}`);
+            commonFetchTemplate.handleResponseError(error, requestFetchObj);
         }
     },
 
@@ -354,7 +416,9 @@ const memberJoinValidator = {
         };
 
         // create request data
-        const request = memberRequestDataBuilder.createMemberRequestInfoBuilder(requestMemberVerifyEmailAuthCodeObj);
+        let request = memberRequestDataBuilder.createMemberRequestQueryStringInfoBuilder(
+            requestMemberVerifyEmailAuthCodeObj,
+        );
 
         try {
             const response = await commonFetchTemplate.sendFetchRequest(request);
@@ -375,6 +439,7 @@ const memberJoinValidator = {
     },
 
     async checkDuplicateAccount() {
+        console.log(`checkDuplicateAccount`);
         const account = document.getElementById('account');
         const accountCertYn = document.getElementById('accountCertYn');
         const password1 = document.getElementById('password1');
@@ -384,17 +449,19 @@ const memberJoinValidator = {
             return;
         }
 
-        const requestMemberDuplicateAccountObj = {
+        const requestData = {
             baseUrl: URL_MEMBER_EXISTS_ACCOUNT,
             method: HTTP_METHODS.POST,
-            contentType: CONTENT_TYPE.JSON,
+            headers: {
+                contentType: CONTENT_TYPE.JSON,
+            },
             requestBody: {
                 account: account.value,
             },
         };
 
         // create request data
-        const request = memberRequestDataBuilder.createMemberRequestInfoBuilder(requestMemberDuplicateAccountObj);
+        let request = memberRequestDataBuilder.createMemberRequestBodyInfoBuilder(requestData);
 
         try {
             const response = await commonFetchTemplate.sendFetchRequest(request);
