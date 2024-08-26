@@ -5,72 +5,76 @@ const memberRequestDataBuilder = {
     createMemberRequestBodyInfoBuilder(request) {
         const requestBody = {};
         if (request.requestBody.username) {
-            requestBody.username = request.username;
+            requestBody.name = request.requestBody.username;
         }
         if (request.requestBody.account) {
-            requestBody.account = request.account;
+            requestBody.account = request.requestBody.account;
         }
-        if (request.requestBody.password1) {
-            requestBody.password = request.password1;
+        if (request.requestBody.password) {
+            requestBody.password = request.requestBody.password;
         }
         if (request.requestBody.email) {
-            requestBody.email = request.email;
+            requestBody.email = request.requestBody.email;
         }
         if (request.requestBody.phonePrefix && request.requestBody.phoneMiddle && request.requestBody.phoneLast) {
-            requestBody.phoneNumber = `${request.phonePrefix}-${request.phoneMiddle}-${request.phoneLast}`;
+            requestBody.phoneNumber = `${request.requestBody.phonePrefix}-${request.requestBody.phoneMiddle}-${request.requestBody.phoneLast}`;
         }
         if (request.requestBody.certYn) {
-            requestBody.certYn = request.certYn;
+            requestBody.certYn = request.requestBody.certYn;
         }
         if (request.requestBody.accountCertYn) {
-            requestBody.accountCertYn = request.accountCertYn;
+            requestBody.accountCertYn = request.requestBody.accountCertYn;
         }
         if (request.requestBody.gender) {
-            requestBody.gender = request.gender;
+            requestBody.gender = request.requestBody.gender;
         }
         if (request.requestBody.birthDate) {
-            requestBody.birthDate = request.birthDate;
+            requestBody.birthDate = request.requestBody.birthDate;
         }
 
         return {
             baseUrl: request.baseUrl,
             method: request.method,
-            contentType: request.contentType,
+            headers: request.headers,
             requestBody: requestBody,
         };
     },
 
     createMemberRequestQueryStringInfoBuilder(request) {
         const queryParams = [];
-        if (request.name) {
-            queryParams.push(`name=${encodeURIComponent(request.name)}`);
+        if (request.queryString.username) {
+            queryParams.push(`name=${encodeURIComponent(request.queryString.username)}`);
         }
-        if (request.account) {
-            queryParams.push(`account=${encodeURIComponent(request.account)}`);
+        if (request.queryString.account) {
+            queryParams.push(`account=${encodeURIComponent(request.queryString.account)}`);
         }
-        if (request.password) {
-            queryParams.push(`password=${encodeURIComponent(request.password)}`);
+        if (request.queryString.password) {
+            queryParams.push(`password=${encodeURIComponent(request.queryString.password)}`);
         }
-        if (request.email) {
-            queryParams.push(`email=${encodeURIComponent(request.email)}`);
+        if (request.queryString.email) {
+            queryParams.push(`email=${encodeURIComponent(request.queryString.email)}`);
         }
-        if (request.phoneNumber) {
-            queryParams.push(`phoneNumber=${encodeURIComponent(request.phoneNumber)}`);
+        if (request.queryString.phonePrefix && request.queryString.phoneMiddle && request.queryString.phoneLast) {
+            const phoneNumber = `${request.queryString.phonePrefix}-${request.queryString.phoneMiddle}-${request.queryString.phoneLast}`;
+            queryParams.push(`phoneNumber=${encodeURIComponent(phoneNumber)}`);
         }
-        if (request.certYn) {
-            queryParams.push(`certYn=${encodeURIComponent(request.certYn)}`);
+        if (request.queryString.certYn) {
+            queryParams.push(`certYn=${encodeURIComponent(request.queryString.certYn)}`);
         }
-        if (request.accountCertYn) {
-            queryParams.push(`accountCertYn=${encodeURIComponent(request.accountCertYn)}`);
+        if (request.queryString.accountCertYn) {
+            queryParams.push(`accountCertYn=${encodeURIComponent(request.queryString.accountCertYn)}`);
         }
-        if (request.birthDate) {
-            queryParams.push(`birthDate=${encodeURIComponent(request.birthDate)}`);
+        if (request.queryString.birthDate) {
+            queryParams.push(`birthDate=${encodeURIComponent(request.queryString.birthDate)}`);
         }
-        if (request.gender) {
-            queryParams.push(`gender=${encodeURIComponent(request.gender)}`);
+        if (request.queryString.gender) {
+            queryParams.push(`gender=${encodeURIComponent(request.queryString.gender)}`);
         }
-        if (request.role) {
-            queryParams.push(`role=${encodeURIComponent(request.role)}`);
+        if (request.queryString.role) {
+            queryParams.push(`role=${encodeURIComponent(request.queryString.role)}`);
+        }
+        if (request.queryString.verifyCode) {
+            queryParams.push(`verifyCode=${encodeURIComponent(request.queryString.verifyCode)}`);
         }
 
         // Combine elements from each array with &
@@ -79,7 +83,7 @@ const memberRequestDataBuilder = {
         return {
             baseUrl: request.baseUrl,
             method: request.method,
-            contentType: request.contentType,
+            headers: request.headers,
             queryString: queryString,
         };
     },
@@ -353,20 +357,19 @@ const memberJoinValidator = {
             baseUrl: URL_VERIFY_REQUEST,
             method: HTTP_METHODS.POST,
             headers: {
-                contentType: CONTENT_TYPE.JSON,
+                [HEADER_KEY.CONTENT_TYPE]: CONTENT_TYPE.JSON,
             },
             requestBody: {
                 email: certEmail.value,
             },
         };
 
-        // create request data
         let requestFetchObj = memberRequestDataBuilder.createMemberRequestBodyInfoBuilder(requestDataObj);
 
         try {
             const response = await commonFetchTemplate.sendFetchRequest(requestFetchObj);
             const result = await response.json();
-            if (result.code === messages.STATUS.OK) {
+            if (result.statusCode === messages.STATUS.OK && result.success) {
                 showMessage(result.message);
                 closeLoadingWithMask();
                 this.hideVerifySectionLayer();
@@ -393,6 +396,9 @@ const memberJoinValidator = {
         document.getElementById('sendVerification').removeEventListener('click', this.sendAuthEmail);
     },
 
+    /**
+     * 이메일 인증 수행
+     */
     async verifyEmailAuthCode() {
         const certEmail = document.getElementById('email');
         const verificationCode = document.getElementById('verificationCode');
@@ -406,24 +412,21 @@ const memberJoinValidator = {
             return;
         }
 
-        const requestMemberVerifyEmailAuthCodeObj = {
+        const requestDataObj = {
             baseUrl: URL_VERIFY_EMAIL,
             method: HTTP_METHODS.GET,
             queryString: {
                 email: certEmail.value,
-                code: verificationCode.value,
+                verifyCode: verificationCode.value,
             },
         };
 
-        // create request data
-        let request = memberRequestDataBuilder.createMemberRequestQueryStringInfoBuilder(
-            requestMemberVerifyEmailAuthCodeObj,
-        );
+        let requestFetchObj = memberRequestDataBuilder.createMemberRequestQueryStringInfoBuilder(requestDataObj);
 
         try {
-            const response = await commonFetchTemplate.sendFetchRequest(request);
+            const response = await commonFetchTemplate.sendFetchRequest(requestFetchObj);
             const result = await response.json();
-            if (result.code === messages.STATUS.OK) {
+            if (result.statusCode === messages.STATUS.OK && result.success) {
                 showMessage(result.message);
                 this.changeCertYnStatusLayer();
             } else {
@@ -439,7 +442,6 @@ const memberJoinValidator = {
     },
 
     async checkDuplicateAccount() {
-        console.log(`checkDuplicateAccount`);
         const account = document.getElementById('account');
         const accountCertYn = document.getElementById('accountCertYn');
         const password1 = document.getElementById('password1');
@@ -449,24 +451,23 @@ const memberJoinValidator = {
             return;
         }
 
-        const requestData = {
+        const requestDataObj = {
             baseUrl: URL_MEMBER_EXISTS_ACCOUNT,
             method: HTTP_METHODS.POST,
             headers: {
-                contentType: CONTENT_TYPE.JSON,
+                [HEADER_KEY.CONTENT_TYPE]: CONTENT_TYPE.JSON,
             },
             requestBody: {
                 account: account.value,
             },
         };
 
-        // create request data
-        let request = memberRequestDataBuilder.createMemberRequestBodyInfoBuilder(requestData);
+        let requestFetchObj = memberRequestDataBuilder.createMemberRequestBodyInfoBuilder(requestDataObj);
 
         try {
-            const response = await commonFetchTemplate.sendFetchRequest(request);
+            const response = await commonFetchTemplate.sendFetchRequest(requestFetchObj);
             const result = await response.json();
-            if (result.code === messages.STATUS.OK) {
+            if (result.statusCode === messages.STATUS.OK && result.success) {
                 showMessage(result.message);
                 accountCertYn.value = 'Y';
                 password1.focus();
@@ -476,7 +477,7 @@ const memberJoinValidator = {
                 account.focus();
             }
         } catch (error) {
-            commonFetchTemplate.handleResponseError(error, request);
+            commonFetchTemplate.handleResponseError(error, requestFetchObj);
         }
     },
 };

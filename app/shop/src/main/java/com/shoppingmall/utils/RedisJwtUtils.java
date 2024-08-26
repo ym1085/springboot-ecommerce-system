@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
-public class RedisUtils {
+public class RedisJwtUtils {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final RedisTemplate<String, String> redisBlackListTemplate;
@@ -17,8 +17,8 @@ public class RedisUtils {
     /**
      * Redis에 key(user=account | token=access key), value(refresh token | 'logout' keyword) 기반 값 저장
      */
-    public void setValues(String key, String data, Integer duration, TimeUnit timeUnit) {
-        redisTemplate.opsForValue().set(key, data, duration, timeUnit);
+    public void setValues(String key, String value, long duration) {
+        redisTemplate.opsForValue().set(key, value, duration, TimeUnit.SECONDS);
     }
 
     /**
@@ -28,10 +28,16 @@ public class RedisUtils {
         return redisTemplate.opsForValue().get(key);
     }
 
+    /**
+     * username(account) 기반 value 삭제
+     */
     public boolean deleteValues(String key) {
         return Boolean.TRUE.equals(redisTemplate.delete(key));
     }
 
+    /**
+     * username(account) 기반 KEY 존재 유무 확인
+     */
     public boolean hasKey(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }

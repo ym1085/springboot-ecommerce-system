@@ -17,14 +17,23 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 public class RedisConfig {
 
     @Value("${spring.redis.host}")
-    private String redisHost;
+    private String host;
 
     @Value("${spring.redis.port}")
-    private int redisPort;
+    private int port;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(redisHost, redisPort);
+        return new LettuceConnectionFactory(host, port);
+    }
+
+    @Bean
+    public RedisTemplate<?, ?> redisTemplate() {
+        // Redis 작업을 수행하기 위해 RedisTemplate 객체를 생성하여 반환하는 함수
+        // 2개의 Bean을 반환하기 위해 사용, (redisTemplate, redisBlackListTemplate)
+        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        return redisTemplate;
     }
 
     /*@Bean
@@ -35,13 +44,4 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }*/
-
-    // Redis 작업을 수행하기 위해 RedisTemplate 객체를 생성하여 반환하는 함수
-    // 2개의 Bean을 반환하기 위해 사용, (redisTemplate, redisBlackListTemplate)
-    @Bean
-    public RedisTemplate<?, ?> redisTemplate() {
-        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-        return redisTemplate;
-    }
 }

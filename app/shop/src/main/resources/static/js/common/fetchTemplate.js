@@ -1,6 +1,3 @@
-/**
- * Common request fetch templates
- */
 const commonFetchTemplate = {
     validHttpMethod(method) {
         if (!method || typeof method !== 'string' || method.trim() === '') {
@@ -23,8 +20,8 @@ const commonFetchTemplate = {
         return formData;
     },
 
-    addRequestBodyFromContentType(contentType, requestBody) {
-        switch (contentType) {
+    addRequestBodyFromContentType(headers, requestBody) {
+        switch (headers[HEADER_KEY.CONTENT_TYPE]) {
             case CONTENT_TYPE.JSON:
                 return JSON.stringify(requestBody);
             case CONTENT_TYPE.FORM:
@@ -77,9 +74,14 @@ const commonFetchTemplate = {
 
         // validate query params is not null and setting query string
         if (this.validQueryParams(queryParams)) {
-            url = this.addQueryParams(queryParams);
+            url = this.addQueryParams(url, queryParams);
         }
         return url;
+    },
+
+    handleResponseError(error) {
+        console.error(`Error Fetch request, error => ${error}`);
+        showMessage(messages.COMMON_SERVER_ERROR_MSG.msg);
     },
 
     // Handling error when communicating with the API server
@@ -91,28 +93,24 @@ const commonFetchTemplate = {
         requestBody = {},
         queryString = {},
     }) {
-        // TODO: 수정 중
-        // validation
         if (isEmpty(baseUrl) || isEmpty(method)) {
             console.error(`Invalid baseUrl and method`);
             return;
         }
 
         let requestURL = this.createHttpRequestURL(baseUrl, pathVariables, queryString);
-        let requestOptions = this.createHttpRequestOptions(method, headers, requestBody);
+        let options = this.createHttpRequestOptions(method, headers, requestBody);
+        console.log(
+            `[sendFetchRequest.requestURL] => ${JSON.stringify(requestURL)}, options => ${JSON.stringify(options)}`,
+        );
 
         try {
-            return await fetch(requestURL, requestOptions);
+            const response = await fetch(requestURL, options);
+            console.log(`response => ${JSON.stringify(response)}`);
+            return response;
         } catch (error) {
             this.handleResponseError(error, { baseUrl, method });
             throw error;
         }
-    },
-
-    handleResponseError(error, request) {
-        console.error(
-            `Error Fetch request, error => ${error}, URL => ${request.baseUrl}, method => ${request.method} `,
-        );
-        showMessage(messages.COMMON_SERVER_ERROR_MSG.msg);
     },
 };

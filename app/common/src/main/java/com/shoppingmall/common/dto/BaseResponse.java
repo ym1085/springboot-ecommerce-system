@@ -1,36 +1,37 @@
 package com.shoppingmall.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
+@JsonPropertyOrder(value = {"timestamp", "statusCode", "success", "message", "result"})
 public class BaseResponse<T> {
-    private final String statusCode; // HTTP status code
-    private final boolean success; // success status
-    private final String message; // response message
+    private final LocalDateTime timestamp;
+    private final int statusCode;
+    private final boolean success;
+    private final String message;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final T result;
 
-    public static <T> BaseResponse<?> of(String message, T data) {
+    public static <T> BaseResponse<?> of(int statusCode, String message, T data) {
         return BaseResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .statusCode(statusCode)
                 .success(true)
                 .message(message)
                 .result(data)
                 .build();
     }
 
-    public static BaseResponse<?> of(boolean isSuccess, String message) {
+    public static BaseResponse<?> of(int statusCode, String message, boolean isSuccess) {
         return BaseResponse.builder()
-                .success(isSuccess)
-                .message(message)
-                .build();
-    }
-
-    public static BaseResponse<?> of(String statusCode, boolean isSuccess, String message) {
-        return BaseResponse.builder()
+                .timestamp(LocalDateTime.now())
                 .statusCode(statusCode)
                 .success(isSuccess)
                 .message(message)

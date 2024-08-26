@@ -1,4 +1,4 @@
-const URL_VERIFY_REQUEST = '/api/v1/email/verify-request'; // 인증 코드 전송
+const URL_VERIFY_REQUEST = '/api/v1/email/send'; // 인증 코드 전송
 const URL_VERIFY_EMAIL = '/api/v1/email/verify'; // 이메일 인증
 const URL_MEMBER_EXISTS_ACCOUNT = '/api/v1/member/exists'; // 아이디 중복
 const URL_MEMBER_JOIN = '/api/v1/member/join'; // 회원 가입
@@ -9,6 +9,13 @@ const HTTP_METHODS = {
     PUT: 'PUT',
     DELETE: 'DELETE',
     PATCH: 'PATCH',
+};
+
+const HEADER_KEY = {
+    CONTENT_TYPE: 'Content-Type',
+    CACHE_CONTROL: 'Cache-Control',
+    ACCEPT: 'Accept',
+    COOKIE: 'Cookie',
 };
 
 const CONTENT_TYPE = {
@@ -40,10 +47,8 @@ function closeCurrentModal() {
 }
 
 function loadModal(url, id) {
-    console.log(`Loading => ${url}, ${id}`);
     $('#mainModalContainer').empty();
     $('#mainModalContainer').load(url + ' #' + id, function () {
-        console.log(`url = ${url}, id = ${id}`);
         $('#' + id).modal('show');
     });
 }

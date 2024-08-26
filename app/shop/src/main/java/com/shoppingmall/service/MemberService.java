@@ -3,7 +3,7 @@ package com.shoppingmall.service;
 import com.shoppingmall.dto.request.MemberSaveRequestDto;
 import com.shoppingmall.exception.MemberException;
 import com.shoppingmall.mapper.MemberMapper;
-import com.shoppingmall.utils.RedisUtils;
+import com.shoppingmall.utils.RedisJwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +21,7 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberMapper memberMapper;
-    private final RedisUtils redisUtils;
+    private final RedisJwtUtils redisJwtUtils;
 
     @Transactional
     public void join(MemberSaveRequestDto memberRequestDto) {
