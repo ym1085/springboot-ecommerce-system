@@ -73,7 +73,6 @@ const main = {
             }
 
             if (_this.validate()) {
-                console.log(`success validate`);
                 showMessage(messages.PROCEED_MEMBER_JOIN.msg);
                 _this.join();
             }
@@ -94,39 +93,42 @@ const main = {
      * @returns {Promise<void>}
      */
     async join() {
-        const requestMemberJoinObj = {
+        const requestDataObj = {
             baseUrl: URL_MEMBER_JOIN,
             method: HTTP_METHODS.POST,
-            contentType: CONTENT_TYPE.JSON,
+            headers: {
+                [HEADER_KEY.CONTENT_TYPE]: CONTENT_TYPE.JSON,
+            },
             requestBody: {
                 username: memberJoinInfoObj.username.value,
                 account: memberJoinInfoObj.account.value,
-                password1: memberJoinInfoObj.password1.value,
+                password: memberJoinInfoObj.password1.value,
                 email: memberJoinInfoObj.email.value,
                 phonePrefix: memberJoinInfoObj.phonePrefix.value,
                 phoneMiddle: memberJoinInfoObj.phoneMiddle.value,
                 phoneLast: memberJoinInfoObj.phoneLast.value,
                 certYn: memberJoinInfoObj.certYn.value,
                 accountCertYn: memberJoinInfoObj.accountCertYn.value,
-                gender: memberJoinInfoObj.gender.value,
                 birthDate: memberJoinInfoObj.birthDate.value,
-                // picture: memberJoinInfo.picture.value
+                gender: memberJoinInfoObj.gender.value,
+                //role: memberJoinInfoObj.role.value, TODO: 추가 필요
             },
         };
 
-        // create request data
-        let request = memberRequestDataBuilder.createMemberRequestBodyInfoBuilder(requestMemberJoinObj);
+        let requestFetchObj = memberRequestDataBuilder.createMemberRequestBodyInfoBuilder(requestDataObj);
 
         try {
-            const response = await commonFetchTemplate.sendFetchRequest(request);
+            const response = await commonFetchTemplate.sendFetchRequest(requestFetchObj);
             const result = await response.json();
-            if (result.code === messages.STATUS.OK) {
+            if (result.statusCode === messages.STATUS.OK && result.success) {
                 showMessage(result.message);
                 redirectURL('/'); // move to main page
+            } else {
+                showMessage(result.message);
             }
         } catch (error) {
-            console.error(`requestURL => ${request.baseUrl} error => ${error}`);
-            commonFetchTemplate.handleResponseError(error, request);
+            console.error(`requestURL => ${requestFetchObj.baseUrl} error => ${error}`);
+            commonFetchTemplate.handleResponseError(error, requestFetchObj);
         }
     },
 };
