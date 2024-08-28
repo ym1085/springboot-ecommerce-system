@@ -52,7 +52,7 @@ public class SecurityConfig {
             "/api/v1/member/join",
             "/api/v1/member/exists",
             "/api/v1/email/verify",
-            "/api/v1/email/verify-request",
+            "/api/v1/email/send",
             "/api/v1/cart/**"
     };
 

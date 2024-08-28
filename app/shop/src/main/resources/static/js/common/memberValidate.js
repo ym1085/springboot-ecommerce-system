@@ -31,6 +31,9 @@ const memberRequestDataBuilder = {
         if (request.requestBody.birthDate) {
             requestBody.birthDate = request.requestBody.birthDate;
         }
+        if (request.requestBody.role) {
+            requestBody.role = request.requestBody.role;
+        }
 
         return {
             baseUrl: request.baseUrl,
@@ -465,6 +468,7 @@ const memberJoinValidator = {
         let requestFetchObj = memberRequestDataBuilder.createMemberRequestBodyInfoBuilder(requestDataObj);
 
         try {
+            showLoadingMask();
             const response = await commonFetchTemplate.sendFetchRequest(requestFetchObj);
             const result = await response.json();
             if (result.statusCode === messages.STATUS.OK && result.success) {

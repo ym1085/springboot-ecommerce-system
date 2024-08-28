@@ -23,6 +23,7 @@ function initializedMemberJoinInfo() {
         birthDate: document.getElementById('birthDate'),
         certYn: document.getElementById('certYn'),
         accountCertYn: document.getElementById('accountCertYn'),
+        role: document.getElementById('role'),
     };
 }
 
@@ -93,6 +94,8 @@ const main = {
      * @returns {Promise<void>}
      */
     async join() {
+        alert(`memberJoinInfoObj.role.value = ${memberJoinInfoObj.role.value}`);
+
         const requestDataObj = {
             baseUrl: URL_MEMBER_JOIN,
             method: HTTP_METHODS.POST,
@@ -111,7 +114,7 @@ const main = {
                 accountCertYn: memberJoinInfoObj.accountCertYn.value,
                 birthDate: memberJoinInfoObj.birthDate.value,
                 gender: memberJoinInfoObj.gender.value,
-                //role: memberJoinInfoObj.role.value, TODO: 추가 필요
+                role: memberJoinInfoObj.role.value,
             },
         };
 
