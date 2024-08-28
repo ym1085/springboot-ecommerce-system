@@ -5,6 +5,7 @@ import com.shoppingmall.common.utils.ApiResponseUtils;
 import com.shoppingmall.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.jdbc.BadSqlGrammarException;
@@ -24,18 +25,6 @@ import java.sql.SQLSyntaxErrorException;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<BaseResponse<?>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
-        log.error(ex.getMessage());
-        return ApiResponseUtils.failure(ex.getMessage());
-    }
-
-    @ExceptionHandler(InvalidParameterException.class)
-    public ResponseEntity<BaseResponse<?>> handleInvalidParameterException(InvalidParameterException ex) {
-        log.error(ex.getMessage());
-        return ApiResponseUtils.failure(ex.getMessage());
-    }
 
     @ExceptionHandler(CartException.class)
     public ResponseEntity<BaseResponse<?>> handleCartException(CartException ex) {
@@ -73,45 +62,57 @@ public class ErrorHandler {
         return ApiResponseUtils.failure(ex.getFailureCode());
     }
 
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<BaseResponse<?>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
+        log.error(ex.getMessage());
+        return ApiResponseUtils.failure(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidParameterException.class)
+    public ResponseEntity<BaseResponse<?>> handleInvalidParameterException(InvalidParameterException ex) {
+        log.error(ex.getMessage());
+        return ApiResponseUtils.failure(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<BaseResponse<?>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
         log.error(ex.getMessage());
-        return ApiResponseUtils.failure("Required request parameter is missing: " + ex.getParameterName());
+        return ApiResponseUtils.failure(HttpStatus.BAD_REQUEST, "Required request parameter is missing: " + ex.getParameterName());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.error(ex.getMessage());
-        return ApiResponseUtils.failure("Validation error: " + ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return ApiResponseUtils.failure(HttpStatus.BAD_REQUEST, "Validation error: " + ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<BaseResponse<?>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         log.error(ex.getMessage());
-        return ApiResponseUtils.failure("Message not readable: " + ex.getMessage());
+        return ApiResponseUtils.failure(HttpStatus.BAD_REQUEST, "Message not readable: " + ex.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<BaseResponse<?>> handleAccessDeniedException(AccessDeniedException ex) {
         log.error(ex.getMessage());
-        return ApiResponseUtils.failure("Access denied: " + ex.getMessage());
+        return ApiResponseUtils.failure(HttpStatus.FORBIDDEN, "Access denied: " + ex.getMessage());
     }
 
     @ExceptionHandler(SQLException.class)
     protected ResponseEntity<BaseResponse<?>> handleSQLException(SQLException ex) {
         log.error("Database error occurred: {}", ex.getMessage());
-        return ApiResponseUtils.failure("Database error occurred. Please contact to support.");
+        return ApiResponseUtils.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Database error occurred. Please contact support.");
     }
 
     @ExceptionHandler({BadSqlGrammarException.class, DataAccessException.class, SQLSyntaxErrorException.class})
     protected ResponseEntity<BaseResponse<?>> handleSQLSyntaxErrorException(SQLException ex) {
         log.error("Database syntax error occurred: {}", ex.getMessage());
-        return ApiResponseUtils.failure("Database syntax error occurred. Please contact to support.");
+        return ApiResponseUtils.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Database syntax error occurred. Please contact support.");
     }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<BaseResponse<?>> handleException(Exception ex) {
         log.error(ex.getMessage(), ex);
-        return ApiResponseUtils.failure(ex.getMessage());
+        return ApiResponseUtils.failure(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 }

@@ -18,7 +18,7 @@
             <result property="productDesc" column="product_desc"/>
         </association>
         <association property="member" javaType="com.shoppingmall.vo.Member">
-            <result property="name" column="name" />
+            <result property="userName" column="user_name" />
             <result property="account" column="account" />
         </association>
     </resultMap>
@@ -104,15 +104,15 @@
             p.product_desc,
             <choose>
                 <when test="memberId != null and memberId != ''">
-                    m.name,
+                    m.user_name,
                     m.account,
                 </when>
                 <otherwise>
-                    NULL AS name,
+                    NULL AS userName,
                     NULL AS account,
                 </otherwise>
             </choose>
-            m.name,
+            m.user_name,
             m.account,
             c.uuid
         FROM cart c

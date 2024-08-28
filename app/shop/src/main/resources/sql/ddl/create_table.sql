@@ -11,7 +11,7 @@ USE SHOPPINGMALL;
 CREATE TABLE MEMBER
 (
     member_id    INT AUTO_INCREMENT PRIMARY KEY,
-    name         VARCHAR(20) NOT NULL COMMENT '회원 이름',
+    user_name         VARCHAR(20) NOT NULL COMMENT '회원 이름',
     account      VARCHAR(300),
     password     VARCHAR(60),
     email        VARCHAR(50) NOT NULL COMMENT '회원 이메일',

@@ -3,11 +3,11 @@
     <!--
         <springProfile>
         - desc: 현재 Spring Boot profile 구분
-        - name: profile 이름 지정
+        - userName: profile 이름 지정
 
         <appender>
         - desc: 전달 받은 로그를 어디에 출력할지 결정 (Console, DB, File.. 등등)
-        - name: appender 이름 지정
+        - userName: appender 이름 지정
         - class: appender 클래스 지정(압축, 콘솔.. 등등)
         - file: 로그 파일 경로 지정
         - encoder: 로그 이벤트 출력 형식 지정
@@ -19,7 +19,7 @@
 
         <logger>
         - desc: 로그를 출력하는 요소로 appender에게 전달한다
-        - name: 로거의 이름 및 패키지 지정
+        - userName: 로거의 이름 및 패키지 지정
         - level: 로그 레벨 지정
         - additivity: 상위 로거에서 정의된 이벤트를 하위 로거 전파 여부(false: 독립적, true: 상위 로그 이벤트 전파)
         - appender-ref ref: 로거가 어떤 appender를 사용할지 지정
@@ -61,7 +61,7 @@
     <!-- local -->
     <springProfile name="local">
         <logger name="com.shoppingmall"                                                 level="DEBUG" additivity="false"><appender-ref ref="CONSOLE"/></logger>
-        <!--<logger name="org.springframework"												level="DEBUG" additivity="false"><appender-ref ref="CONSOLE"/></logger>-->
+        <!--<logger userName="org.springframework"												level="DEBUG" additivity="false"><appender-ref ref="CONSOLE"/></logger>-->
 
         <!--
             jdbc                    :   log4jdbc option settings
@@ -118,7 +118,7 @@
     <!-- production -->
     <springProfile name="prod">
         <logger name="com.shoppingmall"                                                 level="INFO" additivity="false"><appender-ref ref="SERVICE_LOG" /></logger>
-        <!--<logger name="org.springframework"												level="INFO" additivity="false"><appender-ref ref="SERVICE_LOG"/></logger>-->
+        <!--<logger userName="org.springframework"												level="INFO" additivity="false"><appender-ref ref="SERVICE_LOG"/></logger>-->
 
         <root>
             <level value="INFO" />

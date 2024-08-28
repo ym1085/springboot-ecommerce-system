@@ -34,7 +34,7 @@
 //        transactionTemplate.execute( transactionStatus -> {
 //            EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
 //            MemberEntity memberEntity = MemberEntity.builder()
-//                    .name("이름")
+//                    .userName("이름")
 //                    .account("test01")
 //                    .build();
 //

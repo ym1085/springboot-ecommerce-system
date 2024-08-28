@@ -25,7 +25,7 @@ BEGIN
     START TRANSACTION;
     INSERT INTO MEMBER
         (
-             name,
+             user_name,
              account,
              password,
              email,

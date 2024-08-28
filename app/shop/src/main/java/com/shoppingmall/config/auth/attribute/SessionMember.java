@@ -12,14 +12,14 @@ import java.io.Serializable;
  */
 @Getter
 public class SessionMember implements Serializable {
-    private String name;
+    private String userName;
     private String account;
     private String email;
     private String phoneNumber;
     private String picture;
 
     public SessionMember(Member member) {
-        this.name = member.getName();
+        this.userName = member.getUserName();
         this.account = member.getAccount();
         this.email = member.getEmail();
         this.phoneNumber = member.getPhoneNumber();

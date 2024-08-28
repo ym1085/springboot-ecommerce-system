@@ -47,6 +47,8 @@ public class SecurityConfig {
             "/h2-console/**",
             "/member/loginForm",
             "/member/joinForm",
+            "/member/login",
+            "/member/join",
             "/api/v1/member/join",
             "/api/v1/member/exists",
             "/api/v1/email/verify",
@@ -92,7 +94,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         //.loginPage("/member/loginForm")
                         .loginPage("/")
-                        .usernameParameter("username")
+                        .usernameParameter("account")
                         .passwordParameter("password")
                         .loginProcessingUrl("/member/login")
                         .successHandler(customLogInSuccessHandler)

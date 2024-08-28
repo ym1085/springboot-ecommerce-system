@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Member {
     private Integer memberId;
-    private String name;
+    private String userName;
     private String account;
     private String password;
     private String email;
@@ -29,8 +29,8 @@ public class Member {
 
     // 클라이언트가 소셜 로그인를 시도하는 사용자가 제공되는 정보(data)에 변경이 있으면
     // 해당 데이터를 받아서 DB에 실제 업데이트 하기 전 값 셋팅을 위해 사용
-    public Member updateSocialMemberProfile(String name, String picture) {
-        this.name = name;
+    public Member updateSocialMemberProfile(String userName, String picture) {
+        this.userName = userName;
         this.picture = picture;
         return this;
     }
@@ -40,9 +40,9 @@ public class Member {
     }
 
     @Builder
-    public Member(Integer memberId, String name, String account, String password, String email, String phoneNumber, String picture, String birthDate, String certYn, Role role, LocalDateTime createDate, LocalDateTime updateDate, Gender gender, String registrationId, String providerToken) {
+    public Member(Integer memberId, String userName, String account, String password, String email, String phoneNumber, String picture, String birthDate, String certYn, Role role, LocalDateTime createDate, LocalDateTime updateDate, Gender gender, String registrationId, String providerToken) {
         this.memberId = memberId;
-        this.name = name;
+        this.userName = userName;
         this.account = account;
         this.password = password;
         this.email = email;
