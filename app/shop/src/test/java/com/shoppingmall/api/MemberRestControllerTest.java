@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = MemberRestController.class)
 @ContextConfiguration(classes = { ShopApplication.class })
-@WithMockUser(username = "admin", roles = {"USER"})
+@WithMockUser(username = "ymkim", roles = "USER")
 class MemberRestControllerTest {
 
     @Autowired

@@ -1,31 +1,20 @@
 package com.shoppingmall.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingmall.ShopApplication;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@Transactional
-@AutoConfigureMockMvc
-@SpringBootTest(classes = ShopApplication.class)
+@DisplayName("상품 테스트")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(controllers = ProductRestController.class)
+@ContextConfiguration(classes = { ShopApplication.class })
+@WithMockUser(username = "admin", roles = {"USER"})
 class ProductRestControllerTest {
-
-    @Autowired
-    private ObjectMapper mapper;
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Test
-    @DisplayName("상품 등록 테스트")
-    void testSaveProduct() throws Exception {
-        //given
-        //when
-        //then
-    }
 }

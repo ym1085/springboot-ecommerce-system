@@ -1,7 +1,6 @@
 package com.shoppingmall.dto.request;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
@@ -11,6 +10,9 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostSaveRequestDto {
     private Integer postId;
     private Integer memberId;

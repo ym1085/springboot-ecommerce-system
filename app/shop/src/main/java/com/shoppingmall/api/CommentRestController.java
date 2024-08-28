@@ -27,7 +27,7 @@ public class CommentRestController {
 
     private final CommentService commentService;
 
-    @PostMapping("/post/{postId}/comments")
+    @PostMapping("/comments/{postId}")
     public ResponseEntity<BaseResponse<?>> saveComment(
             @Valid @RequestBody CommentSaveRequestDto commentSaveRequestDto,
             @PathVariable("postId") Integer postId,
@@ -43,7 +43,7 @@ public class CommentRestController {
         return ApiResponseUtils.success(SUCCESS_SAVE_COMMENT, comments);
     }
 
-    @PutMapping("/post/{postId}/comments")
+    @PutMapping("/comments/{postId}")
     public ResponseEntity<BaseResponse<?>> updateCommentByCommentId(
             @Valid @RequestBody CommentUpdateRequestDto commentUpdateRequestDto,
             @PathVariable("postId") Integer postId,
@@ -57,14 +57,14 @@ public class CommentRestController {
         return ApiResponseUtils.success(SUCCESS_UPDATE_COMMENT, comments);
     }
 
-    @DeleteMapping("/post/comments")
+    @DeleteMapping("/comments")
     public ResponseEntity<BaseResponse<?>> deleteComments(
             @ModelAttribute CommentDeleteRequestDto commentDeleteRequestDto) {
         List<Comment> comments = commentService.deleteComments(commentDeleteRequestDto);
         return ApiResponseUtils.success(SUCCESS_DELETE_COMMENT, comments);
     }
 
-    @DeleteMapping("/post/comments/reply")
+    @DeleteMapping("/comments/reply")
     public ResponseEntity<BaseResponse<?>> deleteCommentsReply(
             @ModelAttribute CommentDeleteRequestDto commentDeleteRequestDto) {
         List<Comment> comments = commentService.deleteCommentsReply(commentDeleteRequestDto);
