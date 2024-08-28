@@ -34,9 +34,9 @@ public class ApiResponseUtils {
                 .body(BaseResponse.of(code.getStatus().value(), code.getMessage(), false));
     }
 
-    public static <T> ResponseEntity<BaseResponse<?>> failure(String code) {
+    public static <T> ResponseEntity<BaseResponse<?>> failure(HttpStatus status, String code) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(BaseResponse.of(503, code, false));
+                .status(status)
+                .body(BaseResponse.of(status.value(), code, false));
     }
 }

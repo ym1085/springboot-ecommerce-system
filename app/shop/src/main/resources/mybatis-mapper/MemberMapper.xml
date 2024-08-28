@@ -7,23 +7,23 @@
     <insert id="join" parameterType="Member">
         INSERT INTO member
             (
-                name
-               , account
-               , password
-               , email
-               , phone_number
-               , picture
-               , birth_date
-               , use_yn
-               , cert_yn
-               , role
-               , create_date
-               , update_date
-               , gender
+                user_name
+                , account
+                , password
+                , email
+                , phone_number
+                , picture
+                , birth_date
+                , use_yn
+                , cert_yn
+                , role
+                , create_date
+                , update_date
+                , gender
             )
         VALUES
             (
-                #{name},
+                #{userName},
                 #{account},
                 #{password},
                 #{email},
@@ -52,7 +52,7 @@
         {
             CALL SP_INSERT_MEMBER
                 (
-                    #{name},
+                    #{userName},
                     #{account}, /* registrationId + providerToken */
                     #{email},
                     #{picture},
@@ -81,7 +81,7 @@
     <select id="getMemberByEmail" parameterType="map" resultType="Member">
         SELECT
             m.member_id,
-            m.name,
+            m.user_name,
             m.account,
             m.password,
             m.email,
@@ -105,7 +105,7 @@
     <select id="getMemberById" parameterType="int" resultType="Member">
         SELECT
             m.member_id,
-            m.name,
+            m.user_name,
             m.account,
             m.password,
             m.email,
@@ -127,7 +127,7 @@
     <!-- 소셜 로그인 후 session에 저장 할 회원 조회 -->
     <select id="getMemberByEmailWithSocialLogin" parameterType="string" resultType="Member">
         SELECT
-            m.name,
+            m.user_name,
             m.email,
             m.picture,
             <include refid="roleCase"/>,
@@ -154,7 +154,7 @@
     <select id="getMemberByAccount" parameterType="string" resultType="Member">
         SELECT
             m.member_id,
-            m.name,
+            m.user_name,
             m.account,
             m.password,
             m.email,

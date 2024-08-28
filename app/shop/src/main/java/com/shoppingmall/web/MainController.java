@@ -24,7 +24,7 @@ public class MainController {
     public String enter(SearchRequestDto searchRequestDto, Model model) {
         SessionMember loginSessionUser = (SessionMember) session.getAttribute("LOGIN_SESSION_USER");
         if (loginSessionUser != null) {
-            model.addAttribute("name", loginSessionUser.getName());
+            model.addAttribute("userName", loginSessionUser.getUserName());
             model.addAttribute("email", loginSessionUser.getEmail());
         }
         ProductResponse products = productService.getProducts(searchRequestDto);

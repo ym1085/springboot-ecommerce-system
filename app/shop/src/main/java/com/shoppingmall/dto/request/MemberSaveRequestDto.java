@@ -11,13 +11,16 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MemberSaveRequestDto {
 
     private Integer memberId;
 
     @NotBlank(message = "이름은 필수 입력 항목 입니다. 다시 시도해주세요.")
     @Size(min = 2, max = 6, message = "두 글자 이상, 여섯 글자 이하의 이름을 입력해주세요.")
-    private String name;
+    private String userName;
 
     @NotBlank(message = "ID는 필수 입력 항목 입니다. 다시 시도해주세요.")
     @Size(max = 30, message = "30자 이하의 ID만 입력 가능합니다.")
@@ -48,5 +51,5 @@ public class MemberSaveRequestDto {
 
     private String picture;
     private Gender gender;
-    private Role role = Role.GUEST;
+    private Role role;
 }

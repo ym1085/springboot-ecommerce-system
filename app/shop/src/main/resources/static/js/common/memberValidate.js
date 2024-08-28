@@ -4,8 +4,8 @@
 const memberRequestDataBuilder = {
     createMemberRequestBodyInfoBuilder(request) {
         const requestBody = {};
-        if (request.requestBody.username) {
-            requestBody.name = request.requestBody.username;
+        if (request.requestBody.userName) {
+            requestBody.userName = request.requestBody.userName;
         }
         if (request.requestBody.account) {
             requestBody.account = request.requestBody.account;
@@ -42,8 +42,8 @@ const memberRequestDataBuilder = {
 
     createMemberRequestQueryStringInfoBuilder(request) {
         const queryParams = [];
-        if (request.queryString.username) {
-            queryParams.push(`name=${encodeURIComponent(request.queryString.username)}`);
+        if (request.queryString.userName) {
+            queryParams.push(`userName=${encodeURIComponent(request.queryString.userName)}`);
         }
         if (request.queryString.account) {
             queryParams.push(`account=${encodeURIComponent(request.queryString.account)}`);

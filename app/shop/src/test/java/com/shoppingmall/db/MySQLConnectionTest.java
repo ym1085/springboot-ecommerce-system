@@ -6,12 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 @ActiveProfiles("local")
-//@TestPropertySource("classpath:application-local.yaml")
+@TestPropertySource("classpath:application-local.yaml")
 @SpringBootTest(classes = ShopApplication.class)
 public class MySQLConnectionTest {
 
@@ -31,7 +32,7 @@ public class MySQLConnectionTest {
     @DisplayName("MySQL DB Connection 테스트")
     void testDBConnect() throws ClassNotFoundException {
         Class<?> clazz = Class.forName(driverName);
-        System.out.println("clazz.getName => " + clazz.getName());
+        System.out.println("clazz.getUserName => " + clazz.getName());
 
         try(Connection conn = DriverManager.getConnection(jdbcUrl, userName, password)){
             System.out.println(conn); // 콘솔창에서 연결정보를 출력하여 확인한다.

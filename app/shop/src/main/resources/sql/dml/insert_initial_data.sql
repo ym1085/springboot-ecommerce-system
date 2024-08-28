@@ -3,7 +3,7 @@
 USE SHOPPINGMALL;
 
 -- INSERT INTO MEMBER
-INSERT INTO MEMBER (name, account, password, email, phone_number, picture, birth_date, use_yn, cert_yn, role)
+INSERT INTO MEMBER (user_name, account, password, email, phone_number, picture, birth_date, use_yn, cert_yn, role)
 VALUES
     ('아이유', 'user1', 'password1', 'user1@example.com', '01011111111', NULL, '19930923', 'Y', 'Y', 'ROLE_USER'),
     ('장동건', 'user2', 'password2', 'user2@example.com', '01022222222', NULL, '19940515', 'Y', 'Y', 'ROLE_USER'),

@@ -38,7 +38,7 @@ public enum Category {
         return Arrays.stream(Category.values())
                 .filter(category -> category.getCategoryName().equalsIgnoreCase(categoryName))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown category name: " + categoryName));
+                .orElseThrow(() -> new IllegalArgumentException("Unknown category userName: " + categoryName));
     }
 
     private final String categoryName;

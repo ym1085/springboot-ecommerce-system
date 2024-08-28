@@ -11,7 +11,7 @@ $(function () {
  */
 function initializedMemberJoinInfo() {
     memberJoinInfoObj = {
-        username: document.getElementById('username'),
+        userName: document.getElementById('userName'),
         account: document.getElementById('account'),
         password1: document.getElementById('password1'),
         password2: document.getElementById('password2'),
@@ -28,8 +28,8 @@ function initializedMemberJoinInfo() {
 
 function validateMemberJoinInfo() {
     const validations = [
-        () => memberJoinValidator.validateUserName(memberJoinInfoObj.username),
-        () => memberJoinValidator.validateUserNameRegExp(memberJoinInfoObj.username),
+        () => memberJoinValidator.validateUserName(memberJoinInfoObj.userName),
+        () => memberJoinValidator.validateUserNameRegExp(memberJoinInfoObj.userName),
         () => memberJoinValidator.validateAccount(memberJoinInfoObj.account),
         () => memberJoinValidator.validateAccountRegExp(memberJoinInfoObj.account),
         () => memberJoinValidator.validatePrefixPwd(memberJoinInfoObj.password1),
@@ -100,7 +100,7 @@ const main = {
                 [HEADER_KEY.CONTENT_TYPE]: CONTENT_TYPE.JSON,
             },
             requestBody: {
-                username: memberJoinInfoObj.username.value,
+                userName: memberJoinInfoObj.userName.value,
                 account: memberJoinInfoObj.account.value,
                 password: memberJoinInfoObj.password1.value,
                 email: memberJoinInfoObj.email.value,

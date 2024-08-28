@@ -5,7 +5,7 @@ SET NAMES utf8;
 SET character_set_client = utf8mb4;
 
 -- INSERT INTO MEMBER
-INSERT INTO MEMBER (name, account, password, email, phone_number, picture, birth_date, use_yn, cert_yn, role)
+INSERT INTO MEMBER (user_name, account, password, email, phone_number, picture, birth_date, use_yn, cert_yn, role)
 VALUES
     ('아이유', 'user1', 'password1', 'user1@example.com', '010-1111-1111', NULL, '1993-09-23', 'Y', 'Y', 'USER'),
     ('장동건', 'user2', 'password2', 'user2@example.com', '010-2222-2222', NULL, '1994-05-15', 'Y', 'N', 'USER'),

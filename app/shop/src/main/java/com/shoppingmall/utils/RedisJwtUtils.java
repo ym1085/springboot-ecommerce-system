@@ -62,8 +62,8 @@ public class RedisJwtUtils {
      * reissue api 호출 시 요청된 refresh token 과 redis에 저장된 refresh token을 비교
      * 동일하지 않으면 refresh token이 탈취된 것으로 판단하여 예외 발생
      */
-    public void checkRefreshToken(String username, String refreshToken) {
-        String redisRefreshToken = this.getValues(username);
+    public void checkRefreshToken(String userName, String refreshToken) {
+        String redisRefreshToken = this.getValues(userName);
         if (!refreshToken.equals(redisRefreshToken)) {
             throw new TokenExpiredException("redis token is invalid!");
         }

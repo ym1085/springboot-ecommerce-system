@@ -21,7 +21,7 @@
                         WHERE m.member_id = p.member_id
                         AND m.use_yn = 'Y'
                         AND m.cert_yn = 'Y'
-                        AND m.name LIKE CONCAT('%', #{searchKeyword}, '%')
+                        AND m.user_name LIKE CONCAT('%', #{searchKeyword}, '%')
                     )
                 </when>
                 <otherwise>
@@ -34,7 +34,7 @@
                             WHERE m.member_id = p.member_id
                             AND m.use_yn = 'Y'
                             AND m.cert_yn = 'Y'
-                            AND m.name LIKE CONCAT('%', #{searchKeyword}, '%')
+                            AND m.user_name LIKE CONCAT('%', #{searchKeyword}, '%')
                         )
                     )
                 </otherwise>
@@ -128,7 +128,7 @@
             p.title,
             p.content,
             p.member_id,
-            IFNULL((select m.name
+            IFNULL((select m.user_name
             from member m
             where m.member_id = p.member_id
             and m.use_yn = 'y' and m.cert_yn = 'y'), '') AS writer,
@@ -179,7 +179,7 @@
             p.title,
             p.content,
             p.member_id,
-            IFNULL((select m.name
+            IFNULL((select m.user_name
              from member m
              where m.member_id = p.member_id
              and m.use_yn = 'y' and m.cert_yn = 'y'), '') AS writer,

@@ -80,7 +80,7 @@ public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserR
         if (findMember.isPresent()) { // DB에 기존 소셜 로그인 회원이 존재 -> UPDATE 수행
             Member existMember = findMember.get();
             if(isRequiredSocialMemberProfile(existMember, attributes)) {
-                existMember.updateSocialMemberProfile(attributes.getName(), attributes.getPicture());
+                existMember.updateSocialMemberProfile(attributes.getUserName(), attributes.getPicture());
                 memberMapper.updateSocialMemberLoginProfile(existMember);
             }
             return existMember;
@@ -92,7 +92,7 @@ public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserR
     }
 
     private boolean isRequiredSocialMemberProfile(Member existingMember, OAuthAttributes attributes) {
-        return !existingMember.getName().equalsIgnoreCase(attributes.getName()) ||
+        return !existingMember.getUserName().equalsIgnoreCase(attributes.getUserName()) ||
                 !existingMember.getPicture().equalsIgnoreCase(attributes.getPicture());
     }
 }
