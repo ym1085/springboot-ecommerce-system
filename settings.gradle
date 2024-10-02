@@ -1,4 +1,4 @@
-rootProject.name = 'springboot-web-service'
+rootProject.name = 'springboot-ecommerce-system'
 include 'app:shop'
 include 'app:common'
 findProject(':app:common')?.name = 'common'
